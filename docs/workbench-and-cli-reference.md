@@ -400,7 +400,18 @@ stages and plays the project offline for a moment so meters, controls and
 traces show live values, then writes one PNG per main view into the directory:
 `talas-patch.png`, `talas-performance.png` (Performance with Snapshots),
 `talas-live-grid.png`, `talas-timeline.png`, `talas-samples.png` and
-`talas-analysis.png`. It prints `WORKBENCH_SCREENSHOTS_OK` and exits with 0, or
+`talas-analysis.png`. The screenshots picture a session whose audio device
+runs, so the transport's buttons are enabled as they would be, but no device
+is opened. It then renders the views beyond the workspaces, each drawn through
+the Workbench's look and feel as the live window draws it:
+`talas-view-menus.png` (popup menus), `talas-view-help-and-alerts.png`
+(fly-by help, an information alert and a warning), `talas-view-controls.png`
+(tabs, progress bars, buttons, toggles, fields, sliders, knobs, pads, pills
+and the brand), `talas-view-audio-midi-settings.png` (with a stand-in device
+type), `talas-view-export-plugin.png`, `talas-view-plugin-editor.png` (the
+exported plugin's editor for the showcase project) and
+`talas-view-enhanced-contrast.png` (Performance with Enhanced Contrast on).
+It prints `WORKBENCH_SCREENSHOTS_OK` and exits with 0, or
 prints `WORKBENCH_SCREENSHOTS_FAILED: <reason>` and exits with 1. The directory
 follows the smoke-test rules: absolute, existing, and not a repository root.
 The run's own state and the showcase samples live in a scratch folder that is
@@ -418,8 +429,14 @@ displays; and one violet-to-aqua signature gradient for toggled-on buttons,
 ticked boxes, slider fills and panel titles. Port kinds keep their colours
 (Audio aqua, Control amber, Event pink, Data periwinkle) next to their written
 `A`/`C`/`E`/`D` codes, and each Sound category has a colour code shared by the
-signal-flow cards and the Prototypes list. Cables, traces, waveforms and
-meters glow in their own colours. Keyboard focus keeps a light-blue outline of
+signal-flow cards and the Prototypes list. Every rotary control turns through
+one knob recipe (a gradient value arc over a recessed ring, a glassy cap and a
+lit pointer); gates and toggles on the Performance canvas and in the plugin
+editor are pads with their state written in; the toolbar carries the Talas
+mark, a transport group with drawn glyphs before its labels and a segmented
+workspace switcher. Cables, traces, waveforms, meters, knob arcs, the running
+Play button and the playing Live Grid cell glow in their own colours. Keyboard
+focus keeps a light-blue outline of
 at least two pixels. With Enhanced Contrast on, glass, glows and translucency
 give way to solid fills and strong outlines.
 

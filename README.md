@@ -58,13 +58,19 @@ files without a GUI.
 
 ## Screenshots
 
-| Timeline | Live Grid | Samples |
+| Performance | Live Grid | Timeline |
 | --- | --- | --- |
-| [![The Timeline: tracks of coloured clips under Intro, Build and Drop markers, with an automation lane and its editor](docs/images/talas-timeline.png)](docs/images/talas-timeline.png) | [![Performance with the Live Grid: control tiles beside a grid of Sound, snapshot and Score cells, one of them active](docs/images/talas-live-grid.png)](docs/images/talas-live-grid.png) | [![The Samples workspace: a sample map of four regions an octave apart above the selected region's waveform](docs/images/talas-samples.png)](docs/images/talas-samples.png) |
+| [![The Performance workspace: knob cards for Tone, Rate, Resonance and Feedback, each with its value and unit, and a lit Gate pad, beside a snapshot bank](docs/images/talas-performance.png)](docs/images/talas-performance.png) | [![Performance with the Live Grid: knob cards beside a grid of clip-like Sound, snapshot and Score cells, one playing and one queued](docs/images/talas-live-grid.png)](docs/images/talas-live-grid.png) | [![The Timeline: tracks of coloured clips under Intro, Build and Drop markers, the playhead in the Drop, with an automation lane and its editor](docs/images/talas-timeline.png)](docs/images/talas-timeline.png) |
+
+| Analysis | Samples | Plugin editor |
+| --- | --- | --- |
+| [![The Analysis workspace: a partial-track spectrum beside two pinned scope traces](docs/images/talas-analysis.png)](docs/images/talas-analysis.png) | [![The Samples workspace: a sample map of four regions an octave apart above the selected region's waveform](docs/images/talas-samples.png)](docs/images/talas-samples.png) | [![An exported plugin's editor: the Talas mark and the plugin's name, four knobs with lit readouts and a Gate pad](docs/images/talas-plugin-editor.png)](docs/images/talas-plugin-editor.png) |
 
 These are made by `talas_workbench --render-screenshots <folder>`, which lays
 the Workbench out around a built-in showcase project without opening audio or
-MIDI devices; see the [Workbench and CLI reference](docs/workbench-and-cli-reference.md#screenshots).
+MIDI devices, and also renders its menus, alerts, dialogs, common controls and
+the plugin editor for review; see the
+[Workbench and CLI reference](docs/workbench-and-cli-reference.md#screenshots).
 
 ## Roadmap
 

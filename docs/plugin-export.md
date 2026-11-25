@@ -22,6 +22,11 @@ Each export is a `<Name>.vst3` bundle and, on macOS, a `<Name>.component`
 (AU) bundle. Both play the project in the same realtime engine as the
 Workbench's Play button.
 
+The plugin's editor wears the Workbench's look: a knob with a lit readout for
+each fader, a pad for each toggle or gate, and the engine's status below.
+
+![The editor of a plugin exported from the Talas showcase project: the Talas mark and the plugin's name over its maker, kind and version, knobs for Tone, Rate, Resonance and Feedback with lit readouts, a Gate pad, and the status "Playing at 48.0 kHz"](images/talas-plugin-editor.png)
+
 ## Exporting
 
 ### From the Workbench

@@ -124,15 +124,50 @@ components:
     width: "200px"
     height: "64px"
   support-badge-full:
-    backgroundColor: "{colors.runtime-green}"
-    textColor: "#ffffff"
-    rounded: "{rounded.field}"
-    height: "18px"
-    width: "72px"
+    backgroundColor: "rgba(22, 128, 90, 0.24)"
+    textColor: "#5ca68c"
+    rounded: "{rounded.pill}"
+    height: "16px"
+  transport-group:
+    backgroundColor: "{colors.raised-surface}"
+    textColor: "{colors.reading-frost}"
+    rounded: "{rounded.control}"
+    height: "32px"
+    width: "3 × 64px, connected"
+  transport-play-lit:
+    background: "{gradients.signature}"
+    textColor: "{colors.accent-ink}"
+    rounded: "{rounded.control}"
   transport-readout:
     backgroundColor: "{colors.well}"
     textColor: "{colors.talas-aqua}"
     rounded: "{rounded.control}"
+  segmented-control:
+    backgroundColor: "{colors.well}"
+    textColor: "{colors.muted-steel}"
+    rounded: "{rounded.tile}"
+  segment-on:
+    background: "{gradients.signature}"
+    textColor: "{colors.accent-ink}"
+    rounded: "{rounded.field}"
+  knob:
+    track: "{colors.well}"
+    arc: "{gradients.signature}"
+    cap: "linear-gradient(180deg, #323a57 0%, #151a29 100%)"
+    pointer: "{colors.reading-frost}"
+  pad-on:
+    background: "{gradients.signature}"
+    textColor: "{colors.accent-ink}"
+    rounded: "8px"
+  performance-card:
+    backgroundColor: "{colors.control-tile}"
+    rounded: "{rounded.card}"
+    width: "172px"
+    height: "128px"
+  live-grid-cell:
+    rounded: "{rounded.tile}"
+    width: "112px"
+    height: "60px"
 ---
 
 # Design System: Talas Workbench
@@ -224,8 +259,10 @@ colours on every card.
 
 - **Fault Coral** (`#ff5d6e`): diagnostics, error borders and badges.
 - **Runtime Green** (`#16805a`), **Subset Ochre** (`#9a6410`), **Placeholder
-  Rose** (`#c2475a`), **Utility Slate** (`#56709a`): the support badges, each
-  dark enough for white microtype at `4.5:1`.
+  Rose** (`#c2475a`), **Utility Slate** (`#56709a`): the support pills. Each
+  pill is a tint of its colour with a fine edge, its word written in the
+  colour's own tone, lightened until it reads at `4.5:1` or better on the
+  tinted pill (`WorkbenchStyle::readableToneOf`).
 
 **The Signal Is Semantics Rule.** The port-kind colours mean a port kind and
 the category colours mean a category; neither is a free decorative accent.
@@ -319,8 +356,9 @@ shadow along their top. Raised controls and tiles get a gentler version of the
 glass gradient and highlight.
 
 Glow is reserved for signal: cables, scope and spectrum traces, waveform and
-automation lines, the time cursor, the selected node and lit Live Grid cells
-carry a soft halo in their own colour. Surfaces themselves never glow.
+automation lines, the time cursor, the selected node, a knob's value arc, the
+running transport's Play button and the playing Live Grid cell carry a soft
+halo in their own colour. Surfaces themselves never glow.
 
 **The Enhanced Contrast Rule.** With Enhanced Contrast on, sheen, glows,
 backdrop glows and translucency are dropped: panels become solid with a
@@ -345,6 +383,21 @@ Event/Note, hexagon for Data. Diagnostic badges remain `14px` circles.
 Components should feel compact and tactile: native controls seated in lit
 glass.
 
+### Toolbar
+
+Left to right: the **Talas mark** (a wave cut across a lit glass roundel in
+the signature gradient) and the `talas` wordmark, both drawn as vector paths;
+a hairline; the **transport group**, Play, Pause and Stop as one row of
+connected buttons, each with its drawn glyph (▶, ❚❚, ■) before its written
+label, then the LCD time readout; the **edit actions** (Undo and Redo
+connected, Delete Node, Save, More...); and, at the right, the **workspace
+switcher**, a segmented control. While the transport runs, Play is lit: the
+signature gradient, ink glyph and label, and a soft halo the toolbar paints
+around it. Play stays lit even though it cannot be pressed again, and the
+status line still says `Playing`. The brand takes only the room the groups
+leave: it shrinks to its mark, then steps aside, before any control is
+crowded.
+
 ### Buttons
 
 - **Shape:** `5px` radius, a raised gradient around Raised Surface, a top
@@ -354,13 +407,23 @@ glass.
 - **Hover / Press:** hover lifts the fill and edge; press darkens. Disabled
   controls keep their shape at about half opacity.
 - **Focus:** keyboard focus adds a Selection Frost outline of at least `2px`.
-- **Own colours:** a button that sets its own colour (a support badge, the
-  Timeline's Cache button) keeps it, with the same gradient and edge.
+- **Own colours:** a button that sets its own colour (the Timeline's Cache
+  button) keeps it, with the same gradient and edge.
+- **Segmented controls:** the workspace switcher, the Inspector's Node /
+  Variables / Generators and the Performance panel's Controls / Snapshots /
+  Live Grid sit as segments over one recessed tray; the chosen segment is a
+  gradient pill inset in it with Accent Ink text, the others Muted Steel text
+  that brightens on hover.
 
 ### Chips
 
-- **Support badges:** `72 × 18px`, white bold microtype on the status fill,
-  `4px` radius, growing from a one-letter capsule as the library widens.
+- **Support pills:** `16px` tall, the level's word (`FULL`, `SUBSET`,
+  `PLACEHOLDER`, `UTILITY`) in bold microtype; a row whose name would not fit
+  beside the word shows its initial in a `20px` capsule instead, and the
+  word stays in the row's accessible description and tooltip.
+- **Kind pills:** Performance cards tag their kind (`FADER`, `KNOB`, `GATE`,
+  `TOGGLE`, `MACRO`) in a pill of the card's colour; the plugin editor tags
+  `INSTRUMENT` or `EFFECT`.
 - **Severity pills:** Diagnostics rows tag `INFO`, `WARNING` and `ERROR` in
   pills tinted with Data Periwinkle, Control Amber and Fault Coral.
 
@@ -370,9 +433,24 @@ glass.
   after a short vertical signature-gradient bar.
 - **Graph canvas:** a rounded well, lit slightly toward its middle, with a dot
   grid (a larger dot every fourth point).
-- **Tiles:** Event Value, meter and Live Grid tiles use Control Tile with a
-  gradient cap in their kind's colour; selected tiles add the focus outline
-  and halo.
+- **Tiles:** Event Value and meter tiles use Control Tile with a gradient cap
+  in their kind's colour (amber faders, pink gates, blue toggles); selected
+  tiles add the focus outline and halo.
+- **Performance cards:** `172 × 128px` (`84px` compact) on the canvas. The
+  name and the kind pill on top; a continuous control (fader, knob or macro)
+  turns as a knob as tall as the card allows, beside its value as a large
+  tabular readout over its unit (`Hz`, `seconds`, `note`, `samples` or
+  `scalar`); a gate or toggle is a pad across the card. The mapping state
+  (`Unmapped`, `MIDI`, `OSC in`, ...) and `LOCK` run along the bottom.
+  Controls without a position of their own flow in rows as wide as the
+  canvas shows; positioned ones stay where they were put.
+- **Live Grid cells:** `112 × 60px` clips filled with what they launch (a
+  Sound violet, a snapshot aqua, a Score region pink, a stop red). A ready
+  cell is a deep fill with a quiet launch glyph; the playing cell is the
+  bright colour with a halo, a solid ▶ and ink text; a queued cell has a
+  dashed edge and an open ▷; unavailable cells fade. The name and the state
+  are always written, in Reading Frost or Accent Ink, whichever reads on the
+  fill.
 - **Lists:** selected rows are rounded Selected Row fills.
 
 ### Inputs / Fields
@@ -382,16 +460,35 @@ glass.
 - **Focus:** an editable field draws a Selection Frost outline (at least
   `2px`) with a soft halo; with Enhanced Contrast, the outline alone.
 - **Sliders:** a recessed track, its filled part in the gradient, and a bright
-  thumb with a violet ring and soft glow. Rotary controls draw a recessed ring
-  and a gradient value arc.
+  thumb with a violet ring and soft glow.
+- **Knobs:** every rotary control turns through one recipe
+  (`WorkbenchStyle::paintKnob`): a recessed track ring from seven o'clock to
+  five, the value's arc in the gradient with a soft halo, a raised cap with a
+  glassy sheen and a Reading Frost pointer, and a bright tip riding the arc
+  at the value. The Performance cards, the Event Values strip (its default
+  widget, a knob over its number), pots on the Virtual Control Surface and
+  the plugin editor all use it. A readout under a knob can be the lit LCD.
+- **Pads:** gates and toggles on the Performance canvas and in the plugin
+  editor are pads: a recessed well with a dark lamp while off; the gradient,
+  a sheen and a lit lamp while on; the state (`Open`/`Closed`, `On`/`Off`,
+  `Held`/`Hold`) written inside. A gate is on while held, a toggle flips on
+  each press, and Space or Return presses them from the keyboard.
 - **Popup menus:** a dark glass list; the highlighted item fills with the
-  gradient and Accent Ink text.
+  gradient and Accent Ink text; ticks are Talas Aqua.
 - **Fly-by help:** stays a yellow box with dark text, now rounded and lit.
+- **Alerts and dialogs:** an alert is a glass panel over the backdrop with a
+  gradient line along its top and its kind in a lit roundel (information and
+  questions in the gradient, a warning in amber, the symbol written inside).
+  Dialog and tool windows in the theme's surface colour (Audio & MIDI
+  Settings, Export Plugin, Sound help) fill with the backdrop; their sections
+  sit on glass cards. Level meters are recessed wells lit segment by segment
+  from Signal Aqua through amber to coral.
 
 ### Navigation
 
-The toolbar is a compact horizontal rail for transport, frequent edits, Save,
-workspace modes, persistent project/compile/transport state, and overflow.
+The toolbar is a compact horizontal rail for the brand, transport, frequent
+edits, Save, overflow and workspace modes, with persistent
+project/compile/transport state in the status line below it.
 Native File, Edit, Transport, View, and Help menus carry the complete command
 set and standard shortcuts; compact mode moves edit actions out of the rail
 without removing them. Patch, Automation, Analysis, Performance and Samples
@@ -447,6 +544,16 @@ maps tint each region in a cycling gradient colour over faint black-key
 columns, and waveforms glow in Signal Aqua. The transport time is an LCD-like
 readout in Talas Aqua.
 
+### Plugin editor
+
+An exported plugin's editor (`TalasPluginEditorView`, shared with the
+Workbench's screenshots) is the Workbench in miniature: the backdrop; a
+glass header with the Talas mark, the plugin's name in the gradient over its
+maker, kind and version, and a kind pill; a glass body of tiles capped with
+the gradient, a knob with a lit LCD readout per fader and a pad per toggle
+or gate; and a status line led by a lamp (mint while the project plays,
+coral when it cannot, gray while it loads), its words always written.
+
 ## Do's and Don'ts
 
 ### Do:
@@ -472,6 +579,7 @@ readout in Talas Aqua.
   to signals.
 - **Don't** use the gradient or a signal colour merely to make a region feel
   more colourful.
-- **Don't** replace dense operational labels with unlabeled icon-only controls.
+- **Don't** replace dense operational labels with unlabeled icon-only controls:
+  a glyph goes before its label, never instead of it.
 - **Don't** invent a display typeface, oversized headline tier, or marketing
   composition inside the Workbench.

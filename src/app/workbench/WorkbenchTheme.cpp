@@ -626,6 +626,12 @@ juce::Label* WorkbenchLookAndFeel::createSliderTextBox(juce::Slider& slider)
 {
     auto* label = juce::LookAndFeel_V4::createSliderTextBox(slider);
     label->setFont(WorkbenchType::label());
+    // A slider marked as a readout shows its value as a lit LCD.
+    if (slider.getProperties()["talasReadout"])
+    {
+        label->getProperties().set("talasReadout", true);
+        label->setFont(WorkbenchType::data().boldened());
+    }
     return label;
 }
 
@@ -640,10 +646,44 @@ void WorkbenchLookAndFeel::drawButtonBackground(
 {
     const auto bounds = button.getLocalBounds().toFloat().reduced(0.5F);
     const auto radius = std::min(WorkbenchStyle::controlRadius(), bounds.getHeight() * 0.5F);
+    const auto& properties = button.getProperties();
+    // A segment sits clear over its control's tray; the chosen one is a
+    // gradient pill inset in it.
+    if (properties[talasSegmentProperty])
+    {
+        const auto pill = bounds.reduced(2.5F);
+        const auto pillRadius = std::max(2.0F, radius - 2.0F);
+        if (button.getToggleState())
+        {
+            auto gradient = WorkbenchStyle::accentGradient(pill, button.isEnabled() ? 1.0F : 0.45F);
+            if (highlighted || down)
+            {
+                for (int index = 0; index < gradient.getNumColours(); ++index)
+                    gradient.setColour(index, gradient.getColour(index).brighter(down ? -0.1F : 0.1F));
+            }
+            graphics.setGradientFill(gradient);
+            graphics.fillRoundedRectangle(pill, pillRadius);
+            if (!enhancedContrast_)
+            {
+                graphics.setColour(juce::Colours::white.withAlpha(0.3F));
+                graphics.fillRect(juce::Rectangle<float>{pill.getX() + pillRadius, pill.getY() + 1.0F,
+                    std::max(0.0F, pill.getWidth() - 2.0F * pillRadius), 1.0F});
+            }
+        }
+        else if (highlighted || down)
+        {
+            graphics.setColour(juce::Colours::white.withAlpha(down ? 0.04F : 0.07F));
+            graphics.fillRoundedRectangle(pill, pillRadius);
+        }
+        drawFocusOutline(graphics, button, radius + 1.0F);
+        return;
+    }
     const auto shape = roundedPath(bounds, radius, button.isConnectedOnLeft(), button.isConnectedOnRight(),
         button.isConnectedOnTop(), button.isConnectedOnBottom());
-    const auto enabledAlpha = button.isEnabled() ? 1.0F : 0.45F;
-    const auto accent = button.getToggleState() && colour == findColour(juce::TextButton::buttonOnColourId);
+    // A running transport stays lit whether or not it can be pressed again.
+    const auto lit = static_cast<bool>(properties[talasLitProperty]);
+    const auto enabledAlpha = button.isEnabled() || lit ? 1.0F : 0.45F;
+    const auto accent = lit || (button.getToggleState() && colour == findColour(juce::TextButton::buttonOnColourId));
     if (accent)
     {
         auto gradient = WorkbenchStyle::accentGradient(bounds, enabledAlpha);
@@ -685,6 +725,60 @@ void WorkbenchLookAndFeel::drawButtonBackground(
     graphics.setColour(edge.withMultipliedAlpha(enabledAlpha));
     graphics.strokePath(shape, juce::PathStrokeType{1.0F});
     drawFocusOutline(graphics, button, radius + 1.0F);
+}
+
+void WorkbenchLookAndFeel::drawButtonText(
+    juce::Graphics& graphics,
+    juce::TextButton& button,
+    bool highlighted,
+    bool down)
+{
+    const auto& properties = button.getProperties();
+    const auto lit = static_cast<bool>(properties[talasLitProperty]);
+    const auto glyphName = properties[talasGlyphProperty].toString();
+    const auto segment = static_cast<bool>(properties[talasSegmentProperty]);
+    if (glyphName.isEmpty() && !lit && !segment)
+    {
+        juce::LookAndFeel_V4::drawButtonText(graphics, button, highlighted, down);
+        return;
+    }
+    const auto on = lit || button.getToggleState();
+    auto colour = on ? button.findColour(juce::TextButton::textColourOnId)
+                     : (segment && !highlighted ? workbenchTheme.secondaryText
+                                                : button.findColour(juce::TextButton::textColourOffId));
+    colour = colour.withMultipliedAlpha(button.isEnabled() || lit ? 1.0F : 0.5F);
+    const auto font = getTextButtonFont(button, button.getHeight());
+    const auto text = button.getButtonText();
+    auto area = button.getLocalBounds().reduced(6, 2).toFloat();
+    if (glyphName.isEmpty())
+    {
+        graphics.setColour(colour);
+        graphics.setFont(font);
+        graphics.drawFittedText(text, area.toNearestInt(), juce::Justification::centred, 1);
+        return;
+    }
+    const auto glyph = glyphName == "pause" ? WorkbenchStyle::Glyph::Pause
+        : glyphName == "stop"               ? WorkbenchStyle::Glyph::Stop
+        : glyphName == "record"             ? WorkbenchStyle::Glyph::Record
+                                            : WorkbenchStyle::Glyph::Play;
+    const auto glyphSize = std::round(font.getHeight() * 0.74F);
+    const auto gap = std::round(font.getHeight() * 0.45F);
+    const auto textWidth = std::min(area.getWidth() - glyphSize - gap,
+        juce::GlyphArrangement::getStringWidth(font, text));
+    const auto total = glyphSize + (text.isEmpty() ? 0.0F : gap + textWidth);
+    auto row = area.withSizeKeepingCentre(std::min(total, area.getWidth()), area.getHeight());
+    const auto glyphArea = row.removeFromLeft(glyphSize);
+    WorkbenchStyle::paintGlyph(graphics,
+        glyphArea.withSizeKeepingCentre(glyphSize, glyphSize),
+        glyph,
+        glyph == WorkbenchStyle::Glyph::Record && !on ? workbenchTheme.error.withMultipliedAlpha(colour.getFloatAlpha())
+                                                      : colour);
+    if (text.isEmpty())
+        return;
+    row.removeFromLeft(gap);
+    graphics.setColour(colour);
+    graphics.setFont(font);
+    graphics.drawFittedText(text, row.toNearestInt(), juce::Justification::centredLeft, 1, 0.8F);
 }
 
 void WorkbenchLookAndFeel::drawToggleButton(
@@ -871,45 +965,11 @@ void WorkbenchLookAndFeel::drawRotarySlider(
     float rotaryEndAngle,
     juce::Slider& slider)
 {
-    const auto alpha = slider.isEnabled() ? 1.0F : 0.45F;
     const auto bounds = juce::Rectangle<float>{static_cast<float>(x), static_cast<float>(y), static_cast<float>(width),
-        static_cast<float>(height)}
-                            .reduced(4.0F);
-    const auto radius = std::min(bounds.getWidth(), bounds.getHeight()) * 0.5F;
-    const auto centre = bounds.getCentre();
-    const auto lineWidth = std::max(2.5F, radius * 0.16F);
-    const auto arcRadius = radius - lineWidth * 0.5F;
-    const auto angle = rotaryStartAngle + sliderPosProportional * (rotaryEndAngle - rotaryStartAngle);
-    juce::Path background;
-    background.addCentredArc(centre.x, centre.y, arcRadius, arcRadius, 0.0F, rotaryStartAngle, rotaryEndAngle, true);
-    graphics.setColour(workbenchTheme.well.withMultipliedAlpha(alpha));
-    graphics.strokePath(background, juce::PathStrokeType{lineWidth, juce::PathStrokeType::curved,
-        juce::PathStrokeType::rounded});
-    if (slider.isEnabled())
-    {
-        juce::Path value;
-        value.addCentredArc(centre.x, centre.y, arcRadius, arcRadius, 0.0F, rotaryStartAngle, angle, true);
-        const auto knob = juce::Rectangle<float>{radius * 2.0F, radius * 2.0F}.withCentre(centre);
-        if (!enhancedContrast_)
-        {
-            graphics.setGradientFill(WorkbenchStyle::accentGradient(knob, 0.25F));
-            graphics.strokePath(value, juce::PathStrokeType{lineWidth * 2.2F, juce::PathStrokeType::curved,
-                juce::PathStrokeType::rounded});
-        }
-        graphics.setGradientFill(WorkbenchStyle::accentGradient(knob));
-        graphics.strokePath(value, juce::PathStrokeType{lineWidth, juce::PathStrokeType::curved,
-            juce::PathStrokeType::rounded});
-    }
-    const auto capRadius = arcRadius - lineWidth * 1.2F;
-    if (capRadius > 2.0F)
-    {
-        const auto cap = juce::Rectangle<float>{capRadius * 2.0F, capRadius * 2.0F}.withCentre(centre);
-        WorkbenchStyle::paintTile(graphics, cap, capRadius, workbenchTheme.surfaceRaised.withMultipliedAlpha(alpha));
-        const auto pointer = centre.getPointOnCircumference(capRadius * 0.7F, angle);
-        graphics.setColour(workbenchTheme.primaryText.withMultipliedAlpha(alpha));
-        graphics.drawLine(juce::Line<float>{centre.getPointOnCircumference(capRadius * 0.2F, angle), pointer}, 2.0F);
-    }
-    drawFocusOutline(graphics, slider, std::min(8.0F, radius));
+        static_cast<float>(height)};
+    WorkbenchStyle::paintKnob(
+        graphics, bounds, sliderPosProportional, rotaryStartAngle, rotaryEndAngle, slider.isEnabled());
+    drawFocusOutline(graphics, slider, std::min(8.0F, std::min(bounds.getWidth(), bounds.getHeight()) * 0.5F));
 }
 
 void WorkbenchLookAndFeel::drawScrollbar(
@@ -1215,6 +1275,122 @@ void WorkbenchLookAndFeel::drawProgressBar(
         graphics.setColour(workbenchTheme.primaryText);
         graphics.drawText(textToShow, bounds, juce::Justification::centred, false);
     }
+}
+
+// A glass panel over the backdrop, a short gradient line along its top and
+// the alert's kind in a lit roundel: information and questions in the
+// gradient, a warning in amber; the symbol inside says which.
+void WorkbenchLookAndFeel::drawAlertBox(
+    juce::Graphics& graphics,
+    juce::AlertWindow& alert,
+    const juce::Rectangle<int>& textArea,
+    juce::TextLayout& textLayout)
+{
+    juce::ignoreUnused(textArea);
+    const auto bounds = alert.getLocalBounds().toFloat();
+    WorkbenchStyle::paintBackdrop(graphics, bounds);
+    const auto panel = bounds.reduced(1.0F);
+    WorkbenchStyle::paintPanel(graphics, panel, WorkbenchStyle::panelRadius());
+    graphics.setGradientFill(WorkbenchStyle::accentGradient(panel.withHeight(2.0F)));
+    graphics.fillRect(panel.reduced(WorkbenchStyle::panelRadius(), 0.0F).withHeight(2.0F));
+    graphics.setColour(enhancedContrast_ ? workbenchTheme.enhancedOutline : workbenchTheme.interactiveOutline.withAlpha(0.6F));
+    graphics.drawRoundedRectangle(panel, WorkbenchStyle::panelRadius(), 1.0F);
+
+    auto iconSpace = 0;
+    if (alert.getAlertType() != juce::MessageBoxIconType::NoIcon)
+    {
+        const auto warning = alert.getAlertType() == juce::MessageBoxIconType::WarningIcon;
+        const auto icon = juce::Rectangle<float>{24.0F, 26.0F, 40.0F, 40.0F};
+        if (warning)
+        {
+            if (!enhancedContrast_)
+            {
+                graphics.setColour(workbenchTheme.control.withAlpha(0.22F));
+                graphics.fillEllipse(icon.expanded(3.0F));
+            }
+            graphics.setColour(workbenchTheme.control);
+            graphics.fillEllipse(icon);
+        }
+        else
+        {
+            if (!enhancedContrast_)
+            {
+                graphics.setGradientFill(WorkbenchStyle::accentGradient(icon.expanded(3.0F), 0.22F));
+                graphics.fillEllipse(icon.expanded(3.0F));
+            }
+            graphics.setGradientFill(WorkbenchStyle::accentGradient(icon));
+            graphics.fillEllipse(icon);
+        }
+        graphics.setColour(workbenchTheme.accentText);
+        graphics.setFont(juce::Font{juce::FontOptions{24.0F}.withStyle("Bold")});
+        graphics.drawText(warning ? "!" : alert.getAlertType() == juce::MessageBoxIconType::InfoIcon ? "i" : "?",
+            icon, juce::Justification::centred, false);
+        iconSpace = 80;
+    }
+    const auto textBounds = juce::Rectangle<float>{panel.getX() + static_cast<float>(iconSpace),
+        28.0F, panel.getWidth() - static_cast<float>(iconSpace) - 10.0F,
+        panel.getHeight() - static_cast<float>(getAlertWindowButtonHeight()) - 34.0F};
+    textLayout.draw(graphics, textBounds);
+}
+
+int WorkbenchLookAndFeel::getAlertWindowButtonHeight()
+{
+    return juce::roundToInt(30.0F * WorkbenchType::interfaceScale());
+}
+
+juce::Font WorkbenchLookAndFeel::getAlertWindowTitleFont()
+{
+    return juce::Font{juce::FontOptions{16.0F * WorkbenchType::interfaceScale()}.withStyle("Bold")};
+}
+
+juce::Font WorkbenchLookAndFeel::getAlertWindowMessageFont()
+{
+    return juce::Font{juce::FontOptions{13.0F * WorkbenchType::interfaceScale()}};
+}
+
+juce::Font WorkbenchLookAndFeel::getAlertWindowFont()
+{
+    return WorkbenchType::body();
+}
+
+void WorkbenchLookAndFeel::drawLevelMeter(juce::Graphics& graphics, int width, int height, float level)
+{
+    const auto bounds = juce::Rectangle<float>{static_cast<float>(width), static_cast<float>(height)};
+    WorkbenchStyle::paintWell(graphics, bounds, std::min(3.0F, bounds.getHeight() * 0.5F));
+    // Twelve segments, lit up to the level, each in the meter gradient's
+    // colour at its place.
+    constexpr int segments = 12;
+    const auto inner = bounds.reduced(2.0F);
+    const auto segmentWidth = inner.getWidth() / static_cast<float>(segments);
+    const auto lit = std::clamp(std::pow(std::max(0.0F, level), 0.5F), 0.0F, 1.0F) * static_cast<float>(segments);
+    for (int segment = 0; segment < segments; ++segment)
+    {
+        const auto at = static_cast<float>(segment) / static_cast<float>(segments - 1);
+        const auto colour = at < 0.72F ? workbenchTheme.audio.interpolatedWith(workbenchTheme.control, at / 0.72F)
+                                       : workbenchTheme.control.interpolatedWith(workbenchTheme.error, (at - 0.72F) / 0.28F);
+        const auto cell = juce::Rectangle<float>{inner.getX() + segmentWidth * static_cast<float>(segment), inner.getY(),
+            segmentWidth, inner.getHeight()}
+                              .reduced(1.0F, 0.0F);
+        graphics.setColour(static_cast<float>(segment) < lit ? colour : colour.withAlpha(0.1F));
+        graphics.fillRoundedRectangle(cell, 1.0F);
+    }
+}
+
+void WorkbenchLookAndFeel::fillResizableWindowBackground(
+    juce::Graphics& graphics,
+    int width,
+    int height,
+    const juce::BorderSize<int>& border,
+    juce::ResizableWindow& window)
+{
+    const auto colour = window.getBackgroundColour();
+    if (colour != workbenchTheme.surface && colour != workbenchTheme.canvas)
+    {
+        juce::LookAndFeel_V4::fillResizableWindowBackground(graphics, width, height, border, window);
+        return;
+    }
+    WorkbenchStyle::paintBackdrop(graphics,
+        juce::Rectangle<float>{static_cast<float>(width), static_cast<float>(height)});
 }
 
 void WorkbenchLookAndFeel::drawFocusOutline(

@@ -1481,6 +1481,7 @@ if(TALAS_BUILD_WORKBENCH)
         src/app/workbench/WorkbenchSoundIconPainting.cpp
         src/app/workbench/WorkbenchSplitHandle.cpp
         src/app/workbench/WorkbenchTheme.cpp
+        src/app/workbench/WorkbenchThemePainters.cpp
         src/app/workbench/WorkbenchTimelineInfoStrip.cpp
         src/app/workbench/WorkbenchTimelinePlayback.cpp
         src/app/workbench/WorkbenchWindowMenu.cpp
@@ -2114,7 +2115,8 @@ if(TALAS_BUILD_PLUGINS)
                 src/plugin/TalasPluginEditor.cpp
                 src/plugin/TalasPluginProcessor.cpp
                 src/plugin/TalasPluginRuntimeIdentity.cpp
-                src/app/workbench/WorkbenchTheme.cpp)
+                src/app/workbench/WorkbenchTheme.cpp
+                src/app/workbench/WorkbenchThemePainters.cpp)
         target_include_directories(${talas_plugin_target}
             PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
         target_compile_definitions(${talas_plugin_target}

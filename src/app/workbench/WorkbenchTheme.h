@@ -132,7 +132,61 @@ struct WorkbenchStyle
         int columns, int rows);
     // A Sound category's colour code (Sources violet, Filters aqua, ...).
     [[nodiscard]] static juce::Colour categoryColour(std::string_view category);
+
+    // WCAG contrast between two opaque colours, 1 to 21.
+    [[nodiscard]] static float contrastRatio(juce::Colour first, juce::Colour second);
+    // Reading Frost or Accent Ink, whichever reads better on the background.
+    [[nodiscard]] static juce::Colour readableTextOn(juce::Colour background);
+    // The colour itself, lightened toward white until it reads at 4.5:1 or
+    // better on the background: a status colour's own tone for its text.
+    [[nodiscard]] static juce::Colour readableToneOf(juce::Colour colour, juce::Colour background);
+
+    // The sweep every Talas knob turns through, about seven o'clock to five
+    // (JUCE's own rotary default, so sliders and painted knobs agree).
+    static constexpr float knobStartAngle = 3.76991118F;
+    static constexpr float knobEndAngle = 8.79645943F;
+    // A knob: a recessed track ring, the value's arc in the signature
+    // gradient with a soft glow, a raised cap and a lit pointer whose tip
+    // rides the arc. The Workbench's rotary sliders, the Performance cards
+    // and the plugin editor all turn this one.
+    static void paintKnob(juce::Graphics& graphics, juce::Rectangle<float> area, float proportion,
+        float startAngle, float endAngle, bool enabled);
+    // A pad for a gate or a toggle: a recessed well while off, the
+    // signature gradient with a halo while on, its state written inside.
+    static void paintPad(juce::Graphics& graphics, juce::Rectangle<float> area, bool on, bool enabled,
+        const juce::String& text);
+
+    enum class Glyph
+    {
+        Play,
+        Pause,
+        Stop,
+        Record,
+    };
+    // A transport glyph drawn as a path, centred in the area.
+    static void paintGlyph(juce::Graphics& graphics, juce::Rectangle<float> area, Glyph glyph, juce::Colour colour);
+
+    // The Talas mark (a wave across a lit glass roundel) and, when asked,
+    // the "talas" wordmark beside it, drawn as paths in the gradient.
+    static void paintBrand(juce::Graphics& graphics, juce::Rectangle<float> area, bool withWordmark);
+    // The width the brand takes at a height, with or without its wordmark.
+    [[nodiscard]] static float brandWidth(float height, bool withWordmark) noexcept;
+
+    // A small rounded status pill: a tint of the colour, a fine edge and
+    // the text in the colour's own readable tone over the background.
+    static void paintPill(juce::Graphics& graphics, juce::Rectangle<float> area, juce::Colour colour,
+        juce::Colour background, const juce::String& text, const juce::Font& font);
 };
+
+// Properties a TextButton can carry for the Workbench look:
+// "talasGlyph" ("play", "pause", "stop" or "record") draws that transport
+// glyph before the label; "talasLit" marks a running transport (the
+// gradient and a halo, enabled or not, since a lit Play cannot be pressed
+// again); "talasSegment" makes it a segment of a segmented control, clear
+// over the tray its parent paints until it is the one chosen.
+inline constexpr const char* talasGlyphProperty = "talasGlyph";
+inline constexpr const char* talasLitProperty = "talasLit";
+inline constexpr const char* talasSegmentProperty = "talasSegment";
 
 class WorkbenchLookAndFeel final : public juce::LookAndFeel_V4
 {
@@ -157,6 +211,33 @@ public:
         const juce::Colour& colour,
         bool highlighted,
         bool down) override;
+    // A button's label, after its transport glyph when it has one.
+    void drawButtonText(
+        juce::Graphics& graphics,
+        juce::TextButton& button,
+        bool highlighted,
+        bool down) override;
+    // Alerts as glass panels over the backdrop, with a lit icon roundel.
+    void drawAlertBox(
+        juce::Graphics& graphics,
+        juce::AlertWindow& alert,
+        const juce::Rectangle<int>& textArea,
+        juce::TextLayout& textLayout) override;
+    int getAlertWindowButtonHeight() override;
+    juce::Font getAlertWindowTitleFont() override;
+    juce::Font getAlertWindowMessageFont() override;
+    juce::Font getAlertWindowFont() override;
+    // A level meter (the audio settings' input level) as a recessed well
+    // lit from Signal Aqua through amber to coral.
+    void drawLevelMeter(juce::Graphics& graphics, int width, int height, float level) override;
+    // A window in the theme's surface colour (the dialogs and tool windows)
+    // gets the backdrop instead of a flat fill.
+    void fillResizableWindowBackground(
+        juce::Graphics& graphics,
+        int width,
+        int height,
+        const juce::BorderSize<int>& border,
+        juce::ResizableWindow& window) override;
     void drawToggleButton(
         juce::Graphics& graphics,
         juce::ToggleButton& button,

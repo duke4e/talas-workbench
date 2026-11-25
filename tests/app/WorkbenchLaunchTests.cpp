@@ -179,6 +179,35 @@ void testRepositoryRootIsRejectedAsSmokeDirectory()
 }
 }
 
+// --render-screenshots takes the same absolute, existing, non-repository
+// directory a smoke run does, and starts its own process.
+void testRenderScreenshotsSelectsItsOwnMode()
+{
+    TemporaryDirectory directory;
+    const auto parsed = talas::app::parseWorkbenchLaunch(
+        {"--render-screenshots", utf8String(directory.path())});
+    require(parsed.ok()
+            && parsed.options->mode == talas::app::WorkbenchLaunchMode::RenderScreenshots
+            && parsed.options->screenshotDirectory == directory.path().lexically_normal()
+            && parsed.options->smokeDirectory.empty(),
+        "--render-screenshots should select screenshot mode with its directory");
+    const auto relative = talas::app::parseWorkbenchLaunch({"--render-screenshots", "shots"});
+    require(!relative.ok() && relative.error.find("absolute") != std::string::npos,
+        "a relative screenshot directory should be rejected");
+    const auto missing = talas::app::parseWorkbenchLaunch(
+        {"--render-screenshots", utf8String(directory.path() / "missing")});
+    require(!missing.ok() && missing.error.find("existing directory") != std::string::npos,
+        "a missing screenshot directory should be rejected");
+    std::error_code error;
+    require(std::filesystem::create_directory(directory.path() / ".git", error) && !error,
+        "repository marker fixture should be created");
+    require(!talas::app::parseWorkbenchLaunch(
+                {"--render-screenshots", utf8String(directory.path())}).ok(),
+        "a repository root should not receive screenshots");
+    require(talas::app::requiresIndependentWorkbenchInstance({"--render-screenshots"}),
+        "a screenshot run should bypass the interactive single-instance lock");
+}
+
 // The preferences are kept in talas.pre; a user
 // starts the Workbench by double-clicking a copy in their own folder, which
 // the system passes as the one argument, or as a file opened while it runs.
@@ -212,5 +241,6 @@ int main()
     testMissingOrNonDirectoryPathIsRejected();
     testRepositoryRootIsRejectedAsSmokeDirectory();
     testAUsersPreferencesFileStartsTheWorkbench();
+    testRenderScreenshotsSelectsItsOwnMode();
     return 0;
 }

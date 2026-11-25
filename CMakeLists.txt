@@ -1287,6 +1287,7 @@ if(TALAS_BUILD_WORKBENCH)
     add_library(talas_workbench_ui STATIC
         src/app/workbench/WorkbenchAnalysisAudition.cpp
         src/app/workbench/WorkbenchAccessibilitySmoke.cpp
+        src/app/workbench/WorkbenchScreenshots.cpp
         src/app/workbench/WorkbenchAnalysisPanel.cpp
         src/app/workbench/WorkbenchAnalysisRecording.cpp
         src/app/workbench/WorkbenchLiveTimelineRecording.cpp

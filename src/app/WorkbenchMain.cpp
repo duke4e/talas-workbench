@@ -164,8 +164,60 @@ public:
                 });
             return;
         }
+        if (parsed.options->mode
+            == talas::app::WorkbenchLaunchMode::RenderScreenshots)
+        {
+            renderScreenshots(parsed.options->screenshotDirectory);
+            return;
+        }
         mainWindow_ =
             std::make_unique<MainWindow>(getApplicationName(), parsed.options->preferencesFile);
+    }
+
+    // The Workbench built off screen without devices or user state, its
+    // own state kept in a scratch folder removed afterwards.
+    void renderScreenshots(const std::filesystem::path& directory)
+    {
+        // A short, generic scratch path, since the Samples view shows where
+        // its sample files are.
+#if JUCE_WINDOWS
+        const auto scratchRoot = juce::File::getSpecialLocation(juce::File::tempDirectory);
+#else
+        const auto scratchRoot = juce::File{"/tmp"}.isDirectory()
+            ? juce::File{"/tmp"}
+            : juce::File::getSpecialLocation(juce::File::tempDirectory);
+#endif
+        screenshotState_ = scratchRoot.getNonexistentChildFile("talas-showcase", {}, false);
+        if (!screenshotState_.createDirectory())
+        {
+            std::cerr << "WORKBENCH_SCREENSHOTS_FAILED: scratch state folder could not be created\n";
+            setApplicationReturnValue(1);
+            juce::MessageManager::callAsync([] { juce::JUCEApplication::getInstance()->quit(); });
+            return;
+        }
+        WorkbenchHostOptions options;
+        options.enableHardware = false;
+        options.enablePersistentState = false;
+        options.applicationName = getApplicationName().toStdString();
+        options.isolatedStateDirectory = screenshotState_.getFullPathName().toStdString();
+        options.soundLibraryRoot = soundLibraryRoot();
+        smokeWorkbench_ = makeWorkbenchHost([](const juce::String&) {}, std::move(options));
+        juce::MessageManager::callAsync([this, directory] {
+            const auto error = smokeWorkbench_->renderScreenshots(directory);
+            smokeWorkbench_.reset();
+            screenshotState_.deleteRecursively();
+            if (error.has_value())
+            {
+                std::cerr << "WORKBENCH_SCREENSHOTS_FAILED: " << *error << '\n';
+                setApplicationReturnValue(1);
+            }
+            else
+            {
+                std::cout << "WORKBENCH_SCREENSHOTS_OK\n";
+                setApplicationReturnValue(0);
+            }
+            quit();
+        });
     }
 
     void shutdown() override
@@ -262,6 +314,7 @@ private:
 
     std::unique_ptr<MainWindow> mainWindow_;
     std::unique_ptr<WorkbenchHost> smokeWorkbench_;
+    juce::File screenshotState_;
 };
 }
 

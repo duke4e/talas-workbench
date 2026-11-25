@@ -39,6 +39,10 @@ public:
     [[nodiscard]] virtual std::optional<std::string>
     runAutomatedSmoke(
         const std::filesystem::path& smokeDirectory) = 0;
+    // Lays the Workbench out at a fixed size around a showcase project and
+    // writes one PNG of each main workspace into the directory.
+    [[nodiscard]] virtual std::optional<std::string>
+    renderScreenshots(const std::filesystem::path& directory) = 0;
 };
 
 [[nodiscard]] std::unique_ptr<WorkbenchHost> makeWorkbenchHost(

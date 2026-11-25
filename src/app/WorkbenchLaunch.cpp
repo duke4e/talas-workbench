@@ -9,7 +9,7 @@ namespace talas::app
 namespace
 {
 constexpr auto usage =
-    "usage: talas_workbench [--smoke-test <absolute-existing-directory> | <preferences-file.pre>]";
+    "usage: talas_workbench [--smoke-test <absolute-existing-directory> | --render-screenshots <absolute-existing-directory> | <preferences-file.pre>]";
 
 std::filesystem::path pathFromUtf8(std::string_view value)
 {
@@ -61,29 +61,39 @@ WorkbenchLaunchParseResult parseWorkbenchLaunch(
         }
     }
 
-    if (arguments.size() != 2 || arguments.front() != "--smoke-test")
+    const auto screenshots = arguments.size() == 2 && arguments.front() == "--render-screenshots";
+    if (arguments.size() != 2 || (arguments.front() != "--smoke-test" && !screenshots))
         return {{}, usage};
+    const std::string flag = screenshots ? "render-screenshots" : "smoke-test";
 
     auto directory = pathFromUtf8(arguments[1]);
     if (!directory.is_absolute())
-        return {{}, "smoke-test directory must be absolute; " + std::string(usage)};
+        return {{}, flag + " directory must be absolute; " + std::string(usage)};
 
     directory = directory.lexically_normal();
     std::error_code error;
     const auto isDirectory = std::filesystem::is_directory(directory, error);
     if (error || !isDirectory)
-        return {{}, "smoke-test path must be an existing directory"};
+        return {{}, flag + " path must be an existing directory"};
 
     // Smoke runs write dozens of screenshots, takes and packages; a
     // repository root would receive them as untracked clutter.
     const auto repositoryMarker = std::filesystem::symlink_status(
         directory / ".git", error);
     if (!error && std::filesystem::exists(repositoryMarker))
-        return {{}, "smoke-test directory must not be a repository root; use a dedicated subdirectory"};
+        return {{}, flag + " directory must not be a repository root; use a dedicated subdirectory"};
 
     WorkbenchLaunchOptions options;
-    options.mode = WorkbenchLaunchMode::SmokeTest;
-    options.smokeDirectory = std::move(directory);
+    if (screenshots)
+    {
+        options.mode = WorkbenchLaunchMode::RenderScreenshots;
+        options.screenshotDirectory = std::move(directory);
+    }
+    else
+    {
+        options.mode = WorkbenchLaunchMode::SmokeTest;
+        options.smokeDirectory = std::move(directory);
+    }
     return {std::move(options), {}};
 }
 
@@ -91,6 +101,8 @@ bool requiresIndependentWorkbenchInstance(
     const std::vector<std::string>& arguments) noexcept
 {
     return std::ranges::find(arguments, "--smoke-test")
-        != arguments.end();
+            != arguments.end()
+        || std::ranges::find(arguments, "--render-screenshots")
+            != arguments.end();
 }
 }

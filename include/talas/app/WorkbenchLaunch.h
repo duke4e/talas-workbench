@@ -11,13 +11,18 @@ namespace talas::app
 enum class WorkbenchLaunchMode
 {
     Normal,
-    SmokeTest
+    SmokeTest,
+    // Builds the main window at a fixed size without devices or user state,
+    // writes one PNG of each main workspace and quits.
+    RenderScreenshots
 };
 
 struct WorkbenchLaunchOptions
 {
     WorkbenchLaunchMode mode = WorkbenchLaunchMode::Normal;
     std::filesystem::path smokeDirectory;
+    // Where --render-screenshots writes its PNGs.
+    std::filesystem::path screenshotDirectory;
     // The preferences file the Workbench was started
     // by opening, a user's own, read and kept instead of the shared one.
     std::filesystem::path preferencesFile;

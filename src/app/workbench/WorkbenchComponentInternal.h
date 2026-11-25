@@ -437,6 +437,9 @@ public:
     [[nodiscard]] std::optional<std::string> runAutomatedSmoke(
         const std::filesystem::path& smokeDirectory) override;
 
+    [[nodiscard]] std::optional<std::string> renderScreenshots(
+        const std::filesystem::path& directory) override;
+
 #if defined(TALAS_PRODUCT_PERFORMANCE_PROBE_SUPPORT)
     [[nodiscard]] bool installProductPerformanceDocumentForProbe(
         talas::project::ProjectDocument document);
@@ -491,6 +494,12 @@ private:
     runMidiMapperRangedLocalControlSmoke();
     [[nodiscard]] std::optional<std::string>
     runBuiltInMidiButtonSwitchSmoke();
+    // The showcase project the screenshots are taken of, and the samples
+    // its Samples workspace imports, written into the directory.
+    [[nodiscard]] std::optional<std::string> installScreenshotShowcase(
+        const std::filesystem::path& sampleDirectory);
+    [[nodiscard]] std::optional<std::string> writeScreenshot(
+        const std::filesystem::path& file);
     // The smokes of the Workbench survey's authoring tools, in order.
     [[nodiscard]] std::optional<std::string>
     runAuthoringToolSmokes(const std::filesystem::path& smokeDirectory);

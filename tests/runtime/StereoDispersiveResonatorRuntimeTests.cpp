@@ -1149,6 +1149,135 @@ void testDownstreamStatefulFailureRollsBackResonator()
         "C172 downstream repaired retry should restore resonator and Morph state");
 }
 
+// A checked source such as an LFO makes the realtime callback checkpoint
+// every operation, so that a failed callback publishes nothing and leaves
+// no state advanced. The resonator's two branches always had a checkpoint,
+// but realtime took it only when an Oscillator was in the graph, and live
+// input -> resonator -> output with an LFO was refused: "Realtime checked
+// DSP requires locally transactional DSP predecessors and successors"
+// (2026-11-25). It now prepares, matches offline, and a failed callback
+// still restores both branches.
+void testLiveInputResonatorWithoutOscillatorPreparesAndRollsBack()
+{
+    auto document = makeDocument(false, "1e200 * 1e200");
+    const auto source = std::ranges::find(
+        document.graph.nodes, std::string_view{"source"},
+        &talas::project::ProjectNode::instanceId);
+    require(source != document.graph.nodes.end(),
+        "C172 live-input fixture should expose its source");
+    source->typeId = "talas.audioInput";
+    source->parameters.clear();
+    document.graph.nodes.push_back({
+        "mixControl", "talas.lfo",
+        {{"frequency", "50 hz"}, {"minimum", "0.25"}, {"maximum", "0.75"}},
+    });
+    document.graph.connections.push_back(
+        {"mixControl", "value", "resonator", "mix"});
+    document.graph.nodes.push_back({
+        "frequencyControl", "talas.constant",
+        {{"value", "!C172LiveFrequency"}},
+    });
+    document.graph.connections.push_back(
+        {"frequencyControl", "value", "resonator", "frequency"});
+
+    constexpr std::size_t blockFrames = 8;
+    constexpr std::size_t frameCount = 64;
+    std::vector<float> liveInput(frameCount);
+    for (std::size_t frame = 0; frame < frameCount; ++frame)
+    {
+        liveInput[frame] = static_cast<float>(
+            0.5 * std::sin(0.37 * static_cast<double>(frame))
+            * std::exp(-0.05 * static_cast<double>(frame)));
+    }
+    auto settings = talas::runtime::RenderSettings{48000.0, blockFrames};
+    settings.maxRealtimeEventTransactions = 4;
+    settings.eventValues = {{
+        "C172LiveFrequency", 800.0, talas::expr::ValueDomain::Scalar}};
+    settings.audioInputChannels.push_back(
+        {1, std::vector<double>(liveInput.begin(), liveInput.end())});
+    const auto compiled = talas::runtime::compileProject(
+        document, talas::core::makeBuiltinNodeRegistry(), settings);
+    require(compiled.ok(),
+        "C172 live-input fixture should compile"
+            + (compiled.diagnostics.empty()
+                    ? std::string{}
+                    : ": " + compiled.diagnostics.front().message));
+    const auto offline =
+        talas::runtime::renderOffline(*compiled.graph, frameCount);
+    require(offline.ok() && offline.channels.size() == 2,
+        "C172 live-input resonator should render offline");
+
+    const auto render = [&](talas::runtime::RealtimeRenderSession& session,
+                            std::size_t offset,
+                            std::array<std::array<double, blockFrames>, 2>&
+                                storage) {
+        const float* input = liveInput.data() + offset;
+        std::array outputs{storage[0].data(), storage[1].data()};
+        allocationCount.store(0, std::memory_order_relaxed);
+        countAllocations.store(true, std::memory_order_relaxed);
+        const auto rendered = session.render(
+            {&input, 1}, outputs.data(), outputs.size(), blockFrames);
+        countAllocations.store(false, std::memory_order_relaxed);
+        require(allocationCount.load(std::memory_order_relaxed) == 0,
+            "C172 live-input callback should not allocate");
+        return rendered;
+    };
+    talas::runtime::RealtimeRenderSession session{*compiled.graph};
+    require(session.ready(),
+        "C172 live-input resonator should prepare without an Oscillator: "
+            + std::string{session.error()});
+    for (std::size_t offset = 0; offset < frameCount; offset += blockFrames)
+    {
+        std::array<std::array<double, blockFrames>, 2> actual{};
+        require(render(session, offset, actual),
+            "C172 live-input resonator should render in realtime");
+        for (std::size_t channel = 0; channel < actual.size(); ++channel)
+        {
+            for (std::size_t frame = 0; frame < blockFrames; ++frame)
+            {
+                requireNear(actual[channel][frame],
+                    offline.channels[channel][offset + frame], 1.0e-12,
+                    "C172 live-input resonator should match offline");
+            }
+        }
+    }
+    require(std::ranges::any_of(offline.channels[0], [](double value) {
+                return std::abs(value) > 1.0e-3;
+            }),
+        "C172 live-input resonator should be heard");
+
+    talas::runtime::RealtimeRenderSession candidate{*compiled.graph};
+    talas::runtime::RealtimeRenderSession reference{*compiled.graph};
+    require(candidate.ready() && reference.ready(),
+        "C172 live-input rollback fixtures should prepare");
+    std::array<std::array<double, blockFrames>, 2> actual{};
+    std::array<std::array<double, blockFrames>, 2> expected{};
+    for (std::size_t offset = 0; offset < 3 * blockFrames;
+         offset += blockFrames)
+    {
+        require(render(candidate, offset, actual)
+                && render(reference, offset, expected) && actual == expected,
+            "C172 live-input rollback fixtures should share their history");
+    }
+    require(candidate.scheduleEventValue(
+                "C172LiveFrequency", 22000.0,
+                talas::expr::ValueDomain::Scalar, 5),
+        "C172 live-input fixture should schedule a late failure");
+    for (auto& channel : actual)
+        channel.fill(172.0);
+    require(!render(candidate, 3 * blockFrames, actual)
+            && actual == std::array<std::array<double, blockFrames>, 2>{},
+        "C172 live-input late failure should publish no stereo prefix");
+    require(candidate.updateEventValue(
+                "C172LiveFrequency", 800.0, talas::expr::ValueDomain::Scalar),
+        "C172 live-input fixture should accept repair");
+    require(render(candidate, 3 * blockFrames, actual)
+            && render(reference, 3 * blockFrames, expected)
+            && actual == expected,
+        "C172 live-input retry should restore the LFO and both resonator "
+        "branches");
+}
+
 void testMalformedProfilesCatalogHostReplacementAndMissingDestination()
 {
     for (auto document : {
@@ -1271,6 +1400,7 @@ int main()
         testPromotedAndContextualStepsCoexist();
         testOfflineAndRealtimeLateFailureRollback();
         testDownstreamStatefulFailureRollsBackResonator();
+        testLiveInputResonatorWithoutOscillatorPreparesAndRollsBack();
         testMalformedProfilesCatalogHostReplacementAndMissingDestination();
     }
     catch (const std::exception& error)

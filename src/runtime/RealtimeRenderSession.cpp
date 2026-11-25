@@ -5317,6 +5317,9 @@ checkedDspTransactionCoverage(const RealtimeOperation& operation) noexcept
     case RealtimeOperationKind::DualMorphOscillator:
     case RealtimeOperationKind::ProbabilityChaosGenerator:
     case RealtimeOperationKind::QuadFunctionGenerator:
+    // The resonator's two delay branches are checkpointed like the
+    // waveguide's string; graphs without an Oscillator need them too.
+    case RealtimeOperationKind::StereoDispersiveResonator:
     case RealtimeOperationKind::PluckedWaveguide:
     case RealtimeOperationKind::DynamicBreakpointOscillator:
     case RealtimeOperationKind::WaveTerrainOscillator:

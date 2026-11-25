@@ -11391,7 +11391,7 @@ static void registerBuiltinNodeMetadata(NodeRegistry& registry)
         "talas.oscillator", ResourceAccessMode::ImmutableRead);
     for (const auto limitation : {
              std::string_view{"offline-and-prepared-shared-checked-finite-sine-or-immutable-cyclic-wavetable-oscillator-kernel"},
-             std::string_view{"static-or-direct-event-value-or-connected-selected-finite-frequency-amplitude-envelope-pitch-bend-reset-and-bounded-audio-rate-fm"},
+             std::string_view{"static-or-direct-event-value-or-connected-selected-finite-frequency-amplitude-envelope-pitch-bend-reset-and-audio-rate-fm-that-wraps-the-phase-and-aliases-past-nyquist"},
              std::string_view{"sample-accurate-direct-event-value-scheduling-with-positive-reset-before-current-sample-linear-or-nearest-wavetable-and-phase-continuity"},
              std::string_view{"compiler-owned-exact-descriptor-kernel-plan-settings-immutable-resource-binding-buffer-producer-scope-and-zero-latency-authority"},
              std::string_view{"allocation-free-prepared-callback-failure-atomic-state-upstream-schedule-retry-and-transport-reset"},

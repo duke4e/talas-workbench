@@ -30477,7 +30477,7 @@
         ],
         "limitations": [
           "offline-and-prepared-shared-checked-finite-sine-or-immutable-cyclic-wavetable-oscillator-kernel",
-          "static-or-direct-event-value-or-connected-selected-finite-frequency-amplitude-envelope-pitch-bend-reset-and-bounded-audio-rate-fm",
+          "static-or-direct-event-value-or-connected-selected-finite-frequency-amplitude-envelope-pitch-bend-reset-and-audio-rate-fm-that-wraps-the-phase-and-aliases-past-nyquist",
           "sample-accurate-direct-event-value-scheduling-with-positive-reset-before-current-sample-linear-or-nearest-wavetable-and-phase-continuity",
           "compiler-owned-exact-descriptor-kernel-plan-settings-immutable-resource-binding-buffer-producer-scope-and-zero-latency-authority",
           "allocation-free-prepared-callback-failure-atomic-state-upstream-schedule-retry-and-transport-reset",

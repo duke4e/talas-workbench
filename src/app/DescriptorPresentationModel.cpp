@@ -276,6 +276,10 @@ std::string prototypeParameterHelp(std::string_view typeId, std::string_view par
                "and longest ring; lower values pull the cut-off down to 20 Hz x (0.45 x sample rate / 20 Hz) ^ "
                "Damping, darker and shorter; 0, a 20 Hz cut-off, mutes the ring within a few periods. "
                "The pitch stays at Frequency";
+    if (typeId == "talas.oscillator" && (parameterId == "modulation" || parameterId == "maxMI"))
+        return "frequency (or fm): the Modulator input scales Frequency by 1 + Modulator x MaxMI, sample by sample; "
+               "blank, none or off ignores the Modulator. A modulated frequency past half the sample rate folds back "
+               "(aliases), as an unmodulated one does: the phase wraps and the render goes on";
     return {};
 }
 

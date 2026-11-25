@@ -22,7 +22,7 @@
   },
   "metadata": {
     "title": "FM Electric Piano",
-    "description": "Two-operator FM in the style of a tine piano: a 1:1 modulator sets the brightness, a short 14:1 burst adds the bark, notes decay while held, and a stereo tremolo pans the result. The keys voice plays notes 21-100, keeping the modulated frequency below Nyquist."
+    "description": "Two-operator FM in the style of a tine piano: a 1:1 modulator sets the brightness, a short 14:1 burst adds the bark, notes decay while held, and a stereo tremolo pans the result. The keys voice plays every note; at the top of the keyboard the modulated frequency passes Nyquist and folds back (aliases)."
   },
   "presentation": {
     "version": 2,
@@ -594,11 +594,11 @@
           },
           {
             "id": "lowPitch",
-            "expression": "21 nn"
+            "expression": "0 nn"
           },
           {
             "id": "highPitch",
-            "expression": "100 nn"
+            "expression": "127 nn"
           },
           {
             "id": "script",

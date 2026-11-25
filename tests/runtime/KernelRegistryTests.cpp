@@ -955,6 +955,55 @@ void testOscillatorComposesFrequencyModulationAndPitchBend()
     }
 }
 
+// A modulated frequency past Nyquist was rejected, so a block of FM whose
+// deviation crossed it failed the whole render (2026-11-25). The phase
+// now wraps, as it does for an unmodulated frequency past Nyquist: 4.5 Hz
+// at 8 Hz plays the 3.5 Hz alias turned over. Only a non-finite modulated
+// frequency is rejected.
+void testOscillatorFrequencyModulationPastNyquistWrapsThePhase()
+{
+    OscillatorKernel kernel;
+    require(
+        kernel.prepare({
+            .sampleRate = 8.0,
+            .frequencyModulation = true,
+            .maxModulationIndex = 1.0,
+        }) == KernelProcessStatus::Ok,
+        "past-Nyquist FM oscillator should prepare");
+    std::array<double, 16> output{};
+    OscillatorKernelBlock block;
+    block.output = output;
+    block.frequency = KernelSignal::constantValue(3.0);
+    block.modulator = KernelSignal::constantValue(0.5);
+    require(kernel.process(block) == KernelProcessStatus::Ok,
+        "FM past Nyquist should wrap the phase instead of failing");
+    constexpr double pi = 3.1415926535897932384626433832795;
+    for (std::size_t frame = 0; frame < output.size(); ++frame)
+    {
+        const auto time = static_cast<double>(frame) / 8.0;
+        requireNear(output[frame], std::sin(2.0 * pi * 4.5 * time),
+            "past-Nyquist FM frame " + std::to_string(frame));
+        requireNear(output[frame], -std::sin(2.0 * pi * 3.5 * time),
+            "past-Nyquist FM should alias to 3.5 Hz turned over, frame "
+                + std::to_string(frame));
+    }
+
+    // Through zero and past the negative Nyquist as well.
+    block.modulator = KernelSignal::constantValue(-3.0);
+    require(kernel.process(block) == KernelProcessStatus::Ok,
+        "FM past the negative Nyquist should wrap the phase too");
+
+    std::array<double, 2> rejected{95.0, 95.0};
+    OscillatorKernelBlock overflowing;
+    overflowing.output = rejected;
+    overflowing.frequency = KernelSignal::constantValue(
+        std::numeric_limits<double>::max());
+    overflowing.modulator = KernelSignal::constantValue(2.0);
+    require(kernel.process(overflowing) == KernelProcessStatus::InvalidValue
+            && rejected == std::array<double, 2>{95.0, 95.0},
+        "an infinite modulated frequency should still be rejected untouched");
+}
+
 void testOscillatorPreservesLinearAndNearestCyclicWavetableSampling()
 {
     constexpr std::array<double, 4> table = {1.0, 2.0, 4.0, 8.0};
@@ -1617,6 +1666,7 @@ int main()
     testOscillatorPreservesPhaseAcrossIrregularBlocks();
     testOscillatorNonzeroResetRestartsBeforeCurrentSample();
     testOscillatorComposesFrequencyModulationAndPitchBend();
+    testOscillatorFrequencyModulationPastNyquistWrapsThePhase();
     testOscillatorPreservesLinearAndNearestCyclicWavetableSampling();
     testOscillatorRejectsUnknownWavetableInterpolation();
     testRejectedSignalBlockDoesNotAdvanceKernelState();

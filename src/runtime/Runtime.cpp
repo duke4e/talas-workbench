@@ -33409,8 +33409,10 @@ constexpr auto frequencyTrackerMaxSupportedLag =
         return baseFrequency * (1.0 + modulatorSample * *maxMI);
     };
 
+    // A modulated frequency past Nyquist wraps the phase and aliases, as an
+    // unmodulated one does; only an infinite one fails.
     const auto validateEffectiveFrequency = [&](double value) {
-        if (std::isfinite(value) && std::abs(value) < settings.sampleRate * 0.5)
+        if (std::isfinite(value))
             return true;
 
         addRenderStructuralDiagnostic(
@@ -33418,7 +33420,7 @@ constexpr auto frequencyTrackerMaxSupportedLag =
             step.nodeId,
             "modulator",
             {},
-            "Prepared runtime Oscillator Modulator must keep frequency finite and below Nyquist");
+            "Prepared runtime Oscillator Modulator must keep frequency finite");
         return false;
     };
 
@@ -68892,7 +68894,7 @@ void PreparedRuntimeGraph::sealSamplingAuthorityForCompiler(
         };
         const std::vector<std::string> exactLimitations{
             "offline-and-prepared-shared-checked-finite-sine-or-immutable-cyclic-wavetable-oscillator-kernel",
-            "static-or-direct-event-value-or-connected-selected-finite-frequency-amplitude-envelope-pitch-bend-reset-and-bounded-audio-rate-fm",
+            "static-or-direct-event-value-or-connected-selected-finite-frequency-amplitude-envelope-pitch-bend-reset-and-audio-rate-fm-that-wraps-the-phase-and-aliases-past-nyquist",
             "sample-accurate-direct-event-value-scheduling-with-positive-reset-before-current-sample-linear-or-nearest-wavetable-and-phase-continuity",
             "compiler-owned-exact-descriptor-kernel-plan-settings-immutable-resource-binding-buffer-producer-scope-and-zero-latency-authority",
             "allocation-free-prepared-callback-failure-atomic-state-upstream-schedule-retry-and-transport-reset",

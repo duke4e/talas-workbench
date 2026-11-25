@@ -7241,6 +7241,56 @@ void testOscillatorFrequencyModulation()
         "any Sound should serve as the Modulator");
 }
 
+// A frequency-modulated Oscillator folds back past half the rate as an
+// unmodulated one does: its phase keeps advancing by 2 pi times the
+// modulated frequency over the rate, wrapping, in both renderers. Until
+// 2026-11-25 a modulated frequency past Nyquist failed the whole render,
+// so an FM piano had to leave out its top notes.
+void testOscillatorFrequencyModulationFoldsBackPastHalfTheRate()
+{
+    const auto modulated = [](std::string carrier, std::string maxMI, talas::project::ProjectNode modulator) {
+        const auto id = modulator.instanceId;
+        return render(graph({std::move(modulator),
+                              node("carrier", "talas.oscillator",
+                                  {expression("frequency", std::move(carrier)), text("modulation", "frequency"),
+                                      expression("maxMI", std::move(maxMI))})},
+                          {connection(id, "audioOut", "carrier", "modulator"),
+                              connection("carrier", "audioOut", "out", "audioIn")}),
+            4800)
+            .left;
+    };
+    // The live input is a constant 1, so 15 kHz modulated by MaxMI 1 is
+    // 30 kHz throughout: the 18 kHz tone turned over, as unmodulated.
+    const auto doubled = modulated("15000 hz", "1", node("one", "talas.audioInput"));
+    const auto plain = render(graph({tone("osc", "30000 hz")}, {connection("osc", "audioOut", "out", "audioIn")}), 4800).left;
+    const auto low = render(graph({tone("osc", "18000 hz")}, {connection("osc", "audioOut", "out", "audioIn")}), 4800).left;
+    auto fromPlain = 0.0;
+    auto fromFolded = 0.0;
+    for (std::size_t frame = 0; frame < doubled.size(); ++frame)
+    {
+        fromPlain = std::max(fromPlain, std::abs(doubled[frame] - plain[frame]));
+        fromFolded = std::max(fromFolded, std::abs(doubled[frame] + low[frame]));
+    }
+    require(fromPlain < 1.0e-12 && fromFolded < 0.02,
+        "30 kHz reached by FM at 48 kHz should sound as the unmodulated 30 kHz, the 18 kHz tone turned over");
+
+    // A deep sine Modulator sweeps 12 kHz from -12 kHz to 36 kHz and back,
+    // through zero and past Nyquist each cycle; each sample follows the
+    // wrapped phase.
+    const auto swept = modulated("12000 hz", "2", tone("mod", "1000 hz"));
+    constexpr double pi = 3.14159265358979323846;
+    auto phase = 0.0;
+    auto worst = 0.0;
+    for (std::size_t frame = 0; frame < swept.size(); ++frame)
+    {
+        worst = std::max(worst, std::abs(swept[frame] - std::sin(phase)));
+        const auto modulator = std::sin(2.0 * pi * 1000.0 * static_cast<double>(frame) / sampleRate);
+        phase += 2.0 * pi * 12000.0 * (1.0 + 2.0 * modulator) / sampleRate;
+    }
+    require(worst < 1.0e-6, "FM past half the rate should follow its wrapped phase, not "
+        + std::to_string(worst) + " from it");
+}
+
 // A MultisegmentEnvelope is triggered when its Gate goes from zero
 // to nonzero, and the Gate must return to zero before it retriggers.
 void testMultisegmentEnvelopeRetriggersFromZero()
@@ -25070,6 +25120,7 @@ int main()
     run(testPulseGeneratorKeepsZeroDc, "testPulseGeneratorKeepsZeroDc");
     run(testPulseGeneratorMaxMIFollowsItsEventValue, "testPulseGeneratorMaxMIFollowsItsEventValue");
     run(testOscillatorFrequencyModulation, "testOscillatorFrequencyModulation");
+    run(testOscillatorFrequencyModulationFoldsBackPastHalfTheRate, "testOscillatorFrequencyModulationFoldsBackPastHalfTheRate");
     run(testMultisegmentEnvelopeRetriggersFromZero, "testMultisegmentEnvelopeRetriggersFromZero");
     run(testScriptLevelsFollowEventValues, "testScriptLevelsFollowEventValues");
     run(testChanneller, "testChanneller");

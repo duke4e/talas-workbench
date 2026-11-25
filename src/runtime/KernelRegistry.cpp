@@ -636,12 +636,12 @@ KernelProcessStatus OscillatorKernel::process(const OscillatorKernelBlock& block
                 modulator * config_.maxModulationIndex;
             const auto modulationFactor = 1.0 + modulationAmount;
             effectiveFrequency = pitchedFrequency * modulationFactor;
-            const auto nyquist = config_.sampleRate * 0.5;
+            // Past Nyquist the phase wraps, as it does for an unmodulated
+            // Frequency past it: the partials fold back (alias) and the
+            // render goes on.
             if (!std::isfinite(modulationAmount)
                 || !std::isfinite(modulationFactor)
-                || !std::isfinite(effectiveFrequency)
-                || !std::isfinite(nyquist)
-                || std::abs(effectiveFrequency) >= nyquist)
+                || !std::isfinite(effectiveFrequency))
             {
                 return KernelProcessStatus::InvalidValue;
             }

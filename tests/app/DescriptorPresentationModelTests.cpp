@@ -302,6 +302,13 @@ void testInfoHintsExposeCompleteDescriptorFacts()
             && damping.find("1 leaves the loop open") != std::string::npos
             && damping.find("0, a 20 Hz cut-off") != std::string::npos,
         "the fly-by help over a resonator's Damping should say that 1 is the open loop and 0 the darkest");
+    // Frequency modulation past Nyquist folds back instead of failing
+    // (2026-11-25).
+    const auto modulation = talas::app::prototypeParameterHelp("talas.oscillator", "modulation");
+    require(modulation.find("1 + Modulator x MaxMI") != std::string::npos
+            && modulation.find("folds back") != std::string::npos
+            && modulation == talas::app::prototypeParameterHelp("talas.oscillator", "maxMI"),
+        "the fly-by help over an Oscillator's Modulation should say how it modulates and that it folds back past Nyquist");
 }
 
 void testCompatibilityAndAdaptersUseRegisteredDescriptors()

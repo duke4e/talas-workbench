@@ -17194,7 +17194,7 @@ Full runtime coverage; no tracked subset restriction.
 **Limitations**
 
 - <code>offline-and-prepared-shared-checked-finite-sine-or-immutable-cyclic-wavetable-oscillator-kernel</code>
-- <code>static-or-direct-event-value-or-connected-selected-finite-frequency-amplitude-envelope-pitch-bend-reset-and-bounded-audio-rate-fm</code>
+- <code>static-or-direct-event-value-or-connected-selected-finite-frequency-amplitude-envelope-pitch-bend-reset-and-audio-rate-fm-that-wraps-the-phase-and-aliases-past-nyquist</code>
 - <code>sample-accurate-direct-event-value-scheduling-with-positive-reset-before-current-sample-linear-or-nearest-wavetable-and-phase-continuity</code>
 - <code>compiler-owned-exact-descriptor-kernel-plan-settings-immutable-resource-binding-buffer-producer-scope-and-zero-latency-authority</code>
 - <code>allocation-free-prepared-callback-failure-atomic-state-upstream-schedule-retry-and-transport-reset</code>

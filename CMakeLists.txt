@@ -5798,6 +5798,15 @@ if(TALAS_BUILD_TESTS)
             ENVIRONMENT "DYLD_INSERT_LIBRARIES=$<TARGET_FILE:talas_realtime_probe>"
             LABELS "realtime-safety"
             TIMEOUT 600)
+        add_test(
+            NAME talas_realtime_safety_demo_tests
+            COMMAND talas_realtime_safety_tests
+                ${CMAKE_CURRENT_SOURCE_DIR}/examples/demos
+        )
+        set_tests_properties(talas_realtime_safety_demo_tests PROPERTIES
+            ENVIRONMENT "DYLD_INSERT_LIBRARIES=$<TARGET_FILE:talas_realtime_probe>"
+            LABELS "realtime-safety"
+            TIMEOUT 600)
     endif()
 
     add_executable(talas_standard_midi_file_tests
@@ -7200,6 +7209,43 @@ if(TALAS_BUILD_TESTS)
         talas_cli_validate_reusable_feedback_help
         talas_cli_render_reusable_feedback_help
         PROPERTIES LABELS "example-smoke")
+
+    # The demo projects: each validates and renders a short block; the effects
+    # read a test signal on input 1.
+    set(TALAS_DEMO_EFFECTS
+        auto_filter bus_compressor chorus flanger frequency_shifter
+        granular_freeze hall_reverb phaser ring_modulator spectral_blur
+        stereo_delay tape_saturator vocoder)
+    set(TALAS_DEMO_INSTRUMENTS
+        arpeggiator drawbar_organ drum_kit fm_electric_piano granular_synth
+        modal_mallets morph_lead plucked_string poly_pad sub_bass terrain_drone)
+    file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/demo-renders)
+    foreach(demo IN LISTS TALAS_DEMO_EFFECTS TALAS_DEMO_INSTRUMENTS)
+        set(demo_input)
+        if(demo IN_LIST TALAS_DEMO_EFFECTS)
+            set(demo_input --audio-input
+                1=${CMAKE_CURRENT_SOURCE_DIR}/examples/resources/m3-stream-source.wav)
+        endif()
+        add_test(
+            NAME talas_cli_validate_demo_${demo}
+            COMMAND talas_cli validate
+                --project ${CMAKE_CURRENT_SOURCE_DIR}/examples/demos/${demo}.talas.json
+                ${demo_input}
+        )
+        add_test(
+            NAME talas_cli_render_demo_${demo}
+            COMMAND talas_cli render
+                --project ${CMAKE_CURRENT_SOURCE_DIR}/examples/demos/${demo}.talas.json
+                --frames 4800
+                --sample-rate 48000
+                ${demo_input}
+                --output ${CMAKE_CURRENT_BINARY_DIR}/demo-renders/${demo}.wav
+        )
+        set_tests_properties(
+            talas_cli_validate_demo_${demo}
+            talas_cli_render_demo_${demo}
+            PROPERTIES LABELS "example-smoke")
+    endforeach()
     if(TALAS_BUILD_FUZZERS)
         if(NOT CMAKE_CXX_COMPILER_ID MATCHES "Clang")
             message(FATAL_ERROR

@@ -13,6 +13,7 @@ Options:
   --output-dir PATH         New output directory (default: timestamped under the build)
   --identity NAME           Developer ID Application identity (default: unique identity)
   --keychain-profile NAME   notarytool keychain profile (default: talas-notary)
+  --juce-path PATH          use this JUCE checkout instead of fetching the pinned one
   --cmake PATH              cmake executable (default: CMAKE_BIN or PATH)
   --ctest PATH              ctest executable (default: CTEST_BIN or beside cmake)
   -h, --help                Show this help
@@ -33,6 +34,7 @@ BUILD_DIR="$REPO_ROOT/build/workbench-release"
 OUTPUT_DIR=""
 IDENTITY=""
 NOTARY_PROFILE="talas-notary"
+JUCE_PATH=""
 CMAKE_EXE="${CMAKE_BIN:-}"
 CTEST_EXE="${CTEST_BIN:-}"
 
@@ -56,6 +58,11 @@ while [[ $# -gt 0 ]]; do
         --keychain-profile)
             [[ $# -ge 2 ]] || die "--keychain-profile requires a value"
             NOTARY_PROFILE="$2"
+            shift 2
+            ;;
+        --juce-path)
+            [[ $# -ge 2 ]] || die "--juce-path requires a value"
+            JUCE_PATH="$2"
             shift 2
             ;;
         --cmake)
@@ -157,6 +164,7 @@ CLI="$STAGE_ROOT/bin/talas_cli"
 HELPER="$APP/Contents/XPCServices/TalasComponentHost.xpc"
 PROBE_HELPER="$APP/Contents/XPCServices/TalasComponentProbe.xpc"
 RUNTIME_HELPER="$APP/Contents/XPCServices/TalasComponentRuntime.xpc"
+PLUGIN_TEMPLATES="$APP/Contents/Resources/PluginTemplates"
 HELPER_ENTITLEMENTS_ACTUAL="$OUTPUT_DIR/helper-entitlements.plist"
 HELPER_ENTITLEMENTS_REMAINDER="$OUTPUT_DIR/helper-entitlements-remainder.plist"
 PROBE_HELPER_ENTITLEMENTS_ACTUAL="$OUTPUT_DIR/probe-helper-entitlements.plist"
@@ -176,7 +184,13 @@ json_value() {
 mkdir -p "$STAGE_ROOT"
 
 printf 'Configuring and building release...\n'
-"$CMAKE_EXE" --preset workbench-release -S "$REPO_ROOT" -B "$BUILD_DIR"
+JUCE_ARGUMENTS=()
+if [[ -n "$JUCE_PATH" ]]; then
+    [[ -d "$JUCE_PATH" ]] || die "JUCE path not found: $JUCE_PATH"
+    JUCE_ARGUMENTS=(-DTALAS_FETCH_JUCE=OFF "-DTALAS_JUCE_PATH=$JUCE_PATH")
+fi
+"$CMAKE_EXE" --preset workbench-release -S "$REPO_ROOT" -B "$BUILD_DIR" \
+    "${JUCE_ARGUMENTS[@]+"${JUCE_ARGUMENTS[@]}"}"
 "$CMAKE_EXE" --build "$BUILD_DIR" --config Release
 "$CTEST_EXE" \
     --test-dir "$BUILD_DIR" \
@@ -193,6 +207,8 @@ printf 'Configuring and building release...\n'
     die "embedded component probe helper was not found: $PROBE_HELPER"
 [[ -d "$RUNTIME_HELPER" ]] ||
     die "embedded component runtime helper was not found: $RUNTIME_HELPER"
+[[ -d "$PLUGIN_TEMPLATES" ]] ||
+    die "embedded plugin templates were not found: $PLUGIN_TEMPLATES"
 
 printf 'Signing CLI, nested helpers, and application...\n'
 codesign \
@@ -222,6 +238,21 @@ codesign \
     --entitlements "$RUNTIME_HELPER_ENTITLEMENTS" \
     --sign "$IDENTITY" \
     "$RUNTIME_HELPER"
+# The plugin templates are code inside Resources, which signing the app does
+# not reach; each is signed on its own, before the app seals its resources.
+PLUGIN_TEMPLATE_COUNT=0
+for template in "$PLUGIN_TEMPLATES"/*.vst3 "$PLUGIN_TEMPLATES"/*.component; do
+    [[ -d "$template" ]] || continue
+    codesign \
+        --force \
+        --options runtime \
+        --timestamp \
+        --sign "$IDENTITY" \
+        "$template"
+    codesign --verify --strict --verbose=4 "$template"
+    PLUGIN_TEMPLATE_COUNT=$((PLUGIN_TEMPLATE_COUNT + 1))
+done
+[[ $PLUGIN_TEMPLATE_COUNT -gt 0 ]] || die "no plugin templates were signed"
 codesign \
     --force \
     --options runtime \

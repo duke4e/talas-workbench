@@ -1389,6 +1389,13 @@ class ReleaseConfigurationTests(unittest.TestCase):
             probe_helper_sign,
         )
         app_sign = script.index('"$APP"\n', runtime_helper_sign)
+        template_sign = script.index('"$template"\n')
+        self.assertLess(template_sign, app_sign)
+        self.assertIn(
+            'PLUGIN_TEMPLATES="$APP/Contents/Resources/PluginTemplates"',
+            script,
+        )
+        self.assertIn("--juce-path", script)
         self.assertLess(helper_sign, app_sign)
         self.assertLess(probe_helper_sign, app_sign)
         self.assertLess(runtime_helper_sign, app_sign)

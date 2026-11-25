@@ -11124,6 +11124,12 @@ struct RealtimeSessionValueState : RealtimePairedControlCheckpointStorage
     std::uint8_t requiredAudioInputChannelMask = 0;
     std::uint8_t requiredAudioInputFiniteChannelMask = 0;
     std::vector<EventValueBinding> eventValues;
+    // The Event Values the compiler evaluated every parameter with. A step
+    // that starts from a frame-zero change moves its Event Value in
+    // eventValues while preparing, so each step after it, which may read
+    // the same Event Value (another copy in a MIDI Voice, say), checks its
+    // compiled value against these instead.
+    std::vector<EventValueBinding> compiledEventValues;
     talas::project::PreparedProjectVariableTable preparedVariables;
     std::vector<talas::expr::ExpressionValue> variableCells;
     std::vector<talas::expr::ExpressionValue> initialVariableCells;
@@ -37344,7 +37350,7 @@ private:
             const std::vector<std::uint32_t>* variableCellIndices = nullptr;
             const talas::project::PreparedProjectVariableTable* scopes = nullptr;
         } resolution{
-            &eventValues,
+            &compiledEventValues,
             parameter.variableScopeId,
             &variableCells,
             &parameter.variableCellIndices,
@@ -37485,7 +37491,11 @@ private:
             return parameter.value;
         // Only a parameter that evaluates to the Event Value itself starts
         // from the change unchanged.
-        auto& binding = *eventValue;
+        const auto bindingIndex =
+            static_cast<std::size_t>(eventValue - eventValues.begin());
+        if (bindingIndex >= compiledEventValues.size())
+            return parameter.value;
+        auto& binding = compiledEventValues[bindingIndex];
         const auto compiledBinding = binding.value;
         binding.value = change->value;
         auto seeded = parameter;
@@ -38559,7 +38569,7 @@ private:
                 const std::vector<EventValueBinding>* values = nullptr;
                 RuntimeScopeId scopeId = globalRuntimeScope;
                 const talas::project::PreparedProjectVariableTable* scopes = nullptr;
-            } resolver{&eventValues, step.eventValueScopeId,
+            } resolver{&compiledEventValues, step.eventValueScopeId,
                 &preparedVariables};
             talas::expr::EvaluationContext context;
             context.sampleRate = sampleRate;
@@ -41096,6 +41106,7 @@ private:
             }
         }
         eventValues = settings.eventValues;
+        compiledEventValues = settings.eventValues;
         renderEventValues = settings.eventValues;
         eventValueReprepareRequired.assign(
             eventValues.size(),

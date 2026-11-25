@@ -6,6 +6,7 @@
 #include "talas/runtime/RealtimeRenderSession.h"
 #include "talas/runtime/Runtime.h"
 
+#include <algorithm>
 #include <array>
 #include <atomic>
 #include <bit>
@@ -525,6 +526,104 @@ void testFrameZeroSchedulesSeedAllSixLiveExpressions()
     {
         require(std::ranges::equal(actual[channel], offline.channels[channel]),
             "C178 frame-zero schedule seeding should remain bit-exact");
+    }
+}
+
+// Two scripted notes in a MIDI Voice of two: both copies of the oscillator
+// read one Event Value.
+talas::project::ProjectDocument makeVoicedDocument(std::string morph)
+{
+    auto document = makeDocument(
+        "100 hz", "2", "0.125", std::move(morph), "0.25", "0.75");
+    document.graph.connections.clear();
+    const auto text = [](std::string id, std::string value) {
+        talas::project::ProjectParameterExpression parameter;
+        parameter.parameterId = std::move(id);
+        parameter.text = std::move(value);
+        return parameter;
+    };
+    document.graph.nodes.push_back({
+        "voice",
+        "talas.midiVoice",
+        {
+            {"polyphony", "2"},
+            text("source", "Script"),
+            text("script",
+                "self keyDownAt: 0 s duration: 1 s frequency: 60 nn velocity: 1. "
+                "self keyDownAt: 0 s duration: 1 s frequency: 67 nn velocity: 1."),
+        },
+    });
+    document.graph.connections.push_back({"osc", "audioOut", "voice", "audioIn"});
+    document.graph.connections.push_back({"voice", "leftOut", "out", "audioIn"});
+    document.graph.connections.push_back({"voice", "rightOut", "out", "rightIn"});
+    return document;
+}
+
+// The first copy to start from a frame-zero change moved its Event Value
+// while the session prepared, and the second copy, finding its compiled
+// value no longer matching, was refused as forged authority (2026-11-25):
+// `--event-change 0:Morph=0.8` failed on the Morph Lead demo, which read
+// `!Morph * 1` to get past it. Every copy now starts from the change, as it
+// would from that starting value, offline and in realtime.
+void testFrameZeroScheduleSeedsEveryVoiceCopy()
+{
+    const auto document = makeVoicedDocument("!C178VoiceMorph");
+    auto changed = talas::runtime::RenderSettings{48000.0, 64};
+    changed.eventValues = {
+        {"C178VoiceMorph", 0.2, talas::expr::ValueDomain::Scalar}};
+    changed.eventValueChanges = {
+        {0, "C178VoiceMorph", 0.7, talas::expr::ValueDomain::Scalar}};
+    auto starting = talas::runtime::RenderSettings{48000.0, 64};
+    starting.eventValues = {
+        {"C178VoiceMorph", 0.7, talas::expr::ValueDomain::Scalar}};
+    const auto registry = talas::core::makeBuiltinNodeRegistry();
+    const auto changedGraph =
+        talas::runtime::compileProject(document, registry, changed);
+    const auto startingGraph =
+        talas::runtime::compileProject(document, registry, starting);
+    require(changedGraph.ok() && startingGraph.ok(),
+        "C178 voiced frame-zero fixtures should compile");
+
+    constexpr std::size_t frameCount = 600;
+    const auto offline =
+        talas::runtime::renderOffline(*changedGraph.graph, frameCount);
+    require(offline.ok() && offline.channels.size() == 2,
+        "C178 a frame-zero change should play in every voice copy offline"
+            + (offline.diagnostics.empty()
+                    ? std::string{}
+                    : ": " + offline.diagnostics.front().message));
+    const auto expected =
+        talas::runtime::renderOffline(*startingGraph.graph, frameCount);
+    require(expected.ok() && offline.channels == expected.channels,
+        "C178 every voice copy should start from a frame-zero change as "
+        "from that starting value");
+    require(std::ranges::any_of(offline.channels[0], [](double value) {
+                return std::abs(value) > 0.01;
+            }),
+        "C178 voiced fixture should be heard");
+
+    talas::runtime::RealtimeRenderSession session{*changedGraph.graph};
+    require(session.ready(),
+        "C178 a frame-zero change should prepare every voice copy: "
+            + std::string{session.error()});
+    std::array<std::vector<double>, 2> prepared{
+        std::vector<double>(frameCount), std::vector<double>(frameCount)};
+    for (std::size_t offset = 0; offset < frameCount;)
+    {
+        const auto partition =
+            std::min<std::size_t>(offset == 0 ? 1 : 64, frameCount - offset);
+        std::array pointers{
+            prepared[0].data() + offset, prepared[1].data() + offset};
+        require(session.render(
+                    {}, pointers.data(), pointers.size(), partition),
+            "C178 voice copies should render in realtime");
+        offset += partition;
+    }
+    for (std::size_t channel = 0; channel < prepared.size(); ++channel)
+    {
+        require(std::ranges::equal(prepared[channel], offline.channels[channel]),
+            "C178 voice copies should start from a frame-zero change alike "
+            "offline and in realtime");
     }
 }
 
@@ -1061,6 +1160,7 @@ int main()
     testOfflinePreparedParityDynamicControlAndReset();
     testAllSixDirectSchedulesAreBitExactAcrossPartitionsAndReset();
     testFrameZeroSchedulesSeedAllSixLiveExpressions();
+    testFrameZeroScheduleSeedsEveryVoiceCopy();
     testConnectedFallbackAuthorityCoversEveryControl();
     testMalformedParametersFailOfflineAndPrepared();
     testPromotedAuthorityDemotionCustomCompatibilityAndForgery();

@@ -400,15 +400,15 @@
               },
               {
                 "id": "phaseMod",
-                "expression": "!PhaseMod * 1"
+                "expression": "!PhaseMod"
               },
               {
                 "id": "morph",
-                "expression": "!Morph * 1"
+                "expression": "!Morph"
               },
               {
                 "id": "fold",
-                "expression": "!Fold * 1"
+                "expression": "!Fold"
               },
               {
                 "id": "amplitude",

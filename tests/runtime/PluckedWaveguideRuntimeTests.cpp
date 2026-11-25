@@ -716,6 +716,101 @@ void testAllSevenSchedulesFrameZeroSeedingAndZeroFrames()
             + std::string{frameZeroSession.error()});
 }
 
+// The first copy of a voiced Sound to start from a frame-zero change moved
+// its Event Value while the session prepared, and the second copy, finding
+// its compiled value no longer matching, was refused as forged authority
+// (2026-11-25): `--event-change 0:Brightness=0.3` failed on the Plucked
+// String demo, which read `!Brightness * 1` to get past it. Both scripted
+// notes of a MIDI Voice of two now start from the change, as from that
+// starting value, offline and in realtime.
+void testFrameZeroScheduleSeedsEveryVoiceCopy()
+{
+    auto document = makeDocument(
+        false, "1", "400 hz", "0.4 s", "!C173VoiceBrightness");
+    document.graph.connections.clear();
+    const auto text = [](std::string id, std::string value) {
+        talas::project::ProjectParameterExpression parameter;
+        parameter.parameterId = std::move(id);
+        parameter.text = std::move(value);
+        return parameter;
+    };
+    document.graph.nodes.push_back({
+        "voice",
+        "talas.midiVoice",
+        {
+            {"polyphony", "2"},
+            text("source", "Script"),
+            text("script",
+                "self keyDownAt: 0 s duration: 1 s frequency: 60 nn velocity: 1. "
+                "self keyDownAt: 0 s duration: 1 s frequency: 67 nn velocity: 1."),
+        },
+    });
+    document.graph.connections.push_back(
+        {"string", "audioOut", "voice", "audioIn"});
+    document.graph.connections.push_back(
+        {"voice", "leftOut", "out", "audioIn"});
+    document.graph.connections.push_back(
+        {"voice", "rightOut", "out", "rightIn"});
+
+    auto changed = talas::runtime::RenderSettings{8000.0, 64};
+    changed.eventValues = {
+        {"C173VoiceBrightness", 0.8, talas::expr::ValueDomain::Scalar}};
+    changed.eventValueChanges = {
+        {0, "C173VoiceBrightness", 0.35, talas::expr::ValueDomain::Scalar}};
+    auto starting = talas::runtime::RenderSettings{8000.0, 64};
+    starting.eventValues = {
+        {"C173VoiceBrightness", 0.35, talas::expr::ValueDomain::Scalar}};
+    const auto registry = talas::core::makeBuiltinNodeRegistry();
+    const auto changedGraph =
+        talas::runtime::compileProject(document, registry, changed);
+    const auto startingGraph =
+        talas::runtime::compileProject(document, registry, starting);
+    require(changedGraph.ok() && startingGraph.ok(),
+        "C173 voiced frame-zero fixtures should compile");
+
+    constexpr std::size_t frameCount = 400;
+    const auto offline =
+        talas::runtime::renderOffline(*changedGraph.graph, frameCount);
+    require(offline.ok() && offline.channels.size() == 2,
+        "C173 a frame-zero change should play in every voice copy offline"
+            + (offline.diagnostics.empty()
+                    ? std::string{}
+                    : ": " + offline.diagnostics.front().message));
+    const auto expected =
+        talas::runtime::renderOffline(*startingGraph.graph, frameCount);
+    require(expected.ok() && offline.channels == expected.channels,
+        "C173 every voice copy should start from a frame-zero change as "
+        "from that starting value");
+    require(std::ranges::any_of(offline.channels[0], [](double value) {
+                return std::abs(value) > 0.01;
+            }),
+        "C173 voiced fixture should be heard");
+
+    talas::runtime::RealtimeRenderSession session{*changedGraph.graph};
+    require(session.ready(),
+        "C173 a frame-zero change should prepare every voice copy: "
+            + std::string{session.error()});
+    std::array<std::vector<double>, 2> prepared{
+        std::vector<double>(frameCount), std::vector<double>(frameCount)};
+    for (std::size_t offset = 0; offset < frameCount;)
+    {
+        const auto partition =
+            std::min<std::size_t>(offset == 0 ? 1 : 64, frameCount - offset);
+        std::array pointers{
+            prepared[0].data() + offset, prepared[1].data() + offset};
+        require(session.render(
+                    {}, pointers.data(), pointers.size(), partition),
+            "C173 voice copies should render in realtime");
+        offset += partition;
+    }
+    for (std::size_t channel = 0; channel < prepared.size(); ++channel)
+    {
+        require(std::ranges::equal(prepared[channel], offline.channels[channel]),
+            "C173 voice copies should start from a frame-zero change alike "
+            "offline and in realtime");
+    }
+}
+
 void testConnectedFallbackAndPromotedAuthorityBoundaries()
 {
     const auto makeConnectedDocument = [](
@@ -1305,6 +1400,7 @@ int main()
         testKernelPeriodDecayPickBrightnessAndStiffness();
         testOfflinePreparedParityDynamicControlAndTransportReset();
         testAllSevenSchedulesFrameZeroSeedingAndZeroFrames();
+        testFrameZeroScheduleSeedsEveryVoiceCopy();
         testConnectedFallbackAndPromotedAuthorityBoundaries();
         testOwnAndDownstreamFailureRollback();
         testMalformedCatalogHostReplacementAndMissingDestination();

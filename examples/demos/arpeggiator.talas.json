@@ -1,0 +1,931 @@
+{
+  "format": "talas.project",
+  "version": 156,
+  "expressionLanguage": "variablesV2",
+  "expressionDefinitions": [],
+  "variableLibrary": {
+    "version": 2,
+    "variables": []
+  },
+  "soundVariableLibrary": {
+    "version": 1,
+    "variables": []
+  },
+  "generatorLibrary": {
+    "version": 2,
+    "programs": []
+  },
+  "liveSetLibrary": {
+    "version": 1,
+    "liveSets": [],
+    "tools": []
+  },
+  "metadata": {
+    "title": "Arpeggiator",
+    "description": "Hold a key and it arpeggiates: a looping graphical envelope steps the pitch through root, fifth, octave and back in sixteenths at Tempo while a second one plucks the filter and level on every step. Chords arpeggiate in parallel; echoes follow the tempo."
+  },
+  "presentation": {
+    "version": 2,
+    "structureLayouts": [
+      {
+        "scope": {
+          "kind": "project"
+        },
+        "nodes": [
+          {
+            "nodeId": "keysVoice",
+            "x": 0,
+            "y": 0
+          },
+          {
+            "nodeId": "demoVoice",
+            "x": 0,
+            "y": 120
+          },
+          {
+            "nodeId": "keys",
+            "x": 220,
+            "y": 0
+          },
+          {
+            "nodeId": "demo",
+            "x": 220,
+            "y": 120
+          },
+          {
+            "nodeId": "voices",
+            "x": 440,
+            "y": 0
+          },
+          {
+            "nodeId": "echoL",
+            "x": 660,
+            "y": 0
+          },
+          {
+            "nodeId": "echoR",
+            "x": 660,
+            "y": 120
+          },
+          {
+            "nodeId": "echoMix",
+            "x": 880,
+            "y": 0
+          },
+          {
+            "nodeId": "output",
+            "x": 1100,
+            "y": 0
+          }
+        ]
+      },
+      {
+        "scope": {
+          "kind": "soundDefinition",
+          "definitionId": "arpeggiatorVoice"
+        },
+        "nodes": [
+          {
+            "nodeId": "pattern",
+            "x": 0,
+            "y": 0
+          },
+          {
+            "nodeId": "steps",
+            "x": 0,
+            "y": 120
+          },
+          {
+            "nodeId": "saw",
+            "x": 220,
+            "y": 0
+          },
+          {
+            "nodeId": "square",
+            "x": 220,
+            "y": 120
+          },
+          {
+            "nodeId": "oscMix",
+            "x": 440,
+            "y": 0
+          },
+          {
+            "nodeId": "cutoffRange",
+            "x": 220,
+            "y": 240
+          },
+          {
+            "nodeId": "filter",
+            "x": 660,
+            "y": 0
+          },
+          {
+            "nodeId": "ampRange",
+            "x": 220,
+            "y": 360
+          },
+          {
+            "nodeId": "amp",
+            "x": 880,
+            "y": 0
+          }
+        ]
+      }
+    ],
+    "performanceControls": [
+      {
+        "controlId": "Tempo",
+        "target": {
+          "kind": "eventValue",
+          "eventName": "Tempo",
+          "domain": "scalar"
+        },
+        "kind": "fader",
+        "displayName": "Tempo (BPM)",
+        "x": 0,
+        "y": 0,
+        "visible": true,
+        "modulationSlots": []
+      },
+      {
+        "controlId": "Cutoff",
+        "target": {
+          "kind": "eventValue",
+          "eventName": "Cutoff",
+          "domain": "scalar"
+        },
+        "kind": "fader",
+        "displayName": "Cutoff (Hz)",
+        "x": 140,
+        "y": 0,
+        "visible": true,
+        "modulationSlots": []
+      },
+      {
+        "controlId": "Resonance",
+        "target": {
+          "kind": "eventValue",
+          "eventName": "Resonance",
+          "domain": "scalar"
+        },
+        "kind": "fader",
+        "displayName": "Resonance",
+        "x": 280,
+        "y": 0,
+        "visible": true,
+        "modulationSlots": []
+      },
+      {
+        "controlId": "Echo",
+        "target": {
+          "kind": "eventValue",
+          "eventName": "Echo",
+          "domain": "scalar"
+        },
+        "kind": "fader",
+        "displayName": "Echo",
+        "x": 0,
+        "y": 160,
+        "visible": true,
+        "modulationSlots": []
+      },
+      {
+        "controlId": "Demo",
+        "target": {
+          "kind": "eventValue",
+          "eventName": "Demo",
+          "domain": "scalar"
+        },
+        "kind": "toggle",
+        "displayName": "Demo phrase",
+        "x": 140,
+        "y": 160,
+        "visible": true,
+        "modulationSlots": []
+      }
+    ],
+    "performanceMeters": []
+  },
+  "snapshotLibrary": {
+    "version": 1,
+    "banks": []
+  },
+  "sampleMapLibrary": {
+    "version": 1,
+    "maps": []
+  },
+  "virtualControls": [
+    {
+      "eventName": "Tempo",
+      "domain": "scalar",
+      "kind": "fader",
+      "value": 120,
+      "minimum": 60,
+      "maximum": 200,
+      "widget": {
+        "style": "default",
+        "showNumber": true,
+        "label": "Tempo (BPM)",
+        "onColour": "",
+        "offColour": "",
+        "grid": 0,
+        "taper": "linear",
+        "tab": ""
+      }
+    },
+    {
+      "eventName": "Cutoff",
+      "domain": "scalar",
+      "kind": "fader",
+      "value": 2500,
+      "minimum": 300,
+      "maximum": 8000,
+      "widget": {
+        "style": "default",
+        "showNumber": true,
+        "label": "Cutoff (Hz)",
+        "onColour": "",
+        "offColour": "",
+        "grid": 0,
+        "taper": "log",
+        "tab": ""
+      }
+    },
+    {
+      "eventName": "Resonance",
+      "domain": "scalar",
+      "kind": "fader",
+      "value": 0.5,
+      "minimum": 0,
+      "maximum": 0.9,
+      "widget": {
+        "style": "default",
+        "showNumber": true,
+        "label": "Resonance",
+        "onColour": "",
+        "offColour": "",
+        "grid": 0,
+        "taper": "linear",
+        "tab": ""
+      }
+    },
+    {
+      "eventName": "Echo",
+      "domain": "scalar",
+      "kind": "fader",
+      "value": 0.3,
+      "minimum": 0,
+      "maximum": 1,
+      "widget": {
+        "style": "default",
+        "showNumber": true,
+        "label": "Echo",
+        "onColour": "",
+        "offColour": "",
+        "grid": 0,
+        "taper": "linear",
+        "tab": ""
+      }
+    },
+    {
+      "eventName": "Demo",
+      "domain": "scalar",
+      "kind": "toggle",
+      "value": 1,
+      "minimum": 0,
+      "maximum": 1,
+      "widget": {
+        "style": "default",
+        "showNumber": true,
+        "label": "Demo phrase",
+        "onColour": "",
+        "offColour": "",
+        "grid": 0,
+        "taper": "linear",
+        "tab": ""
+      }
+    }
+  ],
+  "assets": [],
+  "partialTrackEdits": [],
+  "timeline": {
+    "loop": {
+      "enabled": false,
+      "startSeconds": 0,
+      "endSeconds": 4
+    },
+    "musicalTime": {
+      "ticksPerQuarter": 960,
+      "tempo": [
+        {
+          "tick": 0,
+          "microsecondsPerQuarter": 500000
+        }
+      ],
+      "meter": [
+        {
+          "tick": 0,
+          "numerator": 4,
+          "denominator": 4
+        }
+      ]
+    },
+    "score": {
+      "tracks": [],
+      "clips": [],
+      "automation": [],
+      "markers": []
+    },
+    "eventValues": []
+  },
+  "deviceSettings": {
+    "configured": false,
+    "audioInputDevice": "",
+    "audioOutputDevice": "",
+    "sampleRate": 0,
+    "bufferSize": 0,
+    "inputChannels": [],
+    "outputChannels": [],
+    "midiInputDevices": [],
+    "transportSync": {
+      "sourceMode": "internal",
+      "sourceIdentifier": ""
+    },
+    "oscIngress": {
+      "enabled": false,
+      "port": 9000
+    },
+    "oscEgress": {
+      "enabled": false,
+      "port": 9001
+    }
+  },
+  "soundDefinitions": [
+    {
+      "id": "arpeggiatorVoice",
+      "name": "Arp Voice",
+      "description": "One voice; the keys and demo MIDI Voices each play their own copies of it.",
+      "interfaceVersion": 1,
+      "inputs": [],
+      "outputs": [
+        {
+          "id": "audioOut",
+          "type": "audio",
+          "nodeId": "amp",
+          "nodePortId": "audioOut"
+        }
+      ],
+      "parameters": [],
+      "graph": {
+        "nodes": [
+          {
+            "id": "pattern",
+            "typeId": "talas.graphicalEnvelope",
+            "parameters": [
+              {
+                "id": "envelope",
+                "text": "{0 s} {0} loopStart {0.124 s} {0} {0.125 s} {0.4983} {0.249 s} {0.4983} {0.25 s} {1} {0.374 s} {1} {0.375 s} {0.4983} {0.499 s} {0.4983} {0.5 s} {0.2599} {0.624 s} {0.2599} {0.625 s} {0.4983} {0.749 s} {0.4983} {0.75 s} {1} {0.874 s} {1} {0.875 s} {1.9966} {0.999 s} {1.9966} {1 s} {0} loopEnd {1.1 s} {0}"
+              },
+              {
+                "id": "gate",
+                "expression": "!KeyDown"
+              },
+              {
+                "id": "rate",
+                "expression": "!Tempo / 120"
+              },
+              {
+                "id": "level",
+                "expression": "1"
+              }
+            ]
+          },
+          {
+            "id": "steps",
+            "typeId": "talas.graphicalEnvelope",
+            "parameters": [
+              {
+                "id": "envelope",
+                "text": "{0 s} {0} loopStart {0.003 s} {1} {0.121 s} {0.12} {0.125 s} {0} {0.128 s} {1} {0.246 s} {0.12} {0.25 s} {0} {0.253 s} {1} {0.371 s} {0.12} {0.375 s} {0} {0.378 s} {1} {0.496 s} {0.12} {0.5 s} {0} {0.503 s} {1} {0.621 s} {0.12} {0.625 s} {0} {0.628 s} {1} {0.746 s} {0.12} {0.75 s} {0} {0.753 s} {1} {0.871 s} {0.12} {0.875 s} {0} {0.878 s} {1} {0.996 s} {0.12} {1 s} {0} loopEnd {1.1 s} {0}"
+              },
+              {
+                "id": "gate",
+                "expression": "!KeyDown"
+              },
+              {
+                "id": "rate",
+                "expression": "!Tempo / 120"
+              },
+              {
+                "id": "level",
+                "expression": "1"
+              }
+            ]
+          },
+          {
+            "id": "saw",
+            "typeId": "talas.oscillator",
+            "parameters": [
+              {
+                "id": "frequency",
+                "expression": "!KeyPitch"
+              },
+              {
+                "id": "amplitude",
+                "expression": "0.5"
+              },
+              {
+                "id": "wavetable",
+                "resource": "Saw21"
+              }
+            ]
+          },
+          {
+            "id": "square",
+            "typeId": "talas.oscillator",
+            "parameters": [
+              {
+                "id": "frequency",
+                "expression": "!KeyPitch + 0.07 nn"
+              },
+              {
+                "id": "amplitude",
+                "expression": "0.3"
+              },
+              {
+                "id": "wavetable",
+                "resource": "Square21"
+              }
+            ]
+          },
+          {
+            "id": "oscMix",
+            "typeId": "talas.mixerV2",
+            "parameters": [
+              {
+                "id": "left",
+                "expression": "1"
+              },
+              {
+                "id": "right",
+                "expression": "1"
+              }
+            ]
+          },
+          {
+            "id": "cutoffRange",
+            "typeId": "talas.setRange",
+            "parameters": [
+              {
+                "id": "oldMin",
+                "expression": "0"
+              },
+              {
+                "id": "oldMax",
+                "expression": "1"
+              },
+              {
+                "id": "newMin",
+                "expression": "150"
+              },
+              {
+                "id": "newMax",
+                "expression": "!Cutoff"
+              }
+            ]
+          },
+          {
+            "id": "filter",
+            "typeId": "talas.morphFilter",
+            "parameters": [
+              {
+                "id": "cutoff",
+                "expression": "1000 hz"
+              },
+              {
+                "id": "resonance",
+                "expression": "!Resonance"
+              },
+              {
+                "id": "morph",
+                "expression": "0"
+              },
+              {
+                "id": "drive",
+                "expression": "0"
+              },
+              {
+                "id": "scale",
+                "expression": "1"
+              }
+            ]
+          },
+          {
+            "id": "ampRange",
+            "typeId": "talas.setRange",
+            "parameters": [
+              {
+                "id": "oldMin",
+                "expression": "0"
+              },
+              {
+                "id": "oldMax",
+                "expression": "1"
+              },
+              {
+                "id": "newMin",
+                "expression": "0"
+              },
+              {
+                "id": "newMax",
+                "expression": "0.32 * !KeyVelocity"
+              }
+            ]
+          },
+          {
+            "id": "amp",
+            "typeId": "talas.vca",
+            "parameters": [
+              {
+                "id": "gain",
+                "expression": "1"
+              }
+            ]
+          }
+        ],
+        "connections": [
+          {
+            "fromNode": "pattern",
+            "fromPort": "value",
+            "toNode": "saw",
+            "toPort": "pitchBend"
+          },
+          {
+            "fromNode": "pattern",
+            "fromPort": "value",
+            "toNode": "square",
+            "toPort": "pitchBend"
+          },
+          {
+            "fromNode": "saw",
+            "fromPort": "audioOut",
+            "toNode": "oscMix",
+            "toPort": "inputs"
+          },
+          {
+            "fromNode": "square",
+            "fromPort": "audioOut",
+            "toNode": "oscMix",
+            "toPort": "inputs"
+          },
+          {
+            "fromNode": "oscMix",
+            "fromPort": "leftOut",
+            "toNode": "filter",
+            "toPort": "audioIn"
+          },
+          {
+            "fromNode": "steps",
+            "fromPort": "value",
+            "toNode": "cutoffRange",
+            "toPort": "value"
+          },
+          {
+            "fromNode": "cutoffRange",
+            "fromPort": "value",
+            "toNode": "filter",
+            "toPort": "cutoff"
+          },
+          {
+            "fromNode": "filter",
+            "fromPort": "audioOut",
+            "toNode": "amp",
+            "toPort": "audioIn"
+          },
+          {
+            "fromNode": "steps",
+            "fromPort": "value",
+            "toNode": "ampRange",
+            "toPort": "value"
+          },
+          {
+            "fromNode": "ampRange",
+            "fromPort": "value",
+            "toNode": "amp",
+            "toPort": "gain"
+          }
+        ]
+      }
+    }
+  ],
+  "graph": {
+    "nodes": [
+      {
+        "id": "keysVoice",
+        "soundDefinitionId": "arpeggiatorVoice",
+        "parameters": []
+      },
+      {
+        "id": "demoVoice",
+        "soundDefinitionId": "arpeggiatorVoice",
+        "parameters": []
+      },
+      {
+        "id": "keys",
+        "typeId": "talas.midiVoice",
+        "parameters": [
+          {
+            "id": "left",
+            "expression": "1"
+          },
+          {
+            "id": "right",
+            "expression": "1"
+          },
+          {
+            "id": "channel",
+            "expression": "0"
+          },
+          {
+            "id": "source",
+            "text": "Live MIDI"
+          },
+          {
+            "id": "midiFile",
+            "resource": ""
+          },
+          {
+            "id": "polyphony",
+            "expression": "4"
+          },
+          {
+            "id": "lowPitch",
+            "expression": "0 nn"
+          },
+          {
+            "id": "highPitch",
+            "expression": "127 nn"
+          },
+          {
+            "id": "script",
+            "text": ""
+          },
+          {
+            "id": "shared",
+            "boolean": false
+          }
+        ]
+      },
+      {
+        "id": "demo",
+        "typeId": "talas.midiVoice",
+        "parameters": [
+          {
+            "id": "left",
+            "expression": "!Demo"
+          },
+          {
+            "id": "right",
+            "expression": "!Demo"
+          },
+          {
+            "id": "channel",
+            "expression": "0"
+          },
+          {
+            "id": "source",
+            "text": "Script"
+          },
+          {
+            "id": "midiFile",
+            "resource": ""
+          },
+          {
+            "id": "polyphony",
+            "expression": "2"
+          },
+          {
+            "id": "lowPitch",
+            "expression": "0 nn"
+          },
+          {
+            "id": "highPitch",
+            "expression": "127 nn"
+          },
+          {
+            "id": "script",
+            "text": "self keyDownAt: 0 s duration: 1.95 s frequency: 45 nn velocity: 0.85. self keyDownAt: 2 s duration: 1.95 s frequency: 41 nn velocity: 0.85. self keyDownAt: 4 s duration: 1.95 s frequency: 48 nn velocity: 0.85. self keyDownAt: 6 s duration: 1.95 s frequency: 43 nn velocity: 0.85."
+          },
+          {
+            "id": "shared",
+            "boolean": false
+          }
+        ]
+      },
+      {
+        "id": "voices",
+        "typeId": "talas.mixerV2",
+        "parameters": [
+          {
+            "id": "left",
+            "expression": "1"
+          },
+          {
+            "id": "right",
+            "expression": "1"
+          }
+        ]
+      },
+      {
+        "id": "echoL",
+        "typeId": "talas.delayWithFeedback",
+        "parameters": [
+          {
+            "id": "delay",
+            "expression": "(45 / !Tempo) * 1 s"
+          },
+          {
+            "id": "feedback",
+            "expression": "0.3"
+          },
+          {
+            "id": "mix",
+            "expression": "1"
+          },
+          {
+            "id": "interpolation",
+            "choice": "linear"
+          },
+          {
+            "id": "smoothDelayChanges",
+            "boolean": true
+          }
+        ]
+      },
+      {
+        "id": "echoR",
+        "typeId": "talas.delayWithFeedback",
+        "parameters": [
+          {
+            "id": "delay",
+            "expression": "((45 / !Tempo) * 1 s) * 1.5"
+          },
+          {
+            "id": "feedback",
+            "expression": "0.3"
+          },
+          {
+            "id": "mix",
+            "expression": "1"
+          },
+          {
+            "id": "interpolation",
+            "choice": "linear"
+          },
+          {
+            "id": "smoothDelayChanges",
+            "boolean": true
+          }
+        ]
+      },
+      {
+        "id": "echoMix",
+        "typeId": "talas.stereoMix4",
+        "parameters": [
+          {
+            "id": "left",
+            "expression": "1"
+          },
+          {
+            "id": "right",
+            "expression": "1"
+          },
+          {
+            "id": "pan1",
+            "expression": "0"
+          },
+          {
+            "id": "scale1",
+            "expression": "1"
+          },
+          {
+            "id": "pan2",
+            "expression": "0"
+          },
+          {
+            "id": "scale2",
+            "expression": "0.5 * !Echo"
+          },
+          {
+            "id": "pan3",
+            "expression": "1"
+          },
+          {
+            "id": "scale3",
+            "expression": "0.5 * !Echo"
+          },
+          {
+            "id": "pan4",
+            "expression": "1"
+          },
+          {
+            "id": "scale4",
+            "expression": "1"
+          }
+        ]
+      },
+      {
+        "id": "output",
+        "typeId": "talas.audioOutput",
+        "parameters": []
+      }
+    ],
+    "connections": [
+      {
+        "fromNode": "keysVoice",
+        "fromPort": "audioOut",
+        "toNode": "keys",
+        "toPort": "audioIn"
+      },
+      {
+        "fromNode": "demoVoice",
+        "fromPort": "audioOut",
+        "toNode": "demo",
+        "toPort": "audioIn"
+      },
+      {
+        "fromNode": "keys",
+        "fromPort": "leftOut",
+        "toNode": "voices",
+        "toPort": "inputs"
+      },
+      {
+        "fromNode": "demo",
+        "fromPort": "leftOut",
+        "toNode": "voices",
+        "toPort": "inputs"
+      },
+      {
+        "fromNode": "keys",
+        "fromPort": "rightOut",
+        "toNode": "voices",
+        "toPort": "rightInputs"
+      },
+      {
+        "fromNode": "demo",
+        "fromPort": "rightOut",
+        "toNode": "voices",
+        "toPort": "rightInputs"
+      },
+      {
+        "fromNode": "voices",
+        "fromPort": "leftOut",
+        "toNode": "echoL",
+        "toPort": "audioIn"
+      },
+      {
+        "fromNode": "voices",
+        "fromPort": "rightOut",
+        "toNode": "echoR",
+        "toPort": "audioIn"
+      },
+      {
+        "fromNode": "voices",
+        "fromPort": "leftOut",
+        "toNode": "echoMix",
+        "toPort": "in1"
+      },
+      {
+        "fromNode": "echoL",
+        "fromPort": "audioOut",
+        "toNode": "echoMix",
+        "toPort": "in2"
+      },
+      {
+        "fromNode": "echoR",
+        "fromPort": "audioOut",
+        "toNode": "echoMix",
+        "toPort": "in3"
+      },
+      {
+        "fromNode": "voices",
+        "fromPort": "rightOut",
+        "toNode": "echoMix",
+        "toPort": "in4"
+      },
+      {
+        "fromNode": "echoMix",
+        "fromPort": "leftOut",
+        "toNode": "output",
+        "toPort": "audioIn"
+      },
+      {
+        "fromNode": "echoMix",
+        "fromPort": "rightOut",
+        "toNode": "output",
+        "toPort": "rightIn"
+      }
+    ]
+  }
+}

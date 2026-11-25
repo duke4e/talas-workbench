@@ -1,0 +1,1014 @@
+{
+  "format": "talas.project",
+  "version": 156,
+  "expressionLanguage": "variablesV2",
+  "expressionDefinitions": [],
+  "variableLibrary": {
+    "version": 2,
+    "variables": []
+  },
+  "soundVariableLibrary": {
+    "version": 1,
+    "variables": []
+  },
+  "generatorLibrary": {
+    "version": 2,
+    "programs": []
+  },
+  "liveSetLibrary": {
+    "version": 1,
+    "liveSets": [],
+    "tools": []
+  },
+  "metadata": {
+    "title": "Terrain Drone",
+    "description": "Two wave-terrain oscillators orbit a terrain surface on slowly drifting, rotating paths, one per channel, under slow swells and a long CDP reverb. Hold low notes and let it evolve."
+  },
+  "presentation": {
+    "version": 2,
+    "structureLayouts": [
+      {
+        "scope": {
+          "kind": "project"
+        },
+        "nodes": [
+          {
+            "nodeId": "keysVoice",
+            "x": 0,
+            "y": 0
+          },
+          {
+            "nodeId": "demoVoice",
+            "x": 0,
+            "y": 120
+          },
+          {
+            "nodeId": "keys",
+            "x": 220,
+            "y": 0
+          },
+          {
+            "nodeId": "demo",
+            "x": 220,
+            "y": 120
+          },
+          {
+            "nodeId": "voices",
+            "x": 440,
+            "y": 0
+          },
+          {
+            "nodeId": "dcBlockL",
+            "x": 660,
+            "y": 0
+          },
+          {
+            "nodeId": "dcBlockR",
+            "x": 660,
+            "y": 120
+          },
+          {
+            "nodeId": "reverbSend",
+            "x": 880,
+            "y": 0
+          },
+          {
+            "nodeId": "reverb",
+            "x": 1100,
+            "y": 0
+          },
+          {
+            "nodeId": "space",
+            "x": 1320,
+            "y": 0
+          },
+          {
+            "nodeId": "output",
+            "x": 1540,
+            "y": 0
+          }
+        ]
+      },
+      {
+        "scope": {
+          "kind": "soundDefinition",
+          "definitionId": "terrainDroneVoice"
+        },
+        "nodes": [
+          {
+            "nodeId": "radiusL",
+            "x": 0,
+            "y": 0
+          },
+          {
+            "nodeId": "radiusR",
+            "x": 0,
+            "y": 120
+          },
+          {
+            "nodeId": "spin",
+            "x": 0,
+            "y": 240
+          },
+          {
+            "nodeId": "terrainL",
+            "x": 220,
+            "y": 0
+          },
+          {
+            "nodeId": "terrainR",
+            "x": 220,
+            "y": 120
+          },
+          {
+            "nodeId": "env",
+            "x": 0,
+            "y": 360
+          },
+          {
+            "nodeId": "ampL",
+            "x": 440,
+            "y": 0
+          },
+          {
+            "nodeId": "ampR",
+            "x": 440,
+            "y": 120
+          }
+        ]
+      }
+    ],
+    "performanceControls": [
+      {
+        "controlId": "Motion",
+        "target": {
+          "kind": "eventValue",
+          "eventName": "Motion",
+          "domain": "scalar"
+        },
+        "kind": "fader",
+        "displayName": "Motion",
+        "x": 0,
+        "y": 0,
+        "visible": true,
+        "modulationSlots": []
+      },
+      {
+        "controlId": "Depth",
+        "target": {
+          "kind": "eventValue",
+          "eventName": "Depth",
+          "domain": "scalar"
+        },
+        "kind": "fader",
+        "displayName": "Depth",
+        "x": 140,
+        "y": 0,
+        "visible": true,
+        "modulationSlots": []
+      },
+      {
+        "controlId": "Shape",
+        "target": {
+          "kind": "eventValue",
+          "eventName": "Shape",
+          "domain": "scalar"
+        },
+        "kind": "fader",
+        "displayName": "Shape (y ratio)",
+        "x": 280,
+        "y": 0,
+        "visible": true,
+        "modulationSlots": []
+      },
+      {
+        "controlId": "Space",
+        "target": {
+          "kind": "eventValue",
+          "eventName": "Space",
+          "domain": "scalar"
+        },
+        "kind": "fader",
+        "displayName": "Space",
+        "x": 0,
+        "y": 160,
+        "visible": true,
+        "modulationSlots": []
+      },
+      {
+        "controlId": "Demo",
+        "target": {
+          "kind": "eventValue",
+          "eventName": "Demo",
+          "domain": "scalar"
+        },
+        "kind": "toggle",
+        "displayName": "Demo phrase",
+        "x": 140,
+        "y": 160,
+        "visible": true,
+        "modulationSlots": []
+      }
+    ],
+    "performanceMeters": []
+  },
+  "snapshotLibrary": {
+    "version": 1,
+    "banks": []
+  },
+  "sampleMapLibrary": {
+    "version": 1,
+    "maps": []
+  },
+  "virtualControls": [
+    {
+      "eventName": "Motion",
+      "domain": "scalar",
+      "kind": "fader",
+      "value": 1,
+      "minimum": 0.1,
+      "maximum": 4,
+      "widget": {
+        "style": "default",
+        "showNumber": true,
+        "label": "Motion",
+        "onColour": "",
+        "offColour": "",
+        "grid": 0,
+        "taper": "log",
+        "tab": ""
+      }
+    },
+    {
+      "eventName": "Depth",
+      "domain": "scalar",
+      "kind": "fader",
+      "value": 0.6,
+      "minimum": 0,
+      "maximum": 1,
+      "widget": {
+        "style": "default",
+        "showNumber": true,
+        "label": "Depth",
+        "onColour": "",
+        "offColour": "",
+        "grid": 0,
+        "taper": "linear",
+        "tab": ""
+      }
+    },
+    {
+      "eventName": "Shape",
+      "domain": "scalar",
+      "kind": "fader",
+      "value": 1.5,
+      "minimum": 0.5,
+      "maximum": 4,
+      "widget": {
+        "style": "default",
+        "showNumber": true,
+        "label": "Shape (y ratio)",
+        "onColour": "",
+        "offColour": "",
+        "grid": 0,
+        "taper": "linear",
+        "tab": ""
+      }
+    },
+    {
+      "eventName": "Space",
+      "domain": "scalar",
+      "kind": "fader",
+      "value": 0.5,
+      "minimum": 0,
+      "maximum": 1,
+      "widget": {
+        "style": "default",
+        "showNumber": true,
+        "label": "Space",
+        "onColour": "",
+        "offColour": "",
+        "grid": 0,
+        "taper": "linear",
+        "tab": ""
+      }
+    },
+    {
+      "eventName": "Demo",
+      "domain": "scalar",
+      "kind": "toggle",
+      "value": 1,
+      "minimum": 0,
+      "maximum": 1,
+      "widget": {
+        "style": "default",
+        "showNumber": true,
+        "label": "Demo phrase",
+        "onColour": "",
+        "offColour": "",
+        "grid": 0,
+        "taper": "linear",
+        "tab": ""
+      }
+    }
+  ],
+  "assets": [],
+  "partialTrackEdits": [],
+  "timeline": {
+    "loop": {
+      "enabled": false,
+      "startSeconds": 0,
+      "endSeconds": 4
+    },
+    "musicalTime": {
+      "ticksPerQuarter": 960,
+      "tempo": [
+        {
+          "tick": 0,
+          "microsecondsPerQuarter": 500000
+        }
+      ],
+      "meter": [
+        {
+          "tick": 0,
+          "numerator": 4,
+          "denominator": 4
+        }
+      ]
+    },
+    "score": {
+      "tracks": [],
+      "clips": [],
+      "automation": [],
+      "markers": []
+    },
+    "eventValues": []
+  },
+  "deviceSettings": {
+    "configured": false,
+    "audioInputDevice": "",
+    "audioOutputDevice": "",
+    "sampleRate": 0,
+    "bufferSize": 0,
+    "inputChannels": [],
+    "outputChannels": [],
+    "midiInputDevices": [],
+    "transportSync": {
+      "sourceMode": "internal",
+      "sourceIdentifier": ""
+    },
+    "oscIngress": {
+      "enabled": false,
+      "port": 9000
+    },
+    "oscEgress": {
+      "enabled": false,
+      "port": 9001
+    }
+  },
+  "soundDefinitions": [
+    {
+      "id": "terrainDroneVoice",
+      "name": "Drone Voice",
+      "description": "One voice; the keys and demo MIDI Voices each play their own copies of it.",
+      "interfaceVersion": 1,
+      "inputs": [],
+      "outputs": [
+        {
+          "id": "audioOut",
+          "type": "audio",
+          "nodeId": "ampL",
+          "nodePortId": "audioOut"
+        },
+        {
+          "id": "rightOut",
+          "type": "audio",
+          "nodeId": "ampR",
+          "nodePortId": "audioOut"
+        }
+      ],
+      "parameters": [],
+      "graph": {
+        "nodes": [
+          {
+            "id": "radiusL",
+            "typeId": "talas.lfo",
+            "parameters": [
+              {
+                "id": "frequency",
+                "expression": "!Motion * 0.13 hz"
+              },
+              {
+                "id": "minimum",
+                "expression": "0.25"
+              },
+              {
+                "id": "maximum",
+                "expression": "0.3 + (!Depth * 0.65)"
+              }
+            ]
+          },
+          {
+            "id": "radiusR",
+            "typeId": "talas.lfo",
+            "parameters": [
+              {
+                "id": "frequency",
+                "expression": "!Motion * 0.071 hz"
+              },
+              {
+                "id": "minimum",
+                "expression": "0.3 + (!Depth * 0.65)"
+              },
+              {
+                "id": "maximum",
+                "expression": "0.25"
+              }
+            ]
+          },
+          {
+            "id": "spin",
+            "typeId": "talas.lfo",
+            "parameters": [
+              {
+                "id": "frequency",
+                "expression": "!Motion * 0.037 hz"
+              },
+              {
+                "id": "minimum",
+                "expression": "-1"
+              },
+              {
+                "id": "maximum",
+                "expression": "1"
+              }
+            ]
+          },
+          {
+            "id": "terrainL",
+            "typeId": "talas.waveTerrainOscillator",
+            "parameters": [
+              {
+                "id": "frequency",
+                "expression": "!KeyPitch"
+              },
+              {
+                "id": "xRadius",
+                "expression": "0.6"
+              },
+              {
+                "id": "yRadius",
+                "expression": "0.6"
+              },
+              {
+                "id": "yRatio",
+                "expression": "!Shape * 1"
+              },
+              {
+                "id": "rotation",
+                "expression": "0"
+              },
+              {
+                "id": "phaseOffset",
+                "expression": "0"
+              },
+              {
+                "id": "level",
+                "expression": "1"
+              }
+            ]
+          },
+          {
+            "id": "terrainR",
+            "typeId": "talas.waveTerrainOscillator",
+            "parameters": [
+              {
+                "id": "frequency",
+                "expression": "!KeyPitch + 0.08 nn"
+              },
+              {
+                "id": "xRadius",
+                "expression": "0.6"
+              },
+              {
+                "id": "yRadius",
+                "expression": "0.6"
+              },
+              {
+                "id": "yRatio",
+                "expression": "!Shape * 1"
+              },
+              {
+                "id": "rotation",
+                "expression": "0"
+              },
+              {
+                "id": "phaseOffset",
+                "expression": "0.25"
+              },
+              {
+                "id": "level",
+                "expression": "1"
+              }
+            ]
+          },
+          {
+            "id": "env",
+            "typeId": "talas.adsr",
+            "parameters": [
+              {
+                "id": "attackTime",
+                "expression": "1.8 s"
+              },
+              {
+                "id": "decayTime",
+                "expression": "1 s"
+              },
+              {
+                "id": "sustainLevel",
+                "expression": "1"
+              },
+              {
+                "id": "releaseTime",
+                "expression": "3 s"
+              },
+              {
+                "id": "gate",
+                "expression": "!KeyDown"
+              },
+              {
+                "id": "scale",
+                "expression": "0.22 * !KeyVelocity"
+              }
+            ]
+          },
+          {
+            "id": "ampL",
+            "typeId": "talas.vca",
+            "parameters": [
+              {
+                "id": "gain",
+                "expression": "1"
+              }
+            ]
+          },
+          {
+            "id": "ampR",
+            "typeId": "talas.vca",
+            "parameters": [
+              {
+                "id": "gain",
+                "expression": "1"
+              }
+            ]
+          }
+        ],
+        "connections": [
+          {
+            "fromNode": "radiusL",
+            "fromPort": "value",
+            "toNode": "terrainL",
+            "toPort": "xRadius"
+          },
+          {
+            "fromNode": "radiusR",
+            "fromPort": "value",
+            "toNode": "terrainL",
+            "toPort": "yRadius"
+          },
+          {
+            "fromNode": "radiusR",
+            "fromPort": "value",
+            "toNode": "terrainR",
+            "toPort": "xRadius"
+          },
+          {
+            "fromNode": "radiusL",
+            "fromPort": "value",
+            "toNode": "terrainR",
+            "toPort": "yRadius"
+          },
+          {
+            "fromNode": "spin",
+            "fromPort": "value",
+            "toNode": "terrainL",
+            "toPort": "rotation"
+          },
+          {
+            "fromNode": "spin",
+            "fromPort": "value",
+            "toNode": "terrainR",
+            "toPort": "rotation"
+          },
+          {
+            "fromNode": "terrainL",
+            "fromPort": "audioOut",
+            "toNode": "ampL",
+            "toPort": "audioIn"
+          },
+          {
+            "fromNode": "terrainR",
+            "fromPort": "audioOut",
+            "toNode": "ampR",
+            "toPort": "audioIn"
+          },
+          {
+            "fromNode": "env",
+            "fromPort": "value",
+            "toNode": "ampL",
+            "toPort": "gain"
+          },
+          {
+            "fromNode": "env",
+            "fromPort": "value",
+            "toNode": "ampR",
+            "toPort": "gain"
+          }
+        ]
+      }
+    }
+  ],
+  "graph": {
+    "nodes": [
+      {
+        "id": "keysVoice",
+        "soundDefinitionId": "terrainDroneVoice",
+        "parameters": []
+      },
+      {
+        "id": "demoVoice",
+        "soundDefinitionId": "terrainDroneVoice",
+        "parameters": []
+      },
+      {
+        "id": "keys",
+        "typeId": "talas.midiVoice",
+        "parameters": [
+          {
+            "id": "left",
+            "expression": "1"
+          },
+          {
+            "id": "right",
+            "expression": "1"
+          },
+          {
+            "id": "channel",
+            "expression": "0"
+          },
+          {
+            "id": "source",
+            "text": "Live MIDI"
+          },
+          {
+            "id": "midiFile",
+            "resource": ""
+          },
+          {
+            "id": "polyphony",
+            "expression": "6"
+          },
+          {
+            "id": "lowPitch",
+            "expression": "0 nn"
+          },
+          {
+            "id": "highPitch",
+            "expression": "127 nn"
+          },
+          {
+            "id": "script",
+            "text": ""
+          },
+          {
+            "id": "shared",
+            "boolean": false
+          }
+        ]
+      },
+      {
+        "id": "demo",
+        "typeId": "talas.midiVoice",
+        "parameters": [
+          {
+            "id": "left",
+            "expression": "!Demo"
+          },
+          {
+            "id": "right",
+            "expression": "!Demo"
+          },
+          {
+            "id": "channel",
+            "expression": "0"
+          },
+          {
+            "id": "source",
+            "text": "Script"
+          },
+          {
+            "id": "midiFile",
+            "resource": ""
+          },
+          {
+            "id": "polyphony",
+            "expression": "6"
+          },
+          {
+            "id": "lowPitch",
+            "expression": "0 nn"
+          },
+          {
+            "id": "highPitch",
+            "expression": "127 nn"
+          },
+          {
+            "id": "script",
+            "text": "self keyDownAt: 0 s duration: 7 s frequency: 36 nn velocity: 0.9. self keyDownAt: 0 s duration: 7 s frequency: 43 nn velocity: 0.8. self keyDownAt: 1.5 s duration: 5 s frequency: 51 nn velocity: 0.7. self keyDownAt: 3 s duration: 3.6 s frequency: 58 nn velocity: 0.6. self keyDownAt: 4.2 s duration: 2.6 s frequency: 62 nn velocity: 0.6."
+          },
+          {
+            "id": "shared",
+            "boolean": false
+          }
+        ]
+      },
+      {
+        "id": "voices",
+        "typeId": "talas.mixerV2",
+        "parameters": [
+          {
+            "id": "left",
+            "expression": "1"
+          },
+          {
+            "id": "right",
+            "expression": "1"
+          }
+        ]
+      },
+      {
+        "id": "dcBlockL",
+        "typeId": "talas.filter",
+        "parameters": [
+          {
+            "id": "type",
+            "choice": "highPass"
+          },
+          {
+            "id": "frequency",
+            "expression": "30 hz"
+          },
+          {
+            "id": "q",
+            "expression": "0.7"
+          },
+          {
+            "id": "order",
+            "expression": "2"
+          }
+        ]
+      },
+      {
+        "id": "dcBlockR",
+        "typeId": "talas.filter",
+        "parameters": [
+          {
+            "id": "type",
+            "choice": "highPass"
+          },
+          {
+            "id": "frequency",
+            "expression": "30 hz"
+          },
+          {
+            "id": "q",
+            "expression": "0.7"
+          },
+          {
+            "id": "order",
+            "expression": "2"
+          }
+        ]
+      },
+      {
+        "id": "reverbSend",
+        "typeId": "talas.mixerV2",
+        "parameters": [
+          {
+            "id": "left",
+            "expression": "0.5"
+          },
+          {
+            "id": "right",
+            "expression": "0.5"
+          }
+        ]
+      },
+      {
+        "id": "reverb",
+        "typeId": "talas.cdpReverb",
+        "parameters": [
+          {
+            "id": "reverbGain",
+            "expression": "0.6"
+          },
+          {
+            "id": "mix",
+            "expression": "0"
+          },
+          {
+            "id": "reverbTime",
+            "expression": "5 s"
+          },
+          {
+            "id": "damping",
+            "expression": "0.4"
+          },
+          {
+            "id": "lowpass",
+            "expression": "0 hz"
+          },
+          {
+            "id": "predelay",
+            "expression": "0.03 s"
+          },
+          {
+            "id": "lowCut",
+            "expression": "60 hz"
+          },
+          {
+            "id": "highCut",
+            "expression": "0 hz"
+          }
+        ]
+      },
+      {
+        "id": "space",
+        "typeId": "talas.stereoMix4",
+        "parameters": [
+          {
+            "id": "left",
+            "expression": "1"
+          },
+          {
+            "id": "right",
+            "expression": "1"
+          },
+          {
+            "id": "pan1",
+            "expression": "0"
+          },
+          {
+            "id": "scale1",
+            "expression": "1"
+          },
+          {
+            "id": "pan2",
+            "expression": "0"
+          },
+          {
+            "id": "scale2",
+            "expression": "!Space"
+          },
+          {
+            "id": "pan3",
+            "expression": "1"
+          },
+          {
+            "id": "scale3",
+            "expression": "!Space"
+          },
+          {
+            "id": "pan4",
+            "expression": "1"
+          },
+          {
+            "id": "scale4",
+            "expression": "1"
+          }
+        ]
+      },
+      {
+        "id": "output",
+        "typeId": "talas.audioOutput",
+        "parameters": []
+      }
+    ],
+    "connections": [
+      {
+        "fromNode": "keysVoice",
+        "fromPort": "audioOut",
+        "toNode": "keys",
+        "toPort": "audioIn"
+      },
+      {
+        "fromNode": "demoVoice",
+        "fromPort": "audioOut",
+        "toNode": "demo",
+        "toPort": "audioIn"
+      },
+      {
+        "fromNode": "keysVoice",
+        "fromPort": "rightOut",
+        "toNode": "keys",
+        "toPort": "rightIn"
+      },
+      {
+        "fromNode": "demoVoice",
+        "fromPort": "rightOut",
+        "toNode": "demo",
+        "toPort": "rightIn"
+      },
+      {
+        "fromNode": "keys",
+        "fromPort": "leftOut",
+        "toNode": "voices",
+        "toPort": "inputs"
+      },
+      {
+        "fromNode": "demo",
+        "fromPort": "leftOut",
+        "toNode": "voices",
+        "toPort": "inputs"
+      },
+      {
+        "fromNode": "keys",
+        "fromPort": "rightOut",
+        "toNode": "voices",
+        "toPort": "rightInputs"
+      },
+      {
+        "fromNode": "demo",
+        "fromPort": "rightOut",
+        "toNode": "voices",
+        "toPort": "rightInputs"
+      },
+      {
+        "fromNode": "voices",
+        "fromPort": "leftOut",
+        "toNode": "dcBlockL",
+        "toPort": "audioIn"
+      },
+      {
+        "fromNode": "voices",
+        "fromPort": "rightOut",
+        "toNode": "dcBlockR",
+        "toPort": "audioIn"
+      },
+      {
+        "fromNode": "dcBlockL",
+        "fromPort": "audioOut",
+        "toNode": "reverbSend",
+        "toPort": "inputs"
+      },
+      {
+        "fromNode": "dcBlockR",
+        "fromPort": "audioOut",
+        "toNode": "reverbSend",
+        "toPort": "inputs"
+      },
+      {
+        "fromNode": "reverbSend",
+        "fromPort": "leftOut",
+        "toNode": "reverb",
+        "toPort": "audioIn"
+      },
+      {
+        "fromNode": "dcBlockL",
+        "fromPort": "audioOut",
+        "toNode": "space",
+        "toPort": "in1"
+      },
+      {
+        "fromNode": "reverb",
+        "fromPort": "leftOut",
+        "toNode": "space",
+        "toPort": "in2"
+      },
+      {
+        "fromNode": "reverb",
+        "fromPort": "rightOut",
+        "toNode": "space",
+        "toPort": "in3"
+      },
+      {
+        "fromNode": "dcBlockR",
+        "fromPort": "audioOut",
+        "toNode": "space",
+        "toPort": "in4"
+      },
+      {
+        "fromNode": "space",
+        "fromPort": "leftOut",
+        "toNode": "output",
+        "toPort": "audioIn"
+      },
+      {
+        "fromNode": "space",
+        "fromPort": "rightOut",
+        "toNode": "output",
+        "toPort": "rightIn"
+      }
+    ]
+  }
+}

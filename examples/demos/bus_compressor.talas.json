@@ -1,0 +1,365 @@
+{
+  "format": "talas.project",
+  "version": 156,
+  "expressionLanguage": "variablesV2",
+  "expressionDefinitions": [],
+  "variableLibrary": {
+    "version": 2,
+    "variables": []
+  },
+  "soundVariableLibrary": {
+    "version": 1,
+    "variables": []
+  },
+  "generatorLibrary": {
+    "version": 2,
+    "programs": []
+  },
+  "liveSetLibrary": {
+    "version": 1,
+    "liveSets": [],
+    "tools": []
+  },
+  "metadata": {
+    "title": "Bus Compressor",
+    "description": "A feed-forward compressor keyed from its own input with 2 ms of look-ahead, threshold and makeup in dB, and attack and release in milliseconds. Mono input on channel 1, the same signal on both outputs."
+  },
+  "presentation": {
+    "version": 2,
+    "structureLayouts": [
+      {
+        "scope": {
+          "kind": "project"
+        },
+        "nodes": [
+          {
+            "nodeId": "input",
+            "x": 0,
+            "y": 0
+          },
+          {
+            "nodeId": "compressor",
+            "x": 220,
+            "y": 0
+          },
+          {
+            "nodeId": "output",
+            "x": 440,
+            "y": 0
+          }
+        ]
+      }
+    ],
+    "performanceControls": [
+      {
+        "controlId": "Threshold",
+        "target": {
+          "kind": "eventValue",
+          "eventName": "Threshold",
+          "domain": "scalar"
+        },
+        "kind": "fader",
+        "displayName": "Threshold (dB)",
+        "x": 0,
+        "y": 0,
+        "visible": true,
+        "modulationSlots": []
+      },
+      {
+        "controlId": "Ratio",
+        "target": {
+          "kind": "eventValue",
+          "eventName": "Ratio",
+          "domain": "scalar"
+        },
+        "kind": "fader",
+        "displayName": "Ratio",
+        "x": 140,
+        "y": 0,
+        "visible": true,
+        "modulationSlots": []
+      },
+      {
+        "controlId": "Attack",
+        "target": {
+          "kind": "eventValue",
+          "eventName": "Attack",
+          "domain": "scalar"
+        },
+        "kind": "fader",
+        "displayName": "Attack (ms)",
+        "x": 280,
+        "y": 0,
+        "visible": true,
+        "modulationSlots": []
+      },
+      {
+        "controlId": "Release",
+        "target": {
+          "kind": "eventValue",
+          "eventName": "Release",
+          "domain": "scalar"
+        },
+        "kind": "fader",
+        "displayName": "Release (ms)",
+        "x": 0,
+        "y": 160,
+        "visible": true,
+        "modulationSlots": []
+      },
+      {
+        "controlId": "Makeup",
+        "target": {
+          "kind": "eventValue",
+          "eventName": "Makeup",
+          "domain": "scalar"
+        },
+        "kind": "fader",
+        "displayName": "Makeup (dB)",
+        "x": 140,
+        "y": 160,
+        "visible": true,
+        "modulationSlots": []
+      }
+    ],
+    "performanceMeters": []
+  },
+  "snapshotLibrary": {
+    "version": 1,
+    "banks": []
+  },
+  "sampleMapLibrary": {
+    "version": 1,
+    "maps": []
+  },
+  "virtualControls": [
+    {
+      "eventName": "Threshold",
+      "domain": "scalar",
+      "kind": "fader",
+      "value": -24,
+      "minimum": -48,
+      "maximum": 0,
+      "widget": {
+        "style": "default",
+        "showNumber": true,
+        "label": "Threshold (dB)",
+        "onColour": "",
+        "offColour": "",
+        "grid": 0,
+        "taper": "linear",
+        "tab": ""
+      }
+    },
+    {
+      "eventName": "Ratio",
+      "domain": "scalar",
+      "kind": "fader",
+      "value": 4,
+      "minimum": 1,
+      "maximum": 20,
+      "widget": {
+        "style": "default",
+        "showNumber": true,
+        "label": "Ratio",
+        "onColour": "",
+        "offColour": "",
+        "grid": 0,
+        "taper": "log",
+        "tab": ""
+      }
+    },
+    {
+      "eventName": "Attack",
+      "domain": "scalar",
+      "kind": "fader",
+      "value": 1,
+      "minimum": 0.1,
+      "maximum": 100,
+      "widget": {
+        "style": "default",
+        "showNumber": true,
+        "label": "Attack (ms)",
+        "onColour": "",
+        "offColour": "",
+        "grid": 0,
+        "taper": "log",
+        "tab": ""
+      }
+    },
+    {
+      "eventName": "Release",
+      "domain": "scalar",
+      "kind": "fader",
+      "value": 60,
+      "minimum": 10,
+      "maximum": 1000,
+      "widget": {
+        "style": "default",
+        "showNumber": true,
+        "label": "Release (ms)",
+        "onColour": "",
+        "offColour": "",
+        "grid": 0,
+        "taper": "log",
+        "tab": ""
+      }
+    },
+    {
+      "eventName": "Makeup",
+      "domain": "scalar",
+      "kind": "fader",
+      "value": 6,
+      "minimum": 0,
+      "maximum": 12,
+      "widget": {
+        "style": "default",
+        "showNumber": true,
+        "label": "Makeup (dB)",
+        "onColour": "",
+        "offColour": "",
+        "grid": 0,
+        "taper": "linear",
+        "tab": ""
+      }
+    }
+  ],
+  "assets": [],
+  "partialTrackEdits": [],
+  "timeline": {
+    "loop": {
+      "enabled": false,
+      "startSeconds": 0,
+      "endSeconds": 4
+    },
+    "musicalTime": {
+      "ticksPerQuarter": 960,
+      "tempo": [
+        {
+          "tick": 0,
+          "microsecondsPerQuarter": 500000
+        }
+      ],
+      "meter": [
+        {
+          "tick": 0,
+          "numerator": 4,
+          "denominator": 4
+        }
+      ]
+    },
+    "score": {
+      "tracks": [],
+      "clips": [],
+      "automation": [],
+      "markers": []
+    },
+    "eventValues": []
+  },
+  "deviceSettings": {
+    "configured": false,
+    "audioInputDevice": "",
+    "audioOutputDevice": "",
+    "sampleRate": 0,
+    "bufferSize": 0,
+    "inputChannels": [],
+    "outputChannels": [],
+    "midiInputDevices": [],
+    "transportSync": {
+      "sourceMode": "internal",
+      "sourceIdentifier": ""
+    },
+    "oscIngress": {
+      "enabled": false,
+      "port": 9000
+    },
+    "oscEgress": {
+      "enabled": false,
+      "port": 9001
+    }
+  },
+  "soundDefinitions": [],
+  "graph": {
+    "nodes": [
+      {
+        "id": "input",
+        "typeId": "talas.audioInput",
+        "parameters": [
+          {
+            "id": "routing",
+            "choice": "monoSum"
+          },
+          {
+            "id": "channel1",
+            "boolean": true
+          }
+        ]
+      },
+      {
+        "id": "compressor",
+        "typeId": "talas.dynamicRangeController",
+        "parameters": [
+          {
+            "id": "type",
+            "choice": "compressor"
+          },
+          {
+            "id": "ratio",
+            "expression": "!Ratio"
+          },
+          {
+            "id": "threshold",
+            "expression": "exp(!Threshold * 0.1151293)"
+          },
+          {
+            "id": "attackTime",
+            "expression": "!Attack * 0.001 s"
+          },
+          {
+            "id": "releaseTime",
+            "expression": "!Release * 0.001 s"
+          },
+          {
+            "id": "delay",
+            "expression": "2 ms"
+          },
+          {
+            "id": "gain",
+            "expression": "exp(!Makeup * 0.1151293)"
+          }
+        ]
+      },
+      {
+        "id": "output",
+        "typeId": "talas.audioOutput",
+        "parameters": []
+      }
+    ],
+    "connections": [
+      {
+        "fromNode": "input",
+        "fromPort": "audioOut",
+        "toNode": "compressor",
+        "toPort": "audioIn"
+      },
+      {
+        "fromNode": "input",
+        "fromPort": "audioOut",
+        "toNode": "compressor",
+        "toPort": "sideChain"
+      },
+      {
+        "fromNode": "compressor",
+        "fromPort": "audioOut",
+        "toNode": "output",
+        "toPort": "audioIn"
+      },
+      {
+        "fromNode": "compressor",
+        "fromPort": "audioOut",
+        "toNode": "output",
+        "toPort": "rightIn"
+      }
+    ]
+  }
+}

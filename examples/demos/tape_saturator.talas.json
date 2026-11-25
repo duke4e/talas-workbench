@@ -1,0 +1,530 @@
+{
+  "format": "talas.project",
+  "version": 156,
+  "expressionLanguage": "variablesV2",
+  "expressionDefinitions": [],
+  "variableLibrary": {
+    "version": 2,
+    "variables": []
+  },
+  "soundVariableLibrary": {
+    "version": 1,
+    "variables": []
+  },
+  "generatorLibrary": {
+    "version": 2,
+    "programs": []
+  },
+  "liveSetLibrary": {
+    "version": 1,
+    "liveSets": [],
+    "tools": []
+  },
+  "metadata": {
+    "title": "Tape Saturator",
+    "description": "Drive into an arctangent saturation curve, a low shelf head bump, wow and flutter from two LFOs moving a short delay, and a Tone low-pass. Mono input on channel 1, the same signal on both outputs."
+  },
+  "presentation": {
+    "version": 2,
+    "structureLayouts": [
+      {
+        "scope": {
+          "kind": "project"
+        },
+        "nodes": [
+          {
+            "nodeId": "input",
+            "x": 0,
+            "y": 0
+          },
+          {
+            "nodeId": "drive",
+            "x": 220,
+            "y": 0
+          },
+          {
+            "nodeId": "curve",
+            "x": 440,
+            "y": 0
+          },
+          {
+            "nodeId": "headBump",
+            "x": 660,
+            "y": 0
+          },
+          {
+            "nodeId": "wowLfo",
+            "x": 0,
+            "y": 120
+          },
+          {
+            "nodeId": "flutterLfo",
+            "x": 0,
+            "y": 240
+          },
+          {
+            "nodeId": "wobble",
+            "x": 220,
+            "y": 120
+          },
+          {
+            "nodeId": "transport",
+            "x": 880,
+            "y": 0
+          },
+          {
+            "nodeId": "tone",
+            "x": 1100,
+            "y": 0
+          },
+          {
+            "nodeId": "outputLevel",
+            "x": 1320,
+            "y": 0
+          },
+          {
+            "nodeId": "output",
+            "x": 1540,
+            "y": 0
+          }
+        ]
+      }
+    ],
+    "performanceControls": [
+      {
+        "controlId": "Drive",
+        "target": {
+          "kind": "eventValue",
+          "eventName": "Drive",
+          "domain": "scalar"
+        },
+        "kind": "fader",
+        "displayName": "Drive",
+        "x": 0,
+        "y": 0,
+        "visible": true,
+        "modulationSlots": []
+      },
+      {
+        "controlId": "Tone",
+        "target": {
+          "kind": "eventValue",
+          "eventName": "Tone",
+          "domain": "scalar"
+        },
+        "kind": "fader",
+        "displayName": "Tone (Hz)",
+        "x": 140,
+        "y": 0,
+        "visible": true,
+        "modulationSlots": []
+      },
+      {
+        "controlId": "Wow",
+        "target": {
+          "kind": "eventValue",
+          "eventName": "Wow",
+          "domain": "scalar"
+        },
+        "kind": "fader",
+        "displayName": "Wow & flutter",
+        "x": 280,
+        "y": 0,
+        "visible": true,
+        "modulationSlots": []
+      },
+      {
+        "controlId": "Output",
+        "target": {
+          "kind": "eventValue",
+          "eventName": "Output",
+          "domain": "scalar"
+        },
+        "kind": "fader",
+        "displayName": "Output",
+        "x": 0,
+        "y": 160,
+        "visible": true,
+        "modulationSlots": []
+      }
+    ],
+    "performanceMeters": []
+  },
+  "snapshotLibrary": {
+    "version": 1,
+    "banks": []
+  },
+  "sampleMapLibrary": {
+    "version": 1,
+    "maps": []
+  },
+  "virtualControls": [
+    {
+      "eventName": "Drive",
+      "domain": "scalar",
+      "kind": "fader",
+      "value": 6,
+      "minimum": 1,
+      "maximum": 20,
+      "widget": {
+        "style": "default",
+        "showNumber": true,
+        "label": "Drive",
+        "onColour": "",
+        "offColour": "",
+        "grid": 0,
+        "taper": "log",
+        "tab": ""
+      }
+    },
+    {
+      "eventName": "Tone",
+      "domain": "scalar",
+      "kind": "fader",
+      "value": 9000,
+      "minimum": 1500,
+      "maximum": 18000,
+      "widget": {
+        "style": "default",
+        "showNumber": true,
+        "label": "Tone (Hz)",
+        "onColour": "",
+        "offColour": "",
+        "grid": 0,
+        "taper": "log",
+        "tab": ""
+      }
+    },
+    {
+      "eventName": "Wow",
+      "domain": "scalar",
+      "kind": "fader",
+      "value": 0.3,
+      "minimum": 0,
+      "maximum": 1,
+      "widget": {
+        "style": "default",
+        "showNumber": true,
+        "label": "Wow & flutter",
+        "onColour": "",
+        "offColour": "",
+        "grid": 0,
+        "taper": "linear",
+        "tab": ""
+      }
+    },
+    {
+      "eventName": "Output",
+      "domain": "scalar",
+      "kind": "fader",
+      "value": 0.5,
+      "minimum": 0,
+      "maximum": 1,
+      "widget": {
+        "style": "default",
+        "showNumber": true,
+        "label": "Output",
+        "onColour": "",
+        "offColour": "",
+        "grid": 0,
+        "taper": "linear",
+        "tab": ""
+      }
+    }
+  ],
+  "assets": [],
+  "partialTrackEdits": [],
+  "timeline": {
+    "loop": {
+      "enabled": false,
+      "startSeconds": 0,
+      "endSeconds": 4
+    },
+    "musicalTime": {
+      "ticksPerQuarter": 960,
+      "tempo": [
+        {
+          "tick": 0,
+          "microsecondsPerQuarter": 500000
+        }
+      ],
+      "meter": [
+        {
+          "tick": 0,
+          "numerator": 4,
+          "denominator": 4
+        }
+      ]
+    },
+    "score": {
+      "tracks": [],
+      "clips": [],
+      "automation": [],
+      "markers": []
+    },
+    "eventValues": []
+  },
+  "deviceSettings": {
+    "configured": false,
+    "audioInputDevice": "",
+    "audioOutputDevice": "",
+    "sampleRate": 0,
+    "bufferSize": 0,
+    "inputChannels": [],
+    "outputChannels": [],
+    "midiInputDevices": [],
+    "transportSync": {
+      "sourceMode": "internal",
+      "sourceIdentifier": ""
+    },
+    "oscIngress": {
+      "enabled": false,
+      "port": 9000
+    },
+    "oscEgress": {
+      "enabled": false,
+      "port": 9001
+    }
+  },
+  "soundDefinitions": [],
+  "graph": {
+    "nodes": [
+      {
+        "id": "input",
+        "typeId": "talas.audioInput",
+        "parameters": [
+          {
+            "id": "routing",
+            "choice": "monoSum"
+          },
+          {
+            "id": "channel1",
+            "boolean": true
+          }
+        ]
+      },
+      {
+        "id": "drive",
+        "typeId": "talas.level",
+        "parameters": [
+          {
+            "id": "left",
+            "expression": "!Drive * 0.05"
+          },
+          {
+            "id": "right",
+            "expression": "!Drive * 0.05"
+          }
+        ]
+      },
+      {
+        "id": "curve",
+        "typeId": "talas.waveshaper",
+        "parameters": [
+          {
+            "id": "shapeFrom",
+            "choice": "wavetable"
+          },
+          {
+            "id": "shapingFunction",
+            "resource": "ATAN20"
+          },
+          {
+            "id": "interpolation",
+            "choice": "linear"
+          }
+        ]
+      },
+      {
+        "id": "headBump",
+        "typeId": "talas.lowShelvingFilter",
+        "parameters": [
+          {
+            "id": "cutoffFreq",
+            "expression": "110 hz"
+          },
+          {
+            "id": "boostOrCut",
+            "expression": "0.4"
+          },
+          {
+            "id": "scale",
+            "expression": "1"
+          }
+        ]
+      },
+      {
+        "id": "wowLfo",
+        "typeId": "talas.lfo",
+        "parameters": [
+          {
+            "id": "frequency",
+            "expression": "0.6 hz"
+          },
+          {
+            "id": "minimum",
+            "expression": "0.003 - (!Wow * 0.0008)"
+          },
+          {
+            "id": "maximum",
+            "expression": "0.003 + (!Wow * 0.0008)"
+          }
+        ]
+      },
+      {
+        "id": "flutterLfo",
+        "typeId": "talas.lfo",
+        "parameters": [
+          {
+            "id": "frequency",
+            "expression": "7.5 hz"
+          },
+          {
+            "id": "minimum",
+            "expression": "0 - (!Wow * 0.00012)"
+          },
+          {
+            "id": "maximum",
+            "expression": "!Wow * 0.00012"
+          }
+        ]
+      },
+      {
+        "id": "wobble",
+        "typeId": "talas.add",
+        "parameters": []
+      },
+      {
+        "id": "transport",
+        "typeId": "talas.delayWithFeedback",
+        "parameters": [
+          {
+            "id": "delay",
+            "expression": "3 ms"
+          },
+          {
+            "id": "feedback",
+            "expression": "0"
+          },
+          {
+            "id": "mix",
+            "expression": "1"
+          },
+          {
+            "id": "interpolation",
+            "choice": "linear"
+          }
+        ]
+      },
+      {
+        "id": "tone",
+        "typeId": "talas.filter",
+        "parameters": [
+          {
+            "id": "type",
+            "choice": "lowPass"
+          },
+          {
+            "id": "frequency",
+            "expression": "!Tone * 1 hz"
+          },
+          {
+            "id": "q",
+            "expression": "0.7"
+          },
+          {
+            "id": "order",
+            "expression": "2"
+          }
+        ]
+      },
+      {
+        "id": "outputLevel",
+        "typeId": "talas.level",
+        "parameters": [
+          {
+            "id": "left",
+            "expression": "!Output"
+          },
+          {
+            "id": "right",
+            "expression": "!Output"
+          }
+        ]
+      },
+      {
+        "id": "output",
+        "typeId": "talas.audioOutput",
+        "parameters": []
+      }
+    ],
+    "connections": [
+      {
+        "fromNode": "input",
+        "fromPort": "audioOut",
+        "toNode": "drive",
+        "toPort": "audioIn"
+      },
+      {
+        "fromNode": "drive",
+        "fromPort": "leftOut",
+        "toNode": "curve",
+        "toPort": "audioIn"
+      },
+      {
+        "fromNode": "curve",
+        "fromPort": "audioOut",
+        "toNode": "headBump",
+        "toPort": "audioIn"
+      },
+      {
+        "fromNode": "headBump",
+        "fromPort": "audioOut",
+        "toNode": "transport",
+        "toPort": "audioIn"
+      },
+      {
+        "fromNode": "wowLfo",
+        "fromPort": "value",
+        "toNode": "wobble",
+        "toPort": "left"
+      },
+      {
+        "fromNode": "flutterLfo",
+        "fromPort": "value",
+        "toNode": "wobble",
+        "toPort": "right"
+      },
+      {
+        "fromNode": "wobble",
+        "fromPort": "value",
+        "toNode": "transport",
+        "toPort": "delay"
+      },
+      {
+        "fromNode": "transport",
+        "fromPort": "audioOut",
+        "toNode": "tone",
+        "toPort": "audioIn"
+      },
+      {
+        "fromNode": "tone",
+        "fromPort": "audioOut",
+        "toNode": "outputLevel",
+        "toPort": "audioIn"
+      },
+      {
+        "fromNode": "outputLevel",
+        "fromPort": "leftOut",
+        "toNode": "output",
+        "toPort": "audioIn"
+      },
+      {
+        "fromNode": "outputLevel",
+        "fromPort": "rightOut",
+        "toNode": "output",
+        "toPort": "rightIn"
+      }
+    ]
+  }
+}

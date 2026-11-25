@@ -1,0 +1,930 @@
+{
+  "format": "talas.project",
+  "version": 156,
+  "expressionLanguage": "variablesV2",
+  "expressionDefinitions": [],
+  "variableLibrary": {
+    "version": 2,
+    "variables": []
+  },
+  "soundVariableLibrary": {
+    "version": 1,
+    "variables": []
+  },
+  "generatorLibrary": {
+    "version": 2,
+    "programs": []
+  },
+  "liveSetLibrary": {
+    "version": 1,
+    "liveSets": [],
+    "tools": []
+  },
+  "metadata": {
+    "title": "Drawbar Organ",
+    "description": "An additive tonewheel-style organ: six sine drawbars from 16' to 1' summed per key, then a rotary speaker made of a swept short delay and an auto-pan whose speed ramps between chorale and tremolo."
+  },
+  "presentation": {
+    "version": 2,
+    "structureLayouts": [
+      {
+        "scope": {
+          "kind": "project"
+        },
+        "nodes": [
+          {
+            "nodeId": "keysVoice",
+            "x": 0,
+            "y": 0
+          },
+          {
+            "nodeId": "demoVoice",
+            "x": 0,
+            "y": 120
+          },
+          {
+            "nodeId": "keys",
+            "x": 220,
+            "y": 0
+          },
+          {
+            "nodeId": "demo",
+            "x": 220,
+            "y": 120
+          },
+          {
+            "nodeId": "voices",
+            "x": 440,
+            "y": 0
+          },
+          {
+            "nodeId": "rotorTarget",
+            "x": 0,
+            "y": 240
+          },
+          {
+            "nodeId": "rotorSpeed",
+            "x": 220,
+            "y": 240
+          },
+          {
+            "nodeId": "hornLfo",
+            "x": 440,
+            "y": 120
+          },
+          {
+            "nodeId": "panLfo",
+            "x": 440,
+            "y": 240
+          },
+          {
+            "nodeId": "doppler",
+            "x": 660,
+            "y": 0
+          },
+          {
+            "nodeId": "rotor",
+            "x": 880,
+            "y": 0
+          },
+          {
+            "nodeId": "output",
+            "x": 1100,
+            "y": 0
+          }
+        ]
+      },
+      {
+        "scope": {
+          "kind": "soundDefinition",
+          "definitionId": "drawbarOrganVoice"
+        },
+        "nodes": [
+          {
+            "nodeId": "bar16",
+            "x": 0,
+            "y": 0
+          },
+          {
+            "nodeId": "bar8",
+            "x": 0,
+            "y": 120
+          },
+          {
+            "nodeId": "bar4",
+            "x": 0,
+            "y": 240
+          },
+          {
+            "nodeId": "bar223",
+            "x": 0,
+            "y": 360
+          },
+          {
+            "nodeId": "bar2",
+            "x": 0,
+            "y": 480
+          },
+          {
+            "nodeId": "bar1",
+            "x": 0,
+            "y": 600
+          },
+          {
+            "nodeId": "bars",
+            "x": 220,
+            "y": 0
+          },
+          {
+            "nodeId": "keyEnv",
+            "x": 0,
+            "y": 720
+          },
+          {
+            "nodeId": "amp",
+            "x": 440,
+            "y": 0
+          }
+        ]
+      }
+    ],
+    "performanceControls": [
+      {
+        "controlId": "Drawbar16",
+        "target": {
+          "kind": "eventValue",
+          "eventName": "Drawbar16",
+          "domain": "scalar"
+        },
+        "kind": "fader",
+        "displayName": "16' (sub)",
+        "x": 0,
+        "y": 0,
+        "visible": true,
+        "modulationSlots": []
+      },
+      {
+        "controlId": "Drawbar8",
+        "target": {
+          "kind": "eventValue",
+          "eventName": "Drawbar8",
+          "domain": "scalar"
+        },
+        "kind": "fader",
+        "displayName": "8' (fundamental)",
+        "x": 140,
+        "y": 0,
+        "visible": true,
+        "modulationSlots": []
+      },
+      {
+        "controlId": "Drawbar4",
+        "target": {
+          "kind": "eventValue",
+          "eventName": "Drawbar4",
+          "domain": "scalar"
+        },
+        "kind": "fader",
+        "displayName": "4' (octave)",
+        "x": 280,
+        "y": 0,
+        "visible": true,
+        "modulationSlots": []
+      },
+      {
+        "controlId": "Mixture",
+        "target": {
+          "kind": "eventValue",
+          "eventName": "Mixture",
+          "domain": "scalar"
+        },
+        "kind": "fader",
+        "displayName": "Mixture (2 2/3', 2', 1')",
+        "x": 0,
+        "y": 160,
+        "visible": true,
+        "modulationSlots": []
+      },
+      {
+        "controlId": "Rotary",
+        "target": {
+          "kind": "eventValue",
+          "eventName": "Rotary",
+          "domain": "scalar"
+        },
+        "kind": "fader",
+        "displayName": "Rotary speed",
+        "x": 140,
+        "y": 160,
+        "visible": true,
+        "modulationSlots": []
+      },
+      {
+        "controlId": "Demo",
+        "target": {
+          "kind": "eventValue",
+          "eventName": "Demo",
+          "domain": "scalar"
+        },
+        "kind": "toggle",
+        "displayName": "Demo phrase",
+        "x": 280,
+        "y": 160,
+        "visible": true,
+        "modulationSlots": []
+      }
+    ],
+    "performanceMeters": []
+  },
+  "snapshotLibrary": {
+    "version": 1,
+    "banks": []
+  },
+  "sampleMapLibrary": {
+    "version": 1,
+    "maps": []
+  },
+  "virtualControls": [
+    {
+      "eventName": "Drawbar16",
+      "domain": "scalar",
+      "kind": "fader",
+      "value": 0.6,
+      "minimum": 0,
+      "maximum": 1,
+      "widget": {
+        "style": "default",
+        "showNumber": true,
+        "label": "16' (sub)",
+        "onColour": "",
+        "offColour": "",
+        "grid": 0,
+        "taper": "linear",
+        "tab": ""
+      }
+    },
+    {
+      "eventName": "Drawbar8",
+      "domain": "scalar",
+      "kind": "fader",
+      "value": 1,
+      "minimum": 0,
+      "maximum": 1,
+      "widget": {
+        "style": "default",
+        "showNumber": true,
+        "label": "8' (fundamental)",
+        "onColour": "",
+        "offColour": "",
+        "grid": 0,
+        "taper": "linear",
+        "tab": ""
+      }
+    },
+    {
+      "eventName": "Drawbar4",
+      "domain": "scalar",
+      "kind": "fader",
+      "value": 0.7,
+      "minimum": 0,
+      "maximum": 1,
+      "widget": {
+        "style": "default",
+        "showNumber": true,
+        "label": "4' (octave)",
+        "onColour": "",
+        "offColour": "",
+        "grid": 0,
+        "taper": "linear",
+        "tab": ""
+      }
+    },
+    {
+      "eventName": "Mixture",
+      "domain": "scalar",
+      "kind": "fader",
+      "value": 0.4,
+      "minimum": 0,
+      "maximum": 1,
+      "widget": {
+        "style": "default",
+        "showNumber": true,
+        "label": "Mixture (2 2/3', 2', 1')",
+        "onColour": "",
+        "offColour": "",
+        "grid": 0,
+        "taper": "linear",
+        "tab": ""
+      }
+    },
+    {
+      "eventName": "Rotary",
+      "domain": "scalar",
+      "kind": "fader",
+      "value": 0,
+      "minimum": 0,
+      "maximum": 1,
+      "widget": {
+        "style": "default",
+        "showNumber": true,
+        "label": "Rotary speed",
+        "onColour": "",
+        "offColour": "",
+        "grid": 0,
+        "taper": "linear",
+        "tab": ""
+      }
+    },
+    {
+      "eventName": "Demo",
+      "domain": "scalar",
+      "kind": "toggle",
+      "value": 1,
+      "minimum": 0,
+      "maximum": 1,
+      "widget": {
+        "style": "default",
+        "showNumber": true,
+        "label": "Demo phrase",
+        "onColour": "",
+        "offColour": "",
+        "grid": 0,
+        "taper": "linear",
+        "tab": ""
+      }
+    }
+  ],
+  "assets": [],
+  "partialTrackEdits": [],
+  "timeline": {
+    "loop": {
+      "enabled": false,
+      "startSeconds": 0,
+      "endSeconds": 4
+    },
+    "musicalTime": {
+      "ticksPerQuarter": 960,
+      "tempo": [
+        {
+          "tick": 0,
+          "microsecondsPerQuarter": 500000
+        }
+      ],
+      "meter": [
+        {
+          "tick": 0,
+          "numerator": 4,
+          "denominator": 4
+        }
+      ]
+    },
+    "score": {
+      "tracks": [],
+      "clips": [],
+      "automation": [],
+      "markers": []
+    },
+    "eventValues": []
+  },
+  "deviceSettings": {
+    "configured": false,
+    "audioInputDevice": "",
+    "audioOutputDevice": "",
+    "sampleRate": 0,
+    "bufferSize": 0,
+    "inputChannels": [],
+    "outputChannels": [],
+    "midiInputDevices": [],
+    "transportSync": {
+      "sourceMode": "internal",
+      "sourceIdentifier": ""
+    },
+    "oscIngress": {
+      "enabled": false,
+      "port": 9000
+    },
+    "oscEgress": {
+      "enabled": false,
+      "port": 9001
+    }
+  },
+  "soundDefinitions": [
+    {
+      "id": "drawbarOrganVoice",
+      "name": "Organ Voice",
+      "description": "One voice; the keys and demo MIDI Voices each play their own copies of it.",
+      "interfaceVersion": 1,
+      "inputs": [],
+      "outputs": [
+        {
+          "id": "audioOut",
+          "type": "audio",
+          "nodeId": "amp",
+          "nodePortId": "audioOut"
+        }
+      ],
+      "parameters": [],
+      "graph": {
+        "nodes": [
+          {
+            "id": "bar16",
+            "typeId": "talas.oscillator",
+            "parameters": [
+              {
+                "id": "frequency",
+                "expression": "!KeyPitch - 12 nn"
+              },
+              {
+                "id": "amplitude",
+                "expression": "!Drawbar16 * 0.06"
+              }
+            ]
+          },
+          {
+            "id": "bar8",
+            "typeId": "talas.oscillator",
+            "parameters": [
+              {
+                "id": "frequency",
+                "expression": "!KeyPitch"
+              },
+              {
+                "id": "amplitude",
+                "expression": "!Drawbar8 * 0.06"
+              }
+            ]
+          },
+          {
+            "id": "bar4",
+            "typeId": "talas.oscillator",
+            "parameters": [
+              {
+                "id": "frequency",
+                "expression": "!KeyPitch + 12 nn"
+              },
+              {
+                "id": "amplitude",
+                "expression": "!Drawbar4 * 0.048"
+              }
+            ]
+          },
+          {
+            "id": "bar223",
+            "typeId": "talas.oscillator",
+            "parameters": [
+              {
+                "id": "frequency",
+                "expression": "!KeyPitch + 19.0196 nn"
+              },
+              {
+                "id": "amplitude",
+                "expression": "!Mixture * 0.036"
+              }
+            ]
+          },
+          {
+            "id": "bar2",
+            "typeId": "talas.oscillator",
+            "parameters": [
+              {
+                "id": "frequency",
+                "expression": "!KeyPitch + 24 nn"
+              },
+              {
+                "id": "amplitude",
+                "expression": "!Mixture * 0.03"
+              }
+            ]
+          },
+          {
+            "id": "bar1",
+            "typeId": "talas.oscillator",
+            "parameters": [
+              {
+                "id": "frequency",
+                "expression": "!KeyPitch + 36 nn"
+              },
+              {
+                "id": "amplitude",
+                "expression": "!Mixture * 0.021"
+              }
+            ]
+          },
+          {
+            "id": "bars",
+            "typeId": "talas.mixerV2",
+            "parameters": [
+              {
+                "id": "left",
+                "expression": "1"
+              },
+              {
+                "id": "right",
+                "expression": "1"
+              }
+            ]
+          },
+          {
+            "id": "keyEnv",
+            "typeId": "talas.adsr",
+            "parameters": [
+              {
+                "id": "attackTime",
+                "expression": "4 ms"
+              },
+              {
+                "id": "decayTime",
+                "expression": "10 ms"
+              },
+              {
+                "id": "sustainLevel",
+                "expression": "1"
+              },
+              {
+                "id": "releaseTime",
+                "expression": "40 ms"
+              },
+              {
+                "id": "gate",
+                "expression": "!KeyDown"
+              }
+            ]
+          },
+          {
+            "id": "amp",
+            "typeId": "talas.vca",
+            "parameters": [
+              {
+                "id": "gain",
+                "expression": "1"
+              }
+            ]
+          }
+        ],
+        "connections": [
+          {
+            "fromNode": "bar16",
+            "fromPort": "audioOut",
+            "toNode": "bars",
+            "toPort": "inputs"
+          },
+          {
+            "fromNode": "bar8",
+            "fromPort": "audioOut",
+            "toNode": "bars",
+            "toPort": "inputs"
+          },
+          {
+            "fromNode": "bar4",
+            "fromPort": "audioOut",
+            "toNode": "bars",
+            "toPort": "inputs"
+          },
+          {
+            "fromNode": "bar223",
+            "fromPort": "audioOut",
+            "toNode": "bars",
+            "toPort": "inputs"
+          },
+          {
+            "fromNode": "bar2",
+            "fromPort": "audioOut",
+            "toNode": "bars",
+            "toPort": "inputs"
+          },
+          {
+            "fromNode": "bar1",
+            "fromPort": "audioOut",
+            "toNode": "bars",
+            "toPort": "inputs"
+          },
+          {
+            "fromNode": "bars",
+            "fromPort": "leftOut",
+            "toNode": "amp",
+            "toPort": "audioIn"
+          },
+          {
+            "fromNode": "keyEnv",
+            "fromPort": "value",
+            "toNode": "amp",
+            "toPort": "gain"
+          }
+        ]
+      }
+    }
+  ],
+  "graph": {
+    "nodes": [
+      {
+        "id": "keysVoice",
+        "soundDefinitionId": "drawbarOrganVoice",
+        "parameters": []
+      },
+      {
+        "id": "demoVoice",
+        "soundDefinitionId": "drawbarOrganVoice",
+        "parameters": []
+      },
+      {
+        "id": "keys",
+        "typeId": "talas.midiVoice",
+        "parameters": [
+          {
+            "id": "left",
+            "expression": "1"
+          },
+          {
+            "id": "right",
+            "expression": "1"
+          },
+          {
+            "id": "channel",
+            "expression": "0"
+          },
+          {
+            "id": "source",
+            "text": "Live MIDI"
+          },
+          {
+            "id": "midiFile",
+            "resource": ""
+          },
+          {
+            "id": "polyphony",
+            "expression": "10"
+          },
+          {
+            "id": "lowPitch",
+            "expression": "0 nn"
+          },
+          {
+            "id": "highPitch",
+            "expression": "127 nn"
+          },
+          {
+            "id": "script",
+            "text": ""
+          },
+          {
+            "id": "shared",
+            "boolean": false
+          }
+        ]
+      },
+      {
+        "id": "demo",
+        "typeId": "talas.midiVoice",
+        "parameters": [
+          {
+            "id": "left",
+            "expression": "!Demo"
+          },
+          {
+            "id": "right",
+            "expression": "!Demo"
+          },
+          {
+            "id": "channel",
+            "expression": "0"
+          },
+          {
+            "id": "source",
+            "text": "Script"
+          },
+          {
+            "id": "midiFile",
+            "resource": ""
+          },
+          {
+            "id": "polyphony",
+            "expression": "10"
+          },
+          {
+            "id": "lowPitch",
+            "expression": "0 nn"
+          },
+          {
+            "id": "highPitch",
+            "expression": "127 nn"
+          },
+          {
+            "id": "script",
+            "text": "self keyDownAt: 0 s duration: 1.4 s frequency: 55 nn velocity: 0.8. self keyDownAt: 0 s duration: 1.4 s frequency: 59 nn velocity: 0.8. self keyDownAt: 0 s duration: 1.4 s frequency: 62 nn velocity: 0.8. self keyDownAt: 0 s duration: 1.4 s frequency: 67 nn velocity: 0.8. self keyDownAt: 0 s duration: 1.4 s frequency: 31 nn velocity: 0.8. self keyDownAt: 1.5 s duration: 1.4 s frequency: 57 nn velocity: 0.8. self keyDownAt: 1.5 s duration: 1.4 s frequency: 60 nn velocity: 0.8. self keyDownAt: 1.5 s duration: 1.4 s frequency: 64 nn velocity: 0.8. self keyDownAt: 1.5 s duration: 1.4 s frequency: 69 nn velocity: 0.8. self keyDownAt: 1.5 s duration: 1.4 s frequency: 33 nn velocity: 0.8. self keyDownAt: 3 s duration: 1.4 s frequency: 53 nn velocity: 0.8. self keyDownAt: 3 s duration: 1.4 s frequency: 57 nn velocity: 0.8. self keyDownAt: 3 s duration: 1.4 s frequency: 60 nn velocity: 0.8. self keyDownAt: 3 s duration: 1.4 s frequency: 65 nn velocity: 0.8. self keyDownAt: 3 s duration: 1.4 s frequency: 29 nn velocity: 0.8. self keyDownAt: 4.5 s duration: 1.4 s frequency: 55 nn velocity: 0.8. self keyDownAt: 4.5 s duration: 1.4 s frequency: 59 nn velocity: 0.8. self keyDownAt: 4.5 s duration: 1.4 s frequency: 62 nn velocity: 0.8. self keyDownAt: 4.5 s duration: 1.4 s frequency: 65 nn velocity: 0.8. self keyDownAt: 4.5 s duration: 1.4 s frequency: 31 nn velocity: 0.8. self keyDownAt: 0.75 s duration: 0.5 s frequency: 74 nn velocity: 0.8. self keyDownAt: 1.35 s duration: 0.5 s frequency: 72 nn velocity: 0.8. self keyDownAt: 1.95 s duration: 0.5 s frequency: 71 nn velocity: 0.8. self keyDownAt: 2.55 s duration: 0.5 s frequency: 72 nn velocity: 0.8. self keyDownAt: 3.15 s duration: 0.5 s frequency: 74 nn velocity: 0.8. self keyDownAt: 3.75 s duration: 0.5 s frequency: 76 nn velocity: 0.8. self keyDownAt: 4.35 s duration: 0.5 s frequency: 77 nn velocity: 0.8. self keyDownAt: 4.95 s duration: 0.5 s frequency: 79 nn velocity: 0.8."
+          },
+          {
+            "id": "shared",
+            "boolean": false
+          }
+        ]
+      },
+      {
+        "id": "voices",
+        "typeId": "talas.mixerV2",
+        "parameters": [
+          {
+            "id": "left",
+            "expression": "1"
+          },
+          {
+            "id": "right",
+            "expression": "1"
+          }
+        ]
+      },
+      {
+        "id": "rotorTarget",
+        "typeId": "talas.constant",
+        "parameters": [
+          {
+            "id": "value",
+            "expression": "0.8 + (!Rotary * 5.9)"
+          }
+        ]
+      },
+      {
+        "id": "rotorSpeed",
+        "typeId": "talas.slew",
+        "parameters": [
+          {
+            "id": "riseTime",
+            "expression": "1.6 s"
+          },
+          {
+            "id": "fallTime",
+            "expression": "2.5 s"
+          }
+        ]
+      },
+      {
+        "id": "hornLfo",
+        "typeId": "talas.lfo",
+        "parameters": [
+          {
+            "id": "frequency",
+            "expression": "0.8 hz"
+          },
+          {
+            "id": "minimum",
+            "expression": "0.001"
+          },
+          {
+            "id": "maximum",
+            "expression": "0.0022"
+          }
+        ]
+      },
+      {
+        "id": "panLfo",
+        "typeId": "talas.lfo",
+        "parameters": [
+          {
+            "id": "frequency",
+            "expression": "0.8 hz"
+          },
+          {
+            "id": "minimum",
+            "expression": "0.15"
+          },
+          {
+            "id": "maximum",
+            "expression": "0.85"
+          }
+        ]
+      },
+      {
+        "id": "doppler",
+        "typeId": "talas.delayWithFeedback",
+        "parameters": [
+          {
+            "id": "delay",
+            "expression": "1.5 ms"
+          },
+          {
+            "id": "feedback",
+            "expression": "0"
+          },
+          {
+            "id": "mix",
+            "expression": "1"
+          },
+          {
+            "id": "interpolation",
+            "choice": "linear"
+          }
+        ]
+      },
+      {
+        "id": "rotor",
+        "typeId": "talas.pan",
+        "parameters": [
+          {
+            "id": "pan",
+            "expression": "0.5"
+          },
+          {
+            "id": "scale",
+            "expression": "1.2"
+          }
+        ]
+      },
+      {
+        "id": "output",
+        "typeId": "talas.audioOutput",
+        "parameters": []
+      }
+    ],
+    "connections": [
+      {
+        "fromNode": "keysVoice",
+        "fromPort": "audioOut",
+        "toNode": "keys",
+        "toPort": "audioIn"
+      },
+      {
+        "fromNode": "demoVoice",
+        "fromPort": "audioOut",
+        "toNode": "demo",
+        "toPort": "audioIn"
+      },
+      {
+        "fromNode": "keys",
+        "fromPort": "leftOut",
+        "toNode": "voices",
+        "toPort": "inputs"
+      },
+      {
+        "fromNode": "demo",
+        "fromPort": "leftOut",
+        "toNode": "voices",
+        "toPort": "inputs"
+      },
+      {
+        "fromNode": "keys",
+        "fromPort": "rightOut",
+        "toNode": "voices",
+        "toPort": "rightInputs"
+      },
+      {
+        "fromNode": "demo",
+        "fromPort": "rightOut",
+        "toNode": "voices",
+        "toPort": "rightInputs"
+      },
+      {
+        "fromNode": "rotorTarget",
+        "fromPort": "value",
+        "toNode": "rotorSpeed",
+        "toPort": "value"
+      },
+      {
+        "fromNode": "rotorSpeed",
+        "fromPort": "value",
+        "toNode": "hornLfo",
+        "toPort": "frequency"
+      },
+      {
+        "fromNode": "rotorSpeed",
+        "fromPort": "value",
+        "toNode": "panLfo",
+        "toPort": "frequency"
+      },
+      {
+        "fromNode": "voices",
+        "fromPort": "leftOut",
+        "toNode": "doppler",
+        "toPort": "audioIn"
+      },
+      {
+        "fromNode": "hornLfo",
+        "fromPort": "value",
+        "toNode": "doppler",
+        "toPort": "delay"
+      },
+      {
+        "fromNode": "doppler",
+        "fromPort": "audioOut",
+        "toNode": "rotor",
+        "toPort": "audioIn"
+      },
+      {
+        "fromNode": "panLfo",
+        "fromPort": "value",
+        "toNode": "rotor",
+        "toPort": "pan"
+      },
+      {
+        "fromNode": "rotor",
+        "fromPort": "leftOut",
+        "toNode": "output",
+        "toPort": "audioIn"
+      },
+      {
+        "fromNode": "rotor",
+        "fromPort": "rightOut",
+        "toNode": "output",
+        "toPort": "rightIn"
+      }
+    ]
+  }
+}

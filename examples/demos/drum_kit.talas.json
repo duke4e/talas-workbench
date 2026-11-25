@@ -1,0 +1,1134 @@
+{
+  "format": "talas.project",
+  "version": 156,
+  "expressionLanguage": "variablesV2",
+  "expressionDefinitions": [],
+  "variableLibrary": {
+    "version": 2,
+    "variables": []
+  },
+  "soundVariableLibrary": {
+    "version": 1,
+    "variables": []
+  },
+  "generatorLibrary": {
+    "version": 2,
+    "programs": []
+  },
+  "liveSetLibrary": {
+    "version": 1,
+    "liveSets": [],
+    "tools": []
+  },
+  "metadata": {
+    "title": "Drum Kit",
+    "description": "A synthesized kit on General MIDI-style keys: kick 35-37, snare 38-40, closed hats 41-43 and 46 open, toms 44-45 and 47 up (pitched by key). Every voice computes all drums and the key selects which one sounds. The demo plays four bars at 110 BPM."
+  },
+  "presentation": {
+    "version": 2,
+    "structureLayouts": [
+      {
+        "scope": {
+          "kind": "project"
+        },
+        "nodes": [
+          {
+            "nodeId": "keysVoice",
+            "x": 0,
+            "y": 0
+          },
+          {
+            "nodeId": "demoVoice",
+            "x": 0,
+            "y": 120
+          },
+          {
+            "nodeId": "keys",
+            "x": 220,
+            "y": 0
+          },
+          {
+            "nodeId": "demo",
+            "x": 220,
+            "y": 120
+          },
+          {
+            "nodeId": "voices",
+            "x": 440,
+            "y": 0
+          },
+          {
+            "nodeId": "output",
+            "x": 660,
+            "y": 0
+          }
+        ]
+      },
+      {
+        "scope": {
+          "kind": "soundDefinition",
+          "definitionId": "drumKitVoice"
+        },
+        "nodes": [
+          {
+            "nodeId": "kickPitchEnv",
+            "x": 0,
+            "y": 0
+          },
+          {
+            "nodeId": "kickPitch",
+            "x": 220,
+            "y": 0
+          },
+          {
+            "nodeId": "kick",
+            "x": 440,
+            "y": 0
+          },
+          {
+            "nodeId": "kickEnv",
+            "x": 0,
+            "y": 120
+          },
+          {
+            "nodeId": "kickAmp",
+            "x": 660,
+            "y": 0
+          },
+          {
+            "nodeId": "snareNoise",
+            "x": 0,
+            "y": 240
+          },
+          {
+            "nodeId": "snareFilter",
+            "x": 220,
+            "y": 120
+          },
+          {
+            "nodeId": "snareEnv",
+            "x": 0,
+            "y": 360
+          },
+          {
+            "nodeId": "snareAmp",
+            "x": 440,
+            "y": 120
+          },
+          {
+            "nodeId": "snareBody",
+            "x": 0,
+            "y": 480
+          },
+          {
+            "nodeId": "snareBodyEnv",
+            "x": 0,
+            "y": 600
+          },
+          {
+            "nodeId": "snareBodyAmp",
+            "x": 220,
+            "y": 240
+          },
+          {
+            "nodeId": "hatNoise",
+            "x": 0,
+            "y": 720
+          },
+          {
+            "nodeId": "hatFilter",
+            "x": 220,
+            "y": 360
+          },
+          {
+            "nodeId": "hatEnv",
+            "x": 0,
+            "y": 840
+          },
+          {
+            "nodeId": "hatAmp",
+            "x": 440,
+            "y": 240
+          },
+          {
+            "nodeId": "tomBendEnv",
+            "x": 0,
+            "y": 960
+          },
+          {
+            "nodeId": "tom",
+            "x": 220,
+            "y": 480
+          },
+          {
+            "nodeId": "tomEnv",
+            "x": 0,
+            "y": 1080
+          },
+          {
+            "nodeId": "tomAmp",
+            "x": 440,
+            "y": 360
+          },
+          {
+            "nodeId": "kit",
+            "x": 880,
+            "y": 0
+          }
+        ]
+      }
+    ],
+    "performanceControls": [
+      {
+        "controlId": "Tune",
+        "target": {
+          "kind": "eventValue",
+          "eventName": "Tune",
+          "domain": "scalar"
+        },
+        "kind": "fader",
+        "displayName": "Tune",
+        "x": 0,
+        "y": 0,
+        "visible": true,
+        "modulationSlots": []
+      },
+      {
+        "controlId": "Decay",
+        "target": {
+          "kind": "eventValue",
+          "eventName": "Decay",
+          "domain": "scalar"
+        },
+        "kind": "fader",
+        "displayName": "Decay",
+        "x": 140,
+        "y": 0,
+        "visible": true,
+        "modulationSlots": []
+      },
+      {
+        "controlId": "Snap",
+        "target": {
+          "kind": "eventValue",
+          "eventName": "Snap",
+          "domain": "scalar"
+        },
+        "kind": "fader",
+        "displayName": "Snare snap",
+        "x": 280,
+        "y": 0,
+        "visible": true,
+        "modulationSlots": []
+      },
+      {
+        "controlId": "HatTone",
+        "target": {
+          "kind": "eventValue",
+          "eventName": "HatTone",
+          "domain": "scalar"
+        },
+        "kind": "fader",
+        "displayName": "Hat tone (Hz)",
+        "x": 0,
+        "y": 160,
+        "visible": true,
+        "modulationSlots": []
+      },
+      {
+        "controlId": "Demo",
+        "target": {
+          "kind": "eventValue",
+          "eventName": "Demo",
+          "domain": "scalar"
+        },
+        "kind": "toggle",
+        "displayName": "Demo phrase",
+        "x": 140,
+        "y": 160,
+        "visible": true,
+        "modulationSlots": []
+      }
+    ],
+    "performanceMeters": []
+  },
+  "snapshotLibrary": {
+    "version": 1,
+    "banks": []
+  },
+  "sampleMapLibrary": {
+    "version": 1,
+    "maps": []
+  },
+  "virtualControls": [
+    {
+      "eventName": "Tune",
+      "domain": "scalar",
+      "kind": "fader",
+      "value": 1,
+      "minimum": 0.7,
+      "maximum": 1.5,
+      "widget": {
+        "style": "default",
+        "showNumber": true,
+        "label": "Tune",
+        "onColour": "",
+        "offColour": "",
+        "grid": 0,
+        "taper": "linear",
+        "tab": ""
+      }
+    },
+    {
+      "eventName": "Decay",
+      "domain": "scalar",
+      "kind": "fader",
+      "value": 1,
+      "minimum": 0.3,
+      "maximum": 2,
+      "widget": {
+        "style": "default",
+        "showNumber": true,
+        "label": "Decay",
+        "onColour": "",
+        "offColour": "",
+        "grid": 0,
+        "taper": "linear",
+        "tab": ""
+      }
+    },
+    {
+      "eventName": "Snap",
+      "domain": "scalar",
+      "kind": "fader",
+      "value": 0.6,
+      "minimum": 0,
+      "maximum": 1,
+      "widget": {
+        "style": "default",
+        "showNumber": true,
+        "label": "Snare snap",
+        "onColour": "",
+        "offColour": "",
+        "grid": 0,
+        "taper": "linear",
+        "tab": ""
+      }
+    },
+    {
+      "eventName": "HatTone",
+      "domain": "scalar",
+      "kind": "fader",
+      "value": 7000,
+      "minimum": 3000,
+      "maximum": 12000,
+      "widget": {
+        "style": "default",
+        "showNumber": true,
+        "label": "Hat tone (Hz)",
+        "onColour": "",
+        "offColour": "",
+        "grid": 0,
+        "taper": "log",
+        "tab": ""
+      }
+    },
+    {
+      "eventName": "Demo",
+      "domain": "scalar",
+      "kind": "toggle",
+      "value": 1,
+      "minimum": 0,
+      "maximum": 1,
+      "widget": {
+        "style": "default",
+        "showNumber": true,
+        "label": "Demo phrase",
+        "onColour": "",
+        "offColour": "",
+        "grid": 0,
+        "taper": "linear",
+        "tab": ""
+      }
+    }
+  ],
+  "assets": [],
+  "partialTrackEdits": [],
+  "timeline": {
+    "loop": {
+      "enabled": false,
+      "startSeconds": 0,
+      "endSeconds": 4
+    },
+    "musicalTime": {
+      "ticksPerQuarter": 960,
+      "tempo": [
+        {
+          "tick": 0,
+          "microsecondsPerQuarter": 500000
+        }
+      ],
+      "meter": [
+        {
+          "tick": 0,
+          "numerator": 4,
+          "denominator": 4
+        }
+      ]
+    },
+    "score": {
+      "tracks": [],
+      "clips": [],
+      "automation": [],
+      "markers": []
+    },
+    "eventValues": []
+  },
+  "deviceSettings": {
+    "configured": false,
+    "audioInputDevice": "",
+    "audioOutputDevice": "",
+    "sampleRate": 0,
+    "bufferSize": 0,
+    "inputChannels": [],
+    "outputChannels": [],
+    "midiInputDevices": [],
+    "transportSync": {
+      "sourceMode": "internal",
+      "sourceIdentifier": ""
+    },
+    "oscIngress": {
+      "enabled": false,
+      "port": 9000
+    },
+    "oscEgress": {
+      "enabled": false,
+      "port": 9001
+    }
+  },
+  "soundDefinitions": [
+    {
+      "id": "drumKitVoice",
+      "name": "Drum Voice",
+      "description": "One voice; the keys and demo MIDI Voices each play their own copies of it.",
+      "interfaceVersion": 1,
+      "inputs": [],
+      "outputs": [
+        {
+          "id": "audioOut",
+          "type": "audio",
+          "nodeId": "kit",
+          "nodePortId": "leftOut"
+        }
+      ],
+      "parameters": [],
+      "graph": {
+        "nodes": [
+          {
+            "id": "kickPitchEnv",
+            "typeId": "talas.adsr",
+            "parameters": [
+              {
+                "id": "attackTime",
+                "expression": "0.5 ms"
+              },
+              {
+                "id": "decayTime",
+                "expression": "45 ms"
+              },
+              {
+                "id": "sustainLevel",
+                "expression": "0"
+              },
+              {
+                "id": "releaseTime",
+                "expression": "10 ms"
+              },
+              {
+                "id": "gate",
+                "expression": "!KeyDown"
+              }
+            ]
+          },
+          {
+            "id": "kickPitch",
+            "typeId": "talas.setRange",
+            "parameters": [
+              {
+                "id": "oldMin",
+                "expression": "0"
+              },
+              {
+                "id": "oldMax",
+                "expression": "1"
+              },
+              {
+                "id": "newMin",
+                "expression": "44 * !Tune"
+              },
+              {
+                "id": "newMax",
+                "expression": "(44 * !Tune) + 190"
+              }
+            ]
+          },
+          {
+            "id": "kick",
+            "typeId": "talas.oscillator",
+            "parameters": [
+              {
+                "id": "frequency",
+                "expression": "50 hz"
+              },
+              {
+                "id": "amplitude",
+                "expression": "1"
+              }
+            ]
+          },
+          {
+            "id": "kickEnv",
+            "typeId": "talas.adsr",
+            "parameters": [
+              {
+                "id": "attackTime",
+                "expression": "0.5 ms"
+              },
+              {
+                "id": "decayTime",
+                "expression": "!Decay * 0.38 s"
+              },
+              {
+                "id": "sustainLevel",
+                "expression": "0"
+              },
+              {
+                "id": "releaseTime",
+                "expression": "60 ms"
+              },
+              {
+                "id": "gate",
+                "expression": "!KeyDown"
+              },
+              {
+                "id": "scale",
+                "expression": "if(!KeyPitch < 37.5 nn, 1, 0) * 0.55 * !KeyVelocity"
+              }
+            ]
+          },
+          {
+            "id": "kickAmp",
+            "typeId": "talas.vca",
+            "parameters": [
+              {
+                "id": "gain",
+                "expression": "1"
+              }
+            ]
+          },
+          {
+            "id": "snareNoise",
+            "typeId": "talas.noise",
+            "parameters": [
+              {
+                "id": "type",
+                "choice": "white"
+              },
+              {
+                "id": "scale",
+                "expression": "1"
+              }
+            ]
+          },
+          {
+            "id": "snareFilter",
+            "typeId": "talas.filter",
+            "parameters": [
+              {
+                "id": "type",
+                "choice": "highPass"
+              },
+              {
+                "id": "frequency",
+                "expression": "900 hz"
+              },
+              {
+                "id": "q",
+                "expression": "0.7"
+              },
+              {
+                "id": "order",
+                "expression": "2"
+              }
+            ]
+          },
+          {
+            "id": "snareEnv",
+            "typeId": "talas.adsr",
+            "parameters": [
+              {
+                "id": "attackTime",
+                "expression": "0.5 ms"
+              },
+              {
+                "id": "decayTime",
+                "expression": "!Decay * 0.16 s"
+              },
+              {
+                "id": "sustainLevel",
+                "expression": "0"
+              },
+              {
+                "id": "releaseTime",
+                "expression": "40 ms"
+              },
+              {
+                "id": "gate",
+                "expression": "!KeyDown"
+              },
+              {
+                "id": "scale",
+                "expression": "if(!KeyPitch < 37.5 nn, 0, if(!KeyPitch < 40.5 nn, 1, 0)) * !Snap * 0.35 * !KeyVelocity"
+              }
+            ]
+          },
+          {
+            "id": "snareAmp",
+            "typeId": "talas.vca",
+            "parameters": [
+              {
+                "id": "gain",
+                "expression": "1"
+              }
+            ]
+          },
+          {
+            "id": "snareBody",
+            "typeId": "talas.oscillator",
+            "parameters": [
+              {
+                "id": "frequency",
+                "expression": "!Tune * 185 hz"
+              },
+              {
+                "id": "amplitude",
+                "expression": "1"
+              }
+            ]
+          },
+          {
+            "id": "snareBodyEnv",
+            "typeId": "talas.adsr",
+            "parameters": [
+              {
+                "id": "attackTime",
+                "expression": "0.5 ms"
+              },
+              {
+                "id": "decayTime",
+                "expression": "!Decay * 0.07 s"
+              },
+              {
+                "id": "sustainLevel",
+                "expression": "0"
+              },
+              {
+                "id": "releaseTime",
+                "expression": "30 ms"
+              },
+              {
+                "id": "gate",
+                "expression": "!KeyDown"
+              },
+              {
+                "id": "scale",
+                "expression": "if(!KeyPitch < 37.5 nn, 0, if(!KeyPitch < 40.5 nn, 1, 0)) * 0.35 * !KeyVelocity"
+              }
+            ]
+          },
+          {
+            "id": "snareBodyAmp",
+            "typeId": "talas.vca",
+            "parameters": [
+              {
+                "id": "gain",
+                "expression": "1"
+              }
+            ]
+          },
+          {
+            "id": "hatNoise",
+            "typeId": "talas.noise",
+            "parameters": [
+              {
+                "id": "type",
+                "choice": "white"
+              },
+              {
+                "id": "scale",
+                "expression": "1"
+              }
+            ]
+          },
+          {
+            "id": "hatFilter",
+            "typeId": "talas.filter",
+            "parameters": [
+              {
+                "id": "type",
+                "choice": "highPass"
+              },
+              {
+                "id": "frequency",
+                "expression": "!HatTone * 1 hz"
+              },
+              {
+                "id": "q",
+                "expression": "0.7"
+              },
+              {
+                "id": "order",
+                "expression": "4"
+              }
+            ]
+          },
+          {
+            "id": "hatEnv",
+            "typeId": "talas.adsr",
+            "parameters": [
+              {
+                "id": "attackTime",
+                "expression": "0.3 ms"
+              },
+              {
+                "id": "decayTime",
+                "expression": "!Decay * if(!KeyPitch > 45.5 nn, 0.35, 0.045) * 1 s"
+              },
+              {
+                "id": "sustainLevel",
+                "expression": "0"
+              },
+              {
+                "id": "releaseTime",
+                "expression": "30 ms"
+              },
+              {
+                "id": "gate",
+                "expression": "!KeyDown"
+              },
+              {
+                "id": "scale",
+                "expression": "if(!KeyPitch < 40.5 nn, 0, if(!KeyPitch < 46.5 nn, if(!KeyPitch < 43.5 nn, 1, if(!KeyPitch > 45.5 nn, 1, 0)), 0)) * 0.22 * !KeyVelocity"
+              }
+            ]
+          },
+          {
+            "id": "hatAmp",
+            "typeId": "talas.vca",
+            "parameters": [
+              {
+                "id": "gain",
+                "expression": "1"
+              }
+            ]
+          },
+          {
+            "id": "tomBendEnv",
+            "typeId": "talas.adsr",
+            "parameters": [
+              {
+                "id": "attackTime",
+                "expression": "0.5 ms"
+              },
+              {
+                "id": "decayTime",
+                "expression": "90 ms"
+              },
+              {
+                "id": "sustainLevel",
+                "expression": "0"
+              },
+              {
+                "id": "releaseTime",
+                "expression": "20 ms"
+              },
+              {
+                "id": "gate",
+                "expression": "!KeyDown"
+              },
+              {
+                "id": "scale",
+                "expression": "0.45"
+              }
+            ]
+          },
+          {
+            "id": "tom",
+            "typeId": "talas.oscillator",
+            "parameters": [
+              {
+                "id": "frequency",
+                "expression": "!KeyPitch + ((!Tune - 1) * 12 nn)"
+              },
+              {
+                "id": "amplitude",
+                "expression": "1"
+              }
+            ]
+          },
+          {
+            "id": "tomEnv",
+            "typeId": "talas.adsr",
+            "parameters": [
+              {
+                "id": "attackTime",
+                "expression": "0.5 ms"
+              },
+              {
+                "id": "decayTime",
+                "expression": "!Decay * 0.42 s"
+              },
+              {
+                "id": "sustainLevel",
+                "expression": "0"
+              },
+              {
+                "id": "releaseTime",
+                "expression": "60 ms"
+              },
+              {
+                "id": "gate",
+                "expression": "!KeyDown"
+              },
+              {
+                "id": "scale",
+                "expression": "if(!KeyPitch < 40.5 nn, 0, if(!KeyPitch < 43.5 nn, 0, if(!KeyPitch < 45.5 nn, 1, if(!KeyPitch < 46.5 nn, 0, 1)))) * 0.45 * !KeyVelocity"
+              }
+            ]
+          },
+          {
+            "id": "tomAmp",
+            "typeId": "talas.vca",
+            "parameters": [
+              {
+                "id": "gain",
+                "expression": "1"
+              }
+            ]
+          },
+          {
+            "id": "kit",
+            "typeId": "talas.mixerV2",
+            "parameters": [
+              {
+                "id": "left",
+                "expression": "1"
+              },
+              {
+                "id": "right",
+                "expression": "1"
+              }
+            ]
+          }
+        ],
+        "connections": [
+          {
+            "fromNode": "kickPitchEnv",
+            "fromPort": "value",
+            "toNode": "kickPitch",
+            "toPort": "value"
+          },
+          {
+            "fromNode": "kickPitch",
+            "fromPort": "value",
+            "toNode": "kick",
+            "toPort": "frequency"
+          },
+          {
+            "fromNode": "kick",
+            "fromPort": "audioOut",
+            "toNode": "kickAmp",
+            "toPort": "audioIn"
+          },
+          {
+            "fromNode": "kickEnv",
+            "fromPort": "value",
+            "toNode": "kickAmp",
+            "toPort": "gain"
+          },
+          {
+            "fromNode": "snareNoise",
+            "fromPort": "audioOut",
+            "toNode": "snareFilter",
+            "toPort": "audioIn"
+          },
+          {
+            "fromNode": "snareFilter",
+            "fromPort": "audioOut",
+            "toNode": "snareAmp",
+            "toPort": "audioIn"
+          },
+          {
+            "fromNode": "snareEnv",
+            "fromPort": "value",
+            "toNode": "snareAmp",
+            "toPort": "gain"
+          },
+          {
+            "fromNode": "snareBody",
+            "fromPort": "audioOut",
+            "toNode": "snareBodyAmp",
+            "toPort": "audioIn"
+          },
+          {
+            "fromNode": "snareBodyEnv",
+            "fromPort": "value",
+            "toNode": "snareBodyAmp",
+            "toPort": "gain"
+          },
+          {
+            "fromNode": "hatNoise",
+            "fromPort": "audioOut",
+            "toNode": "hatFilter",
+            "toPort": "audioIn"
+          },
+          {
+            "fromNode": "hatFilter",
+            "fromPort": "audioOut",
+            "toNode": "hatAmp",
+            "toPort": "audioIn"
+          },
+          {
+            "fromNode": "hatEnv",
+            "fromPort": "value",
+            "toNode": "hatAmp",
+            "toPort": "gain"
+          },
+          {
+            "fromNode": "tomBendEnv",
+            "fromPort": "value",
+            "toNode": "tom",
+            "toPort": "pitchBend"
+          },
+          {
+            "fromNode": "tom",
+            "fromPort": "audioOut",
+            "toNode": "tomAmp",
+            "toPort": "audioIn"
+          },
+          {
+            "fromNode": "tomEnv",
+            "fromPort": "value",
+            "toNode": "tomAmp",
+            "toPort": "gain"
+          },
+          {
+            "fromNode": "kickAmp",
+            "fromPort": "audioOut",
+            "toNode": "kit",
+            "toPort": "inputs"
+          },
+          {
+            "fromNode": "snareAmp",
+            "fromPort": "audioOut",
+            "toNode": "kit",
+            "toPort": "inputs"
+          },
+          {
+            "fromNode": "snareBodyAmp",
+            "fromPort": "audioOut",
+            "toNode": "kit",
+            "toPort": "inputs"
+          },
+          {
+            "fromNode": "hatAmp",
+            "fromPort": "audioOut",
+            "toNode": "kit",
+            "toPort": "inputs"
+          },
+          {
+            "fromNode": "tomAmp",
+            "fromPort": "audioOut",
+            "toNode": "kit",
+            "toPort": "inputs"
+          }
+        ]
+      }
+    }
+  ],
+  "graph": {
+    "nodes": [
+      {
+        "id": "keysVoice",
+        "soundDefinitionId": "drumKitVoice",
+        "parameters": []
+      },
+      {
+        "id": "demoVoice",
+        "soundDefinitionId": "drumKitVoice",
+        "parameters": []
+      },
+      {
+        "id": "keys",
+        "typeId": "talas.midiVoice",
+        "parameters": [
+          {
+            "id": "left",
+            "expression": "1"
+          },
+          {
+            "id": "right",
+            "expression": "1"
+          },
+          {
+            "id": "channel",
+            "expression": "0"
+          },
+          {
+            "id": "source",
+            "text": "Live MIDI"
+          },
+          {
+            "id": "midiFile",
+            "resource": ""
+          },
+          {
+            "id": "polyphony",
+            "expression": "12"
+          },
+          {
+            "id": "lowPitch",
+            "expression": "0 nn"
+          },
+          {
+            "id": "highPitch",
+            "expression": "127 nn"
+          },
+          {
+            "id": "script",
+            "text": ""
+          },
+          {
+            "id": "shared",
+            "boolean": false
+          }
+        ]
+      },
+      {
+        "id": "demo",
+        "typeId": "talas.midiVoice",
+        "parameters": [
+          {
+            "id": "left",
+            "expression": "!Demo"
+          },
+          {
+            "id": "right",
+            "expression": "!Demo"
+          },
+          {
+            "id": "channel",
+            "expression": "0"
+          },
+          {
+            "id": "source",
+            "text": "Script"
+          },
+          {
+            "id": "midiFile",
+            "resource": ""
+          },
+          {
+            "id": "polyphony",
+            "expression": "12"
+          },
+          {
+            "id": "lowPitch",
+            "expression": "0 nn"
+          },
+          {
+            "id": "highPitch",
+            "expression": "127 nn"
+          },
+          {
+            "id": "script",
+            "text": "self keyDownAt: 0 s duration: 0.1 s frequency: 36 nn velocity: 0.95. self keyDownAt: 0.8182 s duration: 0.1 s frequency: 36 nn velocity: 0.95. self keyDownAt: 1.3636 s duration: 0.1 s frequency: 36 nn velocity: 0.95. self keyDownAt: 0.5455 s duration: 0.1 s frequency: 38 nn velocity: 0.9. self keyDownAt: 1.6364 s duration: 0.1 s frequency: 38 nn velocity: 0.9. self keyDownAt: 0 s duration: 0.05 s frequency: 42 nn velocity: 0.75. self keyDownAt: 0.2727 s duration: 0.05 s frequency: 42 nn velocity: 0.5. self keyDownAt: 0.5455 s duration: 0.05 s frequency: 42 nn velocity: 0.75. self keyDownAt: 0.8182 s duration: 0.05 s frequency: 42 nn velocity: 0.5. self keyDownAt: 1.0909 s duration: 0.05 s frequency: 42 nn velocity: 0.75. self keyDownAt: 1.3636 s duration: 0.05 s frequency: 42 nn velocity: 0.5. self keyDownAt: 1.6364 s duration: 0.05 s frequency: 42 nn velocity: 0.75. self keyDownAt: 1.9091 s duration: 0.05 s frequency: 42 nn velocity: 0.5. self keyDownAt: 2.1818 s duration: 0.1 s frequency: 36 nn velocity: 0.95. self keyDownAt: 2.5909 s duration: 0.1 s frequency: 36 nn velocity: 0.95. self keyDownAt: 3.5455 s duration: 0.1 s frequency: 36 nn velocity: 0.95. self keyDownAt: 2.7273 s duration: 0.1 s frequency: 38 nn velocity: 0.9. self keyDownAt: 3.8182 s duration: 0.1 s frequency: 38 nn velocity: 0.9. self keyDownAt: 2.1818 s duration: 0.05 s frequency: 42 nn velocity: 0.75. self keyDownAt: 2.4545 s duration: 0.05 s frequency: 42 nn velocity: 0.5. self keyDownAt: 2.7273 s duration: 0.05 s frequency: 42 nn velocity: 0.75. self keyDownAt: 3 s duration: 0.05 s frequency: 42 nn velocity: 0.5. self keyDownAt: 3.2727 s duration: 0.05 s frequency: 42 nn velocity: 0.75. self keyDownAt: 3.5455 s duration: 0.05 s frequency: 42 nn velocity: 0.5. self keyDownAt: 3.8182 s duration: 0.05 s frequency: 42 nn velocity: 0.75. self keyDownAt: 4.0909 s duration: 0.05 s frequency: 42 nn velocity: 0.5. self keyDownAt: 4.3636 s duration: 0.1 s frequency: 36 nn velocity: 0.95. self keyDownAt: 5.1818 s duration: 0.1 s frequency: 36 nn velocity: 0.95. self keyDownAt: 5.7273 s duration: 0.1 s frequency: 36 nn velocity: 0.95. self keyDownAt: 4.9091 s duration: 0.1 s frequency: 38 nn velocity: 0.9. self keyDownAt: 6 s duration: 0.1 s frequency: 38 nn velocity: 0.9. self keyDownAt: 4.3636 s duration: 0.05 s frequency: 42 nn velocity: 0.75. self keyDownAt: 4.6364 s duration: 0.05 s frequency: 42 nn velocity: 0.5. self keyDownAt: 4.9091 s duration: 0.05 s frequency: 42 nn velocity: 0.75. self keyDownAt: 5.1818 s duration: 0.05 s frequency: 42 nn velocity: 0.5. self keyDownAt: 5.4545 s duration: 0.05 s frequency: 42 nn velocity: 0.75. self keyDownAt: 5.7273 s duration: 0.05 s frequency: 42 nn velocity: 0.5. self keyDownAt: 6 s duration: 0.05 s frequency: 42 nn velocity: 0.75. self keyDownAt: 6.2727 s duration: 0.05 s frequency: 42 nn velocity: 0.5. self keyDownAt: 6.5455 s duration: 0.1 s frequency: 36 nn velocity: 0.95. self keyDownAt: 6.9545 s duration: 0.1 s frequency: 36 nn velocity: 0.95. self keyDownAt: 7.9091 s duration: 0.1 s frequency: 36 nn velocity: 0.95. self keyDownAt: 7.0909 s duration: 0.1 s frequency: 38 nn velocity: 0.9. self keyDownAt: 8.1818 s duration: 0.1 s frequency: 38 nn velocity: 0.9. self keyDownAt: 6.5455 s duration: 0.05 s frequency: 42 nn velocity: 0.75. self keyDownAt: 6.8182 s duration: 0.05 s frequency: 42 nn velocity: 0.5. self keyDownAt: 7.0909 s duration: 0.05 s frequency: 42 nn velocity: 0.75. self keyDownAt: 7.3636 s duration: 0.05 s frequency: 42 nn velocity: 0.5. self keyDownAt: 7.6364 s duration: 0.05 s frequency: 42 nn velocity: 0.75. self keyDownAt: 7.9091 s duration: 0.05 s frequency: 42 nn velocity: 0.5. self keyDownAt: 8.1818 s duration: 0.05 s frequency: 42 nn velocity: 0.75. self keyDownAt: 8.4545 s duration: 0.05 s frequency: 46 nn velocity: 0.5. self keyDownAt: 8.1818 s duration: 0.1 s frequency: 50 nn velocity: 0.8. self keyDownAt: 8.3182 s duration: 0.1 s frequency: 48 nn velocity: 0.8. self keyDownAt: 8.4545 s duration: 0.1 s frequency: 47 nn velocity: 0.8. self keyDownAt: 8.5909 s duration: 0.1 s frequency: 45 nn velocity: 0.8."
+          },
+          {
+            "id": "shared",
+            "boolean": false
+          }
+        ]
+      },
+      {
+        "id": "voices",
+        "typeId": "talas.mixerV2",
+        "parameters": [
+          {
+            "id": "left",
+            "expression": "1"
+          },
+          {
+            "id": "right",
+            "expression": "1"
+          }
+        ]
+      },
+      {
+        "id": "output",
+        "typeId": "talas.audioOutput",
+        "parameters": []
+      }
+    ],
+    "connections": [
+      {
+        "fromNode": "keysVoice",
+        "fromPort": "audioOut",
+        "toNode": "keys",
+        "toPort": "audioIn"
+      },
+      {
+        "fromNode": "demoVoice",
+        "fromPort": "audioOut",
+        "toNode": "demo",
+        "toPort": "audioIn"
+      },
+      {
+        "fromNode": "keys",
+        "fromPort": "leftOut",
+        "toNode": "voices",
+        "toPort": "inputs"
+      },
+      {
+        "fromNode": "demo",
+        "fromPort": "leftOut",
+        "toNode": "voices",
+        "toPort": "inputs"
+      },
+      {
+        "fromNode": "keys",
+        "fromPort": "rightOut",
+        "toNode": "voices",
+        "toPort": "rightInputs"
+      },
+      {
+        "fromNode": "demo",
+        "fromPort": "rightOut",
+        "toNode": "voices",
+        "toPort": "rightInputs"
+      },
+      {
+        "fromNode": "voices",
+        "fromPort": "leftOut",
+        "toNode": "output",
+        "toPort": "audioIn"
+      },
+      {
+        "fromNode": "voices",
+        "fromPort": "rightOut",
+        "toNode": "output",
+        "toPort": "rightIn"
+      }
+    ]
+  }
+}

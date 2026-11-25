@@ -1,0 +1,446 @@
+{
+  "format": "talas.project",
+  "version": 156,
+  "expressionLanguage": "variablesV2",
+  "expressionDefinitions": [],
+  "variableLibrary": {
+    "version": 2,
+    "variables": []
+  },
+  "soundVariableLibrary": {
+    "version": 1,
+    "variables": []
+  },
+  "generatorLibrary": {
+    "version": 2,
+    "programs": []
+  },
+  "liveSetLibrary": {
+    "version": 1,
+    "liveSets": [],
+    "tools": []
+  },
+  "metadata": {
+    "title": "Auto-Filter",
+    "description": "A resonant state-variable filter (low-pass through band-pass to high-pass) swept by an LFO from Cutoff up to three octaves higher; the right channel sweeps against the left. Mono input on channel 1, stereo output."
+  },
+  "presentation": {
+    "version": 2,
+    "structureLayouts": [
+      {
+        "scope": {
+          "kind": "project"
+        },
+        "nodes": [
+          {
+            "nodeId": "input",
+            "x": 0,
+            "y": 0
+          },
+          {
+            "nodeId": "lfoL",
+            "x": 0,
+            "y": 120
+          },
+          {
+            "nodeId": "lfoR",
+            "x": 0,
+            "y": 240
+          },
+          {
+            "nodeId": "filterL",
+            "x": 220,
+            "y": 0
+          },
+          {
+            "nodeId": "filterR",
+            "x": 220,
+            "y": 120
+          },
+          {
+            "nodeId": "output",
+            "x": 440,
+            "y": 0
+          }
+        ]
+      }
+    ],
+    "performanceControls": [
+      {
+        "controlId": "Rate",
+        "target": {
+          "kind": "eventValue",
+          "eventName": "Rate",
+          "domain": "scalar"
+        },
+        "kind": "fader",
+        "displayName": "Rate (Hz)",
+        "x": 0,
+        "y": 0,
+        "visible": true,
+        "modulationSlots": []
+      },
+      {
+        "controlId": "Depth",
+        "target": {
+          "kind": "eventValue",
+          "eventName": "Depth",
+          "domain": "scalar"
+        },
+        "kind": "fader",
+        "displayName": "Depth",
+        "x": 140,
+        "y": 0,
+        "visible": true,
+        "modulationSlots": []
+      },
+      {
+        "controlId": "Cutoff",
+        "target": {
+          "kind": "eventValue",
+          "eventName": "Cutoff",
+          "domain": "scalar"
+        },
+        "kind": "fader",
+        "displayName": "Cutoff (Hz)",
+        "x": 280,
+        "y": 0,
+        "visible": true,
+        "modulationSlots": []
+      },
+      {
+        "controlId": "Resonance",
+        "target": {
+          "kind": "eventValue",
+          "eventName": "Resonance",
+          "domain": "scalar"
+        },
+        "kind": "fader",
+        "displayName": "Resonance",
+        "x": 0,
+        "y": 160,
+        "visible": true,
+        "modulationSlots": []
+      },
+      {
+        "controlId": "Morph",
+        "target": {
+          "kind": "eventValue",
+          "eventName": "Morph",
+          "domain": "scalar"
+        },
+        "kind": "fader",
+        "displayName": "Morph (LP-BP-HP)",
+        "x": 140,
+        "y": 160,
+        "visible": true,
+        "modulationSlots": []
+      }
+    ],
+    "performanceMeters": []
+  },
+  "snapshotLibrary": {
+    "version": 1,
+    "banks": []
+  },
+  "sampleMapLibrary": {
+    "version": 1,
+    "maps": []
+  },
+  "virtualControls": [
+    {
+      "eventName": "Rate",
+      "domain": "scalar",
+      "kind": "fader",
+      "value": 0.5,
+      "minimum": 0.05,
+      "maximum": 8,
+      "widget": {
+        "style": "default",
+        "showNumber": true,
+        "label": "Rate (Hz)",
+        "onColour": "",
+        "offColour": "",
+        "grid": 0,
+        "taper": "log",
+        "tab": ""
+      }
+    },
+    {
+      "eventName": "Depth",
+      "domain": "scalar",
+      "kind": "fader",
+      "value": 0.8,
+      "minimum": 0,
+      "maximum": 1,
+      "widget": {
+        "style": "default",
+        "showNumber": true,
+        "label": "Depth",
+        "onColour": "",
+        "offColour": "",
+        "grid": 0,
+        "taper": "linear",
+        "tab": ""
+      }
+    },
+    {
+      "eventName": "Cutoff",
+      "domain": "scalar",
+      "kind": "fader",
+      "value": 300,
+      "minimum": 60,
+      "maximum": 4000,
+      "widget": {
+        "style": "default",
+        "showNumber": true,
+        "label": "Cutoff (Hz)",
+        "onColour": "",
+        "offColour": "",
+        "grid": 0,
+        "taper": "log",
+        "tab": ""
+      }
+    },
+    {
+      "eventName": "Resonance",
+      "domain": "scalar",
+      "kind": "fader",
+      "value": 0.6,
+      "minimum": 0,
+      "maximum": 0.9,
+      "widget": {
+        "style": "default",
+        "showNumber": true,
+        "label": "Resonance",
+        "onColour": "",
+        "offColour": "",
+        "grid": 0,
+        "taper": "linear",
+        "tab": ""
+      }
+    },
+    {
+      "eventName": "Morph",
+      "domain": "scalar",
+      "kind": "fader",
+      "value": 0,
+      "minimum": 0,
+      "maximum": 1,
+      "widget": {
+        "style": "default",
+        "showNumber": true,
+        "label": "Morph (LP-BP-HP)",
+        "onColour": "",
+        "offColour": "",
+        "grid": 0,
+        "taper": "linear",
+        "tab": ""
+      }
+    }
+  ],
+  "assets": [],
+  "partialTrackEdits": [],
+  "timeline": {
+    "loop": {
+      "enabled": false,
+      "startSeconds": 0,
+      "endSeconds": 4
+    },
+    "musicalTime": {
+      "ticksPerQuarter": 960,
+      "tempo": [
+        {
+          "tick": 0,
+          "microsecondsPerQuarter": 500000
+        }
+      ],
+      "meter": [
+        {
+          "tick": 0,
+          "numerator": 4,
+          "denominator": 4
+        }
+      ]
+    },
+    "score": {
+      "tracks": [],
+      "clips": [],
+      "automation": [],
+      "markers": []
+    },
+    "eventValues": []
+  },
+  "deviceSettings": {
+    "configured": false,
+    "audioInputDevice": "",
+    "audioOutputDevice": "",
+    "sampleRate": 0,
+    "bufferSize": 0,
+    "inputChannels": [],
+    "outputChannels": [],
+    "midiInputDevices": [],
+    "transportSync": {
+      "sourceMode": "internal",
+      "sourceIdentifier": ""
+    },
+    "oscIngress": {
+      "enabled": false,
+      "port": 9000
+    },
+    "oscEgress": {
+      "enabled": false,
+      "port": 9001
+    }
+  },
+  "soundDefinitions": [],
+  "graph": {
+    "nodes": [
+      {
+        "id": "input",
+        "typeId": "talas.audioInput",
+        "parameters": [
+          {
+            "id": "routing",
+            "choice": "monoSum"
+          },
+          {
+            "id": "channel1",
+            "boolean": true
+          }
+        ]
+      },
+      {
+        "id": "lfoL",
+        "typeId": "talas.lfo",
+        "parameters": [
+          {
+            "id": "frequency",
+            "expression": "!Rate * 1 hz"
+          },
+          {
+            "id": "minimum",
+            "expression": "!Cutoff"
+          },
+          {
+            "id": "maximum",
+            "expression": "clamp(!Cutoff * (1 + (!Depth * 7)), 20, 20000)"
+          }
+        ]
+      },
+      {
+        "id": "lfoR",
+        "typeId": "talas.lfo",
+        "parameters": [
+          {
+            "id": "frequency",
+            "expression": "!Rate * 1 hz"
+          },
+          {
+            "id": "minimum",
+            "expression": "clamp(!Cutoff * (1 + (!Depth * 7)), 20, 20000)"
+          },
+          {
+            "id": "maximum",
+            "expression": "!Cutoff"
+          }
+        ]
+      },
+      {
+        "id": "filterL",
+        "typeId": "talas.morphFilter",
+        "parameters": [
+          {
+            "id": "cutoff",
+            "expression": "1000 hz"
+          },
+          {
+            "id": "resonance",
+            "expression": "!Resonance"
+          },
+          {
+            "id": "morph",
+            "expression": "!Morph"
+          },
+          {
+            "id": "drive",
+            "expression": "0"
+          },
+          {
+            "id": "scale",
+            "expression": "1"
+          }
+        ]
+      },
+      {
+        "id": "filterR",
+        "typeId": "talas.morphFilter",
+        "parameters": [
+          {
+            "id": "cutoff",
+            "expression": "1000 hz"
+          },
+          {
+            "id": "resonance",
+            "expression": "!Resonance"
+          },
+          {
+            "id": "morph",
+            "expression": "!Morph"
+          },
+          {
+            "id": "drive",
+            "expression": "0"
+          },
+          {
+            "id": "scale",
+            "expression": "1"
+          }
+        ]
+      },
+      {
+        "id": "output",
+        "typeId": "talas.audioOutput",
+        "parameters": []
+      }
+    ],
+    "connections": [
+      {
+        "fromNode": "input",
+        "fromPort": "audioOut",
+        "toNode": "filterL",
+        "toPort": "audioIn"
+      },
+      {
+        "fromNode": "input",
+        "fromPort": "audioOut",
+        "toNode": "filterR",
+        "toPort": "audioIn"
+      },
+      {
+        "fromNode": "lfoL",
+        "fromPort": "value",
+        "toNode": "filterL",
+        "toPort": "cutoff"
+      },
+      {
+        "fromNode": "lfoR",
+        "fromPort": "value",
+        "toNode": "filterR",
+        "toPort": "cutoff"
+      },
+      {
+        "fromNode": "filterL",
+        "fromPort": "audioOut",
+        "toNode": "output",
+        "toPort": "audioIn"
+      },
+      {
+        "fromNode": "filterR",
+        "fromPort": "audioOut",
+        "toNode": "output",
+        "toPort": "rightIn"
+      }
+    ]
+  }
+}

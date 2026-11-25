@@ -1,0 +1,1037 @@
+{
+  "format": "talas.project",
+  "version": 156,
+  "expressionLanguage": "variablesV2",
+  "expressionDefinitions": [],
+  "variableLibrary": {
+    "version": 2,
+    "variables": []
+  },
+  "soundVariableLibrary": {
+    "version": 1,
+    "variables": []
+  },
+  "generatorLibrary": {
+    "version": 2,
+    "programs": []
+  },
+  "liveSetLibrary": {
+    "version": 1,
+    "liveSets": [],
+    "tools": []
+  },
+  "metadata": {
+    "title": "Hall Reverb",
+    "description": "A stereo Schroeder-Moorer hall: pre-delay and damping feed four parallel comb filters and two diffusing all-passes per channel, with different delays left and right. Mono input on channel 1, stereo output."
+  },
+  "presentation": {
+    "version": 2,
+    "structureLayouts": [
+      {
+        "scope": {
+          "kind": "project"
+        },
+        "nodes": [
+          {
+            "nodeId": "input",
+            "x": 0,
+            "y": 0
+          },
+          {
+            "nodeId": "preDelay",
+            "x": 220,
+            "y": 0
+          },
+          {
+            "nodeId": "damping",
+            "x": 440,
+            "y": 0
+          },
+          {
+            "nodeId": "combsL",
+            "x": 880,
+            "y": 0
+          },
+          {
+            "nodeId": "combL1",
+            "x": 660,
+            "y": 0
+          },
+          {
+            "nodeId": "combL2",
+            "x": 660,
+            "y": 120
+          },
+          {
+            "nodeId": "combL3",
+            "x": 660,
+            "y": 240
+          },
+          {
+            "nodeId": "combL4",
+            "x": 660,
+            "y": 360
+          },
+          {
+            "nodeId": "diffuseL1",
+            "x": 1100,
+            "y": 0
+          },
+          {
+            "nodeId": "diffuseL2",
+            "x": 1320,
+            "y": 0
+          },
+          {
+            "nodeId": "combsR",
+            "x": 880,
+            "y": 120
+          },
+          {
+            "nodeId": "combR1",
+            "x": 660,
+            "y": 480
+          },
+          {
+            "nodeId": "combR2",
+            "x": 660,
+            "y": 600
+          },
+          {
+            "nodeId": "combR3",
+            "x": 660,
+            "y": 720
+          },
+          {
+            "nodeId": "combR4",
+            "x": 660,
+            "y": 840
+          },
+          {
+            "nodeId": "diffuseR1",
+            "x": 1100,
+            "y": 120
+          },
+          {
+            "nodeId": "diffuseR2",
+            "x": 1320,
+            "y": 120
+          },
+          {
+            "nodeId": "mix",
+            "x": 1540,
+            "y": 0
+          },
+          {
+            "nodeId": "output",
+            "x": 1760,
+            "y": 0
+          }
+        ]
+      }
+    ],
+    "performanceControls": [
+      {
+        "controlId": "Decay",
+        "target": {
+          "kind": "eventValue",
+          "eventName": "Decay",
+          "domain": "scalar"
+        },
+        "kind": "fader",
+        "displayName": "Decay (s)",
+        "x": 0,
+        "y": 0,
+        "visible": true,
+        "modulationSlots": []
+      },
+      {
+        "controlId": "Size",
+        "target": {
+          "kind": "eventValue",
+          "eventName": "Size",
+          "domain": "scalar"
+        },
+        "kind": "fader",
+        "displayName": "Size",
+        "x": 140,
+        "y": 0,
+        "visible": true,
+        "modulationSlots": []
+      },
+      {
+        "controlId": "Damping",
+        "target": {
+          "kind": "eventValue",
+          "eventName": "Damping",
+          "domain": "scalar"
+        },
+        "kind": "fader",
+        "displayName": "Damping (Hz)",
+        "x": 280,
+        "y": 0,
+        "visible": true,
+        "modulationSlots": []
+      },
+      {
+        "controlId": "PreDelay",
+        "target": {
+          "kind": "eventValue",
+          "eventName": "PreDelay",
+          "domain": "scalar"
+        },
+        "kind": "fader",
+        "displayName": "Pre-delay (s)",
+        "x": 0,
+        "y": 160,
+        "visible": true,
+        "modulationSlots": []
+      },
+      {
+        "controlId": "Mix",
+        "target": {
+          "kind": "eventValue",
+          "eventName": "Mix",
+          "domain": "scalar"
+        },
+        "kind": "fader",
+        "displayName": "Mix",
+        "x": 140,
+        "y": 160,
+        "visible": true,
+        "modulationSlots": []
+      }
+    ],
+    "performanceMeters": []
+  },
+  "snapshotLibrary": {
+    "version": 1,
+    "banks": []
+  },
+  "sampleMapLibrary": {
+    "version": 1,
+    "maps": []
+  },
+  "virtualControls": [
+    {
+      "eventName": "Decay",
+      "domain": "scalar",
+      "kind": "fader",
+      "value": 3,
+      "minimum": 0.3,
+      "maximum": 10,
+      "widget": {
+        "style": "default",
+        "showNumber": true,
+        "label": "Decay (s)",
+        "onColour": "",
+        "offColour": "",
+        "grid": 0,
+        "taper": "log",
+        "tab": ""
+      }
+    },
+    {
+      "eventName": "Size",
+      "domain": "scalar",
+      "kind": "fader",
+      "value": 1,
+      "minimum": 0.3,
+      "maximum": 1,
+      "widget": {
+        "style": "default",
+        "showNumber": true,
+        "label": "Size",
+        "onColour": "",
+        "offColour": "",
+        "grid": 0,
+        "taper": "linear",
+        "tab": ""
+      }
+    },
+    {
+      "eventName": "Damping",
+      "domain": "scalar",
+      "kind": "fader",
+      "value": 6000,
+      "minimum": 1000,
+      "maximum": 16000,
+      "widget": {
+        "style": "default",
+        "showNumber": true,
+        "label": "Damping (Hz)",
+        "onColour": "",
+        "offColour": "",
+        "grid": 0,
+        "taper": "log",
+        "tab": ""
+      }
+    },
+    {
+      "eventName": "PreDelay",
+      "domain": "scalar",
+      "kind": "fader",
+      "value": 0.02,
+      "minimum": 0,
+      "maximum": 0.2,
+      "widget": {
+        "style": "default",
+        "showNumber": true,
+        "label": "Pre-delay (s)",
+        "onColour": "",
+        "offColour": "",
+        "grid": 0,
+        "taper": "linear",
+        "tab": ""
+      }
+    },
+    {
+      "eventName": "Mix",
+      "domain": "scalar",
+      "kind": "fader",
+      "value": 0.4,
+      "minimum": 0,
+      "maximum": 1,
+      "widget": {
+        "style": "default",
+        "showNumber": true,
+        "label": "Mix",
+        "onColour": "",
+        "offColour": "",
+        "grid": 0,
+        "taper": "linear",
+        "tab": ""
+      }
+    }
+  ],
+  "assets": [],
+  "partialTrackEdits": [],
+  "timeline": {
+    "loop": {
+      "enabled": false,
+      "startSeconds": 0,
+      "endSeconds": 4
+    },
+    "musicalTime": {
+      "ticksPerQuarter": 960,
+      "tempo": [
+        {
+          "tick": 0,
+          "microsecondsPerQuarter": 500000
+        }
+      ],
+      "meter": [
+        {
+          "tick": 0,
+          "numerator": 4,
+          "denominator": 4
+        }
+      ]
+    },
+    "score": {
+      "tracks": [],
+      "clips": [],
+      "automation": [],
+      "markers": []
+    },
+    "eventValues": []
+  },
+  "deviceSettings": {
+    "configured": false,
+    "audioInputDevice": "",
+    "audioOutputDevice": "",
+    "sampleRate": 0,
+    "bufferSize": 0,
+    "inputChannels": [],
+    "outputChannels": [],
+    "midiInputDevices": [],
+    "transportSync": {
+      "sourceMode": "internal",
+      "sourceIdentifier": ""
+    },
+    "oscIngress": {
+      "enabled": false,
+      "port": 9000
+    },
+    "oscEgress": {
+      "enabled": false,
+      "port": 9001
+    }
+  },
+  "soundDefinitions": [],
+  "graph": {
+    "nodes": [
+      {
+        "id": "input",
+        "typeId": "talas.audioInput",
+        "parameters": [
+          {
+            "id": "routing",
+            "choice": "monoSum"
+          },
+          {
+            "id": "channel1",
+            "boolean": true
+          }
+        ]
+      },
+      {
+        "id": "preDelay",
+        "typeId": "talas.delayWithFeedback",
+        "parameters": [
+          {
+            "id": "delay",
+            "expression": "!PreDelay * 1 s"
+          },
+          {
+            "id": "feedback",
+            "expression": "0"
+          },
+          {
+            "id": "mix",
+            "expression": "1"
+          },
+          {
+            "id": "interpolation",
+            "choice": "linear"
+          },
+          {
+            "id": "smoothDelayChanges",
+            "boolean": true
+          }
+        ]
+      },
+      {
+        "id": "damping",
+        "typeId": "talas.filter",
+        "parameters": [
+          {
+            "id": "type",
+            "choice": "lowPass"
+          },
+          {
+            "id": "frequency",
+            "expression": "!Damping * 1 hz"
+          },
+          {
+            "id": "q",
+            "expression": "0.7"
+          },
+          {
+            "id": "order",
+            "expression": "1"
+          }
+        ]
+      },
+      {
+        "id": "combsL",
+        "typeId": "talas.mixerV2",
+        "parameters": [
+          {
+            "id": "left",
+            "expression": "0.25"
+          },
+          {
+            "id": "right",
+            "expression": "0.25"
+          }
+        ]
+      },
+      {
+        "id": "combL1",
+        "typeId": "talas.reverbSection",
+        "parameters": [
+          {
+            "id": "type",
+            "choice": "comb"
+          },
+          {
+            "id": "decayTime",
+            "expression": "!Decay * 1 s"
+          },
+          {
+            "id": "delay",
+            "expression": "29.7 ms"
+          },
+          {
+            "id": "delayScale",
+            "expression": "!Size"
+          },
+          {
+            "id": "scale",
+            "expression": "1"
+          },
+          {
+            "id": "interpolation",
+            "choice": "linear"
+          }
+        ]
+      },
+      {
+        "id": "combL2",
+        "typeId": "talas.reverbSection",
+        "parameters": [
+          {
+            "id": "type",
+            "choice": "comb"
+          },
+          {
+            "id": "decayTime",
+            "expression": "!Decay * 1 s"
+          },
+          {
+            "id": "delay",
+            "expression": "37.1 ms"
+          },
+          {
+            "id": "delayScale",
+            "expression": "!Size"
+          },
+          {
+            "id": "scale",
+            "expression": "1"
+          },
+          {
+            "id": "interpolation",
+            "choice": "linear"
+          }
+        ]
+      },
+      {
+        "id": "combL3",
+        "typeId": "talas.reverbSection",
+        "parameters": [
+          {
+            "id": "type",
+            "choice": "comb"
+          },
+          {
+            "id": "decayTime",
+            "expression": "!Decay * 1 s"
+          },
+          {
+            "id": "delay",
+            "expression": "41.1 ms"
+          },
+          {
+            "id": "delayScale",
+            "expression": "!Size"
+          },
+          {
+            "id": "scale",
+            "expression": "1"
+          },
+          {
+            "id": "interpolation",
+            "choice": "linear"
+          }
+        ]
+      },
+      {
+        "id": "combL4",
+        "typeId": "talas.reverbSection",
+        "parameters": [
+          {
+            "id": "type",
+            "choice": "comb"
+          },
+          {
+            "id": "decayTime",
+            "expression": "!Decay * 1 s"
+          },
+          {
+            "id": "delay",
+            "expression": "43.7 ms"
+          },
+          {
+            "id": "delayScale",
+            "expression": "!Size"
+          },
+          {
+            "id": "scale",
+            "expression": "1"
+          },
+          {
+            "id": "interpolation",
+            "choice": "linear"
+          }
+        ]
+      },
+      {
+        "id": "diffuseL1",
+        "typeId": "talas.reverbSection",
+        "parameters": [
+          {
+            "id": "type",
+            "choice": "allpass"
+          },
+          {
+            "id": "decayTime",
+            "expression": "0.08 s"
+          },
+          {
+            "id": "delay",
+            "expression": "5.0 ms"
+          },
+          {
+            "id": "delayScale",
+            "expression": "!Size"
+          },
+          {
+            "id": "scale",
+            "expression": "1"
+          },
+          {
+            "id": "interpolation",
+            "choice": "linear"
+          }
+        ]
+      },
+      {
+        "id": "diffuseL2",
+        "typeId": "talas.reverbSection",
+        "parameters": [
+          {
+            "id": "type",
+            "choice": "allpass"
+          },
+          {
+            "id": "decayTime",
+            "expression": "0.08 s"
+          },
+          {
+            "id": "delay",
+            "expression": "1.7 ms"
+          },
+          {
+            "id": "delayScale",
+            "expression": "!Size"
+          },
+          {
+            "id": "scale",
+            "expression": "1"
+          },
+          {
+            "id": "interpolation",
+            "choice": "linear"
+          }
+        ]
+      },
+      {
+        "id": "combsR",
+        "typeId": "talas.mixerV2",
+        "parameters": [
+          {
+            "id": "left",
+            "expression": "0.25"
+          },
+          {
+            "id": "right",
+            "expression": "0.25"
+          }
+        ]
+      },
+      {
+        "id": "combR1",
+        "typeId": "talas.reverbSection",
+        "parameters": [
+          {
+            "id": "type",
+            "choice": "comb"
+          },
+          {
+            "id": "decayTime",
+            "expression": "!Decay * 1 s"
+          },
+          {
+            "id": "delay",
+            "expression": "30.5 ms"
+          },
+          {
+            "id": "delayScale",
+            "expression": "!Size"
+          },
+          {
+            "id": "scale",
+            "expression": "1"
+          },
+          {
+            "id": "interpolation",
+            "choice": "linear"
+          }
+        ]
+      },
+      {
+        "id": "combR2",
+        "typeId": "talas.reverbSection",
+        "parameters": [
+          {
+            "id": "type",
+            "choice": "comb"
+          },
+          {
+            "id": "decayTime",
+            "expression": "!Decay * 1 s"
+          },
+          {
+            "id": "delay",
+            "expression": "36.3 ms"
+          },
+          {
+            "id": "delayScale",
+            "expression": "!Size"
+          },
+          {
+            "id": "scale",
+            "expression": "1"
+          },
+          {
+            "id": "interpolation",
+            "choice": "linear"
+          }
+        ]
+      },
+      {
+        "id": "combR3",
+        "typeId": "talas.reverbSection",
+        "parameters": [
+          {
+            "id": "type",
+            "choice": "comb"
+          },
+          {
+            "id": "decayTime",
+            "expression": "!Decay * 1 s"
+          },
+          {
+            "id": "delay",
+            "expression": "40.3 ms"
+          },
+          {
+            "id": "delayScale",
+            "expression": "!Size"
+          },
+          {
+            "id": "scale",
+            "expression": "1"
+          },
+          {
+            "id": "interpolation",
+            "choice": "linear"
+          }
+        ]
+      },
+      {
+        "id": "combR4",
+        "typeId": "talas.reverbSection",
+        "parameters": [
+          {
+            "id": "type",
+            "choice": "comb"
+          },
+          {
+            "id": "decayTime",
+            "expression": "!Decay * 1 s"
+          },
+          {
+            "id": "delay",
+            "expression": "44.9 ms"
+          },
+          {
+            "id": "delayScale",
+            "expression": "!Size"
+          },
+          {
+            "id": "scale",
+            "expression": "1"
+          },
+          {
+            "id": "interpolation",
+            "choice": "linear"
+          }
+        ]
+      },
+      {
+        "id": "diffuseR1",
+        "typeId": "talas.reverbSection",
+        "parameters": [
+          {
+            "id": "type",
+            "choice": "allpass"
+          },
+          {
+            "id": "decayTime",
+            "expression": "0.08 s"
+          },
+          {
+            "id": "delay",
+            "expression": "5.3 ms"
+          },
+          {
+            "id": "delayScale",
+            "expression": "!Size"
+          },
+          {
+            "id": "scale",
+            "expression": "1"
+          },
+          {
+            "id": "interpolation",
+            "choice": "linear"
+          }
+        ]
+      },
+      {
+        "id": "diffuseR2",
+        "typeId": "talas.reverbSection",
+        "parameters": [
+          {
+            "id": "type",
+            "choice": "allpass"
+          },
+          {
+            "id": "decayTime",
+            "expression": "0.08 s"
+          },
+          {
+            "id": "delay",
+            "expression": "1.9 ms"
+          },
+          {
+            "id": "delayScale",
+            "expression": "!Size"
+          },
+          {
+            "id": "scale",
+            "expression": "1"
+          },
+          {
+            "id": "interpolation",
+            "choice": "linear"
+          }
+        ]
+      },
+      {
+        "id": "mix",
+        "typeId": "talas.stereoMix4",
+        "parameters": [
+          {
+            "id": "left",
+            "expression": "1"
+          },
+          {
+            "id": "right",
+            "expression": "1"
+          },
+          {
+            "id": "pan1",
+            "expression": "0"
+          },
+          {
+            "id": "scale1",
+            "expression": "1 - !Mix"
+          },
+          {
+            "id": "pan2",
+            "expression": "0"
+          },
+          {
+            "id": "scale2",
+            "expression": "!Mix"
+          },
+          {
+            "id": "pan3",
+            "expression": "1"
+          },
+          {
+            "id": "scale3",
+            "expression": "!Mix"
+          },
+          {
+            "id": "pan4",
+            "expression": "1"
+          },
+          {
+            "id": "scale4",
+            "expression": "1 - !Mix"
+          }
+        ]
+      },
+      {
+        "id": "output",
+        "typeId": "talas.audioOutput",
+        "parameters": []
+      }
+    ],
+    "connections": [
+      {
+        "fromNode": "input",
+        "fromPort": "audioOut",
+        "toNode": "preDelay",
+        "toPort": "audioIn"
+      },
+      {
+        "fromNode": "preDelay",
+        "fromPort": "audioOut",
+        "toNode": "damping",
+        "toPort": "audioIn"
+      },
+      {
+        "fromNode": "damping",
+        "fromPort": "audioOut",
+        "toNode": "combL1",
+        "toPort": "audioIn"
+      },
+      {
+        "fromNode": "combL1",
+        "fromPort": "audioOut",
+        "toNode": "combsL",
+        "toPort": "inputs"
+      },
+      {
+        "fromNode": "damping",
+        "fromPort": "audioOut",
+        "toNode": "combL2",
+        "toPort": "audioIn"
+      },
+      {
+        "fromNode": "combL2",
+        "fromPort": "audioOut",
+        "toNode": "combsL",
+        "toPort": "inputs"
+      },
+      {
+        "fromNode": "damping",
+        "fromPort": "audioOut",
+        "toNode": "combL3",
+        "toPort": "audioIn"
+      },
+      {
+        "fromNode": "combL3",
+        "fromPort": "audioOut",
+        "toNode": "combsL",
+        "toPort": "inputs"
+      },
+      {
+        "fromNode": "damping",
+        "fromPort": "audioOut",
+        "toNode": "combL4",
+        "toPort": "audioIn"
+      },
+      {
+        "fromNode": "combL4",
+        "fromPort": "audioOut",
+        "toNode": "combsL",
+        "toPort": "inputs"
+      },
+      {
+        "fromNode": "combsL",
+        "fromPort": "leftOut",
+        "toNode": "diffuseL1",
+        "toPort": "audioIn"
+      },
+      {
+        "fromNode": "diffuseL1",
+        "fromPort": "audioOut",
+        "toNode": "diffuseL2",
+        "toPort": "audioIn"
+      },
+      {
+        "fromNode": "damping",
+        "fromPort": "audioOut",
+        "toNode": "combR1",
+        "toPort": "audioIn"
+      },
+      {
+        "fromNode": "combR1",
+        "fromPort": "audioOut",
+        "toNode": "combsR",
+        "toPort": "inputs"
+      },
+      {
+        "fromNode": "damping",
+        "fromPort": "audioOut",
+        "toNode": "combR2",
+        "toPort": "audioIn"
+      },
+      {
+        "fromNode": "combR2",
+        "fromPort": "audioOut",
+        "toNode": "combsR",
+        "toPort": "inputs"
+      },
+      {
+        "fromNode": "damping",
+        "fromPort": "audioOut",
+        "toNode": "combR3",
+        "toPort": "audioIn"
+      },
+      {
+        "fromNode": "combR3",
+        "fromPort": "audioOut",
+        "toNode": "combsR",
+        "toPort": "inputs"
+      },
+      {
+        "fromNode": "damping",
+        "fromPort": "audioOut",
+        "toNode": "combR4",
+        "toPort": "audioIn"
+      },
+      {
+        "fromNode": "combR4",
+        "fromPort": "audioOut",
+        "toNode": "combsR",
+        "toPort": "inputs"
+      },
+      {
+        "fromNode": "combsR",
+        "fromPort": "leftOut",
+        "toNode": "diffuseR1",
+        "toPort": "audioIn"
+      },
+      {
+        "fromNode": "diffuseR1",
+        "fromPort": "audioOut",
+        "toNode": "diffuseR2",
+        "toPort": "audioIn"
+      },
+      {
+        "fromNode": "input",
+        "fromPort": "audioOut",
+        "toNode": "mix",
+        "toPort": "in1"
+      },
+      {
+        "fromNode": "diffuseL2",
+        "fromPort": "audioOut",
+        "toNode": "mix",
+        "toPort": "in2"
+      },
+      {
+        "fromNode": "diffuseR2",
+        "fromPort": "audioOut",
+        "toNode": "mix",
+        "toPort": "in3"
+      },
+      {
+        "fromNode": "input",
+        "fromPort": "audioOut",
+        "toNode": "mix",
+        "toPort": "in4"
+      },
+      {
+        "fromNode": "mix",
+        "fromPort": "leftOut",
+        "toNode": "output",
+        "toPort": "audioIn"
+      },
+      {
+        "fromNode": "mix",
+        "fromPort": "rightOut",
+        "toNode": "output",
+        "toPort": "rightIn"
+      }
+    ]
+  }
+}

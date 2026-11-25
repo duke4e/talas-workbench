@@ -1,0 +1,818 @@
+{
+  "format": "talas.project",
+  "version": 156,
+  "expressionLanguage": "variablesV2",
+  "expressionDefinitions": [],
+  "variableLibrary": {
+    "version": 2,
+    "variables": []
+  },
+  "soundVariableLibrary": {
+    "version": 1,
+    "variables": []
+  },
+  "generatorLibrary": {
+    "version": 2,
+    "programs": []
+  },
+  "liveSetLibrary": {
+    "version": 1,
+    "liveSets": [],
+    "tools": []
+  },
+  "metadata": {
+    "title": "Morph Lead",
+    "description": "A monophonic lead on the Dual Morph Oscillator with live waveform morph, folding and phase modulation, a low-pass, and stereo echoes (0.3 s left, 0.45 s right)."
+  },
+  "presentation": {
+    "version": 2,
+    "structureLayouts": [
+      {
+        "scope": {
+          "kind": "project"
+        },
+        "nodes": [
+          {
+            "nodeId": "keysVoice",
+            "x": 0,
+            "y": 0
+          },
+          {
+            "nodeId": "demoVoice",
+            "x": 0,
+            "y": 120
+          },
+          {
+            "nodeId": "keys",
+            "x": 220,
+            "y": 0
+          },
+          {
+            "nodeId": "demo",
+            "x": 220,
+            "y": 120
+          },
+          {
+            "nodeId": "voices",
+            "x": 440,
+            "y": 0
+          },
+          {
+            "nodeId": "echoL",
+            "x": 660,
+            "y": 0
+          },
+          {
+            "nodeId": "echoR",
+            "x": 660,
+            "y": 120
+          },
+          {
+            "nodeId": "echoMix",
+            "x": 880,
+            "y": 0
+          },
+          {
+            "nodeId": "output",
+            "x": 1100,
+            "y": 0
+          }
+        ]
+      },
+      {
+        "scope": {
+          "kind": "soundDefinition",
+          "definitionId": "morphLeadVoice"
+        },
+        "nodes": [
+          {
+            "nodeId": "osc",
+            "x": 0,
+            "y": 0
+          },
+          {
+            "nodeId": "filter",
+            "x": 220,
+            "y": 0
+          },
+          {
+            "nodeId": "ampEnv",
+            "x": 0,
+            "y": 120
+          },
+          {
+            "nodeId": "amp",
+            "x": 440,
+            "y": 0
+          }
+        ]
+      }
+    ],
+    "performanceControls": [
+      {
+        "controlId": "Morph",
+        "target": {
+          "kind": "eventValue",
+          "eventName": "Morph",
+          "domain": "scalar"
+        },
+        "kind": "fader",
+        "displayName": "Morph",
+        "x": 0,
+        "y": 0,
+        "visible": true,
+        "modulationSlots": []
+      },
+      {
+        "controlId": "Fold",
+        "target": {
+          "kind": "eventValue",
+          "eventName": "Fold",
+          "domain": "scalar"
+        },
+        "kind": "fader",
+        "displayName": "Fold",
+        "x": 140,
+        "y": 0,
+        "visible": true,
+        "modulationSlots": []
+      },
+      {
+        "controlId": "PhaseMod",
+        "target": {
+          "kind": "eventValue",
+          "eventName": "PhaseMod",
+          "domain": "scalar"
+        },
+        "kind": "fader",
+        "displayName": "Phase mod",
+        "x": 280,
+        "y": 0,
+        "visible": true,
+        "modulationSlots": []
+      },
+      {
+        "controlId": "Cutoff",
+        "target": {
+          "kind": "eventValue",
+          "eventName": "Cutoff",
+          "domain": "scalar"
+        },
+        "kind": "fader",
+        "displayName": "Cutoff (Hz)",
+        "x": 0,
+        "y": 160,
+        "visible": true,
+        "modulationSlots": []
+      },
+      {
+        "controlId": "Echo",
+        "target": {
+          "kind": "eventValue",
+          "eventName": "Echo",
+          "domain": "scalar"
+        },
+        "kind": "fader",
+        "displayName": "Echo",
+        "x": 140,
+        "y": 160,
+        "visible": true,
+        "modulationSlots": []
+      },
+      {
+        "controlId": "Demo",
+        "target": {
+          "kind": "eventValue",
+          "eventName": "Demo",
+          "domain": "scalar"
+        },
+        "kind": "toggle",
+        "displayName": "Demo phrase",
+        "x": 280,
+        "y": 160,
+        "visible": true,
+        "modulationSlots": []
+      }
+    ],
+    "performanceMeters": []
+  },
+  "snapshotLibrary": {
+    "version": 1,
+    "banks": []
+  },
+  "sampleMapLibrary": {
+    "version": 1,
+    "maps": []
+  },
+  "virtualControls": [
+    {
+      "eventName": "Morph",
+      "domain": "scalar",
+      "kind": "fader",
+      "value": 0.4,
+      "minimum": 0,
+      "maximum": 1,
+      "widget": {
+        "style": "default",
+        "showNumber": true,
+        "label": "Morph",
+        "onColour": "",
+        "offColour": "",
+        "grid": 0,
+        "taper": "linear",
+        "tab": ""
+      }
+    },
+    {
+      "eventName": "Fold",
+      "domain": "scalar",
+      "kind": "fader",
+      "value": 0.25,
+      "minimum": 0,
+      "maximum": 1,
+      "widget": {
+        "style": "default",
+        "showNumber": true,
+        "label": "Fold",
+        "onColour": "",
+        "offColour": "",
+        "grid": 0,
+        "taper": "linear",
+        "tab": ""
+      }
+    },
+    {
+      "eventName": "PhaseMod",
+      "domain": "scalar",
+      "kind": "fader",
+      "value": 0.5,
+      "minimum": 0,
+      "maximum": 2,
+      "widget": {
+        "style": "default",
+        "showNumber": true,
+        "label": "Phase mod",
+        "onColour": "",
+        "offColour": "",
+        "grid": 0,
+        "taper": "linear",
+        "tab": ""
+      }
+    },
+    {
+      "eventName": "Cutoff",
+      "domain": "scalar",
+      "kind": "fader",
+      "value": 3000,
+      "minimum": 200,
+      "maximum": 12000,
+      "widget": {
+        "style": "default",
+        "showNumber": true,
+        "label": "Cutoff (Hz)",
+        "onColour": "",
+        "offColour": "",
+        "grid": 0,
+        "taper": "log",
+        "tab": ""
+      }
+    },
+    {
+      "eventName": "Echo",
+      "domain": "scalar",
+      "kind": "fader",
+      "value": 0.3,
+      "minimum": 0,
+      "maximum": 1,
+      "widget": {
+        "style": "default",
+        "showNumber": true,
+        "label": "Echo",
+        "onColour": "",
+        "offColour": "",
+        "grid": 0,
+        "taper": "linear",
+        "tab": ""
+      }
+    },
+    {
+      "eventName": "Demo",
+      "domain": "scalar",
+      "kind": "toggle",
+      "value": 1,
+      "minimum": 0,
+      "maximum": 1,
+      "widget": {
+        "style": "default",
+        "showNumber": true,
+        "label": "Demo phrase",
+        "onColour": "",
+        "offColour": "",
+        "grid": 0,
+        "taper": "linear",
+        "tab": ""
+      }
+    }
+  ],
+  "assets": [],
+  "partialTrackEdits": [],
+  "timeline": {
+    "loop": {
+      "enabled": false,
+      "startSeconds": 0,
+      "endSeconds": 4
+    },
+    "musicalTime": {
+      "ticksPerQuarter": 960,
+      "tempo": [
+        {
+          "tick": 0,
+          "microsecondsPerQuarter": 500000
+        }
+      ],
+      "meter": [
+        {
+          "tick": 0,
+          "numerator": 4,
+          "denominator": 4
+        }
+      ]
+    },
+    "score": {
+      "tracks": [],
+      "clips": [],
+      "automation": [],
+      "markers": []
+    },
+    "eventValues": []
+  },
+  "deviceSettings": {
+    "configured": false,
+    "audioInputDevice": "",
+    "audioOutputDevice": "",
+    "sampleRate": 0,
+    "bufferSize": 0,
+    "inputChannels": [],
+    "outputChannels": [],
+    "midiInputDevices": [],
+    "transportSync": {
+      "sourceMode": "internal",
+      "sourceIdentifier": ""
+    },
+    "oscIngress": {
+      "enabled": false,
+      "port": 9000
+    },
+    "oscEgress": {
+      "enabled": false,
+      "port": 9001
+    }
+  },
+  "soundDefinitions": [
+    {
+      "id": "morphLeadVoice",
+      "name": "Lead Voice",
+      "description": "One voice; the keys and demo MIDI Voices each play their own copies of it.",
+      "interfaceVersion": 1,
+      "inputs": [],
+      "outputs": [
+        {
+          "id": "audioOut",
+          "type": "audio",
+          "nodeId": "amp",
+          "nodePortId": "audioOut"
+        }
+      ],
+      "parameters": [],
+      "graph": {
+        "nodes": [
+          {
+            "id": "osc",
+            "typeId": "talas.dualMorphOscillator",
+            "parameters": [
+              {
+                "id": "frequency",
+                "expression": "!KeyPitch"
+              },
+              {
+                "id": "ratio",
+                "expression": "2"
+              },
+              {
+                "id": "phaseMod",
+                "expression": "!PhaseMod * 1"
+              },
+              {
+                "id": "morph",
+                "expression": "!Morph * 1"
+              },
+              {
+                "id": "fold",
+                "expression": "!Fold * 1"
+              },
+              {
+                "id": "amplitude",
+                "expression": "1"
+              }
+            ]
+          },
+          {
+            "id": "filter",
+            "typeId": "talas.morphFilter",
+            "parameters": [
+              {
+                "id": "cutoff",
+                "expression": "!Cutoff * 1 hz"
+              },
+              {
+                "id": "resonance",
+                "expression": "0.3"
+              },
+              {
+                "id": "morph",
+                "expression": "0"
+              },
+              {
+                "id": "drive",
+                "expression": "0"
+              },
+              {
+                "id": "scale",
+                "expression": "1"
+              }
+            ]
+          },
+          {
+            "id": "ampEnv",
+            "typeId": "talas.adsr",
+            "parameters": [
+              {
+                "id": "attackTime",
+                "expression": "6 ms"
+              },
+              {
+                "id": "decayTime",
+                "expression": "400 ms"
+              },
+              {
+                "id": "sustainLevel",
+                "expression": "0.75"
+              },
+              {
+                "id": "releaseTime",
+                "expression": "180 ms"
+              },
+              {
+                "id": "gate",
+                "expression": "!KeyDown"
+              },
+              {
+                "id": "scale",
+                "expression": "0.6 * !KeyVelocity"
+              }
+            ]
+          },
+          {
+            "id": "amp",
+            "typeId": "talas.vca",
+            "parameters": [
+              {
+                "id": "gain",
+                "expression": "1"
+              }
+            ]
+          }
+        ],
+        "connections": [
+          {
+            "fromNode": "osc",
+            "fromPort": "audioOut",
+            "toNode": "filter",
+            "toPort": "audioIn"
+          },
+          {
+            "fromNode": "filter",
+            "fromPort": "audioOut",
+            "toNode": "amp",
+            "toPort": "audioIn"
+          },
+          {
+            "fromNode": "ampEnv",
+            "fromPort": "value",
+            "toNode": "amp",
+            "toPort": "gain"
+          }
+        ]
+      }
+    }
+  ],
+  "graph": {
+    "nodes": [
+      {
+        "id": "keysVoice",
+        "soundDefinitionId": "morphLeadVoice",
+        "parameters": []
+      },
+      {
+        "id": "demoVoice",
+        "soundDefinitionId": "morphLeadVoice",
+        "parameters": []
+      },
+      {
+        "id": "keys",
+        "typeId": "talas.midiVoice",
+        "parameters": [
+          {
+            "id": "left",
+            "expression": "1"
+          },
+          {
+            "id": "right",
+            "expression": "1"
+          },
+          {
+            "id": "channel",
+            "expression": "0"
+          },
+          {
+            "id": "source",
+            "text": "Live MIDI"
+          },
+          {
+            "id": "midiFile",
+            "resource": ""
+          },
+          {
+            "id": "polyphony",
+            "expression": "1"
+          },
+          {
+            "id": "lowPitch",
+            "expression": "0 nn"
+          },
+          {
+            "id": "highPitch",
+            "expression": "127 nn"
+          },
+          {
+            "id": "script",
+            "text": ""
+          },
+          {
+            "id": "shared",
+            "boolean": false
+          }
+        ]
+      },
+      {
+        "id": "demo",
+        "typeId": "talas.midiVoice",
+        "parameters": [
+          {
+            "id": "left",
+            "expression": "!Demo"
+          },
+          {
+            "id": "right",
+            "expression": "!Demo"
+          },
+          {
+            "id": "channel",
+            "expression": "0"
+          },
+          {
+            "id": "source",
+            "text": "Script"
+          },
+          {
+            "id": "midiFile",
+            "resource": ""
+          },
+          {
+            "id": "polyphony",
+            "expression": "2"
+          },
+          {
+            "id": "lowPitch",
+            "expression": "0 nn"
+          },
+          {
+            "id": "highPitch",
+            "expression": "127 nn"
+          },
+          {
+            "id": "script",
+            "text": "self keyDownAt: 0 s duration: 0.4 s frequency: 72 nn velocity: 0.8. self keyDownAt: 0.5 s duration: 0.2 s frequency: 75 nn velocity: 0.8. self keyDownAt: 0.75 s duration: 0.2 s frequency: 77 nn velocity: 0.8. self keyDownAt: 1 s duration: 0.9 s frequency: 79 nn velocity: 0.8. self keyDownAt: 2 s duration: 0.2 s frequency: 77 nn velocity: 0.8. self keyDownAt: 2.25 s duration: 0.2 s frequency: 75 nn velocity: 0.8. self keyDownAt: 2.5 s duration: 0.4 s frequency: 74 nn velocity: 0.8. self keyDownAt: 3 s duration: 0.9 s frequency: 72 nn velocity: 0.8. self keyDownAt: 4 s duration: 0.4 s frequency: 70 nn velocity: 0.8. self keyDownAt: 4.5 s duration: 0.4 s frequency: 72 nn velocity: 0.8. self keyDownAt: 5 s duration: 0.2 s frequency: 75 nn velocity: 0.8. self keyDownAt: 5.25 s duration: 0.2 s frequency: 74 nn velocity: 0.8. self keyDownAt: 5.5 s duration: 1.2 s frequency: 72 nn velocity: 0.8."
+          },
+          {
+            "id": "shared",
+            "boolean": false
+          }
+        ]
+      },
+      {
+        "id": "voices",
+        "typeId": "talas.mixerV2",
+        "parameters": [
+          {
+            "id": "left",
+            "expression": "1"
+          },
+          {
+            "id": "right",
+            "expression": "1"
+          }
+        ]
+      },
+      {
+        "id": "echoL",
+        "typeId": "talas.delayWithFeedback",
+        "parameters": [
+          {
+            "id": "delay",
+            "expression": "0.3 s"
+          },
+          {
+            "id": "feedback",
+            "expression": "0.35"
+          },
+          {
+            "id": "mix",
+            "expression": "1"
+          },
+          {
+            "id": "interpolation",
+            "choice": "linear"
+          },
+          {
+            "id": "smoothDelayChanges",
+            "boolean": true
+          }
+        ]
+      },
+      {
+        "id": "echoR",
+        "typeId": "talas.delayWithFeedback",
+        "parameters": [
+          {
+            "id": "delay",
+            "expression": "(0.3 s) * 1.5"
+          },
+          {
+            "id": "feedback",
+            "expression": "0.35"
+          },
+          {
+            "id": "mix",
+            "expression": "1"
+          },
+          {
+            "id": "interpolation",
+            "choice": "linear"
+          },
+          {
+            "id": "smoothDelayChanges",
+            "boolean": true
+          }
+        ]
+      },
+      {
+        "id": "echoMix",
+        "typeId": "talas.stereoMix4",
+        "parameters": [
+          {
+            "id": "left",
+            "expression": "1"
+          },
+          {
+            "id": "right",
+            "expression": "1"
+          },
+          {
+            "id": "pan1",
+            "expression": "0"
+          },
+          {
+            "id": "scale1",
+            "expression": "1"
+          },
+          {
+            "id": "pan2",
+            "expression": "0"
+          },
+          {
+            "id": "scale2",
+            "expression": "0.6 * !Echo"
+          },
+          {
+            "id": "pan3",
+            "expression": "1"
+          },
+          {
+            "id": "scale3",
+            "expression": "0.6 * !Echo"
+          },
+          {
+            "id": "pan4",
+            "expression": "1"
+          },
+          {
+            "id": "scale4",
+            "expression": "1"
+          }
+        ]
+      },
+      {
+        "id": "output",
+        "typeId": "talas.audioOutput",
+        "parameters": []
+      }
+    ],
+    "connections": [
+      {
+        "fromNode": "keysVoice",
+        "fromPort": "audioOut",
+        "toNode": "keys",
+        "toPort": "audioIn"
+      },
+      {
+        "fromNode": "demoVoice",
+        "fromPort": "audioOut",
+        "toNode": "demo",
+        "toPort": "audioIn"
+      },
+      {
+        "fromNode": "keys",
+        "fromPort": "leftOut",
+        "toNode": "voices",
+        "toPort": "inputs"
+      },
+      {
+        "fromNode": "demo",
+        "fromPort": "leftOut",
+        "toNode": "voices",
+        "toPort": "inputs"
+      },
+      {
+        "fromNode": "keys",
+        "fromPort": "rightOut",
+        "toNode": "voices",
+        "toPort": "rightInputs"
+      },
+      {
+        "fromNode": "demo",
+        "fromPort": "rightOut",
+        "toNode": "voices",
+        "toPort": "rightInputs"
+      },
+      {
+        "fromNode": "voices",
+        "fromPort": "leftOut",
+        "toNode": "echoL",
+        "toPort": "audioIn"
+      },
+      {
+        "fromNode": "voices",
+        "fromPort": "rightOut",
+        "toNode": "echoR",
+        "toPort": "audioIn"
+      },
+      {
+        "fromNode": "voices",
+        "fromPort": "leftOut",
+        "toNode": "echoMix",
+        "toPort": "in1"
+      },
+      {
+        "fromNode": "echoL",
+        "fromPort": "audioOut",
+        "toNode": "echoMix",
+        "toPort": "in2"
+      },
+      {
+        "fromNode": "echoR",
+        "fromPort": "audioOut",
+        "toNode": "echoMix",
+        "toPort": "in3"
+      },
+      {
+        "fromNode": "voices",
+        "fromPort": "rightOut",
+        "toNode": "echoMix",
+        "toPort": "in4"
+      },
+      {
+        "fromNode": "echoMix",
+        "fromPort": "leftOut",
+        "toNode": "output",
+        "toPort": "audioIn"
+      },
+      {
+        "fromNode": "echoMix",
+        "fromPort": "rightOut",
+        "toNode": "output",
+        "toPort": "rightIn"
+      }
+    ]
+  }
+}

@@ -1,0 +1,529 @@
+{
+  "format": "talas.project",
+  "version": 156,
+  "expressionLanguage": "variablesV2",
+  "expressionDefinitions": [],
+  "variableLibrary": {
+    "version": 2,
+    "variables": []
+  },
+  "soundVariableLibrary": {
+    "version": 1,
+    "variables": []
+  },
+  "generatorLibrary": {
+    "version": 2,
+    "programs": []
+  },
+  "liveSetLibrary": {
+    "version": 1,
+    "liveSets": [],
+    "tools": []
+  },
+  "metadata": {
+    "title": "Stereo Delay",
+    "description": "Two feedback delay lines, the right one Spread times longer than the left, with a low-pass Tone on the echoes and a dry/wet Mix. Mono input on channel 1, stereo output."
+  },
+  "presentation": {
+    "version": 2,
+    "structureLayouts": [
+      {
+        "scope": {
+          "kind": "project"
+        },
+        "nodes": [
+          {
+            "nodeId": "input",
+            "x": 0,
+            "y": 0
+          },
+          {
+            "nodeId": "delayL",
+            "x": 220,
+            "y": 0
+          },
+          {
+            "nodeId": "delayR",
+            "x": 220,
+            "y": 120
+          },
+          {
+            "nodeId": "toneL",
+            "x": 440,
+            "y": 0
+          },
+          {
+            "nodeId": "toneR",
+            "x": 440,
+            "y": 120
+          },
+          {
+            "nodeId": "mix",
+            "x": 660,
+            "y": 0
+          },
+          {
+            "nodeId": "output",
+            "x": 880,
+            "y": 0
+          }
+        ]
+      }
+    ],
+    "performanceControls": [
+      {
+        "controlId": "Time",
+        "target": {
+          "kind": "eventValue",
+          "eventName": "Time",
+          "domain": "scalar"
+        },
+        "kind": "fader",
+        "displayName": "Time (s)",
+        "x": 0,
+        "y": 0,
+        "visible": true,
+        "modulationSlots": []
+      },
+      {
+        "controlId": "Feedback",
+        "target": {
+          "kind": "eventValue",
+          "eventName": "Feedback",
+          "domain": "scalar"
+        },
+        "kind": "fader",
+        "displayName": "Feedback",
+        "x": 140,
+        "y": 0,
+        "visible": true,
+        "modulationSlots": []
+      },
+      {
+        "controlId": "Spread",
+        "target": {
+          "kind": "eventValue",
+          "eventName": "Spread",
+          "domain": "scalar"
+        },
+        "kind": "fader",
+        "displayName": "Spread (R/L ratio)",
+        "x": 280,
+        "y": 0,
+        "visible": true,
+        "modulationSlots": []
+      },
+      {
+        "controlId": "Tone",
+        "target": {
+          "kind": "eventValue",
+          "eventName": "Tone",
+          "domain": "scalar"
+        },
+        "kind": "fader",
+        "displayName": "Tone (Hz)",
+        "x": 0,
+        "y": 160,
+        "visible": true,
+        "modulationSlots": []
+      },
+      {
+        "controlId": "Mix",
+        "target": {
+          "kind": "eventValue",
+          "eventName": "Mix",
+          "domain": "scalar"
+        },
+        "kind": "fader",
+        "displayName": "Mix",
+        "x": 140,
+        "y": 160,
+        "visible": true,
+        "modulationSlots": []
+      }
+    ],
+    "performanceMeters": []
+  },
+  "snapshotLibrary": {
+    "version": 1,
+    "banks": []
+  },
+  "sampleMapLibrary": {
+    "version": 1,
+    "maps": []
+  },
+  "virtualControls": [
+    {
+      "eventName": "Time",
+      "domain": "scalar",
+      "kind": "fader",
+      "value": 0.375,
+      "minimum": 0.05,
+      "maximum": 1.5,
+      "widget": {
+        "style": "default",
+        "showNumber": true,
+        "label": "Time (s)",
+        "onColour": "",
+        "offColour": "",
+        "grid": 0,
+        "taper": "log",
+        "tab": ""
+      }
+    },
+    {
+      "eventName": "Feedback",
+      "domain": "scalar",
+      "kind": "fader",
+      "value": 0.45,
+      "minimum": 0,
+      "maximum": 0.9,
+      "widget": {
+        "style": "default",
+        "showNumber": true,
+        "label": "Feedback",
+        "onColour": "",
+        "offColour": "",
+        "grid": 0,
+        "taper": "linear",
+        "tab": ""
+      }
+    },
+    {
+      "eventName": "Spread",
+      "domain": "scalar",
+      "kind": "fader",
+      "value": 1.5,
+      "minimum": 1,
+      "maximum": 2,
+      "widget": {
+        "style": "default",
+        "showNumber": true,
+        "label": "Spread (R/L ratio)",
+        "onColour": "",
+        "offColour": "",
+        "grid": 0,
+        "taper": "linear",
+        "tab": ""
+      }
+    },
+    {
+      "eventName": "Tone",
+      "domain": "scalar",
+      "kind": "fader",
+      "value": 5000,
+      "minimum": 500,
+      "maximum": 16000,
+      "widget": {
+        "style": "default",
+        "showNumber": true,
+        "label": "Tone (Hz)",
+        "onColour": "",
+        "offColour": "",
+        "grid": 0,
+        "taper": "log",
+        "tab": ""
+      }
+    },
+    {
+      "eventName": "Mix",
+      "domain": "scalar",
+      "kind": "fader",
+      "value": 0.35,
+      "minimum": 0,
+      "maximum": 1,
+      "widget": {
+        "style": "default",
+        "showNumber": true,
+        "label": "Mix",
+        "onColour": "",
+        "offColour": "",
+        "grid": 0,
+        "taper": "linear",
+        "tab": ""
+      }
+    }
+  ],
+  "assets": [],
+  "partialTrackEdits": [],
+  "timeline": {
+    "loop": {
+      "enabled": false,
+      "startSeconds": 0,
+      "endSeconds": 4
+    },
+    "musicalTime": {
+      "ticksPerQuarter": 960,
+      "tempo": [
+        {
+          "tick": 0,
+          "microsecondsPerQuarter": 500000
+        }
+      ],
+      "meter": [
+        {
+          "tick": 0,
+          "numerator": 4,
+          "denominator": 4
+        }
+      ]
+    },
+    "score": {
+      "tracks": [],
+      "clips": [],
+      "automation": [],
+      "markers": []
+    },
+    "eventValues": []
+  },
+  "deviceSettings": {
+    "configured": false,
+    "audioInputDevice": "",
+    "audioOutputDevice": "",
+    "sampleRate": 0,
+    "bufferSize": 0,
+    "inputChannels": [],
+    "outputChannels": [],
+    "midiInputDevices": [],
+    "transportSync": {
+      "sourceMode": "internal",
+      "sourceIdentifier": ""
+    },
+    "oscIngress": {
+      "enabled": false,
+      "port": 9000
+    },
+    "oscEgress": {
+      "enabled": false,
+      "port": 9001
+    }
+  },
+  "soundDefinitions": [],
+  "graph": {
+    "nodes": [
+      {
+        "id": "input",
+        "typeId": "talas.audioInput",
+        "parameters": [
+          {
+            "id": "routing",
+            "choice": "monoSum"
+          },
+          {
+            "id": "channel1",
+            "boolean": true
+          }
+        ]
+      },
+      {
+        "id": "delayL",
+        "typeId": "talas.delayWithFeedback",
+        "parameters": [
+          {
+            "id": "delay",
+            "expression": "!Time * 1 s"
+          },
+          {
+            "id": "feedback",
+            "expression": "!Feedback"
+          },
+          {
+            "id": "mix",
+            "expression": "1"
+          },
+          {
+            "id": "interpolation",
+            "choice": "linear"
+          },
+          {
+            "id": "smoothDelayChanges",
+            "boolean": true
+          }
+        ]
+      },
+      {
+        "id": "delayR",
+        "typeId": "talas.delayWithFeedback",
+        "parameters": [
+          {
+            "id": "delay",
+            "expression": "!Time * !Spread * 1 s"
+          },
+          {
+            "id": "feedback",
+            "expression": "!Feedback"
+          },
+          {
+            "id": "mix",
+            "expression": "1"
+          },
+          {
+            "id": "interpolation",
+            "choice": "linear"
+          },
+          {
+            "id": "smoothDelayChanges",
+            "boolean": true
+          }
+        ]
+      },
+      {
+        "id": "toneL",
+        "typeId": "talas.filter",
+        "parameters": [
+          {
+            "id": "type",
+            "choice": "lowPass"
+          },
+          {
+            "id": "frequency",
+            "expression": "!Tone * 1 hz"
+          },
+          {
+            "id": "q",
+            "expression": "0.7"
+          },
+          {
+            "id": "order",
+            "expression": "2"
+          }
+        ]
+      },
+      {
+        "id": "toneR",
+        "typeId": "talas.filter",
+        "parameters": [
+          {
+            "id": "type",
+            "choice": "lowPass"
+          },
+          {
+            "id": "frequency",
+            "expression": "!Tone * 1 hz"
+          },
+          {
+            "id": "q",
+            "expression": "0.7"
+          },
+          {
+            "id": "order",
+            "expression": "2"
+          }
+        ]
+      },
+      {
+        "id": "mix",
+        "typeId": "talas.stereoMix4",
+        "parameters": [
+          {
+            "id": "left",
+            "expression": "1"
+          },
+          {
+            "id": "right",
+            "expression": "1"
+          },
+          {
+            "id": "pan1",
+            "expression": "0"
+          },
+          {
+            "id": "scale1",
+            "expression": "1 - !Mix"
+          },
+          {
+            "id": "pan2",
+            "expression": "0"
+          },
+          {
+            "id": "scale2",
+            "expression": "!Mix"
+          },
+          {
+            "id": "pan3",
+            "expression": "1"
+          },
+          {
+            "id": "scale3",
+            "expression": "!Mix"
+          },
+          {
+            "id": "pan4",
+            "expression": "1"
+          },
+          {
+            "id": "scale4",
+            "expression": "1 - !Mix"
+          }
+        ]
+      },
+      {
+        "id": "output",
+        "typeId": "talas.audioOutput",
+        "parameters": []
+      }
+    ],
+    "connections": [
+      {
+        "fromNode": "input",
+        "fromPort": "audioOut",
+        "toNode": "delayL",
+        "toPort": "audioIn"
+      },
+      {
+        "fromNode": "input",
+        "fromPort": "audioOut",
+        "toNode": "delayR",
+        "toPort": "audioIn"
+      },
+      {
+        "fromNode": "delayL",
+        "fromPort": "audioOut",
+        "toNode": "toneL",
+        "toPort": "audioIn"
+      },
+      {
+        "fromNode": "delayR",
+        "fromPort": "audioOut",
+        "toNode": "toneR",
+        "toPort": "audioIn"
+      },
+      {
+        "fromNode": "input",
+        "fromPort": "audioOut",
+        "toNode": "mix",
+        "toPort": "in1"
+      },
+      {
+        "fromNode": "toneL",
+        "fromPort": "audioOut",
+        "toNode": "mix",
+        "toPort": "in2"
+      },
+      {
+        "fromNode": "toneR",
+        "fromPort": "audioOut",
+        "toNode": "mix",
+        "toPort": "in3"
+      },
+      {
+        "fromNode": "input",
+        "fromPort": "audioOut",
+        "toNode": "mix",
+        "toPort": "in4"
+      },
+      {
+        "fromNode": "mix",
+        "fromPort": "leftOut",
+        "toNode": "output",
+        "toPort": "audioIn"
+      },
+      {
+        "fromNode": "mix",
+        "fromPort": "rightOut",
+        "toNode": "output",
+        "toPort": "rightIn"
+      }
+    ]
+  }
+}

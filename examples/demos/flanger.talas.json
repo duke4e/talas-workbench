@@ -1,0 +1,429 @@
+{
+  "format": "talas.project",
+  "version": 156,
+  "expressionLanguage": "variablesV2",
+  "expressionDefinitions": [],
+  "variableLibrary": {
+    "version": 2,
+    "variables": []
+  },
+  "soundVariableLibrary": {
+    "version": 1,
+    "variables": []
+  },
+  "generatorLibrary": {
+    "version": 2,
+    "programs": []
+  },
+  "liveSetLibrary": {
+    "version": 1,
+    "liveSets": [],
+    "tools": []
+  },
+  "metadata": {
+    "title": "Flanger",
+    "description": "A short swept delay with feedback mixed against the dry signal: a moving comb filter. The two channels sweep at slightly different rates in opposite directions. Mono input on channel 1, stereo output."
+  },
+  "presentation": {
+    "version": 2,
+    "structureLayouts": [
+      {
+        "scope": {
+          "kind": "project"
+        },
+        "nodes": [
+          {
+            "nodeId": "input",
+            "x": 0,
+            "y": 0
+          },
+          {
+            "nodeId": "lfoL",
+            "x": 0,
+            "y": 120
+          },
+          {
+            "nodeId": "lfoR",
+            "x": 0,
+            "y": 240
+          },
+          {
+            "nodeId": "flangeL",
+            "x": 220,
+            "y": 0
+          },
+          {
+            "nodeId": "flangeR",
+            "x": 220,
+            "y": 120
+          },
+          {
+            "nodeId": "stereo",
+            "x": 0,
+            "y": 360
+          },
+          {
+            "nodeId": "output",
+            "x": 440,
+            "y": 0
+          }
+        ]
+      }
+    ],
+    "performanceControls": [
+      {
+        "controlId": "Rate",
+        "target": {
+          "kind": "eventValue",
+          "eventName": "Rate",
+          "domain": "scalar"
+        },
+        "kind": "fader",
+        "displayName": "Rate (Hz)",
+        "x": 0,
+        "y": 0,
+        "visible": true,
+        "modulationSlots": []
+      },
+      {
+        "controlId": "Depth",
+        "target": {
+          "kind": "eventValue",
+          "eventName": "Depth",
+          "domain": "scalar"
+        },
+        "kind": "fader",
+        "displayName": "Depth",
+        "x": 140,
+        "y": 0,
+        "visible": true,
+        "modulationSlots": []
+      },
+      {
+        "controlId": "Feedback",
+        "target": {
+          "kind": "eventValue",
+          "eventName": "Feedback",
+          "domain": "scalar"
+        },
+        "kind": "fader",
+        "displayName": "Feedback",
+        "x": 280,
+        "y": 0,
+        "visible": true,
+        "modulationSlots": []
+      },
+      {
+        "controlId": "Mix",
+        "target": {
+          "kind": "eventValue",
+          "eventName": "Mix",
+          "domain": "scalar"
+        },
+        "kind": "fader",
+        "displayName": "Mix",
+        "x": 0,
+        "y": 160,
+        "visible": true,
+        "modulationSlots": []
+      }
+    ],
+    "performanceMeters": []
+  },
+  "snapshotLibrary": {
+    "version": 1,
+    "banks": []
+  },
+  "sampleMapLibrary": {
+    "version": 1,
+    "maps": []
+  },
+  "virtualControls": [
+    {
+      "eventName": "Rate",
+      "domain": "scalar",
+      "kind": "fader",
+      "value": 0.25,
+      "minimum": 0.02,
+      "maximum": 5,
+      "widget": {
+        "style": "default",
+        "showNumber": true,
+        "label": "Rate (Hz)",
+        "onColour": "",
+        "offColour": "",
+        "grid": 0,
+        "taper": "log",
+        "tab": ""
+      }
+    },
+    {
+      "eventName": "Depth",
+      "domain": "scalar",
+      "kind": "fader",
+      "value": 0.7,
+      "minimum": 0,
+      "maximum": 1,
+      "widget": {
+        "style": "default",
+        "showNumber": true,
+        "label": "Depth",
+        "onColour": "",
+        "offColour": "",
+        "grid": 0,
+        "taper": "linear",
+        "tab": ""
+      }
+    },
+    {
+      "eventName": "Feedback",
+      "domain": "scalar",
+      "kind": "fader",
+      "value": 0.6,
+      "minimum": -0.85,
+      "maximum": 0.85,
+      "widget": {
+        "style": "default",
+        "showNumber": true,
+        "label": "Feedback",
+        "onColour": "",
+        "offColour": "",
+        "grid": 0,
+        "taper": "linear",
+        "tab": ""
+      }
+    },
+    {
+      "eventName": "Mix",
+      "domain": "scalar",
+      "kind": "fader",
+      "value": 1,
+      "minimum": 0,
+      "maximum": 1,
+      "widget": {
+        "style": "default",
+        "showNumber": true,
+        "label": "Mix",
+        "onColour": "",
+        "offColour": "",
+        "grid": 0,
+        "taper": "linear",
+        "tab": ""
+      }
+    }
+  ],
+  "assets": [],
+  "partialTrackEdits": [],
+  "timeline": {
+    "loop": {
+      "enabled": false,
+      "startSeconds": 0,
+      "endSeconds": 4
+    },
+    "musicalTime": {
+      "ticksPerQuarter": 960,
+      "tempo": [
+        {
+          "tick": 0,
+          "microsecondsPerQuarter": 500000
+        }
+      ],
+      "meter": [
+        {
+          "tick": 0,
+          "numerator": 4,
+          "denominator": 4
+        }
+      ]
+    },
+    "score": {
+      "tracks": [],
+      "clips": [],
+      "automation": [],
+      "markers": []
+    },
+    "eventValues": []
+  },
+  "deviceSettings": {
+    "configured": false,
+    "audioInputDevice": "",
+    "audioOutputDevice": "",
+    "sampleRate": 0,
+    "bufferSize": 0,
+    "inputChannels": [],
+    "outputChannels": [],
+    "midiInputDevices": [],
+    "transportSync": {
+      "sourceMode": "internal",
+      "sourceIdentifier": ""
+    },
+    "oscIngress": {
+      "enabled": false,
+      "port": 9000
+    },
+    "oscEgress": {
+      "enabled": false,
+      "port": 9001
+    }
+  },
+  "soundDefinitions": [],
+  "graph": {
+    "nodes": [
+      {
+        "id": "input",
+        "typeId": "talas.audioInput",
+        "parameters": [
+          {
+            "id": "routing",
+            "choice": "monoSum"
+          },
+          {
+            "id": "channel1",
+            "boolean": true
+          }
+        ]
+      },
+      {
+        "id": "lfoL",
+        "typeId": "talas.lfo",
+        "parameters": [
+          {
+            "id": "frequency",
+            "expression": "!Rate * 1 hz"
+          },
+          {
+            "id": "minimum",
+            "expression": "0.0005"
+          },
+          {
+            "id": "maximum",
+            "expression": "0.0005 + (!Depth * 0.006)"
+          }
+        ]
+      },
+      {
+        "id": "lfoR",
+        "typeId": "talas.lfo",
+        "parameters": [
+          {
+            "id": "frequency",
+            "expression": "!Rate * 0.87 hz"
+          },
+          {
+            "id": "minimum",
+            "expression": "0.0005 + (!Depth * 0.006)"
+          },
+          {
+            "id": "maximum",
+            "expression": "0.0005"
+          }
+        ]
+      },
+      {
+        "id": "flangeL",
+        "typeId": "talas.delayWithFeedback",
+        "parameters": [
+          {
+            "id": "delay",
+            "expression": "2 ms"
+          },
+          {
+            "id": "feedback",
+            "expression": "!Feedback"
+          },
+          {
+            "id": "mix",
+            "expression": "0.5 * !Mix"
+          },
+          {
+            "id": "interpolation",
+            "choice": "linear"
+          }
+        ]
+      },
+      {
+        "id": "flangeR",
+        "typeId": "talas.delayWithFeedback",
+        "parameters": [
+          {
+            "id": "delay",
+            "expression": "2 ms"
+          },
+          {
+            "id": "feedback",
+            "expression": "!Feedback"
+          },
+          {
+            "id": "mix",
+            "expression": "0.5 * !Mix"
+          },
+          {
+            "id": "interpolation",
+            "choice": "linear"
+          }
+        ]
+      },
+      {
+        "id": "stereo",
+        "typeId": "talas.level",
+        "parameters": [
+          {
+            "id": "left",
+            "expression": "0.75"
+          },
+          {
+            "id": "right",
+            "expression": "0.75"
+          },
+          {
+            "id": "noGain",
+            "boolean": false
+          }
+        ]
+      },
+      {
+        "id": "output",
+        "typeId": "talas.audioOutput",
+        "parameters": []
+      }
+    ],
+    "connections": [
+      {
+        "fromNode": "input",
+        "fromPort": "audioOut",
+        "toNode": "flangeL",
+        "toPort": "audioIn"
+      },
+      {
+        "fromNode": "input",
+        "fromPort": "audioOut",
+        "toNode": "flangeR",
+        "toPort": "audioIn"
+      },
+      {
+        "fromNode": "lfoL",
+        "fromPort": "value",
+        "toNode": "flangeL",
+        "toPort": "delay"
+      },
+      {
+        "fromNode": "lfoR",
+        "fromPort": "value",
+        "toNode": "flangeR",
+        "toPort": "delay"
+      },
+      {
+        "fromNode": "flangeL",
+        "fromPort": "audioOut",
+        "toNode": "output",
+        "toPort": "audioIn"
+      },
+      {
+        "fromNode": "flangeR",
+        "fromPort": "audioOut",
+        "toNode": "output",
+        "toPort": "rightIn"
+      }
+    ]
+  }
+}

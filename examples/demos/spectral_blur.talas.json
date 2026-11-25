@@ -1,0 +1,326 @@
+{
+  "format": "talas.project",
+  "version": 156,
+  "expressionLanguage": "variablesV2",
+  "expressionDefinitions": [],
+  "variableLibrary": {
+    "version": 2,
+    "variables": []
+  },
+  "soundVariableLibrary": {
+    "version": 1,
+    "variables": []
+  },
+  "generatorLibrary": {
+    "version": 2,
+    "programs": []
+  },
+  "liveSetLibrary": {
+    "version": 1,
+    "liveSets": [],
+    "tools": []
+  },
+  "metadata": {
+    "title": "Spectral Blur",
+    "description": "A CDP phase-vocoder process: each channel of the spectrum is averaged over Blur frames and only the Trace loudest channels are kept, smearing transients into washes. Mono input on channel 1."
+  },
+  "presentation": {
+    "version": 2,
+    "structureLayouts": [
+      {
+        "scope": {
+          "kind": "project"
+        },
+        "nodes": [
+          {
+            "nodeId": "input",
+            "x": 0,
+            "y": 0
+          },
+          {
+            "nodeId": "blur",
+            "x": 220,
+            "y": 0
+          },
+          {
+            "nodeId": "mix",
+            "x": 440,
+            "y": 0
+          },
+          {
+            "nodeId": "output",
+            "x": 660,
+            "y": 0
+          }
+        ]
+      }
+    ],
+    "performanceControls": [
+      {
+        "controlId": "Blur",
+        "target": {
+          "kind": "eventValue",
+          "eventName": "Blur",
+          "domain": "scalar"
+        },
+        "kind": "fader",
+        "displayName": "Blur (frames)",
+        "x": 0,
+        "y": 0,
+        "visible": true,
+        "modulationSlots": []
+      },
+      {
+        "controlId": "Trace",
+        "target": {
+          "kind": "eventValue",
+          "eventName": "Trace",
+          "domain": "scalar"
+        },
+        "kind": "fader",
+        "displayName": "Trace (partials)",
+        "x": 140,
+        "y": 0,
+        "visible": true,
+        "modulationSlots": []
+      },
+      {
+        "controlId": "Mix",
+        "target": {
+          "kind": "eventValue",
+          "eventName": "Mix",
+          "domain": "scalar"
+        },
+        "kind": "fader",
+        "displayName": "Mix",
+        "x": 280,
+        "y": 0,
+        "visible": true,
+        "modulationSlots": []
+      }
+    ],
+    "performanceMeters": []
+  },
+  "snapshotLibrary": {
+    "version": 1,
+    "banks": []
+  },
+  "sampleMapLibrary": {
+    "version": 1,
+    "maps": []
+  },
+  "virtualControls": [
+    {
+      "eventName": "Blur",
+      "domain": "scalar",
+      "kind": "fader",
+      "value": 16,
+      "minimum": 1,
+      "maximum": 32,
+      "widget": {
+        "style": "default",
+        "showNumber": true,
+        "label": "Blur (frames)",
+        "onColour": "",
+        "offColour": "",
+        "grid": 0,
+        "taper": "linear",
+        "tab": ""
+      }
+    },
+    {
+      "eventName": "Trace",
+      "domain": "scalar",
+      "kind": "fader",
+      "value": 64,
+      "minimum": 1,
+      "maximum": 512,
+      "widget": {
+        "style": "default",
+        "showNumber": true,
+        "label": "Trace (partials)",
+        "onColour": "",
+        "offColour": "",
+        "grid": 0,
+        "taper": "log",
+        "tab": ""
+      }
+    },
+    {
+      "eventName": "Mix",
+      "domain": "scalar",
+      "kind": "fader",
+      "value": 0.8,
+      "minimum": 0,
+      "maximum": 1,
+      "widget": {
+        "style": "default",
+        "showNumber": true,
+        "label": "Mix",
+        "onColour": "",
+        "offColour": "",
+        "grid": 0,
+        "taper": "linear",
+        "tab": ""
+      }
+    }
+  ],
+  "assets": [],
+  "partialTrackEdits": [],
+  "timeline": {
+    "loop": {
+      "enabled": false,
+      "startSeconds": 0,
+      "endSeconds": 4
+    },
+    "musicalTime": {
+      "ticksPerQuarter": 960,
+      "tempo": [
+        {
+          "tick": 0,
+          "microsecondsPerQuarter": 500000
+        }
+      ],
+      "meter": [
+        {
+          "tick": 0,
+          "numerator": 4,
+          "denominator": 4
+        }
+      ]
+    },
+    "score": {
+      "tracks": [],
+      "clips": [],
+      "automation": [],
+      "markers": []
+    },
+    "eventValues": []
+  },
+  "deviceSettings": {
+    "configured": false,
+    "audioInputDevice": "",
+    "audioOutputDevice": "",
+    "sampleRate": 0,
+    "bufferSize": 0,
+    "inputChannels": [],
+    "outputChannels": [],
+    "midiInputDevices": [],
+    "transportSync": {
+      "sourceMode": "internal",
+      "sourceIdentifier": ""
+    },
+    "oscIngress": {
+      "enabled": false,
+      "port": 9000
+    },
+    "oscEgress": {
+      "enabled": false,
+      "port": 9001
+    }
+  },
+  "soundDefinitions": [],
+  "graph": {
+    "nodes": [
+      {
+        "id": "input",
+        "typeId": "talas.audioInput",
+        "parameters": [
+          {
+            "id": "routing",
+            "choice": "monoSum"
+          },
+          {
+            "id": "channel1",
+            "boolean": true
+          }
+        ]
+      },
+      {
+        "id": "blur",
+        "typeId": "talas.cdpHiliteBlurTrace",
+        "parameters": [
+          {
+            "id": "points",
+            "expression": "1024"
+          },
+          {
+            "id": "overlap",
+            "expression": "3"
+          },
+          {
+            "id": "blur",
+            "expression": "!Blur"
+          },
+          {
+            "id": "trace",
+            "expression": "!Trace"
+          },
+          {
+            "id": "maximumBlur",
+            "expression": "32"
+          }
+        ]
+      },
+      {
+        "id": "mix",
+        "typeId": "talas.crossfade",
+        "parameters": [
+          {
+            "id": "pan",
+            "expression": "0.5"
+          },
+          {
+            "id": "scale",
+            "expression": "1.4"
+          },
+          {
+            "id": "fade",
+            "expression": "!Mix"
+          },
+          {
+            "id": "type",
+            "choice": "power"
+          }
+        ]
+      },
+      {
+        "id": "output",
+        "typeId": "talas.audioOutput",
+        "parameters": []
+      }
+    ],
+    "connections": [
+      {
+        "fromNode": "input",
+        "fromPort": "audioOut",
+        "toNode": "blur",
+        "toPort": "audioIn"
+      },
+      {
+        "fromNode": "input",
+        "fromPort": "audioOut",
+        "toNode": "mix",
+        "toPort": "snd1"
+      },
+      {
+        "fromNode": "blur",
+        "fromPort": "audioOut",
+        "toNode": "mix",
+        "toPort": "snd2"
+      },
+      {
+        "fromNode": "mix",
+        "fromPort": "leftOut",
+        "toNode": "output",
+        "toPort": "audioIn"
+      },
+      {
+        "fromNode": "mix",
+        "fromPort": "rightOut",
+        "toNode": "output",
+        "toPort": "rightIn"
+      }
+    ]
+  }
+}

@@ -1,0 +1,936 @@
+{
+  "format": "talas.project",
+  "version": 156,
+  "expressionLanguage": "variablesV2",
+  "expressionDefinitions": [],
+  "variableLibrary": {
+    "version": 2,
+    "variables": []
+  },
+  "soundVariableLibrary": {
+    "version": 1,
+    "variables": []
+  },
+  "generatorLibrary": {
+    "version": 2,
+    "programs": []
+  },
+  "liveSetLibrary": {
+    "version": 1,
+    "liveSets": [],
+    "tools": []
+  },
+  "metadata": {
+    "title": "Poly Pad",
+    "description": "An eight-voice pad: three detuned sawtooths and a sub triangle through a low-pass, slow attack and release, widened by a stereo chorus. The demo plays four sustained chords."
+  },
+  "presentation": {
+    "version": 2,
+    "structureLayouts": [
+      {
+        "scope": {
+          "kind": "project"
+        },
+        "nodes": [
+          {
+            "nodeId": "keysVoice",
+            "x": 0,
+            "y": 0
+          },
+          {
+            "nodeId": "demoVoice",
+            "x": 0,
+            "y": 120
+          },
+          {
+            "nodeId": "keys",
+            "x": 220,
+            "y": 0
+          },
+          {
+            "nodeId": "demo",
+            "x": 220,
+            "y": 120
+          },
+          {
+            "nodeId": "voices",
+            "x": 440,
+            "y": 0
+          },
+          {
+            "nodeId": "chorusLfoL",
+            "x": 0,
+            "y": 240
+          },
+          {
+            "nodeId": "chorusLfoR",
+            "x": 0,
+            "y": 360
+          },
+          {
+            "nodeId": "chorusL",
+            "x": 660,
+            "y": 0
+          },
+          {
+            "nodeId": "chorusR",
+            "x": 660,
+            "y": 120
+          },
+          {
+            "nodeId": "width",
+            "x": 880,
+            "y": 0
+          },
+          {
+            "nodeId": "output",
+            "x": 1100,
+            "y": 0
+          }
+        ]
+      },
+      {
+        "scope": {
+          "kind": "soundDefinition",
+          "definitionId": "polyPadVoice"
+        },
+        "nodes": [
+          {
+            "nodeId": "sawCentre",
+            "x": 0,
+            "y": 0
+          },
+          {
+            "nodeId": "sawUp",
+            "x": 0,
+            "y": 120
+          },
+          {
+            "nodeId": "sawDown",
+            "x": 0,
+            "y": 240
+          },
+          {
+            "nodeId": "subOctave",
+            "x": 0,
+            "y": 360
+          },
+          {
+            "nodeId": "oscMix",
+            "x": 220,
+            "y": 0
+          },
+          {
+            "nodeId": "filter",
+            "x": 440,
+            "y": 0
+          },
+          {
+            "nodeId": "ampEnv",
+            "x": 0,
+            "y": 480
+          },
+          {
+            "nodeId": "amp",
+            "x": 660,
+            "y": 0
+          }
+        ]
+      }
+    ],
+    "performanceControls": [
+      {
+        "controlId": "Brightness",
+        "target": {
+          "kind": "eventValue",
+          "eventName": "Brightness",
+          "domain": "scalar"
+        },
+        "kind": "fader",
+        "displayName": "Brightness (Hz)",
+        "x": 0,
+        "y": 0,
+        "visible": true,
+        "modulationSlots": []
+      },
+      {
+        "controlId": "Detune",
+        "target": {
+          "kind": "eventValue",
+          "eventName": "Detune",
+          "domain": "scalar"
+        },
+        "kind": "fader",
+        "displayName": "Detune (cents)",
+        "x": 140,
+        "y": 0,
+        "visible": true,
+        "modulationSlots": []
+      },
+      {
+        "controlId": "Attack",
+        "target": {
+          "kind": "eventValue",
+          "eventName": "Attack",
+          "domain": "scalar"
+        },
+        "kind": "fader",
+        "displayName": "Attack (s)",
+        "x": 280,
+        "y": 0,
+        "visible": true,
+        "modulationSlots": []
+      },
+      {
+        "controlId": "Release",
+        "target": {
+          "kind": "eventValue",
+          "eventName": "Release",
+          "domain": "scalar"
+        },
+        "kind": "fader",
+        "displayName": "Release (s)",
+        "x": 0,
+        "y": 160,
+        "visible": true,
+        "modulationSlots": []
+      },
+      {
+        "controlId": "Demo",
+        "target": {
+          "kind": "eventValue",
+          "eventName": "Demo",
+          "domain": "scalar"
+        },
+        "kind": "toggle",
+        "displayName": "Demo phrase",
+        "x": 140,
+        "y": 160,
+        "visible": true,
+        "modulationSlots": []
+      }
+    ],
+    "performanceMeters": []
+  },
+  "snapshotLibrary": {
+    "version": 1,
+    "banks": []
+  },
+  "sampleMapLibrary": {
+    "version": 1,
+    "maps": []
+  },
+  "virtualControls": [
+    {
+      "eventName": "Brightness",
+      "domain": "scalar",
+      "kind": "fader",
+      "value": 2200,
+      "minimum": 200,
+      "maximum": 12000,
+      "widget": {
+        "style": "default",
+        "showNumber": true,
+        "label": "Brightness (Hz)",
+        "onColour": "",
+        "offColour": "",
+        "grid": 0,
+        "taper": "log",
+        "tab": ""
+      }
+    },
+    {
+      "eventName": "Detune",
+      "domain": "scalar",
+      "kind": "fader",
+      "value": 12,
+      "minimum": 0,
+      "maximum": 40,
+      "widget": {
+        "style": "default",
+        "showNumber": true,
+        "label": "Detune (cents)",
+        "onColour": "",
+        "offColour": "",
+        "grid": 0,
+        "taper": "linear",
+        "tab": ""
+      }
+    },
+    {
+      "eventName": "Attack",
+      "domain": "scalar",
+      "kind": "fader",
+      "value": 0.8,
+      "minimum": 0.005,
+      "maximum": 4,
+      "widget": {
+        "style": "default",
+        "showNumber": true,
+        "label": "Attack (s)",
+        "onColour": "",
+        "offColour": "",
+        "grid": 0,
+        "taper": "log",
+        "tab": ""
+      }
+    },
+    {
+      "eventName": "Release",
+      "domain": "scalar",
+      "kind": "fader",
+      "value": 1.5,
+      "minimum": 0.05,
+      "maximum": 6,
+      "widget": {
+        "style": "default",
+        "showNumber": true,
+        "label": "Release (s)",
+        "onColour": "",
+        "offColour": "",
+        "grid": 0,
+        "taper": "log",
+        "tab": ""
+      }
+    },
+    {
+      "eventName": "Demo",
+      "domain": "scalar",
+      "kind": "toggle",
+      "value": 1,
+      "minimum": 0,
+      "maximum": 1,
+      "widget": {
+        "style": "default",
+        "showNumber": true,
+        "label": "Demo phrase",
+        "onColour": "",
+        "offColour": "",
+        "grid": 0,
+        "taper": "linear",
+        "tab": ""
+      }
+    }
+  ],
+  "assets": [],
+  "partialTrackEdits": [],
+  "timeline": {
+    "loop": {
+      "enabled": false,
+      "startSeconds": 0,
+      "endSeconds": 4
+    },
+    "musicalTime": {
+      "ticksPerQuarter": 960,
+      "tempo": [
+        {
+          "tick": 0,
+          "microsecondsPerQuarter": 500000
+        }
+      ],
+      "meter": [
+        {
+          "tick": 0,
+          "numerator": 4,
+          "denominator": 4
+        }
+      ]
+    },
+    "score": {
+      "tracks": [],
+      "clips": [],
+      "automation": [],
+      "markers": []
+    },
+    "eventValues": []
+  },
+  "deviceSettings": {
+    "configured": false,
+    "audioInputDevice": "",
+    "audioOutputDevice": "",
+    "sampleRate": 0,
+    "bufferSize": 0,
+    "inputChannels": [],
+    "outputChannels": [],
+    "midiInputDevices": [],
+    "transportSync": {
+      "sourceMode": "internal",
+      "sourceIdentifier": ""
+    },
+    "oscIngress": {
+      "enabled": false,
+      "port": 9000
+    },
+    "oscEgress": {
+      "enabled": false,
+      "port": 9001
+    }
+  },
+  "soundDefinitions": [
+    {
+      "id": "polyPadVoice",
+      "name": "Pad Voice",
+      "description": "One voice; the keys and demo MIDI Voices each play their own copies of it.",
+      "interfaceVersion": 1,
+      "inputs": [],
+      "outputs": [
+        {
+          "id": "audioOut",
+          "type": "audio",
+          "nodeId": "amp",
+          "nodePortId": "audioOut"
+        }
+      ],
+      "parameters": [],
+      "graph": {
+        "nodes": [
+          {
+            "id": "sawCentre",
+            "typeId": "talas.oscillator",
+            "parameters": [
+              {
+                "id": "frequency",
+                "expression": "!KeyPitch"
+              },
+              {
+                "id": "amplitude",
+                "expression": "0.095"
+              },
+              {
+                "id": "wavetable",
+                "resource": "Saw21"
+              }
+            ]
+          },
+          {
+            "id": "sawUp",
+            "typeId": "talas.oscillator",
+            "parameters": [
+              {
+                "id": "frequency",
+                "expression": "!KeyPitch + (!Detune * 0.01 nn)"
+              },
+              {
+                "id": "amplitude",
+                "expression": "0.08"
+              },
+              {
+                "id": "wavetable",
+                "resource": "Saw21"
+              }
+            ]
+          },
+          {
+            "id": "sawDown",
+            "typeId": "talas.oscillator",
+            "parameters": [
+              {
+                "id": "frequency",
+                "expression": "!KeyPitch - (!Detune * 0.01 nn)"
+              },
+              {
+                "id": "amplitude",
+                "expression": "0.08"
+              },
+              {
+                "id": "wavetable",
+                "resource": "Saw21"
+              }
+            ]
+          },
+          {
+            "id": "subOctave",
+            "typeId": "talas.oscillator",
+            "parameters": [
+              {
+                "id": "frequency",
+                "expression": "!KeyPitch - 12 nn"
+              },
+              {
+                "id": "amplitude",
+                "expression": "0.06"
+              },
+              {
+                "id": "wavetable",
+                "resource": "Triangle"
+              }
+            ]
+          },
+          {
+            "id": "oscMix",
+            "typeId": "talas.mixerV2",
+            "parameters": [
+              {
+                "id": "left",
+                "expression": "1"
+              },
+              {
+                "id": "right",
+                "expression": "1"
+              }
+            ]
+          },
+          {
+            "id": "filter",
+            "typeId": "talas.morphFilter",
+            "parameters": [
+              {
+                "id": "cutoff",
+                "expression": "!Brightness * 1 hz"
+              },
+              {
+                "id": "resonance",
+                "expression": "0.15"
+              },
+              {
+                "id": "morph",
+                "expression": "0"
+              },
+              {
+                "id": "drive",
+                "expression": "0"
+              },
+              {
+                "id": "scale",
+                "expression": "1"
+              }
+            ]
+          },
+          {
+            "id": "ampEnv",
+            "typeId": "talas.adsr",
+            "parameters": [
+              {
+                "id": "attackTime",
+                "expression": "!Attack * 1 s"
+              },
+              {
+                "id": "decayTime",
+                "expression": "1 s"
+              },
+              {
+                "id": "sustainLevel",
+                "expression": "0.8"
+              },
+              {
+                "id": "releaseTime",
+                "expression": "!Release * 1 s"
+              },
+              {
+                "id": "gate",
+                "expression": "!KeyDown"
+              },
+              {
+                "id": "scale",
+                "expression": "0.4 + (0.6 * !KeyVelocity)"
+              }
+            ]
+          },
+          {
+            "id": "amp",
+            "typeId": "talas.vca",
+            "parameters": [
+              {
+                "id": "gain",
+                "expression": "1"
+              }
+            ]
+          }
+        ],
+        "connections": [
+          {
+            "fromNode": "sawCentre",
+            "fromPort": "audioOut",
+            "toNode": "oscMix",
+            "toPort": "inputs"
+          },
+          {
+            "fromNode": "sawUp",
+            "fromPort": "audioOut",
+            "toNode": "oscMix",
+            "toPort": "inputs"
+          },
+          {
+            "fromNode": "sawDown",
+            "fromPort": "audioOut",
+            "toNode": "oscMix",
+            "toPort": "inputs"
+          },
+          {
+            "fromNode": "subOctave",
+            "fromPort": "audioOut",
+            "toNode": "oscMix",
+            "toPort": "inputs"
+          },
+          {
+            "fromNode": "oscMix",
+            "fromPort": "leftOut",
+            "toNode": "filter",
+            "toPort": "audioIn"
+          },
+          {
+            "fromNode": "filter",
+            "fromPort": "audioOut",
+            "toNode": "amp",
+            "toPort": "audioIn"
+          },
+          {
+            "fromNode": "ampEnv",
+            "fromPort": "value",
+            "toNode": "amp",
+            "toPort": "gain"
+          }
+        ]
+      }
+    }
+  ],
+  "graph": {
+    "nodes": [
+      {
+        "id": "keysVoice",
+        "soundDefinitionId": "polyPadVoice",
+        "parameters": []
+      },
+      {
+        "id": "demoVoice",
+        "soundDefinitionId": "polyPadVoice",
+        "parameters": []
+      },
+      {
+        "id": "keys",
+        "typeId": "talas.midiVoice",
+        "parameters": [
+          {
+            "id": "left",
+            "expression": "1"
+          },
+          {
+            "id": "right",
+            "expression": "1"
+          },
+          {
+            "id": "channel",
+            "expression": "0"
+          },
+          {
+            "id": "source",
+            "text": "Live MIDI"
+          },
+          {
+            "id": "midiFile",
+            "resource": ""
+          },
+          {
+            "id": "polyphony",
+            "expression": "8"
+          },
+          {
+            "id": "lowPitch",
+            "expression": "0 nn"
+          },
+          {
+            "id": "highPitch",
+            "expression": "127 nn"
+          },
+          {
+            "id": "script",
+            "text": ""
+          },
+          {
+            "id": "shared",
+            "boolean": false
+          }
+        ]
+      },
+      {
+        "id": "demo",
+        "typeId": "talas.midiVoice",
+        "parameters": [
+          {
+            "id": "left",
+            "expression": "!Demo"
+          },
+          {
+            "id": "right",
+            "expression": "!Demo"
+          },
+          {
+            "id": "channel",
+            "expression": "0"
+          },
+          {
+            "id": "source",
+            "text": "Script"
+          },
+          {
+            "id": "midiFile",
+            "resource": ""
+          },
+          {
+            "id": "polyphony",
+            "expression": "8"
+          },
+          {
+            "id": "lowPitch",
+            "expression": "0 nn"
+          },
+          {
+            "id": "highPitch",
+            "expression": "127 nn"
+          },
+          {
+            "id": "script",
+            "text": "self keyDownAt: 0 s duration: 1.5 s frequency: 48 nn velocity: 0.7. self keyDownAt: 0 s duration: 1.5 s frequency: 55 nn velocity: 0.7. self keyDownAt: 0 s duration: 1.5 s frequency: 64 nn velocity: 0.7. self keyDownAt: 0 s duration: 1.5 s frequency: 71 nn velocity: 0.7. self keyDownAt: 1.6 s duration: 1.5 s frequency: 45 nn velocity: 0.7. self keyDownAt: 1.6 s duration: 1.5 s frequency: 52 nn velocity: 0.7. self keyDownAt: 1.6 s duration: 1.5 s frequency: 60 nn velocity: 0.7. self keyDownAt: 1.6 s duration: 1.5 s frequency: 67 nn velocity: 0.7. self keyDownAt: 3.2 s duration: 1.5 s frequency: 41 nn velocity: 0.7. self keyDownAt: 3.2 s duration: 1.5 s frequency: 48 nn velocity: 0.7. self keyDownAt: 3.2 s duration: 1.5 s frequency: 57 nn velocity: 0.7. self keyDownAt: 3.2 s duration: 1.5 s frequency: 64 nn velocity: 0.7. self keyDownAt: 4.8 s duration: 1.5 s frequency: 43 nn velocity: 0.7. self keyDownAt: 4.8 s duration: 1.5 s frequency: 50 nn velocity: 0.7. self keyDownAt: 4.8 s duration: 1.5 s frequency: 59 nn velocity: 0.7. self keyDownAt: 4.8 s duration: 1.5 s frequency: 62 nn velocity: 0.7."
+          },
+          {
+            "id": "shared",
+            "boolean": false
+          }
+        ]
+      },
+      {
+        "id": "voices",
+        "typeId": "talas.mixerV2",
+        "parameters": [
+          {
+            "id": "left",
+            "expression": "1"
+          },
+          {
+            "id": "right",
+            "expression": "1"
+          }
+        ]
+      },
+      {
+        "id": "chorusLfoL",
+        "typeId": "talas.lfo",
+        "parameters": [
+          {
+            "id": "frequency",
+            "expression": "0.31 hz"
+          },
+          {
+            "id": "minimum",
+            "expression": "0.008"
+          },
+          {
+            "id": "maximum",
+            "expression": "0.016"
+          }
+        ]
+      },
+      {
+        "id": "chorusLfoR",
+        "typeId": "talas.lfo",
+        "parameters": [
+          {
+            "id": "frequency",
+            "expression": "0.43 hz"
+          },
+          {
+            "id": "minimum",
+            "expression": "0.016"
+          },
+          {
+            "id": "maximum",
+            "expression": "0.008"
+          }
+        ]
+      },
+      {
+        "id": "chorusL",
+        "typeId": "talas.delayWithFeedback",
+        "parameters": [
+          {
+            "id": "delay",
+            "expression": "12 ms"
+          },
+          {
+            "id": "feedback",
+            "expression": "0"
+          },
+          {
+            "id": "mix",
+            "expression": "1"
+          },
+          {
+            "id": "interpolation",
+            "choice": "linear"
+          }
+        ]
+      },
+      {
+        "id": "chorusR",
+        "typeId": "talas.delayWithFeedback",
+        "parameters": [
+          {
+            "id": "delay",
+            "expression": "12 ms"
+          },
+          {
+            "id": "feedback",
+            "expression": "0"
+          },
+          {
+            "id": "mix",
+            "expression": "1"
+          },
+          {
+            "id": "interpolation",
+            "choice": "linear"
+          }
+        ]
+      },
+      {
+        "id": "width",
+        "typeId": "talas.stereoMix4",
+        "parameters": [
+          {
+            "id": "left",
+            "expression": "1"
+          },
+          {
+            "id": "right",
+            "expression": "1"
+          },
+          {
+            "id": "pan1",
+            "expression": "0"
+          },
+          {
+            "id": "scale1",
+            "expression": "0.7"
+          },
+          {
+            "id": "pan2",
+            "expression": "0"
+          },
+          {
+            "id": "scale2",
+            "expression": "0.7"
+          },
+          {
+            "id": "pan3",
+            "expression": "1"
+          },
+          {
+            "id": "scale3",
+            "expression": "0.7"
+          },
+          {
+            "id": "pan4",
+            "expression": "1"
+          },
+          {
+            "id": "scale4",
+            "expression": "0.7"
+          }
+        ]
+      },
+      {
+        "id": "output",
+        "typeId": "talas.audioOutput",
+        "parameters": []
+      }
+    ],
+    "connections": [
+      {
+        "fromNode": "keysVoice",
+        "fromPort": "audioOut",
+        "toNode": "keys",
+        "toPort": "audioIn"
+      },
+      {
+        "fromNode": "demoVoice",
+        "fromPort": "audioOut",
+        "toNode": "demo",
+        "toPort": "audioIn"
+      },
+      {
+        "fromNode": "keys",
+        "fromPort": "leftOut",
+        "toNode": "voices",
+        "toPort": "inputs"
+      },
+      {
+        "fromNode": "demo",
+        "fromPort": "leftOut",
+        "toNode": "voices",
+        "toPort": "inputs"
+      },
+      {
+        "fromNode": "keys",
+        "fromPort": "rightOut",
+        "toNode": "voices",
+        "toPort": "rightInputs"
+      },
+      {
+        "fromNode": "demo",
+        "fromPort": "rightOut",
+        "toNode": "voices",
+        "toPort": "rightInputs"
+      },
+      {
+        "fromNode": "voices",
+        "fromPort": "leftOut",
+        "toNode": "chorusL",
+        "toPort": "audioIn"
+      },
+      {
+        "fromNode": "voices",
+        "fromPort": "rightOut",
+        "toNode": "chorusR",
+        "toPort": "audioIn"
+      },
+      {
+        "fromNode": "chorusLfoL",
+        "fromPort": "value",
+        "toNode": "chorusL",
+        "toPort": "delay"
+      },
+      {
+        "fromNode": "chorusLfoR",
+        "fromPort": "value",
+        "toNode": "chorusR",
+        "toPort": "delay"
+      },
+      {
+        "fromNode": "voices",
+        "fromPort": "leftOut",
+        "toNode": "width",
+        "toPort": "in1"
+      },
+      {
+        "fromNode": "chorusL",
+        "fromPort": "audioOut",
+        "toNode": "width",
+        "toPort": "in2"
+      },
+      {
+        "fromNode": "chorusR",
+        "fromPort": "audioOut",
+        "toNode": "width",
+        "toPort": "in3"
+      },
+      {
+        "fromNode": "voices",
+        "fromPort": "rightOut",
+        "toNode": "width",
+        "toPort": "in4"
+      },
+      {
+        "fromNode": "width",
+        "fromPort": "leftOut",
+        "toNode": "output",
+        "toPort": "audioIn"
+      },
+      {
+        "fromNode": "width",
+        "fromPort": "rightOut",
+        "toNode": "output",
+        "toPort": "rightIn"
+      }
+    ]
+  }
+}

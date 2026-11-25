@@ -1,0 +1,524 @@
+{
+  "format": "talas.project",
+  "version": 156,
+  "expressionLanguage": "variablesV2",
+  "expressionDefinitions": [],
+  "variableLibrary": {
+    "version": 2,
+    "variables": []
+  },
+  "soundVariableLibrary": {
+    "version": 1,
+    "variables": []
+  },
+  "generatorLibrary": {
+    "version": 2,
+    "programs": []
+  },
+  "liveSetLibrary": {
+    "version": 1,
+    "liveSets": [],
+    "tools": []
+  },
+  "metadata": {
+    "title": "Vocoder",
+    "description": "The spectral envelope of the input (a voice, on channel 1) is imposed on a sawtooth power-chord carrier with a little noise, using the CDP formant vocoder. Pitch follows a MIDI keyboard. Stereo output."
+  },
+  "presentation": {
+    "version": 2,
+    "structureLayouts": [
+      {
+        "scope": {
+          "kind": "project"
+        },
+        "nodes": [
+          {
+            "nodeId": "input",
+            "x": 0,
+            "y": 0
+          },
+          {
+            "nodeId": "root",
+            "x": 0,
+            "y": 120
+          },
+          {
+            "nodeId": "fifth",
+            "x": 0,
+            "y": 240
+          },
+          {
+            "nodeId": "octave",
+            "x": 0,
+            "y": 360
+          },
+          {
+            "nodeId": "noise",
+            "x": 0,
+            "y": 480
+          },
+          {
+            "nodeId": "carrier",
+            "x": 220,
+            "y": 0
+          },
+          {
+            "nodeId": "tone",
+            "x": 440,
+            "y": 0
+          },
+          {
+            "nodeId": "vocoder",
+            "x": 660,
+            "y": 0
+          },
+          {
+            "nodeId": "mix",
+            "x": 880,
+            "y": 0
+          },
+          {
+            "nodeId": "output",
+            "x": 1100,
+            "y": 0
+          }
+        ]
+      }
+    ],
+    "performanceControls": [
+      {
+        "controlId": "Pitch",
+        "target": {
+          "kind": "eventValue",
+          "eventName": "Pitch",
+          "domain": "noteNumber"
+        },
+        "kind": "fader",
+        "displayName": "Carrier pitch (note)",
+        "x": 0,
+        "y": 0,
+        "visible": true,
+        "modulationSlots": []
+      },
+      {
+        "controlId": "Noise",
+        "target": {
+          "kind": "eventValue",
+          "eventName": "Noise",
+          "domain": "scalar"
+        },
+        "kind": "fader",
+        "displayName": "Noise",
+        "x": 140,
+        "y": 0,
+        "visible": true,
+        "modulationSlots": []
+      },
+      {
+        "controlId": "Tone",
+        "target": {
+          "kind": "eventValue",
+          "eventName": "Tone",
+          "domain": "scalar"
+        },
+        "kind": "fader",
+        "displayName": "Tone (Hz)",
+        "x": 280,
+        "y": 0,
+        "visible": true,
+        "modulationSlots": []
+      },
+      {
+        "controlId": "Mix",
+        "target": {
+          "kind": "eventValue",
+          "eventName": "Mix",
+          "domain": "scalar"
+        },
+        "kind": "fader",
+        "displayName": "Mix",
+        "x": 0,
+        "y": 160,
+        "visible": true,
+        "modulationSlots": []
+      }
+    ],
+    "performanceMeters": []
+  },
+  "snapshotLibrary": {
+    "version": 1,
+    "banks": []
+  },
+  "sampleMapLibrary": {
+    "version": 1,
+    "maps": []
+  },
+  "virtualControls": [
+    {
+      "eventName": "Pitch",
+      "domain": "noteNumber",
+      "kind": "fader",
+      "value": 48,
+      "minimum": 24,
+      "maximum": 84,
+      "widget": {
+        "style": "default",
+        "showNumber": true,
+        "label": "Carrier pitch (note)",
+        "onColour": "",
+        "offColour": "",
+        "grid": 0,
+        "taper": "linear",
+        "tab": ""
+      }
+    },
+    {
+      "eventName": "Noise",
+      "domain": "scalar",
+      "kind": "fader",
+      "value": 0.15,
+      "minimum": 0,
+      "maximum": 1,
+      "widget": {
+        "style": "default",
+        "showNumber": true,
+        "label": "Noise",
+        "onColour": "",
+        "offColour": "",
+        "grid": 0,
+        "taper": "linear",
+        "tab": ""
+      }
+    },
+    {
+      "eventName": "Tone",
+      "domain": "scalar",
+      "kind": "fader",
+      "value": 6000,
+      "minimum": 500,
+      "maximum": 16000,
+      "widget": {
+        "style": "default",
+        "showNumber": true,
+        "label": "Tone (Hz)",
+        "onColour": "",
+        "offColour": "",
+        "grid": 0,
+        "taper": "log",
+        "tab": ""
+      }
+    },
+    {
+      "eventName": "Mix",
+      "domain": "scalar",
+      "kind": "fader",
+      "value": 1,
+      "minimum": 0,
+      "maximum": 1,
+      "widget": {
+        "style": "default",
+        "showNumber": true,
+        "label": "Mix",
+        "onColour": "",
+        "offColour": "",
+        "grid": 0,
+        "taper": "linear",
+        "tab": ""
+      }
+    }
+  ],
+  "assets": [],
+  "partialTrackEdits": [],
+  "timeline": {
+    "loop": {
+      "enabled": false,
+      "startSeconds": 0,
+      "endSeconds": 4
+    },
+    "musicalTime": {
+      "ticksPerQuarter": 960,
+      "tempo": [
+        {
+          "tick": 0,
+          "microsecondsPerQuarter": 500000
+        }
+      ],
+      "meter": [
+        {
+          "tick": 0,
+          "numerator": 4,
+          "denominator": 4
+        }
+      ]
+    },
+    "score": {
+      "tracks": [],
+      "clips": [],
+      "automation": [],
+      "markers": []
+    },
+    "eventValues": []
+  },
+  "deviceSettings": {
+    "configured": false,
+    "audioInputDevice": "",
+    "audioOutputDevice": "",
+    "sampleRate": 0,
+    "bufferSize": 0,
+    "inputChannels": [],
+    "outputChannels": [],
+    "midiInputDevices": [],
+    "transportSync": {
+      "sourceMode": "internal",
+      "sourceIdentifier": ""
+    },
+    "oscIngress": {
+      "enabled": false,
+      "port": 9000
+    },
+    "oscEgress": {
+      "enabled": false,
+      "port": 9001
+    }
+  },
+  "soundDefinitions": [],
+  "graph": {
+    "nodes": [
+      {
+        "id": "input",
+        "typeId": "talas.audioInput",
+        "parameters": [
+          {
+            "id": "routing",
+            "choice": "monoSum"
+          },
+          {
+            "id": "channel1",
+            "boolean": true
+          }
+        ]
+      },
+      {
+        "id": "root",
+        "typeId": "talas.oscillator",
+        "parameters": [
+          {
+            "id": "frequency",
+            "expression": "!Pitch"
+          },
+          {
+            "id": "amplitude",
+            "expression": "0.3"
+          },
+          {
+            "id": "wavetable",
+            "resource": "Saw21"
+          }
+        ]
+      },
+      {
+        "id": "fifth",
+        "typeId": "talas.oscillator",
+        "parameters": [
+          {
+            "id": "frequency",
+            "expression": "!Pitch + 7.02 nn"
+          },
+          {
+            "id": "amplitude",
+            "expression": "0.22"
+          },
+          {
+            "id": "wavetable",
+            "resource": "Saw21"
+          }
+        ]
+      },
+      {
+        "id": "octave",
+        "typeId": "talas.oscillator",
+        "parameters": [
+          {
+            "id": "frequency",
+            "expression": "!Pitch + 12.08 nn"
+          },
+          {
+            "id": "amplitude",
+            "expression": "0.18"
+          },
+          {
+            "id": "wavetable",
+            "resource": "Saw21"
+          }
+        ]
+      },
+      {
+        "id": "noise",
+        "typeId": "talas.noise",
+        "parameters": [
+          {
+            "id": "type",
+            "choice": "white"
+          },
+          {
+            "id": "scale",
+            "expression": "!Noise * 0.4"
+          }
+        ]
+      },
+      {
+        "id": "carrier",
+        "typeId": "talas.mixerV2",
+        "parameters": [
+          {
+            "id": "left",
+            "expression": "1"
+          },
+          {
+            "id": "right",
+            "expression": "1"
+          }
+        ]
+      },
+      {
+        "id": "tone",
+        "typeId": "talas.filter",
+        "parameters": [
+          {
+            "id": "type",
+            "choice": "lowPass"
+          },
+          {
+            "id": "frequency",
+            "expression": "!Tone * 1 hz"
+          },
+          {
+            "id": "q",
+            "expression": "0.7"
+          },
+          {
+            "id": "order",
+            "expression": "2"
+          }
+        ]
+      },
+      {
+        "id": "vocoder",
+        "typeId": "talas.cdpFormantsVocode",
+        "parameters": [
+          {
+            "id": "points",
+            "expression": "1024"
+          },
+          {
+            "id": "overlap",
+            "expression": "3"
+          },
+          {
+            "id": "formantBands",
+            "expression": "6"
+          },
+          {
+            "id": "gain",
+            "expression": "0.4"
+          }
+        ]
+      },
+      {
+        "id": "mix",
+        "typeId": "talas.crossfade",
+        "parameters": [
+          {
+            "id": "pan",
+            "expression": "0.5"
+          },
+          {
+            "id": "scale",
+            "expression": "1.4"
+          },
+          {
+            "id": "fade",
+            "expression": "!Mix"
+          },
+          {
+            "id": "type",
+            "choice": "power"
+          }
+        ]
+      },
+      {
+        "id": "output",
+        "typeId": "talas.audioOutput",
+        "parameters": []
+      }
+    ],
+    "connections": [
+      {
+        "fromNode": "root",
+        "fromPort": "audioOut",
+        "toNode": "carrier",
+        "toPort": "inputs"
+      },
+      {
+        "fromNode": "fifth",
+        "fromPort": "audioOut",
+        "toNode": "carrier",
+        "toPort": "inputs"
+      },
+      {
+        "fromNode": "octave",
+        "fromPort": "audioOut",
+        "toNode": "carrier",
+        "toPort": "inputs"
+      },
+      {
+        "fromNode": "noise",
+        "fromPort": "audioOut",
+        "toNode": "carrier",
+        "toPort": "inputs"
+      },
+      {
+        "fromNode": "carrier",
+        "fromPort": "leftOut",
+        "toNode": "tone",
+        "toPort": "audioIn"
+      },
+      {
+        "fromNode": "tone",
+        "fromPort": "audioOut",
+        "toNode": "vocoder",
+        "toPort": "audioIn"
+      },
+      {
+        "fromNode": "input",
+        "fromPort": "audioOut",
+        "toNode": "vocoder",
+        "toPort": "sideChain"
+      },
+      {
+        "fromNode": "input",
+        "fromPort": "audioOut",
+        "toNode": "mix",
+        "toPort": "snd1"
+      },
+      {
+        "fromNode": "vocoder",
+        "fromPort": "audioOut",
+        "toNode": "mix",
+        "toPort": "snd2"
+      },
+      {
+        "fromNode": "mix",
+        "fromPort": "leftOut",
+        "toNode": "output",
+        "toPort": "audioIn"
+      },
+      {
+        "fromNode": "mix",
+        "fromPort": "rightOut",
+        "toNode": "output",
+        "toPort": "rightIn"
+      }
+    ]
+  }
+}

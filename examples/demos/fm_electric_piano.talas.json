@@ -1,0 +1,774 @@
+{
+  "format": "talas.project",
+  "version": 156,
+  "expressionLanguage": "variablesV2",
+  "expressionDefinitions": [],
+  "variableLibrary": {
+    "version": 2,
+    "variables": []
+  },
+  "soundVariableLibrary": {
+    "version": 1,
+    "variables": []
+  },
+  "generatorLibrary": {
+    "version": 2,
+    "programs": []
+  },
+  "liveSetLibrary": {
+    "version": 1,
+    "liveSets": [],
+    "tools": []
+  },
+  "metadata": {
+    "title": "FM Electric Piano",
+    "description": "Two-operator FM in the style of a tine piano: a 1:1 modulator sets the brightness, a short 14:1 burst adds the bark, notes decay while held, and a stereo tremolo pans the result. The keys voice plays notes 21-100, keeping the modulated frequency below Nyquist."
+  },
+  "presentation": {
+    "version": 2,
+    "structureLayouts": [
+      {
+        "scope": {
+          "kind": "project"
+        },
+        "nodes": [
+          {
+            "nodeId": "keysVoice",
+            "x": 0,
+            "y": 0
+          },
+          {
+            "nodeId": "demoVoice",
+            "x": 0,
+            "y": 120
+          },
+          {
+            "nodeId": "keys",
+            "x": 220,
+            "y": 0
+          },
+          {
+            "nodeId": "demo",
+            "x": 220,
+            "y": 120
+          },
+          {
+            "nodeId": "voices",
+            "x": 440,
+            "y": 0
+          },
+          {
+            "nodeId": "tremoloLfo",
+            "x": 0,
+            "y": 240
+          },
+          {
+            "nodeId": "tremolo",
+            "x": 660,
+            "y": 0
+          },
+          {
+            "nodeId": "output",
+            "x": 880,
+            "y": 0
+          }
+        ]
+      },
+      {
+        "scope": {
+          "kind": "soundDefinition",
+          "definitionId": "fmElectricPianoVoice"
+        },
+        "nodes": [
+          {
+            "nodeId": "modEnv",
+            "x": 0,
+            "y": 0
+          },
+          {
+            "nodeId": "modulator",
+            "x": 220,
+            "y": 0
+          },
+          {
+            "nodeId": "barkEnv",
+            "x": 0,
+            "y": 120
+          },
+          {
+            "nodeId": "bark",
+            "x": 220,
+            "y": 120
+          },
+          {
+            "nodeId": "modSum",
+            "x": 440,
+            "y": 0
+          },
+          {
+            "nodeId": "ampEnv",
+            "x": 0,
+            "y": 240
+          },
+          {
+            "nodeId": "carrier",
+            "x": 660,
+            "y": 0
+          }
+        ]
+      }
+    ],
+    "performanceControls": [
+      {
+        "controlId": "Brightness",
+        "target": {
+          "kind": "eventValue",
+          "eventName": "Brightness",
+          "domain": "scalar"
+        },
+        "kind": "fader",
+        "displayName": "Brightness",
+        "x": 0,
+        "y": 0,
+        "visible": true,
+        "modulationSlots": []
+      },
+      {
+        "controlId": "Decay",
+        "target": {
+          "kind": "eventValue",
+          "eventName": "Decay",
+          "domain": "scalar"
+        },
+        "kind": "fader",
+        "displayName": "Decay (s)",
+        "x": 140,
+        "y": 0,
+        "visible": true,
+        "modulationSlots": []
+      },
+      {
+        "controlId": "Bark",
+        "target": {
+          "kind": "eventValue",
+          "eventName": "Bark",
+          "domain": "scalar"
+        },
+        "kind": "fader",
+        "displayName": "Bark",
+        "x": 280,
+        "y": 0,
+        "visible": true,
+        "modulationSlots": []
+      },
+      {
+        "controlId": "Tremolo",
+        "target": {
+          "kind": "eventValue",
+          "eventName": "Tremolo",
+          "domain": "scalar"
+        },
+        "kind": "fader",
+        "displayName": "Tremolo",
+        "x": 0,
+        "y": 160,
+        "visible": true,
+        "modulationSlots": []
+      },
+      {
+        "controlId": "Demo",
+        "target": {
+          "kind": "eventValue",
+          "eventName": "Demo",
+          "domain": "scalar"
+        },
+        "kind": "toggle",
+        "displayName": "Demo phrase",
+        "x": 140,
+        "y": 160,
+        "visible": true,
+        "modulationSlots": []
+      }
+    ],
+    "performanceMeters": []
+  },
+  "snapshotLibrary": {
+    "version": 1,
+    "banks": []
+  },
+  "sampleMapLibrary": {
+    "version": 1,
+    "maps": []
+  },
+  "virtualControls": [
+    {
+      "eventName": "Brightness",
+      "domain": "scalar",
+      "kind": "fader",
+      "value": 0.5,
+      "minimum": 0,
+      "maximum": 1,
+      "widget": {
+        "style": "default",
+        "showNumber": true,
+        "label": "Brightness",
+        "onColour": "",
+        "offColour": "",
+        "grid": 0,
+        "taper": "linear",
+        "tab": ""
+      }
+    },
+    {
+      "eventName": "Decay",
+      "domain": "scalar",
+      "kind": "fader",
+      "value": 2.5,
+      "minimum": 0.3,
+      "maximum": 8,
+      "widget": {
+        "style": "default",
+        "showNumber": true,
+        "label": "Decay (s)",
+        "onColour": "",
+        "offColour": "",
+        "grid": 0,
+        "taper": "log",
+        "tab": ""
+      }
+    },
+    {
+      "eventName": "Bark",
+      "domain": "scalar",
+      "kind": "fader",
+      "value": 0.3,
+      "minimum": 0,
+      "maximum": 1,
+      "widget": {
+        "style": "default",
+        "showNumber": true,
+        "label": "Bark",
+        "onColour": "",
+        "offColour": "",
+        "grid": 0,
+        "taper": "linear",
+        "tab": ""
+      }
+    },
+    {
+      "eventName": "Tremolo",
+      "domain": "scalar",
+      "kind": "fader",
+      "value": 0.4,
+      "minimum": 0,
+      "maximum": 1,
+      "widget": {
+        "style": "default",
+        "showNumber": true,
+        "label": "Tremolo",
+        "onColour": "",
+        "offColour": "",
+        "grid": 0,
+        "taper": "linear",
+        "tab": ""
+      }
+    },
+    {
+      "eventName": "Demo",
+      "domain": "scalar",
+      "kind": "toggle",
+      "value": 1,
+      "minimum": 0,
+      "maximum": 1,
+      "widget": {
+        "style": "default",
+        "showNumber": true,
+        "label": "Demo phrase",
+        "onColour": "",
+        "offColour": "",
+        "grid": 0,
+        "taper": "linear",
+        "tab": ""
+      }
+    }
+  ],
+  "assets": [],
+  "partialTrackEdits": [],
+  "timeline": {
+    "loop": {
+      "enabled": false,
+      "startSeconds": 0,
+      "endSeconds": 4
+    },
+    "musicalTime": {
+      "ticksPerQuarter": 960,
+      "tempo": [
+        {
+          "tick": 0,
+          "microsecondsPerQuarter": 500000
+        }
+      ],
+      "meter": [
+        {
+          "tick": 0,
+          "numerator": 4,
+          "denominator": 4
+        }
+      ]
+    },
+    "score": {
+      "tracks": [],
+      "clips": [],
+      "automation": [],
+      "markers": []
+    },
+    "eventValues": []
+  },
+  "deviceSettings": {
+    "configured": false,
+    "audioInputDevice": "",
+    "audioOutputDevice": "",
+    "sampleRate": 0,
+    "bufferSize": 0,
+    "inputChannels": [],
+    "outputChannels": [],
+    "midiInputDevices": [],
+    "transportSync": {
+      "sourceMode": "internal",
+      "sourceIdentifier": ""
+    },
+    "oscIngress": {
+      "enabled": false,
+      "port": 9000
+    },
+    "oscEgress": {
+      "enabled": false,
+      "port": 9001
+    }
+  },
+  "soundDefinitions": [
+    {
+      "id": "fmElectricPianoVoice",
+      "name": "Electric Piano Voice",
+      "description": "One voice; the keys and demo MIDI Voices each play their own copies of it.",
+      "interfaceVersion": 1,
+      "inputs": [],
+      "outputs": [
+        {
+          "id": "audioOut",
+          "type": "audio",
+          "nodeId": "carrier",
+          "nodePortId": "audioOut"
+        }
+      ],
+      "parameters": [],
+      "graph": {
+        "nodes": [
+          {
+            "id": "modEnv",
+            "typeId": "talas.adsr",
+            "parameters": [
+              {
+                "id": "attackTime",
+                "expression": "1 ms"
+              },
+              {
+                "id": "decayTime",
+                "expression": "!Decay * 0.3 s"
+              },
+              {
+                "id": "sustainLevel",
+                "expression": "0.1"
+              },
+              {
+                "id": "releaseTime",
+                "expression": "150 ms"
+              },
+              {
+                "id": "gate",
+                "expression": "!KeyDown"
+              }
+            ]
+          },
+          {
+            "id": "modulator",
+            "typeId": "talas.oscillator",
+            "parameters": [
+              {
+                "id": "frequency",
+                "expression": "!KeyPitch"
+              },
+              {
+                "id": "amplitude",
+                "expression": "(0.2 + (!Brightness * 2.3)) * !KeyVelocity"
+              }
+            ]
+          },
+          {
+            "id": "barkEnv",
+            "typeId": "talas.adsr",
+            "parameters": [
+              {
+                "id": "attackTime",
+                "expression": "0.5 ms"
+              },
+              {
+                "id": "decayTime",
+                "expression": "80 ms"
+              },
+              {
+                "id": "sustainLevel",
+                "expression": "0"
+              },
+              {
+                "id": "releaseTime",
+                "expression": "20 ms"
+              },
+              {
+                "id": "gate",
+                "expression": "!KeyDown"
+              }
+            ]
+          },
+          {
+            "id": "bark",
+            "typeId": "talas.oscillator",
+            "parameters": [
+              {
+                "id": "frequency",
+                "expression": "!KeyPitch + 45.6883 nn"
+              },
+              {
+                "id": "amplitude",
+                "expression": "!Bark * 3.5 * !KeyVelocity"
+              }
+            ]
+          },
+          {
+            "id": "modSum",
+            "typeId": "talas.mixerV2",
+            "parameters": [
+              {
+                "id": "left",
+                "expression": "1"
+              },
+              {
+                "id": "right",
+                "expression": "1"
+              }
+            ]
+          },
+          {
+            "id": "ampEnv",
+            "typeId": "talas.adsr",
+            "parameters": [
+              {
+                "id": "attackTime",
+                "expression": "1 ms"
+              },
+              {
+                "id": "decayTime",
+                "expression": "!Decay * 1 s"
+              },
+              {
+                "id": "sustainLevel",
+                "expression": "0"
+              },
+              {
+                "id": "releaseTime",
+                "expression": "250 ms"
+              },
+              {
+                "id": "gate",
+                "expression": "!KeyDown"
+              },
+              {
+                "id": "scale",
+                "expression": "0.17 * !KeyVelocity"
+              }
+            ]
+          },
+          {
+            "id": "carrier",
+            "typeId": "talas.oscillator",
+            "parameters": [
+              {
+                "id": "frequency",
+                "expression": "!KeyPitch"
+              },
+              {
+                "id": "amplitude",
+                "expression": "1"
+              },
+              {
+                "id": "modulation",
+                "text": "frequency"
+              },
+              {
+                "id": "maxMI",
+                "expression": "1"
+              }
+            ]
+          }
+        ],
+        "connections": [
+          {
+            "fromNode": "modEnv",
+            "fromPort": "value",
+            "toNode": "modulator",
+            "toPort": "envelope"
+          },
+          {
+            "fromNode": "barkEnv",
+            "fromPort": "value",
+            "toNode": "bark",
+            "toPort": "envelope"
+          },
+          {
+            "fromNode": "modulator",
+            "fromPort": "audioOut",
+            "toNode": "modSum",
+            "toPort": "inputs"
+          },
+          {
+            "fromNode": "bark",
+            "fromPort": "audioOut",
+            "toNode": "modSum",
+            "toPort": "inputs"
+          },
+          {
+            "fromNode": "modSum",
+            "fromPort": "leftOut",
+            "toNode": "carrier",
+            "toPort": "modulator"
+          },
+          {
+            "fromNode": "ampEnv",
+            "fromPort": "value",
+            "toNode": "carrier",
+            "toPort": "envelope"
+          }
+        ]
+      }
+    }
+  ],
+  "graph": {
+    "nodes": [
+      {
+        "id": "keysVoice",
+        "soundDefinitionId": "fmElectricPianoVoice",
+        "parameters": []
+      },
+      {
+        "id": "demoVoice",
+        "soundDefinitionId": "fmElectricPianoVoice",
+        "parameters": []
+      },
+      {
+        "id": "keys",
+        "typeId": "talas.midiVoice",
+        "parameters": [
+          {
+            "id": "left",
+            "expression": "1"
+          },
+          {
+            "id": "right",
+            "expression": "1"
+          },
+          {
+            "id": "channel",
+            "expression": "0"
+          },
+          {
+            "id": "source",
+            "text": "Live MIDI"
+          },
+          {
+            "id": "midiFile",
+            "resource": ""
+          },
+          {
+            "id": "polyphony",
+            "expression": "10"
+          },
+          {
+            "id": "lowPitch",
+            "expression": "21 nn"
+          },
+          {
+            "id": "highPitch",
+            "expression": "100 nn"
+          },
+          {
+            "id": "script",
+            "text": ""
+          },
+          {
+            "id": "shared",
+            "boolean": false
+          }
+        ]
+      },
+      {
+        "id": "demo",
+        "typeId": "talas.midiVoice",
+        "parameters": [
+          {
+            "id": "left",
+            "expression": "!Demo"
+          },
+          {
+            "id": "right",
+            "expression": "!Demo"
+          },
+          {
+            "id": "channel",
+            "expression": "0"
+          },
+          {
+            "id": "source",
+            "text": "Script"
+          },
+          {
+            "id": "midiFile",
+            "resource": ""
+          },
+          {
+            "id": "polyphony",
+            "expression": "10"
+          },
+          {
+            "id": "lowPitch",
+            "expression": "0 nn"
+          },
+          {
+            "id": "highPitch",
+            "expression": "127 nn"
+          },
+          {
+            "id": "script",
+            "text": "self keyDownAt: 0 s duration: 1.6 s frequency: 45 nn velocity: 0.75. self keyDownAt: 0 s duration: 1.5 s frequency: 52 nn velocity: 0.6. self keyDownAt: 0.02 s duration: 1.5 s frequency: 57 nn velocity: 0.65. self keyDownAt: 0.04 s duration: 1.5 s frequency: 60 nn velocity: 0.7. self keyDownAt: 0.06 s duration: 1.5 s frequency: 64 nn velocity: 0.75. self keyDownAt: 0.9 s duration: 0.4 s frequency: 66 nn velocity: 0.7. self keyDownAt: 1.8 s duration: 1.6 s frequency: 50 nn velocity: 0.75. self keyDownAt: 1.8 s duration: 1.5 s frequency: 53 nn velocity: 0.6. self keyDownAt: 1.82 s duration: 1.5 s frequency: 57 nn velocity: 0.65. self keyDownAt: 1.84 s duration: 1.5 s frequency: 60 nn velocity: 0.7. self keyDownAt: 1.86 s duration: 1.5 s frequency: 65 nn velocity: 0.75. self keyDownAt: 2.7 s duration: 0.4 s frequency: 67 nn velocity: 0.7. self keyDownAt: 3.6 s duration: 1.6 s frequency: 43 nn velocity: 0.75. self keyDownAt: 3.6 s duration: 1.5 s frequency: 52 nn velocity: 0.6. self keyDownAt: 3.62 s duration: 1.5 s frequency: 55 nn velocity: 0.65. self keyDownAt: 3.64 s duration: 1.5 s frequency: 59 nn velocity: 0.7. self keyDownAt: 3.66 s duration: 1.5 s frequency: 64 nn velocity: 0.75. self keyDownAt: 4.5 s duration: 0.4 s frequency: 66 nn velocity: 0.7. self keyDownAt: 5.4 s duration: 1.6 s frequency: 40 nn velocity: 0.75. self keyDownAt: 5.4 s duration: 1.5 s frequency: 52 nn velocity: 0.6. self keyDownAt: 5.42 s duration: 1.5 s frequency: 56 nn velocity: 0.65. self keyDownAt: 5.44 s duration: 1.5 s frequency: 59 nn velocity: 0.7. self keyDownAt: 5.46 s duration: 1.5 s frequency: 62 nn velocity: 0.75. self keyDownAt: 6.3 s duration: 0.4 s frequency: 64 nn velocity: 0.7."
+          },
+          {
+            "id": "shared",
+            "boolean": false
+          }
+        ]
+      },
+      {
+        "id": "voices",
+        "typeId": "talas.mixerV2",
+        "parameters": [
+          {
+            "id": "left",
+            "expression": "1"
+          },
+          {
+            "id": "right",
+            "expression": "1"
+          }
+        ]
+      },
+      {
+        "id": "tremoloLfo",
+        "typeId": "talas.lfo",
+        "parameters": [
+          {
+            "id": "frequency",
+            "expression": "4.2 hz"
+          },
+          {
+            "id": "minimum",
+            "expression": "0.5 - (0.5 * !Tremolo)"
+          },
+          {
+            "id": "maximum",
+            "expression": "0.5 + (0.5 * !Tremolo)"
+          }
+        ]
+      },
+      {
+        "id": "tremolo",
+        "typeId": "talas.pan",
+        "parameters": [
+          {
+            "id": "pan",
+            "expression": "0.5"
+          },
+          {
+            "id": "scale",
+            "expression": "1.4"
+          }
+        ]
+      },
+      {
+        "id": "output",
+        "typeId": "talas.audioOutput",
+        "parameters": []
+      }
+    ],
+    "connections": [
+      {
+        "fromNode": "keysVoice",
+        "fromPort": "audioOut",
+        "toNode": "keys",
+        "toPort": "audioIn"
+      },
+      {
+        "fromNode": "demoVoice",
+        "fromPort": "audioOut",
+        "toNode": "demo",
+        "toPort": "audioIn"
+      },
+      {
+        "fromNode": "keys",
+        "fromPort": "leftOut",
+        "toNode": "voices",
+        "toPort": "inputs"
+      },
+      {
+        "fromNode": "demo",
+        "fromPort": "leftOut",
+        "toNode": "voices",
+        "toPort": "inputs"
+      },
+      {
+        "fromNode": "keys",
+        "fromPort": "rightOut",
+        "toNode": "voices",
+        "toPort": "rightInputs"
+      },
+      {
+        "fromNode": "demo",
+        "fromPort": "rightOut",
+        "toNode": "voices",
+        "toPort": "rightInputs"
+      },
+      {
+        "fromNode": "voices",
+        "fromPort": "leftOut",
+        "toNode": "tremolo",
+        "toPort": "audioIn"
+      },
+      {
+        "fromNode": "tremoloLfo",
+        "fromPort": "value",
+        "toNode": "tremolo",
+        "toPort": "pan"
+      },
+      {
+        "fromNode": "tremolo",
+        "fromPort": "leftOut",
+        "toNode": "output",
+        "toPort": "audioIn"
+      },
+      {
+        "fromNode": "tremolo",
+        "fromPort": "rightOut",
+        "toNode": "output",
+        "toPort": "rightIn"
+      }
+    ]
+  }
+}

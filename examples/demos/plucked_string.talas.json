@@ -1,0 +1,545 @@
+{
+  "format": "talas.project",
+  "version": 156,
+  "expressionLanguage": "variablesV2",
+  "expressionDefinitions": [],
+  "variableLibrary": {
+    "version": 2,
+    "variables": []
+  },
+  "soundVariableLibrary": {
+    "version": 1,
+    "variables": []
+  },
+  "generatorLibrary": {
+    "version": 2,
+    "programs": []
+  },
+  "liveSetLibrary": {
+    "version": 1,
+    "liveSets": [],
+    "tools": []
+  },
+  "metadata": {
+    "title": "Plucked String",
+    "description": "A plucked waveguide string: each key plucks at its pitch with live decay, brightness, pick position and stiffness; releasing the key damps the string."
+  },
+  "presentation": {
+    "version": 2,
+    "structureLayouts": [
+      {
+        "scope": {
+          "kind": "project"
+        },
+        "nodes": [
+          {
+            "nodeId": "keysVoice",
+            "x": 0,
+            "y": 0
+          },
+          {
+            "nodeId": "demoVoice",
+            "x": 0,
+            "y": 120
+          },
+          {
+            "nodeId": "keys",
+            "x": 220,
+            "y": 0
+          },
+          {
+            "nodeId": "demo",
+            "x": 220,
+            "y": 120
+          },
+          {
+            "nodeId": "voices",
+            "x": 440,
+            "y": 0
+          },
+          {
+            "nodeId": "output",
+            "x": 660,
+            "y": 0
+          }
+        ]
+      },
+      {
+        "scope": {
+          "kind": "soundDefinition",
+          "definitionId": "pluckedStringVoice"
+        },
+        "nodes": [
+          {
+            "nodeId": "string",
+            "x": 0,
+            "y": 0
+          }
+        ]
+      }
+    ],
+    "performanceControls": [
+      {
+        "controlId": "Decay",
+        "target": {
+          "kind": "eventValue",
+          "eventName": "Decay",
+          "domain": "scalar"
+        },
+        "kind": "fader",
+        "displayName": "Decay (s)",
+        "x": 0,
+        "y": 0,
+        "visible": true,
+        "modulationSlots": []
+      },
+      {
+        "controlId": "Brightness",
+        "target": {
+          "kind": "eventValue",
+          "eventName": "Brightness",
+          "domain": "scalar"
+        },
+        "kind": "fader",
+        "displayName": "Brightness",
+        "x": 140,
+        "y": 0,
+        "visible": true,
+        "modulationSlots": []
+      },
+      {
+        "controlId": "Pick",
+        "target": {
+          "kind": "eventValue",
+          "eventName": "Pick",
+          "domain": "scalar"
+        },
+        "kind": "fader",
+        "displayName": "Pick position",
+        "x": 280,
+        "y": 0,
+        "visible": true,
+        "modulationSlots": []
+      },
+      {
+        "controlId": "Stiffness",
+        "target": {
+          "kind": "eventValue",
+          "eventName": "Stiffness",
+          "domain": "scalar"
+        },
+        "kind": "fader",
+        "displayName": "Stiffness",
+        "x": 0,
+        "y": 160,
+        "visible": true,
+        "modulationSlots": []
+      },
+      {
+        "controlId": "Demo",
+        "target": {
+          "kind": "eventValue",
+          "eventName": "Demo",
+          "domain": "scalar"
+        },
+        "kind": "toggle",
+        "displayName": "Demo phrase",
+        "x": 140,
+        "y": 160,
+        "visible": true,
+        "modulationSlots": []
+      }
+    ],
+    "performanceMeters": []
+  },
+  "snapshotLibrary": {
+    "version": 1,
+    "banks": []
+  },
+  "sampleMapLibrary": {
+    "version": 1,
+    "maps": []
+  },
+  "virtualControls": [
+    {
+      "eventName": "Decay",
+      "domain": "scalar",
+      "kind": "fader",
+      "value": 3,
+      "minimum": 0.2,
+      "maximum": 10,
+      "widget": {
+        "style": "default",
+        "showNumber": true,
+        "label": "Decay (s)",
+        "onColour": "",
+        "offColour": "",
+        "grid": 0,
+        "taper": "log",
+        "tab": ""
+      }
+    },
+    {
+      "eventName": "Brightness",
+      "domain": "scalar",
+      "kind": "fader",
+      "value": 0.6,
+      "minimum": 0,
+      "maximum": 0.8,
+      "widget": {
+        "style": "default",
+        "showNumber": true,
+        "label": "Brightness",
+        "onColour": "",
+        "offColour": "",
+        "grid": 0,
+        "taper": "linear",
+        "tab": ""
+      }
+    },
+    {
+      "eventName": "Pick",
+      "domain": "scalar",
+      "kind": "fader",
+      "value": 0.2,
+      "minimum": 0.02,
+      "maximum": 0.5,
+      "widget": {
+        "style": "default",
+        "showNumber": true,
+        "label": "Pick position",
+        "onColour": "",
+        "offColour": "",
+        "grid": 0,
+        "taper": "linear",
+        "tab": ""
+      }
+    },
+    {
+      "eventName": "Stiffness",
+      "domain": "scalar",
+      "kind": "fader",
+      "value": 0.1,
+      "minimum": 0,
+      "maximum": 1,
+      "widget": {
+        "style": "default",
+        "showNumber": true,
+        "label": "Stiffness",
+        "onColour": "",
+        "offColour": "",
+        "grid": 0,
+        "taper": "linear",
+        "tab": ""
+      }
+    },
+    {
+      "eventName": "Demo",
+      "domain": "scalar",
+      "kind": "toggle",
+      "value": 1,
+      "minimum": 0,
+      "maximum": 1,
+      "widget": {
+        "style": "default",
+        "showNumber": true,
+        "label": "Demo phrase",
+        "onColour": "",
+        "offColour": "",
+        "grid": 0,
+        "taper": "linear",
+        "tab": ""
+      }
+    }
+  ],
+  "assets": [],
+  "partialTrackEdits": [],
+  "timeline": {
+    "loop": {
+      "enabled": false,
+      "startSeconds": 0,
+      "endSeconds": 4
+    },
+    "musicalTime": {
+      "ticksPerQuarter": 960,
+      "tempo": [
+        {
+          "tick": 0,
+          "microsecondsPerQuarter": 500000
+        }
+      ],
+      "meter": [
+        {
+          "tick": 0,
+          "numerator": 4,
+          "denominator": 4
+        }
+      ]
+    },
+    "score": {
+      "tracks": [],
+      "clips": [],
+      "automation": [],
+      "markers": []
+    },
+    "eventValues": []
+  },
+  "deviceSettings": {
+    "configured": false,
+    "audioInputDevice": "",
+    "audioOutputDevice": "",
+    "sampleRate": 0,
+    "bufferSize": 0,
+    "inputChannels": [],
+    "outputChannels": [],
+    "midiInputDevices": [],
+    "transportSync": {
+      "sourceMode": "internal",
+      "sourceIdentifier": ""
+    },
+    "oscIngress": {
+      "enabled": false,
+      "port": 9000
+    },
+    "oscEgress": {
+      "enabled": false,
+      "port": 9001
+    }
+  },
+  "soundDefinitions": [
+    {
+      "id": "pluckedStringVoice",
+      "name": "String Voice",
+      "description": "One voice; the keys and demo MIDI Voices each play their own copies of it.",
+      "interfaceVersion": 1,
+      "inputs": [],
+      "outputs": [
+        {
+          "id": "audioOut",
+          "type": "audio",
+          "nodeId": "string",
+          "nodePortId": "audioOut"
+        }
+      ],
+      "parameters": [],
+      "graph": {
+        "nodes": [
+          {
+            "id": "string",
+            "typeId": "talas.pluckedWaveguide",
+            "parameters": [
+              {
+                "id": "trigger",
+                "expression": "!KeyDown"
+              },
+              {
+                "id": "frequency",
+                "expression": "!KeyPitch"
+              },
+              {
+                "id": "decayTime",
+                "expression": "if(!KeyDown > 0, !Decay, 0.12) * 1 s"
+              },
+              {
+                "id": "brightness",
+                "expression": "!Brightness * 1"
+              },
+              {
+                "id": "pickPosition",
+                "expression": "!Pick * 1"
+              },
+              {
+                "id": "stiffness",
+                "expression": "!Stiffness * 1"
+              },
+              {
+                "id": "level",
+                "expression": "0.9 * !KeyVelocity * (1.6 - !Brightness)"
+              },
+              {
+                "id": "seed",
+                "expression": "197"
+              }
+            ]
+          }
+        ],
+        "connections": []
+      }
+    }
+  ],
+  "graph": {
+    "nodes": [
+      {
+        "id": "keysVoice",
+        "soundDefinitionId": "pluckedStringVoice",
+        "parameters": []
+      },
+      {
+        "id": "demoVoice",
+        "soundDefinitionId": "pluckedStringVoice",
+        "parameters": []
+      },
+      {
+        "id": "keys",
+        "typeId": "talas.midiVoice",
+        "parameters": [
+          {
+            "id": "left",
+            "expression": "1"
+          },
+          {
+            "id": "right",
+            "expression": "1"
+          },
+          {
+            "id": "channel",
+            "expression": "0"
+          },
+          {
+            "id": "source",
+            "text": "Live MIDI"
+          },
+          {
+            "id": "midiFile",
+            "resource": ""
+          },
+          {
+            "id": "polyphony",
+            "expression": "8"
+          },
+          {
+            "id": "lowPitch",
+            "expression": "0 nn"
+          },
+          {
+            "id": "highPitch",
+            "expression": "127 nn"
+          },
+          {
+            "id": "script",
+            "text": ""
+          },
+          {
+            "id": "shared",
+            "boolean": false
+          }
+        ]
+      },
+      {
+        "id": "demo",
+        "typeId": "talas.midiVoice",
+        "parameters": [
+          {
+            "id": "left",
+            "expression": "!Demo"
+          },
+          {
+            "id": "right",
+            "expression": "!Demo"
+          },
+          {
+            "id": "channel",
+            "expression": "0"
+          },
+          {
+            "id": "source",
+            "text": "Script"
+          },
+          {
+            "id": "midiFile",
+            "resource": ""
+          },
+          {
+            "id": "polyphony",
+            "expression": "8"
+          },
+          {
+            "id": "lowPitch",
+            "expression": "0 nn"
+          },
+          {
+            "id": "highPitch",
+            "expression": "127 nn"
+          },
+          {
+            "id": "script",
+            "text": "self keyDownAt: 0 s duration: 1.6 s frequency: 40 nn velocity: 0.9. self keyDownAt: 0.2 s duration: 0.9 s frequency: 47 nn velocity: 0.75. self keyDownAt: 0.4 s duration: 0.9 s frequency: 52 nn velocity: 0.75. self keyDownAt: 0.6 s duration: 0.9 s frequency: 55 nn velocity: 0.75. self keyDownAt: 0.8 s duration: 0.9 s frequency: 59 nn velocity: 0.75. self keyDownAt: 1 s duration: 0.9 s frequency: 64 nn velocity: 0.75. self keyDownAt: 1.2 s duration: 0.9 s frequency: 59 nn velocity: 0.75. self keyDownAt: 1.4 s duration: 0.9 s frequency: 55 nn velocity: 0.75. self keyDownAt: 1.6 s duration: 1.6 s frequency: 45 nn velocity: 0.9. self keyDownAt: 1.8 s duration: 0.9 s frequency: 52 nn velocity: 0.75. self keyDownAt: 2 s duration: 0.9 s frequency: 57 nn velocity: 0.75. self keyDownAt: 2.2 s duration: 0.9 s frequency: 60 nn velocity: 0.75. self keyDownAt: 2.4 s duration: 0.9 s frequency: 64 nn velocity: 0.75. self keyDownAt: 2.6 s duration: 0.9 s frequency: 69 nn velocity: 0.75. self keyDownAt: 2.8 s duration: 0.9 s frequency: 64 nn velocity: 0.75. self keyDownAt: 3 s duration: 0.9 s frequency: 60 nn velocity: 0.75. self keyDownAt: 3.2 s duration: 1.6 s frequency: 38 nn velocity: 0.9. self keyDownAt: 3.4 s duration: 0.9 s frequency: 45 nn velocity: 0.75. self keyDownAt: 3.6 s duration: 0.9 s frequency: 50 nn velocity: 0.75. self keyDownAt: 3.8 s duration: 0.9 s frequency: 54 nn velocity: 0.75. self keyDownAt: 4 s duration: 0.9 s frequency: 57 nn velocity: 0.75. self keyDownAt: 4.2 s duration: 0.9 s frequency: 62 nn velocity: 0.75. self keyDownAt: 4.4 s duration: 0.9 s frequency: 57 nn velocity: 0.75. self keyDownAt: 4.6 s duration: 0.9 s frequency: 54 nn velocity: 0.75. self keyDownAt: 4.8 s duration: 1.6 s frequency: 43 nn velocity: 0.9. self keyDownAt: 5 s duration: 0.9 s frequency: 50 nn velocity: 0.75. self keyDownAt: 5.2 s duration: 0.9 s frequency: 55 nn velocity: 0.75. self keyDownAt: 5.4 s duration: 0.9 s frequency: 59 nn velocity: 0.75. self keyDownAt: 5.6 s duration: 0.9 s frequency: 62 nn velocity: 0.75. self keyDownAt: 5.8 s duration: 0.9 s frequency: 67 nn velocity: 0.75. self keyDownAt: 6 s duration: 0.9 s frequency: 71 nn velocity: 0.75. self keyDownAt: 6.2 s duration: 0.9 s frequency: 74 nn velocity: 0.75."
+          },
+          {
+            "id": "shared",
+            "boolean": false
+          }
+        ]
+      },
+      {
+        "id": "voices",
+        "typeId": "talas.mixerV2",
+        "parameters": [
+          {
+            "id": "left",
+            "expression": "1"
+          },
+          {
+            "id": "right",
+            "expression": "1"
+          }
+        ]
+      },
+      {
+        "id": "output",
+        "typeId": "talas.audioOutput",
+        "parameters": []
+      }
+    ],
+    "connections": [
+      {
+        "fromNode": "keysVoice",
+        "fromPort": "audioOut",
+        "toNode": "keys",
+        "toPort": "audioIn"
+      },
+      {
+        "fromNode": "demoVoice",
+        "fromPort": "audioOut",
+        "toNode": "demo",
+        "toPort": "audioIn"
+      },
+      {
+        "fromNode": "keys",
+        "fromPort": "leftOut",
+        "toNode": "voices",
+        "toPort": "inputs"
+      },
+      {
+        "fromNode": "demo",
+        "fromPort": "leftOut",
+        "toNode": "voices",
+        "toPort": "inputs"
+      },
+      {
+        "fromNode": "keys",
+        "fromPort": "rightOut",
+        "toNode": "voices",
+        "toPort": "rightInputs"
+      },
+      {
+        "fromNode": "demo",
+        "fromPort": "rightOut",
+        "toNode": "voices",
+        "toPort": "rightInputs"
+      },
+      {
+        "fromNode": "voices",
+        "fromPort": "leftOut",
+        "toNode": "output",
+        "toPort": "audioIn"
+      },
+      {
+        "fromNode": "voices",
+        "fromPort": "rightOut",
+        "toNode": "output",
+        "toPort": "rightIn"
+      }
+    ]
+  }
+}

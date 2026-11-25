@@ -1,0 +1,621 @@
+{
+  "format": "talas.project",
+  "version": 156,
+  "expressionLanguage": "variablesV2",
+  "expressionDefinitions": [],
+  "variableLibrary": {
+    "version": 2,
+    "variables": []
+  },
+  "soundVariableLibrary": {
+    "version": 1,
+    "variables": []
+  },
+  "generatorLibrary": {
+    "version": 2,
+    "programs": []
+  },
+  "liveSetLibrary": {
+    "version": 1,
+    "liveSets": [],
+    "tools": []
+  },
+  "metadata": {
+    "title": "Granular Synth",
+    "description": "Each key starts a Grain Cloud of band-limited pulse grains at its pitch, with live density, grain size, pitch jitter and stereo spread, under a slow envelope."
+  },
+  "presentation": {
+    "version": 2,
+    "structureLayouts": [
+      {
+        "scope": {
+          "kind": "project"
+        },
+        "nodes": [
+          {
+            "nodeId": "keysVoice",
+            "x": 0,
+            "y": 0
+          },
+          {
+            "nodeId": "demoVoice",
+            "x": 0,
+            "y": 120
+          },
+          {
+            "nodeId": "keys",
+            "x": 220,
+            "y": 0
+          },
+          {
+            "nodeId": "demo",
+            "x": 220,
+            "y": 120
+          },
+          {
+            "nodeId": "voices",
+            "x": 440,
+            "y": 0
+          },
+          {
+            "nodeId": "output",
+            "x": 660,
+            "y": 0
+          }
+        ]
+      },
+      {
+        "scope": {
+          "kind": "soundDefinition",
+          "definitionId": "granularSynthVoice"
+        },
+        "nodes": [
+          {
+            "nodeId": "env",
+            "x": 0,
+            "y": 0
+          },
+          {
+            "nodeId": "cloud",
+            "x": 220,
+            "y": 0
+          }
+        ]
+      }
+    ],
+    "performanceControls": [
+      {
+        "controlId": "Density",
+        "target": {
+          "kind": "eventValue",
+          "eventName": "Density",
+          "domain": "scalar"
+        },
+        "kind": "fader",
+        "displayName": "Density (grains/s)",
+        "x": 0,
+        "y": 0,
+        "visible": true,
+        "modulationSlots": []
+      },
+      {
+        "controlId": "GrainSize",
+        "target": {
+          "kind": "eventValue",
+          "eventName": "GrainSize",
+          "domain": "scalar"
+        },
+        "kind": "fader",
+        "displayName": "Grain size (ms)",
+        "x": 140,
+        "y": 0,
+        "visible": true,
+        "modulationSlots": []
+      },
+      {
+        "controlId": "Jitter",
+        "target": {
+          "kind": "eventValue",
+          "eventName": "Jitter",
+          "domain": "scalar"
+        },
+        "kind": "fader",
+        "displayName": "Pitch jitter",
+        "x": 280,
+        "y": 0,
+        "visible": true,
+        "modulationSlots": []
+      },
+      {
+        "controlId": "Spread",
+        "target": {
+          "kind": "eventValue",
+          "eventName": "Spread",
+          "domain": "scalar"
+        },
+        "kind": "fader",
+        "displayName": "Stereo spread",
+        "x": 0,
+        "y": 160,
+        "visible": true,
+        "modulationSlots": []
+      },
+      {
+        "controlId": "Demo",
+        "target": {
+          "kind": "eventValue",
+          "eventName": "Demo",
+          "domain": "scalar"
+        },
+        "kind": "toggle",
+        "displayName": "Demo phrase",
+        "x": 140,
+        "y": 160,
+        "visible": true,
+        "modulationSlots": []
+      }
+    ],
+    "performanceMeters": []
+  },
+  "snapshotLibrary": {
+    "version": 1,
+    "banks": []
+  },
+  "sampleMapLibrary": {
+    "version": 1,
+    "maps": []
+  },
+  "virtualControls": [
+    {
+      "eventName": "Density",
+      "domain": "scalar",
+      "kind": "fader",
+      "value": 30,
+      "minimum": 2,
+      "maximum": 100,
+      "widget": {
+        "style": "default",
+        "showNumber": true,
+        "label": "Density (grains/s)",
+        "onColour": "",
+        "offColour": "",
+        "grid": 0,
+        "taper": "log",
+        "tab": ""
+      }
+    },
+    {
+      "eventName": "GrainSize",
+      "domain": "scalar",
+      "kind": "fader",
+      "value": 80,
+      "minimum": 10,
+      "maximum": 300,
+      "widget": {
+        "style": "default",
+        "showNumber": true,
+        "label": "Grain size (ms)",
+        "onColour": "",
+        "offColour": "",
+        "grid": 0,
+        "taper": "log",
+        "tab": ""
+      }
+    },
+    {
+      "eventName": "Jitter",
+      "domain": "scalar",
+      "kind": "fader",
+      "value": 0.2,
+      "minimum": 0,
+      "maximum": 1,
+      "widget": {
+        "style": "default",
+        "showNumber": true,
+        "label": "Pitch jitter",
+        "onColour": "",
+        "offColour": "",
+        "grid": 0,
+        "taper": "linear",
+        "tab": ""
+      }
+    },
+    {
+      "eventName": "Spread",
+      "domain": "scalar",
+      "kind": "fader",
+      "value": 0.7,
+      "minimum": 0,
+      "maximum": 1,
+      "widget": {
+        "style": "default",
+        "showNumber": true,
+        "label": "Stereo spread",
+        "onColour": "",
+        "offColour": "",
+        "grid": 0,
+        "taper": "linear",
+        "tab": ""
+      }
+    },
+    {
+      "eventName": "Demo",
+      "domain": "scalar",
+      "kind": "toggle",
+      "value": 1,
+      "minimum": 0,
+      "maximum": 1,
+      "widget": {
+        "style": "default",
+        "showNumber": true,
+        "label": "Demo phrase",
+        "onColour": "",
+        "offColour": "",
+        "grid": 0,
+        "taper": "linear",
+        "tab": ""
+      }
+    }
+  ],
+  "assets": [],
+  "partialTrackEdits": [],
+  "timeline": {
+    "loop": {
+      "enabled": false,
+      "startSeconds": 0,
+      "endSeconds": 4
+    },
+    "musicalTime": {
+      "ticksPerQuarter": 960,
+      "tempo": [
+        {
+          "tick": 0,
+          "microsecondsPerQuarter": 500000
+        }
+      ],
+      "meter": [
+        {
+          "tick": 0,
+          "numerator": 4,
+          "denominator": 4
+        }
+      ]
+    },
+    "score": {
+      "tracks": [],
+      "clips": [],
+      "automation": [],
+      "markers": []
+    },
+    "eventValues": []
+  },
+  "deviceSettings": {
+    "configured": false,
+    "audioInputDevice": "",
+    "audioOutputDevice": "",
+    "sampleRate": 0,
+    "bufferSize": 0,
+    "inputChannels": [],
+    "outputChannels": [],
+    "midiInputDevices": [],
+    "transportSync": {
+      "sourceMode": "internal",
+      "sourceIdentifier": ""
+    },
+    "oscIngress": {
+      "enabled": false,
+      "port": 9000
+    },
+    "oscEgress": {
+      "enabled": false,
+      "port": 9001
+    }
+  },
+  "soundDefinitions": [
+    {
+      "id": "granularSynthVoice",
+      "name": "Grain Voice",
+      "description": "One voice; the keys and demo MIDI Voices each play their own copies of it.",
+      "interfaceVersion": 1,
+      "inputs": [],
+      "outputs": [
+        {
+          "id": "audioOut",
+          "type": "audio",
+          "nodeId": "cloud",
+          "nodePortId": "leftOut"
+        },
+        {
+          "id": "rightOut",
+          "type": "audio",
+          "nodeId": "cloud",
+          "nodePortId": "rightOut"
+        }
+      ],
+      "parameters": [],
+      "graph": {
+        "nodes": [
+          {
+            "id": "env",
+            "typeId": "talas.adsr",
+            "parameters": [
+              {
+                "id": "attackTime",
+                "expression": "0.25 s"
+              },
+              {
+                "id": "decayTime",
+                "expression": "0.5 s"
+              },
+              {
+                "id": "sustainLevel",
+                "expression": "0.8"
+              },
+              {
+                "id": "releaseTime",
+                "expression": "0.8 s"
+              },
+              {
+                "id": "gate",
+                "expression": "!KeyDown"
+              },
+              {
+                "id": "scale",
+                "expression": "0.2 * !KeyVelocity"
+              }
+            ]
+          },
+          {
+            "id": "cloud",
+            "typeId": "talas.grainCloud",
+            "parameters": [
+              {
+                "id": "waveform",
+                "resource": "Buzz"
+              },
+              {
+                "id": "grainEnv",
+                "resource": "Hann"
+              },
+              {
+                "id": "maxGrains",
+                "expression": "24"
+              },
+              {
+                "id": "amplitude",
+                "expression": "0.18"
+              },
+              {
+                "id": "density",
+                "expression": "!Density"
+              },
+              {
+                "id": "grainDur",
+                "expression": "!GrainSize * 0.001 s"
+              },
+              {
+                "id": "grainDurJitter",
+                "expression": "0.3"
+              },
+              {
+                "id": "frequency",
+                "expression": "!KeyPitch"
+              },
+              {
+                "id": "freqJitter",
+                "expression": "!Jitter * 0.05"
+              },
+              {
+                "id": "pan",
+                "expression": "0.5"
+              },
+              {
+                "id": "panJitter",
+                "expression": "!Spread"
+              },
+              {
+                "id": "seed",
+                "expression": "0.61"
+              }
+            ]
+          }
+        ],
+        "connections": [
+          {
+            "fromNode": "env",
+            "fromPort": "value",
+            "toNode": "cloud",
+            "toPort": "amplitude"
+          }
+        ]
+      }
+    }
+  ],
+  "graph": {
+    "nodes": [
+      {
+        "id": "keysVoice",
+        "soundDefinitionId": "granularSynthVoice",
+        "parameters": []
+      },
+      {
+        "id": "demoVoice",
+        "soundDefinitionId": "granularSynthVoice",
+        "parameters": []
+      },
+      {
+        "id": "keys",
+        "typeId": "talas.midiVoice",
+        "parameters": [
+          {
+            "id": "left",
+            "expression": "1"
+          },
+          {
+            "id": "right",
+            "expression": "1"
+          },
+          {
+            "id": "channel",
+            "expression": "0"
+          },
+          {
+            "id": "source",
+            "text": "Live MIDI"
+          },
+          {
+            "id": "midiFile",
+            "resource": ""
+          },
+          {
+            "id": "polyphony",
+            "expression": "6"
+          },
+          {
+            "id": "lowPitch",
+            "expression": "0 nn"
+          },
+          {
+            "id": "highPitch",
+            "expression": "127 nn"
+          },
+          {
+            "id": "script",
+            "text": ""
+          },
+          {
+            "id": "shared",
+            "boolean": false
+          }
+        ]
+      },
+      {
+        "id": "demo",
+        "typeId": "talas.midiVoice",
+        "parameters": [
+          {
+            "id": "left",
+            "expression": "!Demo"
+          },
+          {
+            "id": "right",
+            "expression": "!Demo"
+          },
+          {
+            "id": "channel",
+            "expression": "0"
+          },
+          {
+            "id": "source",
+            "text": "Script"
+          },
+          {
+            "id": "midiFile",
+            "resource": ""
+          },
+          {
+            "id": "polyphony",
+            "expression": "6"
+          },
+          {
+            "id": "lowPitch",
+            "expression": "0 nn"
+          },
+          {
+            "id": "highPitch",
+            "expression": "127 nn"
+          },
+          {
+            "id": "script",
+            "text": "self keyDownAt: 0 s duration: 2.6 s frequency: 50 nn velocity: 0.8. self keyDownAt: 0 s duration: 2.6 s frequency: 57 nn velocity: 0.7. self keyDownAt: 1.4 s duration: 2.6 s frequency: 64 nn velocity: 0.7. self keyDownAt: 2.9 s duration: 2.8 s frequency: 48 nn velocity: 0.8. self keyDownAt: 2.9 s duration: 2.8 s frequency: 55 nn velocity: 0.7. self keyDownAt: 4.2 s duration: 2 s frequency: 67 nn velocity: 0.7. self keyDownAt: 4.2 s duration: 2 s frequency: 62 nn velocity: 0.6."
+          },
+          {
+            "id": "shared",
+            "boolean": false
+          }
+        ]
+      },
+      {
+        "id": "voices",
+        "typeId": "talas.mixerV2",
+        "parameters": [
+          {
+            "id": "left",
+            "expression": "1"
+          },
+          {
+            "id": "right",
+            "expression": "1"
+          }
+        ]
+      },
+      {
+        "id": "output",
+        "typeId": "talas.audioOutput",
+        "parameters": []
+      }
+    ],
+    "connections": [
+      {
+        "fromNode": "keysVoice",
+        "fromPort": "audioOut",
+        "toNode": "keys",
+        "toPort": "audioIn"
+      },
+      {
+        "fromNode": "demoVoice",
+        "fromPort": "audioOut",
+        "toNode": "demo",
+        "toPort": "audioIn"
+      },
+      {
+        "fromNode": "keysVoice",
+        "fromPort": "rightOut",
+        "toNode": "keys",
+        "toPort": "rightIn"
+      },
+      {
+        "fromNode": "demoVoice",
+        "fromPort": "rightOut",
+        "toNode": "demo",
+        "toPort": "rightIn"
+      },
+      {
+        "fromNode": "keys",
+        "fromPort": "leftOut",
+        "toNode": "voices",
+        "toPort": "inputs"
+      },
+      {
+        "fromNode": "demo",
+        "fromPort": "leftOut",
+        "toNode": "voices",
+        "toPort": "inputs"
+      },
+      {
+        "fromNode": "keys",
+        "fromPort": "rightOut",
+        "toNode": "voices",
+        "toPort": "rightInputs"
+      },
+      {
+        "fromNode": "demo",
+        "fromPort": "rightOut",
+        "toNode": "voices",
+        "toPort": "rightInputs"
+      },
+      {
+        "fromNode": "voices",
+        "fromPort": "leftOut",
+        "toNode": "output",
+        "toPort": "audioIn"
+      },
+      {
+        "fromNode": "voices",
+        "fromPort": "rightOut",
+        "toNode": "output",
+        "toPort": "rightIn"
+      }
+    ]
+  }
+}

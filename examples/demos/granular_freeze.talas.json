@@ -1,0 +1,516 @@
+{
+  "format": "talas.project",
+  "version": 156,
+  "expressionLanguage": "variablesV2",
+  "expressionDefinitions": [],
+  "variableLibrary": {
+    "version": 2,
+    "variables": []
+  },
+  "soundVariableLibrary": {
+    "version": 1,
+    "variables": []
+  },
+  "generatorLibrary": {
+    "version": 2,
+    "programs": []
+  },
+  "liveSetLibrary": {
+    "version": 1,
+    "liveSets": [],
+    "tools": []
+  },
+  "metadata": {
+    "title": "Granular Freeze",
+    "description": "A Memory Writer keeps the last 2 s of the input in a loop and a Sample Cloud scatters grains from it across the stereo field. Freeze stops recording so the cloud keeps playing what was captured. Mono input on channel 1, stereo output."
+  },
+  "presentation": {
+    "version": 2,
+    "structureLayouts": [
+      {
+        "scope": {
+          "kind": "project"
+        },
+        "nodes": [
+          {
+            "nodeId": "input",
+            "x": 0,
+            "y": 0
+          },
+          {
+            "nodeId": "recorder",
+            "x": 220,
+            "y": 0
+          },
+          {
+            "nodeId": "dry",
+            "x": 440,
+            "y": 0
+          },
+          {
+            "nodeId": "grains",
+            "x": 0,
+            "y": 120
+          },
+          {
+            "nodeId": "mix",
+            "x": 660,
+            "y": 0
+          },
+          {
+            "nodeId": "output",
+            "x": 880,
+            "y": 0
+          }
+        ]
+      }
+    ],
+    "performanceControls": [
+      {
+        "controlId": "Freeze",
+        "target": {
+          "kind": "eventValue",
+          "eventName": "Freeze",
+          "domain": "scalar"
+        },
+        "kind": "toggle",
+        "displayName": "Freeze",
+        "x": 0,
+        "y": 0,
+        "visible": true,
+        "modulationSlots": []
+      },
+      {
+        "controlId": "Density",
+        "target": {
+          "kind": "eventValue",
+          "eventName": "Density",
+          "domain": "scalar"
+        },
+        "kind": "fader",
+        "displayName": "Density (grains/s)",
+        "x": 140,
+        "y": 0,
+        "visible": true,
+        "modulationSlots": []
+      },
+      {
+        "controlId": "GrainSize",
+        "target": {
+          "kind": "eventValue",
+          "eventName": "GrainSize",
+          "domain": "scalar"
+        },
+        "kind": "fader",
+        "displayName": "Grain size (ms)",
+        "x": 280,
+        "y": 0,
+        "visible": true,
+        "modulationSlots": []
+      },
+      {
+        "controlId": "Scatter",
+        "target": {
+          "kind": "eventValue",
+          "eventName": "Scatter",
+          "domain": "scalar"
+        },
+        "kind": "fader",
+        "displayName": "Scatter",
+        "x": 0,
+        "y": 160,
+        "visible": true,
+        "modulationSlots": []
+      },
+      {
+        "controlId": "Mix",
+        "target": {
+          "kind": "eventValue",
+          "eventName": "Mix",
+          "domain": "scalar"
+        },
+        "kind": "fader",
+        "displayName": "Mix",
+        "x": 140,
+        "y": 160,
+        "visible": true,
+        "modulationSlots": []
+      }
+    ],
+    "performanceMeters": []
+  },
+  "snapshotLibrary": {
+    "version": 1,
+    "banks": []
+  },
+  "sampleMapLibrary": {
+    "version": 1,
+    "maps": []
+  },
+  "virtualControls": [
+    {
+      "eventName": "Freeze",
+      "domain": "scalar",
+      "kind": "toggle",
+      "value": 0,
+      "minimum": 0,
+      "maximum": 1,
+      "widget": {
+        "style": "default",
+        "showNumber": true,
+        "label": "Freeze",
+        "onColour": "",
+        "offColour": "",
+        "grid": 0,
+        "taper": "linear",
+        "tab": ""
+      }
+    },
+    {
+      "eventName": "Density",
+      "domain": "scalar",
+      "kind": "fader",
+      "value": 20,
+      "minimum": 1,
+      "maximum": 60,
+      "widget": {
+        "style": "default",
+        "showNumber": true,
+        "label": "Density (grains/s)",
+        "onColour": "",
+        "offColour": "",
+        "grid": 0,
+        "taper": "log",
+        "tab": ""
+      }
+    },
+    {
+      "eventName": "GrainSize",
+      "domain": "scalar",
+      "kind": "fader",
+      "value": 120,
+      "minimum": 20,
+      "maximum": 400,
+      "widget": {
+        "style": "default",
+        "showNumber": true,
+        "label": "Grain size (ms)",
+        "onColour": "",
+        "offColour": "",
+        "grid": 0,
+        "taper": "log",
+        "tab": ""
+      }
+    },
+    {
+      "eventName": "Scatter",
+      "domain": "scalar",
+      "kind": "fader",
+      "value": 0.5,
+      "minimum": 0,
+      "maximum": 1,
+      "widget": {
+        "style": "default",
+        "showNumber": true,
+        "label": "Scatter",
+        "onColour": "",
+        "offColour": "",
+        "grid": 0,
+        "taper": "linear",
+        "tab": ""
+      }
+    },
+    {
+      "eventName": "Mix",
+      "domain": "scalar",
+      "kind": "fader",
+      "value": 0.6,
+      "minimum": 0,
+      "maximum": 1,
+      "widget": {
+        "style": "default",
+        "showNumber": true,
+        "label": "Mix",
+        "onColour": "",
+        "offColour": "",
+        "grid": 0,
+        "taper": "linear",
+        "tab": ""
+      }
+    }
+  ],
+  "assets": [],
+  "partialTrackEdits": [],
+  "timeline": {
+    "loop": {
+      "enabled": false,
+      "startSeconds": 0,
+      "endSeconds": 4
+    },
+    "musicalTime": {
+      "ticksPerQuarter": 960,
+      "tempo": [
+        {
+          "tick": 0,
+          "microsecondsPerQuarter": 500000
+        }
+      ],
+      "meter": [
+        {
+          "tick": 0,
+          "numerator": 4,
+          "denominator": 4
+        }
+      ]
+    },
+    "score": {
+      "tracks": [],
+      "clips": [],
+      "automation": [],
+      "markers": []
+    },
+    "eventValues": []
+  },
+  "deviceSettings": {
+    "configured": false,
+    "audioInputDevice": "",
+    "audioOutputDevice": "",
+    "sampleRate": 0,
+    "bufferSize": 0,
+    "inputChannels": [],
+    "outputChannels": [],
+    "midiInputDevices": [],
+    "transportSync": {
+      "sourceMode": "internal",
+      "sourceIdentifier": ""
+    },
+    "oscIngress": {
+      "enabled": false,
+      "port": 9000
+    },
+    "oscEgress": {
+      "enabled": false,
+      "port": 9001
+    }
+  },
+  "soundDefinitions": [],
+  "graph": {
+    "nodes": [
+      {
+        "id": "input",
+        "typeId": "talas.audioInput",
+        "parameters": [
+          {
+            "id": "routing",
+            "choice": "monoSum"
+          },
+          {
+            "id": "channel1",
+            "boolean": true
+          }
+        ]
+      },
+      {
+        "id": "recorder",
+        "typeId": "talas.memoryWriter",
+        "parameters": [
+          {
+            "id": "captureDuration",
+            "expression": "2 s"
+          },
+          {
+            "id": "recordingName",
+            "resource": "FreezeBuffer"
+          },
+          {
+            "id": "cyclic",
+            "boolean": true
+          },
+          {
+            "id": "silent",
+            "boolean": true
+          },
+          {
+            "id": "trigger",
+            "expression": "1 - !Freeze"
+          }
+        ]
+      },
+      {
+        "id": "dry",
+        "typeId": "talas.mixerV2",
+        "parameters": [
+          {
+            "id": "left",
+            "expression": "1"
+          },
+          {
+            "id": "right",
+            "expression": "1"
+          }
+        ]
+      },
+      {
+        "id": "grains",
+        "typeId": "talas.sampleCloud",
+        "parameters": [
+          {
+            "id": "sample",
+            "resource": "FreezeBuffer"
+          },
+          {
+            "id": "fromMemoryWriter",
+            "boolean": true
+          },
+          {
+            "id": "grainEnv",
+            "resource": "Hann"
+          },
+          {
+            "id": "maxGrains",
+            "expression": "48"
+          },
+          {
+            "id": "amplitude",
+            "expression": "0.9"
+          },
+          {
+            "id": "density",
+            "expression": "!Density"
+          },
+          {
+            "id": "grainDur",
+            "expression": "!GrainSize * 0.001 s"
+          },
+          {
+            "id": "timeIndex",
+            "expression": "0"
+          },
+          {
+            "id": "timeIndexJitter",
+            "expression": "!Scatter"
+          },
+          {
+            "id": "pan",
+            "expression": "0.5"
+          },
+          {
+            "id": "panJitter",
+            "expression": "0.9"
+          },
+          {
+            "id": "seed",
+            "expression": "0.37"
+          }
+        ]
+      },
+      {
+        "id": "mix",
+        "typeId": "talas.stereoMix4",
+        "parameters": [
+          {
+            "id": "left",
+            "expression": "1"
+          },
+          {
+            "id": "right",
+            "expression": "1"
+          },
+          {
+            "id": "pan1",
+            "expression": "0"
+          },
+          {
+            "id": "scale1",
+            "expression": "1 - !Mix"
+          },
+          {
+            "id": "pan2",
+            "expression": "0"
+          },
+          {
+            "id": "scale2",
+            "expression": "!Mix"
+          },
+          {
+            "id": "pan3",
+            "expression": "1"
+          },
+          {
+            "id": "scale3",
+            "expression": "!Mix"
+          },
+          {
+            "id": "pan4",
+            "expression": "1"
+          },
+          {
+            "id": "scale4",
+            "expression": "1 - !Mix"
+          }
+        ]
+      },
+      {
+        "id": "output",
+        "typeId": "talas.audioOutput",
+        "parameters": []
+      }
+    ],
+    "connections": [
+      {
+        "fromNode": "input",
+        "fromPort": "audioOut",
+        "toNode": "recorder",
+        "toPort": "audioIn"
+      },
+      {
+        "fromNode": "input",
+        "fromPort": "audioOut",
+        "toNode": "dry",
+        "toPort": "inputs"
+      },
+      {
+        "fromNode": "recorder",
+        "fromPort": "audioOut",
+        "toNode": "dry",
+        "toPort": "inputs"
+      },
+      {
+        "fromNode": "dry",
+        "fromPort": "leftOut",
+        "toNode": "mix",
+        "toPort": "in1"
+      },
+      {
+        "fromNode": "grains",
+        "fromPort": "audioOut",
+        "toNode": "mix",
+        "toPort": "in2"
+      },
+      {
+        "fromNode": "grains",
+        "fromPort": "rightOut",
+        "toNode": "mix",
+        "toPort": "in3"
+      },
+      {
+        "fromNode": "dry",
+        "fromPort": "leftOut",
+        "toNode": "mix",
+        "toPort": "in4"
+      },
+      {
+        "fromNode": "mix",
+        "fromPort": "leftOut",
+        "toNode": "output",
+        "toPort": "audioIn"
+      },
+      {
+        "fromNode": "mix",
+        "fromPort": "rightOut",
+        "toNode": "output",
+        "toPort": "rightIn"
+      }
+    ]
+  }
+}

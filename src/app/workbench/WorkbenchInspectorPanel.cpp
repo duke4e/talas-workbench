@@ -413,6 +413,9 @@ public:
         variablesModeButton_.setRadioGroupId(4101);
         generatorsModeButton_.setClickingTogglesState(true);
         generatorsModeButton_.setRadioGroupId(4101);
+        // The three modes as one segmented control over a tray.
+        for (auto* mode : {&nodeModeButton_, &variablesModeButton_, &generatorsModeButton_})
+            mode->getProperties().set(talasSegmentProperty, true);
         expressionLanguageLabel_.setComponentID(
             "inspector.expression-language");
         expressionLanguageLabel_.setWantsKeyboardFocus(true);
@@ -1593,17 +1596,18 @@ public:
     {
         WorkbenchStyle::paintPanel(graphics, getLocalBounds().toFloat(), WorkbenchStyle::panelRadius());
         WorkbenchStyle::paintPanelTitle(graphics, getLocalBounds().reduced(14).removeFromTop(24), "Inspector");
+        const auto tray = nodeModeButton_.getBounds().getUnion(generatorsModeButton_.getBounds());
+        if (nodeModeButton_.isVisible() && !tray.isEmpty())
+            WorkbenchStyle::paintWell(graphics, tray.toFloat(), WorkbenchStyle::controlRadius() + 1.0F);
     }
 
     void resized() override
     {
         auto content = getLocalBounds().reduced(10).withTrimmedTop(28);
         auto modeRow = content.removeFromTop(24);
-        const auto modeWidth = std::max(1, (modeRow.getWidth() - 8) / 3);
+        const auto modeWidth = std::max(1, modeRow.getWidth() / 3);
         nodeModeButton_.setBounds(modeRow.removeFromLeft(modeWidth));
-        modeRow.removeFromLeft(4);
         variablesModeButton_.setBounds(modeRow.removeFromLeft(modeWidth));
-        modeRow.removeFromLeft(4);
         generatorsModeButton_.setBounds(modeRow);
         content.removeFromTop(4);
         if (generatorsMode_)

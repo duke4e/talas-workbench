@@ -357,30 +357,25 @@ private:
         }
         graphics.setColour(WorkbenchStyle::categoryColour(descriptor.category).withAlpha(selected ? 1.0F : 0.7F));
         graphics.fillRoundedRectangle(juce::Rectangle<float>{2.0F, 6.0F, 2.5F, static_cast<float>(height) - 12.0F}, 1.2F);
-        const auto badgeWidth = juce::jlimit(
-            22,
-            72,
-            juce::roundToInt(
-                22.0F
-                + static_cast<float>(std::max(0, width - 168))
-                    * 1.25F));
-        const auto compact = badgeWidth < 72;
-        const auto badgeBounds = juce::Rectangle<int>{width - badgeWidth - 7, 7, badgeWidth, 18};
-        graphics.setColour(supportBadgeColour(descriptor.supportLevel));
-        graphics.fillRoundedRectangle(badgeBounds.toFloat(), 4.0F);
-        graphics.setColour(juce::Colours::white);
-        graphics.setFont(WorkbenchType::microStrong());
-        graphics.drawText(
-            compact
-                ? supportBadgeText(descriptor.supportLevel).substring(0, 1)
-                : supportBadgeText(descriptor.supportLevel),
-            badgeBounds,
-            juce::Justification::centred);
+        // The support level in a small pill of its colour: the whole word
+        // when the name still fits beside it, else its initial in a capsule.
+        const auto zoom = static_cast<float>(height) / static_cast<float>(talas::app::prototypeRowHeight(0));
+        const auto nameFont = WorkbenchType::bodyStrong().withHeight(WorkbenchType::bodyStrong().getHeight() * zoom);
+        const auto nameWidth = juce::GlyphArrangement::getStringWidth(nameFont, juceString(descriptor.displayName));
+        const auto badgeFont = WorkbenchType::microStrong();
+        const auto badgeText = supportBadgeText(descriptor.supportLevel);
+        const auto wordWidth = juce::roundToInt(juce::GlyphArrangement::getStringWidth(badgeFont, badgeText)) + 14;
+        const auto compact = static_cast<float>(width - wordWidth - 24) < nameWidth;
+        const auto badgeWidth = compact ? 20 : wordWidth;
+        const auto badgeHeight = 16;
+        const auto badgeBounds = juce::Rectangle<int>{width - badgeWidth - 8, 8, badgeWidth, badgeHeight};
+        WorkbenchStyle::paintPill(graphics, badgeBounds.toFloat(), supportBadgeColour(descriptor.supportLevel),
+            selected ? workbenchTheme.selectedRow : workbenchTheme.surface,
+            compact ? badgeText.substring(0, 1) : badgeText, badgeFont);
 
         // The entry larger or smaller as the prototypes are zoomed.
-        const auto zoom = static_cast<float>(height) / static_cast<float>(talas::app::prototypeRowHeight(0));
         graphics.setColour(textColour);
-        graphics.setFont(WorkbenchType::bodyStrong().withHeight(WorkbenchType::bodyStrong().getHeight() * zoom));
+        graphics.setFont(nameFont);
         graphics.drawText(
             juceString(descriptor.displayName),
             8,

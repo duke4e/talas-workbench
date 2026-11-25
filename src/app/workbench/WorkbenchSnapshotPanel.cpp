@@ -2629,45 +2629,115 @@ private:
             mouseUp(up);
         }
 
-        // A glass tile coloured by what the cell launches (a Sound violet, a
-        // snapshot aqua, a Score region pink, a stop or mute red), lit while
-        // active or queued; its name and state written out, never colour alone.
+        // A clip-like tile filled with the colour of what the cell launches
+        // (a Sound violet, a snapshot aqua, a Score region pink, a stop or
+        // mute red): ready cells a deep fill, the playing cell bright with a
+        // halo and a solid play glyph, a queued cell a dashed edge and an
+        // open glyph; unavailable cells fade. The name and the state are
+        // always written, in whichever ink reads on the fill.
         void paintButton(juce::Graphics& graphics, bool highlighted, bool down) override
         {
             const auto& summary = action_.targetSummary;
+            const auto launches = summary.starts_with("Sound") || summary.starts_with("Snapshot")
+                || summary.starts_with("Score");
             const auto kind = summary.starts_with("Sound") ? workbenchTheme.accentStart
                 : summary.starts_with("Snapshot")         ? workbenchTheme.accentEnd
                 : summary.starts_with("Score")            ? workbenchTheme.event
                                                           : workbenchTheme.error;
-            const auto lit = getToggleState();
-            const auto alpha = isEnabled() ? 1.0F : 0.55F;
-            const auto bounds = getLocalBounds().toFloat().reduced(1.5F);
-            auto base = workbenchTheme.controlTile.interpolatedWith(kind, lit ? 0.42F : 0.12F);
+            using State = talas::app::LiveGridCellState;
+            const auto active = action_.state == State::Active;
+            const auto queued = action_.state == State::Queued;
+            const auto faded = !isEnabled()
+                || (action_.state != State::Ready && action_.state != State::Preparing && !active && !queued);
+            const auto enhanced = WorkbenchStyle::enhancedContrast();
+            const auto bounds = getLocalBounds().toFloat().reduced(3.5F);
+            constexpr auto radius = 6.0F;
+            auto fill = active ? kind
+                : queued       ? workbenchTheme.controlTile.interpolatedWith(kind, 0.42F)
+                : faded        ? workbenchTheme.controlTile.interpolatedWith(kind, 0.1F)
+                               : workbenchTheme.controlTile.interpolatedWith(kind, 0.3F);
             if (down)
-                base = base.darker(0.2F);
-            else if (highlighted)
-                base = base.brighter(0.15F);
-            if (lit && !WorkbenchStyle::enhancedContrast())
+                fill = fill.darker(0.2F);
+            else if (highlighted && isEnabled())
+                fill = fill.brighter(0.12F);
+            if (active && !enhanced)
             {
+                graphics.setColour(kind.withAlpha(0.14F));
+                graphics.fillRoundedRectangle(bounds.expanded(3.0F), radius + 3.0F);
                 graphics.setColour(kind.withAlpha(0.3F));
-                graphics.fillRoundedRectangle(bounds.expanded(1.0F), 7.0F);
+                graphics.fillRoundedRectangle(bounds.expanded(1.5F), radius + 1.5F);
             }
-            WorkbenchStyle::paintTile(graphics, bounds, 6.0F, base.withMultipliedAlpha(alpha));
-            graphics.setColour(kind.withMultipliedAlpha(alpha));
-            graphics.fillRoundedRectangle(bounds.withWidth(3.0F).reduced(0.0F, 5.0F), 1.5F);
-            auto text = bounds.reduced(10.0F, 6.0F).toNearestInt();
-            graphics.setColour(workbenchTheme.primaryText.withMultipliedAlpha(alpha));
+            graphics.setGradientFill(juce::ColourGradient{
+                fill.interpolatedWith(juce::Colours::white, active ? 0.16F : 0.07F), 0.0F, bounds.getY(),
+                fill.interpolatedWith(juce::Colours::black, 0.16F), 0.0F, bounds.getBottom(), false});
+            graphics.fillRoundedRectangle(bounds, radius);
+            if (!enhanced && !faded)
+            {
+                juce::Graphics::ScopedSaveState clipped(graphics);
+                juce::Path shape;
+                shape.addRoundedRectangle(bounds, radius);
+                graphics.reduceClipRegion(shape);
+                graphics.setGradientFill(juce::ColourGradient{juce::Colours::white.withAlpha(active ? 0.22F : 0.08F),
+                    0.0F, bounds.getY(), juce::Colours::white.withAlpha(0.0F), 0.0F, bounds.getCentreY(), false});
+                graphics.fillRect(bounds.withHeight(bounds.getHeight() * 0.5F));
+            }
+            if (queued)
+            {
+                juce::Path edge;
+                edge.addRoundedRectangle(bounds.reduced(0.75F), radius);
+                juce::Path dashed;
+                const float dashes[] = {4.0F, 3.0F};
+                juce::PathStrokeType{1.5F}.createDashedStroke(dashed, edge, dashes, 2);
+                graphics.setColour(enhanced ? workbenchTheme.enhancedOutline : kind.brighter(0.4F));
+                graphics.fillPath(dashed);
+            }
+            else
+            {
+                graphics.setColour(enhanced ? workbenchTheme.enhancedOutline
+                        : active            ? juce::Colours::white.withAlpha(0.45F)
+                                            : juce::Colours::white.withAlpha(0.09F));
+                graphics.drawRoundedRectangle(bounds.reduced(0.5F), radius, 1.0F);
+            }
+
+            // The glyph, the name and the state, in ink that reads on the fill.
+            const auto ink = WorkbenchStyle::readableTextOn(fill);
+            auto content = bounds.reduced(9.0F, 6.0F);
+            const auto glyphSize = 9.0F;
+            const auto glyphArea = content.removeFromLeft(glyphSize).withSizeKeepingCentre(glyphSize, glyphSize)
+                                       .withY(content.getY() + 3.0F);
+            const auto glyph = launches ? WorkbenchStyle::Glyph::Play : WorkbenchStyle::Glyph::Stop;
+            if (queued)
+            {
+                // Open while it waits for its launch.
+                juce::Path outline;
+                if (launches)
+                    outline.addTriangle(glyphArea.getX(), glyphArea.getY(), glyphArea.getX(), glyphArea.getBottom(),
+                        glyphArea.getRight(), glyphArea.getCentreY());
+                else
+                    outline.addRectangle(glyphArea.reduced(0.5F));
+                graphics.setColour(ink);
+                graphics.strokePath(outline, juce::PathStrokeType{1.4F, juce::PathStrokeType::curved,
+                    juce::PathStrokeType::rounded});
+            }
+            else
+            {
+                WorkbenchStyle::paintGlyph(graphics, glyphArea, glyph,
+                    active ? ink : ink.withAlpha(faded ? 0.3F : 0.5F));
+            }
+            content.removeFromLeft(6.0F);
+            auto text = content.toNearestInt();
+            graphics.setColour(ink.withMultipliedAlpha(faded ? 0.7F : 1.0F));
             graphics.setFont(WorkbenchType::labelStrong());
             graphics.drawFittedText(juceString(action_.displayName), text.removeFromTop(text.getHeight() / 2),
                 juce::Justification::centredLeft, 1);
-            graphics.setColour((lit ? workbenchTheme.primaryText : workbenchTheme.secondaryText).withMultipliedAlpha(alpha));
-            graphics.setFont(WorkbenchType::micro());
+            graphics.setColour(ink.withMultipliedAlpha(faded ? 0.65F : 0.88F));
+            graphics.setFont(active ? WorkbenchType::microStrong() : WorkbenchType::micro());
             graphics.drawFittedText(juceString(talas::app::liveGridCellStateLabel(action_.state)), text,
                 juce::Justification::centredLeft, 1);
             if (hasKeyboardFocus(true))
             {
                 graphics.setColour(workbenchTheme.focus);
-                graphics.drawRoundedRectangle(bounds, 6.0F, WorkbenchType::focusOutlinePixels());
+                graphics.drawRoundedRectangle(bounds.expanded(1.0F), radius + 1.0F, WorkbenchType::focusOutlinePixels());
             }
         }
 
@@ -2861,6 +2931,9 @@ public:
         controlsTab_.setClickingTogglesState(false);
         snapshotsTab_.setClickingTogglesState(false);
         liveGridTab_.setClickingTogglesState(false);
+        // The three views as one segmented control over a tray.
+        for (auto* tab : {&controlsTab_, &snapshotsTab_, &liveGridTab_})
+            tab->getProperties().set(talasSegmentProperty, true);
         controlsTab_.onClick = [this] {
             setPerformanceMode(
                 talas::project::WorkspacePerformanceSessionState::Mode::Controls);
@@ -3350,6 +3423,9 @@ public:
     void paint(juce::Graphics& graphics) override
     {
         WorkbenchStyle::paintPanel(graphics, getLocalBounds().toFloat(), WorkbenchStyle::panelRadius());
+        const auto tray = controlsTab_.getBounds().getUnion(liveGridTab_.getBounds());
+        if (!tray.isEmpty())
+            WorkbenchStyle::paintWell(graphics, tray.toFloat(), WorkbenchStyle::controlRadius() + 1.0F);
     }
 
     void resized() override
@@ -3359,12 +3435,10 @@ public:
                 liveGridViewport_.getWidth(), liveGridViewport_.getHeight()};
         auto bounds = getLocalBounds().reduced(10);
         title_.setBounds(bounds.removeFromTop(20));
-        auto tabs = bounds.removeFromTop(24);
-        const auto tabWidth = std::max(68, (tabs.getWidth() - 8) / 3);
+        auto tabs = bounds.removeFromTop(26);
+        const auto tabWidth = std::max(68, tabs.getWidth() / 3);
         controlsTab_.setBounds(tabs.removeFromLeft(tabWidth));
-        tabs.removeFromLeft(4);
         snapshotsTab_.setBounds(tabs.removeFromLeft(tabWidth));
-        tabs.removeFromLeft(4);
         liveGridTab_.setBounds(tabs);
         bounds.removeFromTop(5);
         contextLabel_.setBounds(bounds.removeFromTop(20));
@@ -3415,8 +3489,8 @@ public:
             std::max(
                 bounds.getHeight(),
                 authoringHeight + rows_.size() * 68));
-        constexpr int cellWidth = 104;
-        constexpr int cellHeight = 58;
+        constexpr int cellWidth = 112;
+        constexpr int cellHeight = 60;
         constexpr int cellGap = 6;
         liveGridContainer_.setSize(
             static_cast<int>(talas::project::projectLiveSetColumns)

@@ -1073,6 +1073,16 @@ std::optional<std::uint64_t> RealtimeGraphHost::midiSongPositionFrame(
         : std::optional<std::uint64_t>{};
 }
 
+std::optional<std::uint64_t> RealtimeGraphHost::musicalTickFrame(
+    std::uint64_t tick) const noexcept
+{
+    auto* source = transitioning_.load(std::memory_order_acquire);
+    if (source == nullptr)
+        source = active_.load(std::memory_order_acquire);
+    return source != nullptr ? source->musicalTickFrame(tick)
+                             : std::optional<std::uint64_t>{};
+}
+
 std::uint64_t
 RealtimeGraphHost::rejectedStageBoundRelocationCount() const noexcept
 {

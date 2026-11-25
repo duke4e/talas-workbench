@@ -2,6 +2,7 @@
 
 #include "talas/project/ControllerRecording.h"
 #include "talas/project/ProjectEditor.h"
+#include "talas/runtime/HostTransport.h"
 #include "talas/runtime/MidiClockPhaseFollower.h"
 #include "talas/runtime/MtcRealtimeIngress.h"
 #include "talas/runtime/PreparedGraphSummary.h"
@@ -714,6 +715,15 @@ public:
         std::size_t frameCount,
         RealtimeTerminalOutputBlock& output) noexcept;
 
+    // ADR-0030. Audio-thread method, called before the render it describes.
+    // That render's transport Event Values (!Tempo, !SongPosition,
+    // !BeatPhase and !TransportPlaying) come from the host; when the host
+    // drives the Sound, its play and stop also start and stop the Sound,
+    // and its start and jumps put the transport at the frame of the host's
+    // musical position. A render without it reads them from the project's
+    // own transport, and a Sound the host drove runs again on its own.
+    void followHostTransport(const HostMusicalTransport& host) noexcept;
+
     // On the audio thread, after each part of a
     // render, what each DiskRecorder within the playing Sound recorded.
     // Set it before audio starts, or while no render runs.
@@ -775,6 +785,14 @@ private:
         std::uint64_t absoluteFrame,
         std::uint64_t stageGeneration) noexcept;
     void publishInternalTransportRequest(bool playing) noexcept;
+    // ADR-0030: the host's transport adopted at a render's start, and the
+    // transport Event Values given to the engine about to render.
+    void applyHostTransport() noexcept;
+    void scheduleTransportEventValues(RealtimeAudioEngine& renderTarget) noexcept;
+    // Control thread: which transport Event Values a stage binds as the
+    // built-in ones (not a control of the project's), one bit each.
+    void publishTransportEventValueMask(std::uint64_t stageId, std::uint8_t mask) noexcept;
+    [[nodiscard]] std::optional<std::uint8_t> transportEventValueMask(std::uint64_t stageId) const noexcept;
     void drainMidiClockTransport(
         double callbackTimeSeconds,
         std::size_t frameCount) noexcept;
@@ -1177,5 +1195,22 @@ private:
         projectSnapshotBaselineValues_;
     std::string stagedSnapshotAuthoringBytes_;
     std::uint64_t nextSnapshotProjectRevision_ = 1;
+    // ADR-0030. Control → audio: each recent stage's transport Event Value
+    // bits, as (stage id << 8) | bits.
+    static constexpr std::size_t transportEventValueMaskSlots = 8;
+    std::array<std::atomic<std::uint64_t>, transportEventValueMaskSlots>
+        transportEventValueMasks_{};
+    std::size_t nextTransportEventValueMaskSlot_ = 0;
+    std::uint8_t latestTransportEventValueMask_ = 0;
+    // Audio thread only.
+    HostMusicalTransport audioHostTransport_;
+    bool audioHostTransportForNextRender_ = false;
+    bool audioHostTransportThisRender_ = false;
+    bool audioHostDrivesSound_ = false;
+    bool audioHostSoundPlaying_ = false;
+    std::uint64_t audioHostStageId_ = 0;
+    std::uint64_t audioTransportValuesStageId_ = 0;
+    std::uint8_t audioTransportValuesMask_ = 0;
+    std::array<double, 4> audioTransportValuesSent_{};
 };
 }

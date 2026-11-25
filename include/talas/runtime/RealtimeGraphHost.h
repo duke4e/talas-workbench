@@ -167,6 +167,11 @@ public:
     [[nodiscard]] std::optional<std::uint64_t> midiSongPositionFrame(
         std::uint16_t songPosition,
         std::uint64_t expectedStageId = 0) const noexcept;
+    // ADR-0030: audio-consumer only, after preparing the render boundary.
+    // The frame of a musical tick (960 a quarter) in the musical map of the
+    // engine about to render.
+    [[nodiscard]] std::optional<std::uint64_t> musicalTickFrame(
+        std::uint64_t tick) const noexcept;
     [[nodiscard]] std::uint64_t
     rejectedStageBoundRelocationCount() const noexcept;
     [[nodiscard]] std::uint64_t

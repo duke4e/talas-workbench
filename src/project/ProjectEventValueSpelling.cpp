@@ -27,10 +27,11 @@ constexpr auto val = talas::expr::ExpressionLanguageVersion::ValV1;
     return result;
 }
 
-// The built-in Event Values, in their own spelling.
-constexpr std::array<std::string_view, 16> builtInNames{"Pitch", "KeyPitch", "KeyPitch12", "KeyNumber", "KeyVelocity",
+// The built-in Event Values, in their own spelling, the transport's
+// (ADR-0030) last.
+constexpr std::array<std::string_view, 20> builtInNames{"Pitch", "KeyPitch", "KeyPitch12", "KeyNumber", "KeyVelocity",
     "KeyTimbre", "KeyDown", "LocalTime", "TimingClock", "TimingClockDuration", "MIDITimeCode", "PitchBend", "Random",
-    "Random1000", "RealTime", "Time"};
+    "Random1000", "RealTime", "Time", "Tempo", "SongPosition", "BeatPhase", "TransportPlaying"};
 
 // Each expression a document holds, as its graphs' parameters and its Sound
 // definitions' defaults.

@@ -1,6 +1,7 @@
 #include "talas/runtime/ProjectRenderSettings.h"
 
 #include "talas/project/ProjectEventValueDiscovery.h"
+#include "talas/project/TransportEventValues.h"
 
 #include <algorithm>
 #include <array>
@@ -211,6 +212,33 @@ void applyReferencedBuiltinMidiEventValues(
             settings.eventValues.push_back({std::string(builtin.name), builtin.value, builtin.domain});
     }
 }
+
+// ADR-0030: the transport's Event Values, which a realtime renderer keeps
+// up to date. Offline, and until the first render, !Tempo is the tempo at
+// the start of the project's musical map, the song is at its start and the
+// transport plays.
+void applyReferencedTransportEventValues(
+    RenderSettings& settings,
+    const talas::project::ProjectDocument& document,
+    const talas::core::NodeRegistry& registry)
+{
+    const auto tempo = std::isfinite(settings.tempoBpm) && settings.tempoBpm > 0.0
+        ? settings.tempoBpm
+        : 120.0;
+    const auto initial = talas::project::transportEventValuesAt(tempo, 0.0, true);
+    for (std::size_t index = 0; index < talas::project::transportEventValueCount; ++index)
+    {
+        const auto name = talas::project::transportEventValueNames[index];
+        if (talas::project::projectDeclaresEventValue(document, name)
+            || std::ranges::any_of(settings.eventValues,
+                [&](const EventValueBinding& binding) { return binding.name == name; })
+            || !talas::project::projectReferencesEventValue(document, registry, name))
+        {
+            continue;
+        }
+        settings.eventValues.push_back({std::string(name), initial[index], talas::expr::ValueDomain::Scalar});
+    }
+}
 }
 
 ProjectRenderSettingsResult prepareProjectRenderSettings(
@@ -249,6 +277,7 @@ ProjectRenderSettingsResult prepareProjectRenderSettings(
         return {std::nullopt, std::move(error)};
     }
     applyReferencedBuiltinMidiEventValues(settings, document, registry);
+    applyReferencedTransportEventValues(settings, document, registry);
     if (!applyPersistedTimeline(settings, document))
     {
         return {

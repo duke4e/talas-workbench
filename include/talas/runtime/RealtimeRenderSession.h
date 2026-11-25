@@ -281,6 +281,12 @@ public:
     musicalPositionAtFrame(std::uint64_t frame) const noexcept;
     [[nodiscard]] std::optional<talas::project::MusicalPosition>
     musicalPositionAtTick(std::uint64_t tick) const noexcept;
+    // ADR-0030: the prepared musical map's song position and tempo at a
+    // frame, and the frame of a musical tick (960 a quarter).
+    [[nodiscard]] std::optional<RealtimeMusicalClockReading>
+    musicalClockAtFrame(std::uint64_t frame) const noexcept;
+    [[nodiscard]] std::optional<std::uint64_t> musicalTickFrame(
+        std::uint64_t tick) const noexcept;
     // Control-thread snapshot. It copies immutable stream identity and reads
     // atomic counters; never call it from the audio callback.
     [[nodiscard]] RealtimeStreamHealthSnapshot streamHealth() const;

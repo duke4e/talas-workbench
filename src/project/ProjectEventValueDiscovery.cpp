@@ -8,6 +8,7 @@
 #include "talas/project/VirtualControlMidi.h"
 #include "talas/project/ProjectVariables.h"
 #include "talas/project/SmalltalkSubset.h"
+#include "talas/project/TransportEventValues.h"
 #include "talas/core/ValScalarArray.h"
 #include "talas/core/IntervalCollectArray.h"
 #include "talas/core/AnalogSequencerArray.h"
@@ -108,6 +109,9 @@ struct ExpressionConstraint
 // Control sets; !KeyPitch12 is one since format 116.
 [[nodiscard]] bool isBuiltinKeyboardEvent(const ProjectDocument& document, std::string_view name)
 {
+    // ADR-0030: and the transport's, unless the project declares the name.
+    if (isBuiltinTransportEventValue(document, name))
+        return true;
     const auto val = document.expressionLanguage == talas::expr::ExpressionLanguageVersion::ValV1;
     if (name == "KeyPitch12")
         return val && !document.keyPitchIgnoresPitchBend;
@@ -808,6 +812,11 @@ ProjectEventValueDiscoveryResult discoverProjectEventValueControls(
         "MIDITimeCode",
         talas::expr::ValueDomain::Scalar,
         "MIDITimeCode must use scalar domain");
+    for (const auto name : transportEventValueNames)
+    {
+        if (isBuiltinTransportEventValue(document, name))
+            addKnownDomain(name, talas::expr::ValueDomain::Scalar, std::string{name} + " must use the scalar domain");
+    }
     const auto addMapperKeyboardDomains = [&](const ProjectGraph& graph) {
         for (const auto& node : graph.nodes)
         {

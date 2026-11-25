@@ -6235,6 +6235,14 @@ if(TALAS_BUILD_TESTS)
     target_link_libraries(talas_project_runtime_bridge_tests PRIVATE talas_runtime)
     add_test(NAME talas_project_runtime_bridge_tests COMMAND talas_project_runtime_bridge_tests)
 
+    # ADR-0030: the transport's Event Values, offline, in the Workbench and
+    # from a plugin's host.
+    add_executable(talas_transport_event_value_tests
+        tests/runtime/TransportEventValueTests.cpp
+    )
+    target_link_libraries(talas_transport_event_value_tests PRIVATE talas_runtime)
+    add_test(NAME talas_transport_event_value_tests COMMAND talas_transport_event_value_tests)
+
     add_executable(talas_prepared_score_tests
         tests/runtime/PreparedScoreTests.cpp
     )

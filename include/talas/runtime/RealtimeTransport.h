@@ -18,6 +18,14 @@ struct RealtimeTransportSnapshot
     bool loopEnabled = false;
 };
 
+// ADR-0030: a prepared musical map read at one transport frame: the song
+// position in quarter notes from the map's start, and the tempo there.
+struct RealtimeMusicalClockReading
+{
+    double quarterPosition = 0.0;
+    double tempoBpm = 120.0;
+};
+
 [[nodiscard]] constexpr std::uint64_t saturatingTransportFrameAdd(
     std::uint64_t frame,
     std::uint64_t offset) noexcept

@@ -10319,6 +10319,62 @@ public:
             : std::optional<std::uint64_t>{wholeFrames + rounded};
     }
 
+    // ADR-0030: the song position, in quarter notes, and the tempo at a
+    // frame, the position kept to a fraction of a tick.
+    [[nodiscard]] std::optional<RealtimeMusicalClockReading>
+    readingAtFrame(std::uint64_t frame) const noexcept
+    {
+        if (tempo_.empty() || sampleRate_ == 0 || ticksPerQuarter_ == 0
+            || boundedTempoCount_ == 0)
+        {
+            return std::nullopt;
+        }
+        constexpr long double microsecondsPerSecond = 1000000.0L;
+        const auto units = static_cast<long double>(frame)
+            * static_cast<long double>(ticksPerQuarter_)
+            * microsecondsPerSecond
+            / static_cast<long double>(sampleRate_);
+        std::size_t index = 0;
+        while (index + 1 < boundedTempoCount_
+            && static_cast<long double>(
+                   tempo_[index + 1].accumulatedTickMicroseconds)
+                <= units)
+        {
+            ++index;
+        }
+        const auto& segment = tempo_[index];
+        const auto local = std::max(
+            0.0L,
+            units - static_cast<long double>(
+                segment.accumulatedTickMicroseconds));
+        auto tick = static_cast<long double>(segment.tick)
+            + local / static_cast<long double>(segment.microsecondsPerQuarter);
+        if (index + 1 < tempo_.size())
+        {
+            tick = std::min(
+                tick, static_cast<long double>(tempo_[index + 1].tick));
+        }
+        // The frame a tick lands on, as the map places ticks, is at that
+        // tick exactly: a beat in a tempo whose microseconds a quarter were
+        // rounded falls on its beat, not a hair before it.
+        if (const auto nearest = std::llround(tick); nearest >= 0)
+        {
+            if (const auto landing = tickToFrame(
+                    static_cast<std::uint64_t>(nearest));
+                landing.has_value() && *landing == frame)
+            {
+                tick = static_cast<long double>(nearest);
+            }
+        }
+        const auto position = static_cast<double>(
+            tick / static_cast<long double>(ticksPerQuarter_));
+        const auto tempoBpm = 60000000.0
+            / static_cast<double>(segment.microsecondsPerQuarter);
+        if (!std::isfinite(position) || !std::isfinite(tempoBpm))
+            return std::nullopt;
+        return RealtimeMusicalClockReading{position, tempoBpm};
+    }
+
     [[nodiscard]] std::optional<std::uint64_t>
     songPositionToFrame(std::uint16_t songPosition) const noexcept
     {
@@ -32849,6 +32905,18 @@ public:
     musicalPositionAtTick(std::uint64_t tick) const noexcept
     {
         return preparedMusicalClock.positionAtTick(tick);
+    }
+
+    [[nodiscard]] std::optional<RealtimeMusicalClockReading>
+    musicalClockAtFrame(std::uint64_t frame) const noexcept
+    {
+        return preparedMusicalClock.readingAtFrame(frame);
+    }
+
+    [[nodiscard]] std::optional<std::uint64_t> musicalTickFrame(
+        std::uint64_t tick) const noexcept
+    {
+        return preparedMusicalClock.tickToFrame(tick);
     }
 
     void configurePreparedTimelineRamp(
@@ -83764,6 +83832,23 @@ RealtimeRenderSession::musicalPositionAtTick(
     return impl_ != nullptr
         ? impl_->musicalPositionAtTick(tick)
         : std::optional<talas::project::MusicalPosition>{};
+}
+
+std::optional<RealtimeMusicalClockReading>
+RealtimeRenderSession::musicalClockAtFrame(
+    std::uint64_t frame) const noexcept
+{
+    return impl_ != nullptr
+        ? impl_->musicalClockAtFrame(frame)
+        : std::optional<RealtimeMusicalClockReading>{};
+}
+
+std::optional<std::uint64_t> RealtimeRenderSession::musicalTickFrame(
+    std::uint64_t tick) const noexcept
+{
+    return impl_ != nullptr
+        ? impl_->musicalTickFrame(tick)
+        : std::optional<std::uint64_t>{};
 }
 
 RealtimeStreamHealthSnapshot

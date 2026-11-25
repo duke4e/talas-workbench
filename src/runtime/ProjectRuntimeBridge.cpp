@@ -3,6 +3,7 @@
 #include "talas/project/ProjectGlobalMap.h"
 #include "talas/project/ProjectJson.h"
 #include "talas/project/ProjectSoundExpansion.h"
+#include "talas/project/TransportEventValues.h"
 #include "talas/runtime/PreparedLiveSet.h"
 #include "talas/runtime/PreparedMidiMapper.h"
 #include "talas/runtime/ProjectRenderSettings.h"
@@ -1140,6 +1141,26 @@ ProjectStageResult ProjectRuntimeBridge::compileAndStageDocumentImpl(
             "Prepared stage identity space is exhausted",
         };
     }
+    // ADR-0030: a transport Event Value the caller binds, or the project
+    // declares itself, is theirs, not the transport's.
+    std::uint8_t declaredTransportEventValues = 0;
+    for (std::size_t index = 0;
+         index < talas::project::transportEventValueCount;
+         ++index)
+    {
+        const auto name = talas::project::transportEventValueNames[index];
+        if (talas::project::projectDeclaresEventValue(document, name)
+            || std::ranges::any_of(
+                settings.eventValues,
+                [&](const EventValueBinding& binding) {
+                    return binding.scopeId == globalRuntimeScope
+                        && binding.name == name;
+                }))
+        {
+            declaredTransportEventValues |=
+                static_cast<std::uint8_t>(1U << index);
+        }
+    }
     auto preparedSettings = prepareProjectRenderSettings(
         document,
         registry_,
@@ -1891,6 +1912,26 @@ ProjectStageResult ProjectRuntimeBridge::compileAndStageDocumentImpl(
     const auto stageGeneration = nextStageGeneration_;
     engine->setStageId(engineStageId);
     engine->setSnapshotGeneration(stageGeneration);
+    std::uint8_t stagedTransportEventValues = 0;
+    for (std::size_t index = 0;
+         index < talas::project::transportEventValueCount;
+         ++index)
+    {
+        const auto name = talas::project::transportEventValueNames[index];
+        if ((declaredTransportEventValues & (1U << index)) == 0
+            && std::ranges::any_of(
+                realtimeBindings,
+                [&](const EventValueBinding& binding) {
+                    return binding.scopeId == globalRuntimeScope
+                        && binding.name == name
+                        && binding.domain == talas::expr::ValueDomain::Scalar;
+                }))
+        {
+            stagedTransportEventValues |=
+                static_cast<std::uint8_t>(1U << index);
+        }
+    }
+    publishTransportEventValueMask(engineStageId, stagedTransportEventValues);
     try
     {
         if (!engine->setPreparedLiveSet(stagedPreparedLiveSet))
@@ -2300,6 +2341,7 @@ ProjectStageResult ProjectRuntimeBridge::compileAndStageDocumentImpl(
     replacementLease.commit();
     acceptedResourceIdentities_.swap(
         nextAcceptedResourceIdentities);
+    latestTransportEventValueMask_ = stagedTransportEventValues;
     ++nextEngineStageId_;
     latestAnalysisCapture_ = stagedAnalysisCapture;
     latestScoreSourceAnalysis_ = stagedScoreSourceAnalysis;
@@ -2667,6 +2709,8 @@ ProjectRuntimeBridge::compileAndStagePerformanceOverlay(
     preparedStage.engine->setStageId(preparedStage.stageId);
     preparedStage.engine->setSnapshotGeneration(
         preparedStage.stageGeneration);
+    publishTransportEventValueMask(
+        preparedStage.stageId, latestTransportEventValueMask_);
     try
     {
         std::vector<PreparedTypedEvent> variableEvents;
@@ -7826,6 +7870,7 @@ RealtimeTerminalRenderResult ProjectRuntimeBridge::renderTerminalEvents(
     adoptInternalTransportRelocation();
     drainMidiClockTransport(callbackTimeSeconds, frameCount);
     drainMtcTransport(callbackTimeSeconds, frameCount);
+    applyHostTransport();
     struct PreparationContext
     {
         ProjectRuntimeBridge* bridge = nullptr;
@@ -7968,6 +8013,155 @@ RealtimeTerminalRenderResult ProjectRuntimeBridge::renderTerminalEvents(
         output.previousGlobalControllerEventCount = first.globalControllerEventCount;
     }
     return RealtimeTerminalRenderResult::Rendered;
+}
+
+void ProjectRuntimeBridge::followHostTransport(
+    const HostMusicalTransport& host) noexcept
+{
+    if (!std::isfinite(host.tempoBpm) || host.tempoBpm <= 0.0
+        || !std::isfinite(host.quarterPosition))
+    {
+        audioHostTransportForNextRender_ = false;
+        return;
+    }
+    audioHostTransport_ = host;
+    audioHostTransportForNextRender_ = true;
+}
+
+// ADR-0030: at a render's start, after the clock authorities have drained,
+// so that the host, which only a plugin follows, has the last word.
+void ProjectRuntimeBridge::applyHostTransport() noexcept
+{
+    audioHostTransportThisRender_ = audioHostTransportForNextRender_;
+    audioHostTransportForNextRender_ = false;
+    const auto& host = audioHostTransport_;
+    if (!audioHostTransportThisRender_ || !host.drivesSound)
+    {
+        // The Sound the host drove runs on its own again, as it did before
+        // the host drove it.
+        if (audioHostDrivesSound_)
+            graphHost_.setPlaying(true);
+        audioHostDrivesSound_ = false;
+        audioHostSoundPlaying_ = false;
+        return;
+    }
+    // A count-in waits at the song's start; the Sound starts where the
+    // song does.
+    const auto play = host.playing && host.quarterPosition >= 0.0;
+    const auto stage = graphHost_.activeStageId();
+    const auto firstRender = !audioHostDrivesSound_;
+    if (play
+        && (firstRender || !audioHostSoundPlaying_ || host.relocated
+            || stage != audioHostStageId_))
+    {
+        constexpr auto ticksPerQuarter =
+            static_cast<double>(talas::project::projectTicksPerQuarter);
+        const auto ticks = std::floor(host.quarterPosition * ticksPerQuarter + 0.5);
+        const auto tick = ticks <= 0.0 ? std::uint64_t{0}
+            : ticks >= 1.0e18           ? std::uint64_t{1000000000000000000ULL}
+                                        : static_cast<std::uint64_t>(ticks);
+        // A transport already there, as when Play follows a Stop or a
+        // relocation the control thread prepared while the host was
+        // stopped, plays on from where it is: moving it would drop the
+        // Score clips under way, whose sources only a prepared relocation
+        // rebuilds. Hosts round positions to a fraction of a tick, so
+        // "there" is within 2 ms.
+        const auto current = graphHost_.preparedTransportSnapshot();
+        const auto tolerance = static_cast<std::uint64_t>(
+            std::max(0.0, graphHost_.preparedRenderSampleRate() * 0.002));
+        if (const auto frame = graphHost_.musicalTickFrame(tick);
+            frame.has_value()
+            && (*frame > current.absoluteFrame
+                    ? *frame - current.absoluteFrame
+                    : current.absoluteFrame - *frame)
+                > tolerance)
+        {
+            graphHost_.relocateTransportAtNextRender(*frame);
+        }
+    }
+    if (firstRender || play != audioHostSoundPlaying_)
+        graphHost_.setPlaying(play);
+    audioHostDrivesSound_ = true;
+    audioHostSoundPlaying_ = play;
+    audioHostStageId_ = stage;
+}
+
+void ProjectRuntimeBridge::publishTransportEventValueMask(
+    std::uint64_t stageId,
+    std::uint8_t mask) noexcept
+{
+    auto& slot = transportEventValueMasks_[nextTransportEventValueMaskSlot_];
+    nextTransportEventValueMaskSlot_ =
+        (nextTransportEventValueMaskSlot_ + 1) % transportEventValueMasks_.size();
+    slot.store((stageId << 8U) | mask, std::memory_order_release);
+}
+
+std::optional<std::uint8_t> ProjectRuntimeBridge::transportEventValueMask(
+    std::uint64_t stageId) const noexcept
+{
+    if (stageId == 0)
+        return std::nullopt;
+    for (const auto& slot : transportEventValueMasks_)
+    {
+        const auto packed = slot.load(std::memory_order_acquire);
+        if ((packed >> 8U) == stageId)
+            return static_cast<std::uint8_t>(packed & 0xffU);
+    }
+    return std::nullopt;
+}
+
+// ADR-0030: the transport's Event Values, at the first frame of the render,
+// before any other control of it is scheduled. A stage made from another
+// one, such as a performance overlay, keeps the bits of the stage before it.
+void ProjectRuntimeBridge::scheduleTransportEventValues(
+    RealtimeAudioEngine& renderTarget) noexcept
+{
+    const auto stage = renderTarget.stageId();
+    if (stage != audioTransportValuesStageId_)
+    {
+        audioTransportValuesMask_ =
+            transportEventValueMask(stage).value_or(audioTransportValuesMask_);
+        audioTransportValuesStageId_ = stage;
+        audioTransportValuesSent_.fill(std::numeric_limits<double>::quiet_NaN());
+    }
+    if (audioTransportValuesMask_ == 0)
+        return;
+    std::array<double, talas::project::transportEventValueCount> values{};
+    if (audioHostTransportThisRender_)
+    {
+        values = talas::project::transportEventValuesAt(
+            audioHostTransport_.tempoBpm,
+            audioHostTransport_.quarterPosition,
+            audioHostTransport_.playing);
+    }
+    else
+    {
+        const auto transport = graphHost_.preparedTransportSnapshot();
+        const auto reading = renderTarget.musicalClockAtFrame(transport.playheadFrame);
+        if (!reading.has_value())
+            return;
+        values = talas::project::transportEventValuesAt(
+            reading->tempoBpm, reading->quarterPosition, transport.playing);
+    }
+    for (std::size_t index = 0; index < values.size(); ++index)
+    {
+        if ((audioTransportValuesMask_ & (1U << index)) == 0
+            || values[index] == audioTransportValuesSent_[index])
+        {
+            continue;
+        }
+        const auto name = talas::project::transportEventValueNames[index];
+        // A value a field fixes when its Sound starts takes no live change;
+        // it is not offered again until it changes. Any other refusal is
+        // retried at the next render.
+        if (renderTarget.scheduleEventValue(
+                name, values[index], talas::expr::ValueDomain::Scalar, 0)
+            || renderTarget.eventValueRequiresReprepare(
+                name, talas::expr::ValueDomain::Scalar))
+        {
+            audioTransportValuesSent_[index] = values[index];
+        }
+    }
 }
 
 void ProjectRuntimeBridge::drainMidiClockTransport(
@@ -9826,6 +10020,7 @@ bool ProjectRuntimeBridge::renderWithOutputMapping(
     adoptInternalTransportRelocation();
     drainMidiClockTransport(callbackTimeSeconds, frameCount);
     drainMtcTransport(callbackTimeSeconds, frameCount);
+    applyHostTransport();
     struct PreparationContext
     {
         ProjectRuntimeBridge* bridge;
@@ -10095,6 +10290,13 @@ bool ProjectRuntimeBridge::renderWithOutputMapping(
 
 void ProjectRuntimeBridge::clearAfterAudioStopped() noexcept
 {
+    audioHostTransportForNextRender_ = false;
+    audioHostTransportThisRender_ = false;
+    audioHostDrivesSound_ = false;
+    audioHostSoundPlaying_ = false;
+    audioHostStageId_ = 0;
+    audioTransportValuesStageId_ = 0;
+    audioTransportValuesMask_ = 0;
     acceptedMidiControllerStageGeneration_.store(
         0, std::memory_order_release);
     delete pendingTransportRelocation_.exchange(nullptr, std::memory_order_acq_rel);
@@ -10377,6 +10579,7 @@ void ProjectRuntimeBridge::drainRealtimeControls(
         return;
     }
     const auto targetStageId = renderTarget.stageId();
+    scheduleTransportEventValues(renderTarget);
     adoptControllerRecordingRequest(renderTarget);
     const auto callbackAbsoluteFrame = graphHost_.preparedTransportSnapshot().absoluteFrame;
     const auto callbackEndFrame = frameCount

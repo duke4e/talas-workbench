@@ -812,6 +812,19 @@ RealtimeAudioEngine::musicalPositionAtTick(
     return session_.musicalPositionAtTick(tick);
 }
 
+std::optional<RealtimeMusicalClockReading>
+RealtimeAudioEngine::musicalClockAtFrame(
+    std::uint64_t frame) const noexcept
+{
+    return session_.musicalClockAtFrame(frame);
+}
+
+std::optional<std::uint64_t> RealtimeAudioEngine::musicalTickFrame(
+    std::uint64_t tick) const noexcept
+{
+    return session_.musicalTickFrame(tick);
+}
+
 void RealtimeAudioEngine::setStageId(std::uint64_t stageId) noexcept
 {
     stageId_ = stageId;

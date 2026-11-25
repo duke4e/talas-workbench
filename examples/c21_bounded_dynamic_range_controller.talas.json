@@ -1,0 +1,65 @@
+{
+  "format": "talas.project",
+  "version": 1,
+  "metadata": {
+    "title": "C21 Bounded Dynamic Range Controller"
+  },
+  "graph": {
+    "nodes": [
+      {
+        "id": "sideChain",
+        "typeId": "talas.oscillator",
+        "parameters": [
+          { "id": "frequency", "expression": "110 hz" },
+          { "id": "amplitude", "expression": "0.8" }
+        ]
+      },
+      {
+        "id": "source",
+        "typeId": "talas.oscillator",
+        "parameters": [
+          { "id": "frequency", "expression": "220 hz" },
+          { "id": "amplitude", "expression": "0.3" }
+        ]
+      },
+      {
+        "id": "controller",
+        "typeId": "talas.dynamicRangeController",
+        "parameters": [
+          { "id": "type", "choice": "compressor" },
+          { "id": "ratio", "expression": "4" },
+          { "id": "threshold", "expression": "0.2" },
+          { "id": "attackTime", "expression": "10 ms" },
+          { "id": "releaseTime", "expression": "100 ms" },
+          { "id": "delay", "expression": "2 ms" },
+          { "id": "gain", "expression": "0.8" }
+        ]
+      },
+      {
+        "id": "out",
+        "typeId": "talas.audioOutput",
+        "parameters": []
+      }
+    ],
+    "connections": [
+      {
+        "fromNode": "sideChain",
+        "fromPort": "audioOut",
+        "toNode": "controller",
+        "toPort": "sideChain"
+      },
+      {
+        "fromNode": "source",
+        "fromPort": "audioOut",
+        "toNode": "controller",
+        "toPort": "audioIn"
+      },
+      {
+        "fromNode": "controller",
+        "fromPort": "audioOut",
+        "toNode": "out",
+        "toPort": "audioIn"
+      }
+    ]
+  }
+}

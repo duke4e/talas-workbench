@@ -1,0 +1,109 @@
+{
+  "format": "talas.project",
+  "version": 35,
+  "expressionLanguage": "legacyV1",
+  "expressionDefinitions": [],
+  "variableLibrary": { "version": 2, "variables": [] },
+  "soundVariableLibrary": { "version": 1, "variables": [] },
+  "generatorLibrary": { "version": 2, "programs": [] },
+  "liveSetLibrary": { "version": 1, "liveSets": [], "tools": [] },
+  "metadata": { "title": "Bounded Multisample" },
+  "presentation": {
+    "version": 2,
+    "structureLayouts": [
+      {
+        "scope": { "kind": "project" },
+        "nodes": [
+          { "nodeId": "multisample", "x": 150, "y": 170 },
+          { "nodeId": "out", "x": 510, "y": 170 }
+        ]
+      }
+    ],
+    "performanceControls": [],
+    "performanceMeters": []
+  },
+  "snapshotLibrary": { "version": 1, "banks": [] },
+  "sampleMapLibrary": { "version": 1, "maps": [] },
+  "assets": [
+    {
+      "id": "Samples/C35Hit",
+      "kind": "table",
+      "path": "resources/hit.txt",
+      "disposition": "referenced",
+      "contentHash": "ce5449356b67e84f906f73a1743e5d8aebed474e3bc3feb60f0e3001f0f42e98",
+      "channelCount": 0,
+      "sampleRate": 0,
+      "frameCount": 0,
+      "encoding": "",
+      "generation": 1,
+      "provenance": "Repository-original text-backed Sample table reused by C35"
+    },
+    {
+      "id": "Samples/C35Loop",
+      "kind": "table",
+      "path": "resources/c33-generic-source-sample.txt",
+      "disposition": "referenced",
+      "contentHash": "54e58fa19e33c65f013a9758f497efe8481f684876756f6ab60e79ef6865dcd3",
+      "channelCount": 0,
+      "sampleRate": 0,
+      "frameCount": 0,
+      "encoding": "",
+      "generation": 1,
+      "provenance": "Repository-original C33 waveform table reused by C35"
+    }
+  ],
+  "partialTrackEdits": [],
+  "timeline": {
+    "loop": { "enabled": false, "startSeconds": 0, "endSeconds": 4 },
+    "musicalTime": {
+      "ticksPerQuarter": 960,
+      "tempo": [{ "tick": 0, "microsecondsPerQuarter": 500000 }],
+      "meter": [{ "tick": 0, "numerator": 4, "denominator": 4 }]
+    },
+    "score": { "tracks": [], "clips": [], "automation": [], "markers": [] },
+    "eventValues": []
+  },
+  "deviceSettings": {
+    "configured": false,
+    "audioInputDevice": "",
+    "audioOutputDevice": "",
+    "sampleRate": 0,
+    "bufferSize": 0,
+    "inputChannels": [],
+    "outputChannels": [],
+    "midiInputDevices": [],
+    "transportSync": { "sourceMode": "internal", "sourceIdentifier": "" },
+    "oscIngress": { "enabled": false, "port": 9000 },
+    "oscEgress": { "enabled": false, "port": 9001 }
+  },
+  "soundDefinitions": [],
+  "graph": {
+    "nodes": [
+      {
+        "id": "multisample",
+        "typeId": "talas.multisample",
+        "parameters": [
+          { "id": "frequency", "expression": "220 hz" },
+          { "id": "gate", "expression": "1" },
+          { "id": "samples", "text": "Samples/C35Hit, Samples/C35Loop" },
+          { "id": "index", "expression": "1" },
+          { "id": "loop", "boolean": true },
+          { "id": "loopStart", "expression": "0.125" },
+          { "id": "loopEnd", "expression": "0.875" },
+          { "id": "attackTime", "expression": "0.005 s" },
+          { "id": "releaseTime", "expression": "0.01 s" },
+          { "id": "scale", "expression": "0.35" }
+        ]
+      },
+      { "id": "out", "typeId": "talas.audioOutput", "parameters": [] }
+    ],
+    "connections": [
+      {
+        "fromNode": "multisample",
+        "fromPort": "audioOut",
+        "toNode": "out",
+        "toPort": "audioIn"
+      }
+    ]
+  }
+}

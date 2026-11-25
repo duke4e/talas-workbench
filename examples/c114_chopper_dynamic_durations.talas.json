@@ -1,0 +1,119 @@
+{
+  "format": "talas.project",
+  "version": 35,
+  "expressionLanguage": "variablesV2",
+  "expressionDefinitions": [],
+  "variableLibrary": { "version": 2, "variables": [] },
+  "soundVariableLibrary": { "version": 1, "variables": [] },
+  "generatorLibrary": { "version": 2, "programs": [] },
+  "liveSetLibrary": { "version": 1, "liveSets": [], "tools": [] },
+  "metadata": { "title": "Chopper Dynamic Durations" },
+  "presentation": {
+    "version": 2,
+    "structureLayouts": [
+      {
+        "scope": { "kind": "project" },
+        "nodes": [
+          { "nodeId": "osc", "x": 40, "y": 160 },
+          { "nodeId": "grainDuration", "x": 40, "y": 40 },
+          { "nodeId": "interGrainDelay", "x": 40, "y": 280 },
+          { "nodeId": "chop", "x": 360, "y": 160 },
+          { "nodeId": "out", "x": 680, "y": 160 }
+        ]
+      }
+    ],
+    "performanceControls": [],
+    "performanceMeters": []
+  },
+  "snapshotLibrary": { "version": 1, "banks": [] },
+  "sampleMapLibrary": { "version": 1, "maps": [] },
+  "assets": [
+    {
+      "id": "Envelopes/C114Chopper",
+      "kind": "table",
+      "path": "resources/c71-triggered-table-read.txt",
+      "disposition": "referenced",
+      "contentHash": "aa95a3aba2892fae936e255f513790c6f084a2d9a6864be19c5c703ebd204274",
+      "channelCount": 0,
+      "sampleRate": 0,
+      "frameCount": 0,
+      "encoding": "",
+      "generation": 1,
+      "provenance": "Repository-original C71 finite table reused unchanged as the C114 Chopper envelope"
+    }
+  ],
+  "partialTrackEdits": [],
+  "timeline": {
+    "loop": { "enabled": false, "startSeconds": 0, "endSeconds": 0.125 },
+    "musicalTime": {
+      "ticksPerQuarter": 960,
+      "tempo": [{ "tick": 0, "microsecondsPerQuarter": 500000 }],
+      "meter": [{ "tick": 0, "numerator": 4, "denominator": 4 }]
+    },
+    "score": { "tracks": [], "clips": [], "automation": [], "markers": [] },
+    "eventValues": [
+      { "timeSeconds": 0, "eventName": "C114GrainDuration", "domain": "scalar", "value": 0.02, "interpolation": "step" },
+      { "timeSeconds": 0, "eventName": "C114InterGrainDelay", "domain": "scalar", "value": 0.01, "interpolation": "step" },
+      { "timeSeconds": 0.03125, "eventName": "C114GrainDuration", "domain": "scalar", "value": 0.01, "interpolation": "step" },
+      { "timeSeconds": 0.03125, "eventName": "C114InterGrainDelay", "domain": "scalar", "value": 0.02, "interpolation": "step" },
+      { "timeSeconds": 0.0625, "eventName": "C114GrainDuration", "domain": "scalar", "value": 0.03, "interpolation": "step" },
+      { "timeSeconds": 0.0625, "eventName": "C114InterGrainDelay", "domain": "scalar", "value": 0.005, "interpolation": "step" }
+    ]
+  },
+  "deviceSettings": {
+    "configured": false,
+    "audioInputDevice": "",
+    "audioOutputDevice": "",
+    "sampleRate": 0,
+    "bufferSize": 0,
+    "inputChannels": [],
+    "outputChannels": [],
+    "midiInputDevices": [],
+    "transportSync": { "sourceMode": "internal", "sourceIdentifier": "" },
+    "oscIngress": { "enabled": false, "port": 9000 },
+    "oscEgress": { "enabled": false, "port": 9001 }
+  },
+  "soundDefinitions": [],
+  "graph": {
+    "nodes": [
+      {
+        "id": "grainDuration",
+        "typeId": "talas.constant",
+        "parameters": [
+          { "id": "value", "expression": "!C114GrainDuration" }
+        ]
+      },
+      {
+        "id": "interGrainDelay",
+        "typeId": "talas.constant",
+        "parameters": [
+          { "id": "value", "expression": "!C114InterGrainDelay" }
+        ]
+      },
+      {
+        "id": "osc",
+        "typeId": "talas.oscillator",
+        "parameters": [
+          { "id": "frequency", "expression": "220 hz" },
+          { "id": "amplitude", "expression": "0.35" }
+        ]
+      },
+      {
+        "id": "chop",
+        "typeId": "talas.chopper",
+        "parameters": [
+          { "id": "grainDuration", "expression": "1e308 * 1e308 s" },
+          { "id": "interGrainDelay", "expression": "1e308 * 1e308 s" },
+          { "id": "wavetable", "resource": "Envelopes/C114Chopper" }
+        ]
+      },
+      { "id": "out", "typeId": "talas.audioOutput", "parameters": [] }
+    ],
+    "connections": [
+      { "fromNode": "osc", "fromPort": "audioOut", "toNode": "chop", "toPort": "audioIn" },
+      { "fromNode": "grainDuration", "fromPort": "value", "toNode": "chop", "toPort": "grainDuration" },
+      { "fromNode": "interGrainDelay", "fromPort": "value", "toNode": "chop", "toPort": "interGrainDelay" },
+      { "fromNode": "chop", "fromPort": "audioOut", "toNode": "out", "toPort": "audioIn" }
+    ]
+  }
+}

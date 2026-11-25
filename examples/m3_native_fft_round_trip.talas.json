@@ -1,0 +1,123 @@
+{
+  "format": "talas.project",
+  "version": 10,
+  "metadata": {
+    "title": "M3 Native Complex STFT Round-Trip"
+  },
+  "virtualControls": [],
+  "assets": [],
+  "timeline": {
+    "loop": {
+      "enabled": false,
+      "startSeconds": 0,
+      "endSeconds": 4
+    },
+    "eventValues": []
+  },
+  "deviceSettings": {
+    "configured": false,
+    "audioInputDevice": "",
+    "audioOutputDevice": "",
+    "sampleRate": 0,
+    "bufferSize": 0,
+    "inputChannels": [],
+    "outputChannels": [],
+    "midiInputDevices": []
+  },
+  "soundDefinitions": [],
+  "graph": {
+    "nodes": [
+      {
+        "id": "osc",
+        "typeId": "talas.oscillator",
+        "position": {
+          "x": 80,
+          "y": 170
+        },
+        "parameters": [
+          {
+            "id": "frequency",
+            "expression": "256 hz"
+          },
+          {
+            "id": "amplitude",
+            "expression": "0.25"
+          }
+        ]
+      },
+      {
+        "id": "forward",
+        "typeId": "talas.forwardFftV1",
+        "position": {
+          "x": 320,
+          "y": 170
+        },
+        "parameters": [
+          {
+            "id": "frameSize",
+            "expression": "64"
+          },
+          {
+            "id": "hopSize",
+            "expression": "16"
+          },
+          {
+            "id": "window",
+            "choice": "hann"
+          }
+        ]
+      },
+      {
+        "id": "inverse",
+        "typeId": "talas.inverseFftV1",
+        "position": {
+          "x": 580,
+          "y": 170
+        },
+        "parameters": [
+          {
+            "id": "frameSize",
+            "expression": "64"
+          },
+          {
+            "id": "hopSize",
+            "expression": "16"
+          },
+          {
+            "id": "window",
+            "choice": "hann"
+          }
+        ]
+      },
+      {
+        "id": "out",
+        "typeId": "talas.audioOutput",
+        "position": {
+          "x": 840,
+          "y": 170
+        },
+        "parameters": []
+      }
+    ],
+    "connections": [
+      {
+        "fromNode": "osc",
+        "fromPort": "audioOut",
+        "toNode": "forward",
+        "toPort": "audioIn"
+      },
+      {
+        "fromNode": "forward",
+        "fromPort": "spectrumOut",
+        "toNode": "inverse",
+        "toPort": "spectrumIn"
+      },
+      {
+        "fromNode": "inverse",
+        "fromPort": "audioOut",
+        "toNode": "out",
+        "toPort": "audioIn"
+      }
+    ]
+  }
+}

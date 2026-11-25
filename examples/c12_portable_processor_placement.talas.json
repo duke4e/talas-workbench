@@ -1,0 +1,70 @@
+{
+  "format": "talas.project",
+  "version": 1,
+  "metadata": {
+    "title": "C12 Portable Processor Placement"
+  },
+  "graph": {
+    "nodes": [
+      {
+        "id": "out",
+        "typeId": "talas.audioOutput",
+        "parameters": []
+      },
+      {
+        "id": "outerPlacement",
+        "typeId": "talas.forcedProcessorAssignment",
+        "parameters": [
+          {
+            "id": "processor",
+            "expression": "7"
+          }
+        ]
+      },
+      {
+        "id": "innerPlacement",
+        "typeId": "talas.forcedProcessorAssignment",
+        "parameters": [
+          {
+            "id": "processor",
+            "expression": "3"
+          }
+        ]
+      },
+      {
+        "id": "osc",
+        "typeId": "talas.oscillator",
+        "parameters": [
+          {
+            "id": "frequency",
+            "expression": "220 hz"
+          },
+          {
+            "id": "amplitude",
+            "expression": "0.25"
+          }
+        ]
+      }
+    ],
+    "connections": [
+      {
+        "fromNode": "osc",
+        "fromPort": "audioOut",
+        "toNode": "innerPlacement",
+        "toPort": "audioIn"
+      },
+      {
+        "fromNode": "innerPlacement",
+        "fromPort": "audioOut",
+        "toNode": "outerPlacement",
+        "toPort": "audioIn"
+      },
+      {
+        "fromNode": "outerPlacement",
+        "fromPort": "audioOut",
+        "toNode": "out",
+        "toPort": "audioIn"
+      }
+    ]
+  }
+}

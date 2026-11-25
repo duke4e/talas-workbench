@@ -1,0 +1,426 @@
+{
+  "format": "talas.project",
+  "version": 43,
+  "expressionLanguage": "variablesV2",
+  "expressionDefinitions": [],
+  "variableLibrary": {
+    "version": 2,
+    "variables": []
+  },
+  "soundVariableLibrary": {
+    "version": 1,
+    "variables": []
+  },
+  "generatorLibrary": {
+    "version": 2,
+    "programs": []
+  },
+  "liveSetLibrary": {
+    "version": 1,
+    "liveSets": [],
+    "tools": []
+  },
+  "metadata": {
+    "title": "Vocoder Channel Bank Reset"
+  },
+  "presentation": {
+    "version": 2,
+    "structureLayouts": [
+      {
+        "scope": {
+          "kind": "project"
+        },
+        "nodes": [
+          {
+            "nodeId": "carrier1",
+            "x": 80,
+            "y": 80
+          },
+          {
+            "nodeId": "carrier2",
+            "x": 80,
+            "y": 180
+          },
+          {
+            "nodeId": "carrierMix",
+            "x": 280,
+            "y": 130
+          },
+          {
+            "nodeId": "analysis1",
+            "x": 80,
+            "y": 300
+          },
+          {
+            "nodeId": "analysis2",
+            "x": 80,
+            "y": 400
+          },
+          {
+            "nodeId": "analysisMix",
+            "x": 280,
+            "y": 350
+          },
+          {
+            "nodeId": "carrierSpectrum",
+            "x": 300,
+            "y": 500
+          },
+          {
+            "nodeId": "analysisSpectrum",
+            "x": 300,
+            "y": 620
+          },
+          {
+            "nodeId": "cascade",
+            "x": 300,
+            "y": 740
+          },
+          {
+            "nodeId": "bank",
+            "x": 600,
+            "y": 360
+          },
+          {
+            "nodeId": "out",
+            "x": 900,
+            "y": 360
+          }
+        ]
+      }
+    ],
+    "performanceControls": [],
+    "performanceMeters": []
+  },
+  "snapshotLibrary": {
+    "version": 1,
+    "banks": []
+  },
+  "sampleMapLibrary": {
+    "version": 1,
+    "maps": []
+  },
+  "virtualControls": [],
+  "assets": [],
+  "partialTrackEdits": [],
+  "timeline": {
+    "loop": {
+      "enabled": false,
+      "startSeconds": 0,
+      "endSeconds": 1
+    },
+    "musicalTime": {
+      "ticksPerQuarter": 960,
+      "tempo": [
+        {
+          "tick": 0,
+          "microsecondsPerQuarter": 500000
+        }
+      ],
+      "meter": [
+        {
+          "tick": 0,
+          "numerator": 4,
+          "denominator": 4
+        }
+      ]
+    },
+    "score": {
+      "tracks": [
+      ],
+      "clips": [
+      ],
+      "automation": [
+      ],
+      "markers": [
+      ]
+    },
+    "eventValues": []
+  },
+  "deviceSettings": {
+    "configured": false,
+    "audioInputDevice": "",
+    "audioOutputDevice": "",
+    "sampleRate": 0,
+    "bufferSize": 0,
+    "inputChannels": [],
+    "outputChannels": [],
+    "midiInputDevices": [],
+    "transportSync": {
+      "sourceMode": "internal",
+      "sourceIdentifier": ""
+    },
+    "oscIngress": {
+      "enabled": false,
+      "port": 9000
+    },
+    "oscEgress": {
+      "enabled": false,
+      "port": 9001
+    }
+  },
+  "soundDefinitions": [],
+  "graph": {
+    "nodes": [
+      {
+        "id": "carrier1",
+        "typeId": "talas.oscillator",
+        "parameters": [
+          {
+            "id": "frequency",
+            "expression": "1000 hz"
+          },
+          {
+            "id": "amplitude",
+            "expression": "0.5"
+          }
+        ]
+      },
+      {
+        "id": "carrier2",
+        "typeId": "talas.oscillator",
+        "parameters": [
+          {
+            "id": "frequency",
+            "expression": "2000 hz"
+          },
+          {
+            "id": "amplitude",
+            "expression": "0.35"
+          }
+        ]
+      },
+      {
+        "id": "carrierMix",
+        "typeId": "talas.mixerV2",
+        "parameters": [
+          {
+            "id": "left",
+            "expression": "1.0"
+          },
+          {
+            "id": "right",
+            "expression": "1.0"
+          }
+        ]
+      },
+      {
+        "id": "analysis1",
+        "typeId": "talas.oscillator",
+        "parameters": [
+          {
+            "id": "frequency",
+            "expression": "1000 hz"
+          },
+          {
+            "id": "amplitude",
+            "expression": "0.75"
+          }
+        ]
+      },
+      {
+        "id": "analysis2",
+        "typeId": "talas.oscillator",
+        "parameters": [
+          {
+            "id": "frequency",
+            "expression": "2000 hz"
+          },
+          {
+            "id": "amplitude",
+            "expression": "0.5"
+          }
+        ]
+      },
+      {
+        "id": "analysisMix",
+        "typeId": "talas.mixerV2",
+        "parameters": [
+          {
+            "id": "left",
+            "expression": "1.0"
+          },
+          {
+            "id": "right",
+            "expression": "1.0"
+          }
+        ]
+      },
+      {
+        "id": "carrierSpectrum",
+        "typeId": "talas.syntheticSpectrumFromArray",
+        "parameters": [
+          {
+            "id": "nbrPartials",
+            "expression": "2"
+          },
+          {
+            "id": "logScale",
+            "boolean": false
+          },
+          {
+            "id": "sendBandwidths",
+            "boolean": true
+          },
+          {
+            "id": "envelope",
+            "expression": "1"
+          },
+          {
+            "id": "amplitudes",
+            "text": "0.8 0.45"
+          },
+          {
+            "id": "frequencies",
+            "text": "1000 2000"
+          },
+          {
+            "id": "bandwidths",
+            "text": "300 500"
+          }
+        ]
+      },
+      {
+        "id": "analysisSpectrum",
+        "typeId": "talas.syntheticSpectrumFromArray",
+        "parameters": [
+          {
+            "id": "nbrPartials",
+            "expression": "2"
+          },
+          {
+            "id": "logScale",
+            "boolean": false
+          },
+          {
+            "id": "sendBandwidths",
+            "boolean": true
+          },
+          {
+            "id": "envelope",
+            "expression": "1"
+          },
+          {
+            "id": "amplitudes",
+            "text": "1 0.75"
+          },
+          {
+            "id": "frequencies",
+            "text": "1000 2000"
+          },
+          {
+            "id": "bandwidths",
+            "text": "250 600"
+          }
+        ]
+      },
+      {
+        "id": "cascade",
+        "typeId": "talas.oscillator",
+        "parameters": [
+          {
+            "id": "frequency",
+            "expression": "250 hz"
+          },
+          {
+            "id": "amplitude",
+            "expression": "0.08"
+          }
+        ]
+      },
+      {
+        "id": "bank",
+        "typeId": "talas.vocoderChannelBank",
+        "parameters": [
+          {
+            "id": "timeConstant",
+            "expression": "5 ms"
+          },
+          {
+            "id": "attackTime",
+            "expression": "2 ms"
+          },
+          {
+            "id": "releaseTime",
+            "expression": "40 ms"
+          },
+          {
+            "id": "first",
+            "expression": "1"
+          },
+          {
+            "id": "count",
+            "expression": "2"
+          }
+        ]
+      },
+      {
+        "id": "out",
+        "typeId": "talas.audioOutput",
+        "parameters": []
+      }
+    ],
+    "connections": [
+      {
+        "fromNode": "carrier1",
+        "fromPort": "audioOut",
+        "toNode": "carrierMix",
+        "toPort": "inputs"
+      },
+      {
+        "fromNode": "carrier2",
+        "fromPort": "audioOut",
+        "toNode": "carrierMix",
+        "toPort": "inputs"
+      },
+      {
+        "fromNode": "analysis1",
+        "fromPort": "audioOut",
+        "toNode": "analysisMix",
+        "toPort": "inputs"
+      },
+      {
+        "fromNode": "analysis2",
+        "fromPort": "audioOut",
+        "toNode": "analysisMix",
+        "toPort": "inputs"
+      },
+      {
+        "fromNode": "cascade",
+        "fromPort": "audioOut",
+        "toNode": "bank",
+        "toPort": "cascadeInput"
+      },
+      {
+        "fromNode": "carrierMix",
+        "fromPort": "leftOut",
+        "toNode": "bank",
+        "toPort": "audioIn"
+      },
+      {
+        "fromNode": "analysisMix",
+        "fromPort": "leftOut",
+        "toNode": "bank",
+        "toPort": "sideChain"
+      },
+      {
+        "fromNode": "carrierSpectrum",
+        "fromPort": "spectrumOut",
+        "toNode": "bank",
+        "toPort": "inputParameters"
+      },
+      {
+        "fromNode": "analysisSpectrum",
+        "fromPort": "spectrumOut",
+        "toNode": "bank",
+        "toPort": "sideChainParameters"
+      },
+      {
+        "fromNode": "bank",
+        "fromPort": "audioOut",
+        "toNode": "out",
+        "toPort": "audioIn"
+      }
+    ]
+  }
+}

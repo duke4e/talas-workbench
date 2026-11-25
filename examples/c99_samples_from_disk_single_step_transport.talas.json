@@ -1,0 +1,115 @@
+{
+  "format": "talas.project",
+  "version": 35,
+  "expressionLanguage": "variablesV2",
+  "expressionDefinitions": [],
+  "variableLibrary": { "version": 2, "variables": [] },
+  "soundVariableLibrary": { "version": 1, "variables": [] },
+  "generatorLibrary": { "version": 2, "programs": [] },
+  "liveSetLibrary": { "version": 1, "liveSets": [], "tools": [] },
+  "metadata": { "title": "Samples From Disk Single Step Transport" },
+  "presentation": {
+    "version": 2,
+    "structureLayouts": [
+      {
+        "scope": { "kind": "project" },
+        "nodes": [
+          { "nodeId": "position", "x": 40, "y": 80 },
+          { "nodeId": "trigger", "x": 40, "y": 220 },
+          { "nodeId": "gate", "x": 40, "y": 360 },
+          { "nodeId": "diskStep", "x": 340, "y": 220 },
+          { "nodeId": "out", "x": 660, "y": 220 }
+        ]
+      }
+    ],
+    "performanceControls": [],
+    "performanceMeters": []
+  },
+  "snapshotLibrary": { "version": 1, "banks": [] },
+  "sampleMapLibrary": { "version": 1, "maps": [] },
+  "assets": [
+    {
+      "id": "Samples/C99SingleStep",
+      "kind": "table",
+      "path": "resources/c99-samples-from-disk-single-step.txt",
+      "disposition": "referenced",
+      "contentHash": "f936a20cbfdd258de8a2ffdcb77c94565486e82f8131d92ae2ec862cd492f6ee",
+      "channelCount": 0,
+      "sampleRate": 0,
+      "frameCount": 0,
+      "encoding": "",
+      "generation": 1,
+      "provenance": "Repository-original C99 finite Samples From Disk Single Step table"
+    }
+  ],
+  "partialTrackEdits": [],
+  "timeline": {
+    "loop": { "enabled": false, "startSeconds": 0, "endSeconds": 1.5 },
+    "musicalTime": {
+      "ticksPerQuarter": 960,
+      "tempo": [{ "tick": 0, "microsecondsPerQuarter": 500000 }],
+      "meter": [{ "tick": 0, "numerator": 4, "denominator": 4 }]
+    },
+    "score": { "tracks": [], "clips": [], "automation": [], "markers": [] },
+    "eventValues": [
+      { "timeSeconds": 0, "eventName": "C99Position", "domain": "scalar", "value": 1, "interpolation": "step" },
+      { "timeSeconds": 0, "eventName": "C99Trigger", "domain": "scalar", "value": 1, "interpolation": "step" },
+      { "timeSeconds": 0, "eventName": "C99Gate", "domain": "scalar", "value": 1, "interpolation": "step" },
+      { "timeSeconds": 0.25, "eventName": "C99Trigger", "domain": "scalar", "value": 0, "interpolation": "step" },
+      { "timeSeconds": 0.5, "eventName": "C99Trigger", "domain": "scalar", "value": 1, "interpolation": "step" },
+      { "timeSeconds": 0.75, "eventName": "C99Gate", "domain": "scalar", "value": 0, "interpolation": "step" },
+      { "timeSeconds": 0.875, "eventName": "C99Position", "domain": "scalar", "value": 0, "interpolation": "step" },
+      { "timeSeconds": 0.875, "eventName": "C99Gate", "domain": "scalar", "value": 1, "interpolation": "step" }
+    ]
+  },
+  "deviceSettings": {
+    "configured": false,
+    "audioInputDevice": "",
+    "audioOutputDevice": "",
+    "sampleRate": 0,
+    "bufferSize": 0,
+    "inputChannels": [],
+    "outputChannels": [],
+    "midiInputDevices": [],
+    "transportSync": { "sourceMode": "internal", "sourceIdentifier": "" },
+    "oscIngress": { "enabled": false, "port": 9000 },
+    "oscEgress": { "enabled": false, "port": 9001 }
+  },
+  "soundDefinitions": [],
+  "graph": {
+    "nodes": [
+      {
+        "id": "position",
+        "typeId": "talas.constant",
+        "parameters": [{ "id": "value", "expression": "!C99Position" }]
+      },
+      {
+        "id": "trigger",
+        "typeId": "talas.constant",
+        "parameters": [{ "id": "value", "expression": "!C99Trigger" }]
+      },
+      {
+        "id": "gate",
+        "typeId": "talas.constant",
+        "parameters": [{ "id": "value", "expression": "!C99Gate" }]
+      },
+      {
+        "id": "diskStep",
+        "typeId": "talas.samplesFromDiskSingleStep",
+        "parameters": [
+          { "id": "fileName", "resource": "Samples/C99SingleStep" },
+          { "id": "filePosition", "expression": "4" },
+          { "id": "trigger", "expression": "0" },
+          { "id": "gate", "expression": "0" }
+        ]
+      },
+      { "id": "out", "typeId": "talas.audioOutput", "parameters": [] }
+    ],
+    "connections": [
+      { "fromNode": "position", "fromPort": "value", "toNode": "diskStep", "toPort": "filePosition" },
+      { "fromNode": "trigger", "fromPort": "value", "toNode": "diskStep", "toPort": "trigger" },
+      { "fromNode": "gate", "fromPort": "value", "toNode": "diskStep", "toPort": "gate" },
+      { "fromNode": "diskStep", "fromPort": "audioOut", "toNode": "out", "toPort": "audioIn" }
+    ]
+  }
+}

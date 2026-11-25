@@ -1,0 +1,109 @@
+{
+  "format": "talas.project",
+  "version": 35,
+  "expressionLanguage": "legacyV1",
+  "expressionDefinitions": [],
+  "variableLibrary": { "version": 2, "variables": [] },
+  "soundVariableLibrary": { "version": 1, "variables": [] },
+  "generatorLibrary": { "version": 2, "programs": [] },
+  "liveSetLibrary": { "version": 1, "liveSets": [], "tools": [] },
+  "metadata": { "title": "ADSR Gate State" },
+  "presentation": {
+    "version": 2,
+    "structureLayouts": [
+      {
+        "scope": { "kind": "project" },
+        "nodes": [
+          { "nodeId": "envelope", "x": 380, "y": 280 },
+          { "nodeId": "carrier", "x": 380, "y": 80 },
+          { "nodeId": "vca", "x": 700, "y": 160 },
+          { "nodeId": "out", "x": 980, "y": 160 }
+        ]
+      }
+    ],
+    "performanceControls": [],
+    "performanceMeters": []
+  },
+  "snapshotLibrary": { "version": 1, "banks": [] },
+  "sampleMapLibrary": { "version": 1, "maps": [] },
+  "assets": [],
+  "partialTrackEdits": [],
+  "timeline": {
+    "loop": { "enabled": false, "startSeconds": 0, "endSeconds": 3 },
+    "musicalTime": {
+      "ticksPerQuarter": 960,
+      "tempo": [{ "tick": 0, "microsecondsPerQuarter": 500000 }],
+      "meter": [{ "tick": 0, "numerator": 4, "denominator": 4 }]
+    },
+    "score": { "tracks": [], "clips": [], "automation": [], "markers": [] },
+    "eventValues": [
+      { "timeSeconds": 0, "eventName": "C92Sustain", "domain": "scalar", "value": 0.3, "interpolation": "step" },
+      { "timeSeconds": 0, "eventName": "C92Scale", "domain": "scalar", "value": 0.8, "interpolation": "step" },
+      { "timeSeconds": 0, "eventName": "C92Gate", "domain": "scalar", "value": 1, "interpolation": "step" },
+      { "timeSeconds": 0, "eventName": "C92Legato", "domain": "scalar", "value": 0, "interpolation": "step" },
+      { "timeSeconds": 0.75, "eventName": "C92Gate", "domain": "scalar", "value": 0, "interpolation": "step" },
+      { "timeSeconds": 1, "eventName": "C92Gate", "domain": "scalar", "value": 1, "interpolation": "step" },
+      { "timeSeconds": 1.5, "eventName": "C92Gate", "domain": "scalar", "value": 0, "interpolation": "step" },
+      { "timeSeconds": 1.5, "eventName": "C92Legato", "domain": "scalar", "value": 1, "interpolation": "step" },
+      { "timeSeconds": 1.75, "eventName": "C92Gate", "domain": "scalar", "value": 1, "interpolation": "step" },
+      { "timeSeconds": 2.25, "eventName": "C92Sustain", "domain": "scalar", "value": 0.5, "interpolation": "step" },
+      { "timeSeconds": 2.25, "eventName": "C92Scale", "domain": "scalar", "value": -0.6, "interpolation": "step" },
+      { "timeSeconds": 2.5, "eventName": "C92Gate", "domain": "scalar", "value": 0, "interpolation": "step" }
+    ]
+  },
+  "deviceSettings": {
+    "configured": false,
+    "audioInputDevice": "",
+    "audioOutputDevice": "",
+    "sampleRate": 0,
+    "bufferSize": 0,
+    "inputChannels": [],
+    "outputChannels": [],
+    "midiInputDevices": [],
+    "transportSync": { "sourceMode": "internal", "sourceIdentifier": "" },
+    "oscIngress": { "enabled": false, "port": 9000 },
+    "oscEgress": { "enabled": false, "port": 9001 }
+  },
+  "soundDefinitions": [],
+  "graph": {
+    "nodes": [
+      {
+        "id": "envelope",
+        "typeId": "talas.adsr",
+        "parameters": [
+          { "id": "attackTime", "expression": "0.5 s" },
+          { "id": "decayTime", "expression": "0.5 s" },
+          { "id": "sustainLevel", "expression": "!C92Sustain" },
+          { "id": "releaseTime", "expression": "0.75 s" },
+          { "id": "type", "choice": "linear" },
+          { "id": "scale", "expression": "!C92Scale" },
+          { "id": "gate", "expression": "!C92Gate" },
+          { "id": "legato", "expression": "!C92Legato" }
+        ]
+      },
+      {
+        "id": "carrier",
+        "typeId": "talas.oscillator",
+        "parameters": [
+          { "id": "frequency", "expression": "1 hz" },
+          { "id": "amplitude", "expression": "0.25" }
+        ]
+      },
+      {
+        "id": "vca",
+        "typeId": "talas.vca",
+        "parameters": []
+      },
+      {
+        "id": "out",
+        "typeId": "talas.audioOutput",
+        "parameters": []
+      }
+    ],
+    "connections": [
+      { "fromNode": "carrier", "fromPort": "audioOut", "toNode": "vca", "toPort": "audioIn" },
+      { "fromNode": "envelope", "fromPort": "value", "toNode": "vca", "toPort": "gain" },
+      { "fromNode": "vca", "fromPort": "audioOut", "toNode": "out", "toPort": "audioIn" }
+    ]
+  }
+}

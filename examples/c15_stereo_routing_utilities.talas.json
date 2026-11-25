@@ -1,0 +1,163 @@
+{
+  "format": "talas.project",
+  "version": 1,
+  "metadata": {
+    "title": "C15 Stereo Routing Utilities"
+  },
+  "graph": {
+    "nodes": [
+      {
+        "id": "source",
+        "typeId": "talas.oscillator",
+        "parameters": [
+          {
+            "id": "frequency",
+            "expression": "220 hz"
+          },
+          {
+            "id": "amplitude",
+            "expression": "0.3"
+          }
+        ]
+      },
+      {
+        "id": "level",
+        "typeId": "talas.level",
+        "parameters": [
+          {
+            "id": "left",
+            "expression": "0.85"
+          },
+          {
+            "id": "right",
+            "expression": "0.45"
+          },
+          {
+            "id": "noGain",
+            "boolean": true
+          }
+        ]
+      },
+      {
+        "id": "join",
+        "typeId": "talas.channelJoin",
+        "parameters": []
+      },
+      {
+        "id": "motion",
+        "typeId": "talas.lfo",
+        "parameters": [
+          {
+            "id": "frequency",
+            "expression": "0.5 hz"
+          },
+          {
+            "id": "minimum",
+            "expression": "-0.25"
+          },
+          {
+            "id": "maximum",
+            "expression": "0.25"
+          }
+        ]
+      },
+      {
+        "id": "crosser",
+        "typeId": "talas.channelCrosser",
+        "parameters": [
+          {
+            "id": "leftInLeft",
+            "expression": "0.9"
+          },
+          {
+            "id": "rightInLeft",
+            "expression": "0.2"
+          },
+          {
+            "id": "leftInRight",
+            "expression": "0"
+          },
+          {
+            "id": "rightInRight",
+            "expression": "0.8"
+          }
+        ]
+      },
+      {
+        "id": "channeller",
+        "typeId": "talas.channeller",
+        "parameters": [
+          {
+            "id": "leftChannel",
+            "boolean": true
+          },
+          {
+            "id": "rightChannel",
+            "boolean": false
+          }
+        ]
+      },
+      {
+        "id": "out",
+        "typeId": "talas.audioOutput",
+        "parameters": []
+      }
+    ],
+    "connections": [
+      {
+        "fromNode": "source",
+        "fromPort": "audioOut",
+        "toNode": "level",
+        "toPort": "audioIn"
+      },
+      {
+        "fromNode": "level",
+        "fromPort": "leftOut",
+        "toNode": "join",
+        "toPort": "left"
+      },
+      {
+        "fromNode": "level",
+        "fromPort": "rightOut",
+        "toNode": "join",
+        "toPort": "right"
+      },
+      {
+        "fromNode": "join",
+        "fromPort": "leftOut",
+        "toNode": "crosser",
+        "toPort": "audioIn"
+      },
+      {
+        "fromNode": "join",
+        "fromPort": "rightOut",
+        "toNode": "crosser",
+        "toPort": "rightIn"
+      },
+      {
+        "fromNode": "motion",
+        "fromPort": "value",
+        "toNode": "crosser",
+        "toPort": "leftInRight"
+      },
+      {
+        "fromNode": "crosser",
+        "fromPort": "leftOut",
+        "toNode": "channeller",
+        "toPort": "audioIn"
+      },
+      {
+        "fromNode": "channeller",
+        "fromPort": "leftOut",
+        "toNode": "out",
+        "toPort": "audioIn"
+      },
+      {
+        "fromNode": "crosser",
+        "fromPort": "rightOut",
+        "toNode": "out",
+        "toPort": "rightIn"
+      }
+    ]
+  }
+}

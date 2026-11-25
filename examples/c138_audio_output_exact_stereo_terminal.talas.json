@@ -1,0 +1,70 @@
+{
+  "format": "talas.project",
+  "version": 35,
+  "expressionLanguage": "variablesV2",
+  "expressionDefinitions": [],
+  "variableLibrary": { "version": 2, "variables": [] },
+  "soundVariableLibrary": { "version": 1, "variables": [] },
+  "generatorLibrary": { "version": 2, "programs": [] },
+  "liveSetLibrary": { "version": 1, "liveSets": [], "tools": [] },
+  "metadata": { "title": "Audio Output Exact Stereo Terminal" },
+  "presentation": {
+    "version": 2,
+    "structureLayouts": [{
+      "scope": { "kind": "project" },
+      "nodes": [
+        { "nodeId": "leftCarrier", "x": 60, "y": 80 },
+        { "nodeId": "rightCarrier", "x": 60, "y": 220 },
+        { "nodeId": "out", "x": 360, "y": 150 }
+      ]
+    }],
+    "performanceControls": [],
+    "performanceMeters": []
+  },
+  "snapshotLibrary": { "version": 1, "banks": [] },
+  "sampleMapLibrary": { "version": 1, "maps": [] },
+  "assets": [],
+  "partialTrackEdits": [],
+  "timeline": {
+    "loop": { "enabled": false, "startSeconds": 0, "endSeconds": 0.09375 },
+    "musicalTime": {
+      "ticksPerQuarter": 960,
+      "tempo": [{ "tick": 0, "microsecondsPerQuarter": 500000 }],
+      "meter": [{ "tick": 0, "numerator": 4, "denominator": 4 }]
+    },
+    "score": { "tracks": [], "clips": [], "automation": [], "markers": [] },
+    "eventValues": [
+      { "timeSeconds": 0, "eventName": "C138LeftLevel", "domain": "scalar", "value": 0.2, "interpolation": "step" },
+      { "timeSeconds": 0, "eventName": "C138RightLevel", "domain": "scalar", "value": 0.1, "interpolation": "step" },
+      { "timeSeconds": 0.03125, "eventName": "C138LeftLevel", "domain": "scalar", "value": 0.05, "interpolation": "step" },
+      { "timeSeconds": 0.03125, "eventName": "C138RightLevel", "domain": "scalar", "value": 0.25, "interpolation": "step" },
+      { "timeSeconds": 0.0625, "eventName": "C138LeftLevel", "domain": "scalar", "value": 0.15, "interpolation": "step" },
+      { "timeSeconds": 0.0625, "eventName": "C138RightLevel", "domain": "scalar", "value": 0.05, "interpolation": "step" }
+    ]
+  },
+  "deviceSettings": {
+    "configured": false,
+    "audioInputDevice": "",
+    "audioOutputDevice": "",
+    "sampleRate": 0,
+    "bufferSize": 0,
+    "inputChannels": [],
+    "outputChannels": [],
+    "midiInputDevices": [],
+    "transportSync": { "sourceMode": "internal", "sourceIdentifier": "" },
+    "oscIngress": { "enabled": false, "port": 9000 },
+    "oscEgress": { "enabled": false, "port": 9001 }
+  },
+  "soundDefinitions": [],
+  "graph": {
+    "nodes": [
+      { "id": "leftCarrier", "typeId": "talas.oscillator", "parameters": [{ "id": "frequency", "expression": "64 hz" }, { "id": "amplitude", "expression": "!C138LeftLevel" }] },
+      { "id": "rightCarrier", "typeId": "talas.oscillator", "parameters": [{ "id": "frequency", "expression": "96 hz" }, { "id": "amplitude", "expression": "!C138RightLevel" }] },
+      { "id": "out", "typeId": "talas.audioOutput", "parameters": [] }
+    ],
+    "connections": [
+      { "fromNode": "leftCarrier", "fromPort": "audioOut", "toNode": "out", "toPort": "audioIn" },
+      { "fromNode": "rightCarrier", "fromPort": "audioOut", "toNode": "out", "toPort": "rightIn" }
+    ]
+  }
+}

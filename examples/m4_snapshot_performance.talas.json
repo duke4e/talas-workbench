@@ -1,0 +1,226 @@
+{
+  "format": "talas.project",
+  "version": 13,
+  "metadata": {
+    "title": "M4 Snapshot Performance"
+  },
+  "presentation": {
+    "version": 1,
+    "structureLayouts": [
+      {
+        "scope": {
+          "kind": "project"
+        },
+        "nodes": [
+          {
+            "nodeId": "snapshotVoice",
+            "x": 96,
+            "y": 180
+          },
+          {
+            "nodeId": "output",
+            "x": 420,
+            "y": 180
+          }
+        ]
+      },
+      {
+        "scope": {
+          "kind": "soundDefinition",
+          "definitionId": "snapshotVoiceDefinition"
+        },
+        "nodes": [
+          {
+            "nodeId": "oscillator",
+            "x": 160,
+            "y": 96
+          }
+        ]
+      }
+    ],
+    "performanceControls": []
+  },
+  "snapshotLibrary": {
+    "version": 1,
+    "banks": [
+      {
+        "id": "voice-pitch",
+        "name": "Voice Pitch",
+        "scope": {
+          "kind": "node",
+          "instancePath": [],
+          "containingDefinitionId": null,
+          "nodeId": "snapshotVoice"
+        },
+        "smoothingSeconds": 0.125,
+        "parameterPolicies": [
+          {
+            "target": {
+              "kind": "soundParameter",
+              "instancePath": [
+                "snapshotVoice"
+              ],
+              "definitionId": "snapshotVoiceDefinition",
+              "parameterId": "frequency"
+            },
+            "locked": false,
+            "range": {
+              "minimum": 110,
+              "maximum": 880
+            }
+          }
+        ],
+        "snapshots": [
+          {
+            "id": "soft",
+            "name": "Soft",
+            "values": [
+              {
+                "target": {
+                  "kind": "soundParameter",
+                  "instancePath": [
+                    "snapshotVoice"
+                  ],
+                  "definitionId": "snapshotVoiceDefinition",
+                  "parameterId": "frequency"
+                },
+                "value": {
+                  "kind": "number",
+                  "domain": "hertz",
+                  "value": 220
+                }
+              }
+            ]
+          },
+          {
+            "id": "full",
+            "name": "Full",
+            "values": [
+              {
+                "target": {
+                  "kind": "soundParameter",
+                  "instancePath": [
+                    "snapshotVoice"
+                  ],
+                  "definitionId": "snapshotVoiceDefinition",
+                  "parameterId": "frequency"
+                },
+                "value": {
+                  "kind": "number",
+                  "domain": "hertz",
+                  "value": 440
+                }
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "sampleMapLibrary": {
+    "version": 1,
+    "maps": []
+  },
+  "virtualControls": [],
+  "assets": [],
+  "timeline": {
+    "loop": {
+      "enabled": false,
+      "startSeconds": 0,
+      "endSeconds": 4
+    },
+    "eventValues": []
+  },
+  "deviceSettings": {
+    "configured": false,
+    "audioInputDevice": "",
+    "audioOutputDevice": "",
+    "sampleRate": 0,
+    "bufferSize": 0,
+    "inputChannels": [],
+    "outputChannels": [],
+    "midiInputDevices": []
+  },
+  "soundDefinitions": [
+    {
+      "id": "snapshotVoiceDefinition",
+      "name": "Snapshot Voice",
+      "interfaceVersion": 1,
+      "inputs": [],
+      "outputs": [
+        {
+          "id": "audioOut",
+          "type": "audio",
+          "nodeId": "oscillator",
+          "nodePortId": "audioOut"
+        }
+      ],
+      "parameters": [
+        {
+          "id": "frequency",
+          "name": "Frequency",
+          "kind": "expression",
+          "domain": "hertz",
+          "choices": [],
+          "default": {
+            "expression": "220 hz"
+          },
+          "aliases": [],
+          "bindings": [
+            {
+              "target": "eventValue",
+              "eventName": "SnapshotPitch",
+              "domain": "hertz"
+            }
+          ]
+        }
+      ],
+      "graph": {
+        "nodes": [
+          {
+            "id": "oscillator",
+            "typeId": "talas.oscillator",
+            "parameters": [
+              {
+                "id": "frequency",
+                "expression": "!SnapshotPitch"
+              },
+              {
+                "id": "amplitude",
+                "expression": "0.125"
+              }
+            ]
+          }
+        ],
+        "connections": []
+      }
+    }
+  ],
+  "graph": {
+    "nodes": [
+      {
+        "id": "snapshotVoice",
+        "soundDefinitionId": "snapshotVoiceDefinition",
+        "parameters": [
+          {
+            "id": "frequency",
+            "expression": "220 hz"
+          }
+        ]
+      },
+      {
+        "id": "output",
+        "typeId": "talas.audioOutput",
+        "parameters": []
+      }
+    ],
+    "connections": [
+      {
+        "fromNode": "snapshotVoice",
+        "fromPort": "audioOut",
+        "toNode": "output",
+        "toPort": "audioIn"
+      }
+    ]
+  }
+}

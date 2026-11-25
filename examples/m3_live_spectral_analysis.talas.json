@@ -1,0 +1,332 @@
+{
+  "format": "talas.project",
+  "version": 43,
+  "expressionLanguage": "legacyV1",
+  "expressionDefinitions": [],
+  "variableLibrary": {
+    "version": 2,
+    "variables": []
+  },
+  "soundVariableLibrary": {
+    "version": 1,
+    "variables": []
+  },
+  "generatorLibrary": {
+    "version": 2,
+    "programs": []
+  },
+  "liveSetLibrary": {
+    "version": 1,
+    "liveSets": [],
+    "tools": []
+  },
+  "metadata": {
+    "title": "M3 Live Spectral Analysis Partial Frames"
+  },
+  "presentation": {
+    "version": 2,
+    "structureLayouts": [
+      {
+        "scope": {
+          "kind": "project"
+        },
+        "nodes": [
+          {
+            "nodeId": "osc",
+            "x": 80,
+            "y": 180
+          },
+          {
+            "nodeId": "analysis",
+            "x": 360,
+            "y": 90
+          },
+          {
+            "nodeId": "legacyHold",
+            "x": 680,
+            "y": 90
+          },
+          {
+            "nodeId": "selector",
+            "x": 680,
+            "y": 190
+          },
+          {
+            "nodeId": "mix",
+            "x": 950,
+            "y": 240
+          },
+          {
+            "nodeId": "out",
+            "x": 1210,
+            "y": 240
+          },
+          {
+            "nodeId": "vca1",
+            "x": 750,
+            "y": 180
+          },
+          {
+            "nodeId": "vca2",
+            "x": 750,
+            "y": 300
+          }
+        ]
+      }
+    ],
+    "performanceControls": [],
+    "performanceMeters": []
+  },
+  "snapshotLibrary": {
+    "version": 1,
+    "banks": []
+  },
+  "sampleMapLibrary": {
+    "version": 1,
+    "maps": []
+  },
+  "virtualControls": [],
+  "assets": [],
+  "partialTrackEdits": [],
+  "timeline": {
+    "loop": {
+      "enabled": false,
+      "startSeconds": 0,
+      "endSeconds": 4
+    },
+    "musicalTime": {
+      "ticksPerQuarter": 960,
+      "tempo": [
+        {
+          "tick": 0,
+          "microsecondsPerQuarter": 500000
+        }
+      ],
+      "meter": [
+        {
+          "tick": 0,
+          "numerator": 4,
+          "denominator": 4
+        }
+      ]
+    },
+    "score": {
+      "tracks": [
+      ],
+      "clips": [
+      ],
+      "automation": [
+      ],
+      "markers": [
+      ]
+    },
+    "eventValues": []
+  },
+  "deviceSettings": {
+    "configured": false,
+    "audioInputDevice": "",
+    "audioOutputDevice": "",
+    "sampleRate": 0,
+    "bufferSize": 0,
+    "inputChannels": [],
+    "outputChannels": [],
+    "midiInputDevices": [],
+    "transportSync": {
+      "sourceMode": "internal",
+      "sourceIdentifier": ""
+    },
+    "oscIngress": {
+      "enabled": false,
+      "port": 9000
+    },
+    "oscEgress": {
+      "enabled": false,
+      "port": 9001
+    }
+  },
+  "soundDefinitions": [],
+  "graph": {
+    "nodes": [
+      {
+        "id": "osc",
+        "typeId": "talas.oscillator",
+        "parameters": [
+          {
+            "id": "frequency",
+            "expression": "1024 hz"
+          },
+          {
+            "id": "amplitude",
+            "expression": "0.20"
+          }
+        ]
+      },
+      {
+        "id": "analysis",
+        "typeId": "talas.liveSpectralAnalysis",
+        "parameters": [
+          {
+            "id": "lowestAnalyzedFreq",
+            "expression": "512 hz"
+          },
+          {
+            "id": "ampScale",
+            "expression": "1"
+          },
+          {
+            "id": "freqScale",
+            "expression": "1"
+          },
+          {
+            "id": "response",
+            "text": ""
+          },
+          {
+            "id": "harmonic",
+            "boolean": false
+          },
+          {
+            "id": "unpitchedOnly",
+            "expression": "0"
+          },
+          {
+            "id": "unpitchedThreshold",
+            "expression": "0"
+          },
+          {
+            "id": "trackedHarmonic",
+            "expression": "1"
+          },
+          {
+            "id": "lowFreq",
+            "expression": "64 hz"
+          },
+          {
+            "id": "highFreq",
+            "expression": "3500 hz"
+          },
+          {
+            "id": "initFreq",
+            "expression": "1024 hz"
+          },
+          {
+            "id": "fundamentalOnly",
+            "boolean": false
+          }
+        ]
+      },
+      {
+        "id": "legacyHold",
+        "typeId": "talas.partialSpectrumLegacyHoldV1",
+        "parameters": []
+      },
+      {
+        "id": "selector",
+        "typeId": "talas.spectrumTrackSelector",
+        "parameters": [
+          {
+            "id": "track",
+            "expression": "1"
+          },
+          {
+            "id": "amp",
+            "boolean": true
+          },
+          {
+            "id": "freq",
+            "boolean": false
+          }
+        ]
+      },
+      {
+        "id": "mix",
+        "typeId": "talas.mixerV2",
+        "parameters": [
+          {
+            "id": "left",
+            "expression": "1.0"
+          },
+          {
+            "id": "right",
+            "expression": "1.0"
+          }
+        ]
+      },
+      {
+        "id": "out",
+        "typeId": "talas.audioOutput",
+        "parameters": []
+      },
+      {
+        "id": "vca1",
+        "typeId": "talas.vca",
+        "parameters": [
+          {
+            "id": "gain",
+            "expression": "0.8"
+          }
+        ]
+      },
+      {
+        "id": "vca2",
+        "typeId": "talas.vca",
+        "parameters": [
+          {
+            "id": "gain",
+            "expression": "0.05"
+          }
+        ]
+      }
+    ],
+    "connections": [
+      {
+        "fromNode": "osc",
+        "fromPort": "audioOut",
+        "toNode": "analysis",
+        "toPort": "audioIn"
+      },
+      {
+        "fromNode": "analysis",
+        "fromPort": "spectrumOut",
+        "toNode": "legacyHold",
+        "toPort": "spectrumIn"
+      },
+      {
+        "fromNode": "legacyHold",
+        "fromPort": "spectrumOut",
+        "toNode": "selector",
+        "toPort": "spectrumIn"
+      },
+      {
+        "fromNode": "osc",
+        "fromPort": "audioOut",
+        "toNode": "vca1",
+        "toPort": "audioIn"
+      },
+      {
+        "fromNode": "selector",
+        "fromPort": "leftOut",
+        "toNode": "vca2",
+        "toPort": "audioIn"
+      },
+      {
+        "fromNode": "mix",
+        "fromPort": "leftOut",
+        "toNode": "out",
+        "toPort": "audioIn"
+      },
+      {
+        "fromNode": "vca1",
+        "fromPort": "audioOut",
+        "toNode": "mix",
+        "toPort": "inputs"
+      },
+      {
+        "fromNode": "vca2",
+        "fromPort": "audioOut",
+        "toNode": "mix",
+        "toPort": "inputs"
+      }
+    ]
+  }
+}

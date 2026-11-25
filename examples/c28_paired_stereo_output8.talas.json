@@ -1,0 +1,74 @@
+{
+  "format": "talas.project",
+  "version": 1,
+  "metadata": {
+    "title": "C28 Paired Stereo Output 8"
+  },
+  "graph": {
+    "nodes": [
+      {
+        "id": "pair12",
+        "typeId": "talas.oscillator",
+        "parameters": [
+          { "id": "frequency", "expression": "110 hz" },
+          { "id": "amplitude", "expression": "0.1" }
+        ]
+      },
+      {
+        "id": "pair34",
+        "typeId": "talas.oscillator",
+        "parameters": [
+          { "id": "frequency", "expression": "220 hz" },
+          { "id": "amplitude", "expression": "-0.15" }
+        ]
+      },
+      {
+        "id": "pair56",
+        "typeId": "talas.oscillator",
+        "parameters": [
+          { "id": "frequency", "expression": "330 hz" },
+          { "id": "amplitude", "expression": "0.2" }
+        ]
+      },
+      {
+        "id": "pair78",
+        "typeId": "talas.oscillator",
+        "parameters": [
+          { "id": "frequency", "expression": "440 hz" },
+          { "id": "amplitude", "expression": "-0.25" }
+        ]
+      },
+      {
+        "id": "out",
+        "typeId": "talas.stereoInOutput8",
+        "parameters": []
+      }
+    ],
+    "connections": [
+      {
+        "fromNode": "pair12",
+        "fromPort": "audioOut",
+        "toNode": "out",
+        "toPort": "out12"
+      },
+      {
+        "fromNode": "pair34",
+        "fromPort": "audioOut",
+        "toNode": "out",
+        "toPort": "out34"
+      },
+      {
+        "fromNode": "pair56",
+        "fromPort": "audioOut",
+        "toNode": "out",
+        "toPort": "out56"
+      },
+      {
+        "fromNode": "pair78",
+        "fromPort": "audioOut",
+        "toNode": "out",
+        "toPort": "out78"
+      }
+    ]
+  }
+}

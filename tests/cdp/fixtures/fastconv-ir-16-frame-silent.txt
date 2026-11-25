@@ -1,0 +1,18 @@
+# An impulse response for CDP8 fastconv: 16 silent frames, 16 frames of mono 32-bit float at 48 kHz.
+# Each line: one frame, as C99 hex floats.
+0x0.0p+0
+0x0.0p+0
+0x0.0p+0
+0x0.0p+0
+0x0.0p+0
+0x0.0p+0
+0x0.0p+0
+0x0.0p+0
+0x0.0p+0
+0x0.0p+0
+0x0.0p+0
+0x0.0p+0
+0x0.0p+0
+0x0.0p+0
+0x0.0p+0
+0x0.0p+0

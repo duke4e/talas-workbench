@@ -1,0 +1,109 @@
+{
+  "format": "talas.project",
+  "version": 35,
+  "expressionLanguage": "variablesV2",
+  "expressionDefinitions": [],
+  "variableLibrary": { "version": 2, "variables": [] },
+  "soundVariableLibrary": { "version": 1, "variables": [] },
+  "generatorLibrary": { "version": 2, "programs": [] },
+  "liveSetLibrary": { "version": 1, "liveSets": [], "tools": [] },
+  "metadata": { "title": "Spectrum On Disk Frame Scan" },
+  "presentation": {
+    "version": 2,
+    "structureLayouts": [
+      {
+        "scope": { "kind": "project" },
+        "nodes": [
+          { "nodeId": "restartControl", "x": 80, "y": 320 },
+          { "nodeId": "source", "x": 220, "y": 180 },
+          { "nodeId": "bank", "x": 500, "y": 180 },
+          { "nodeId": "out", "x": 760, "y": 180 }
+        ]
+      }
+    ],
+    "performanceControls": [],
+    "performanceMeters": []
+  },
+  "snapshotLibrary": { "version": 1, "banks": [] },
+  "sampleMapLibrary": { "version": 1, "maps": [] },
+  "assets": [
+    {
+      "id": "Analysis/C56",
+      "kind": "table",
+      "path": "resources/c56-spectrum-frames.txt",
+      "disposition": "referenced",
+      "contentHash": "e5c6e5c0ed78294f2fda94de56775e2dfbabc06cc1eabc26a79d2a4248840e5e",
+      "channelCount": 0,
+      "sampleRate": 0,
+      "frameCount": 0,
+      "encoding": "",
+      "generation": 1,
+      "provenance": "Repository-original C56 fixed-width multi-frame Spectrum table"
+    }
+  ],
+  "partialTrackEdits": [],
+  "timeline": {
+    "loop": { "enabled": false, "startSeconds": 0, "endSeconds": 8 },
+    "musicalTime": {
+      "ticksPerQuarter": 960,
+      "tempo": [{ "tick": 0, "microsecondsPerQuarter": 500000 }],
+      "meter": [{ "tick": 0, "numerator": 4, "denominator": 4 }]
+    },
+    "score": { "tracks": [], "clips": [], "automation": [], "markers": [] },
+    "eventValues": [
+      { "timeSeconds": 0, "eventName": "C56Restart", "domain": "scalar", "value": 0, "interpolation": "step" }
+    ]
+  },
+  "deviceSettings": {
+    "configured": false,
+    "audioInputDevice": "",
+    "audioOutputDevice": "",
+    "sampleRate": 0,
+    "bufferSize": 0,
+    "inputChannels": [],
+    "outputChannels": [],
+    "midiInputDevices": [],
+    "transportSync": { "sourceMode": "internal", "sourceIdentifier": "" },
+    "oscIngress": { "enabled": false, "port": 9000 },
+    "oscEgress": { "enabled": false, "port": 9001 }
+  },
+  "soundDefinitions": [],
+  "graph": {
+    "nodes": [
+      {
+        "id": "restartControl",
+        "typeId": "talas.constant",
+        "parameters": [{ "id": "value", "expression": "!C56Restart" }]
+      },
+      {
+        "id": "source",
+        "typeId": "talas.spectrumOnDisk",
+        "parameters": [
+          { "id": "frequency", "expression": "110 hz" },
+          { "id": "level", "expression": "1" },
+          { "id": "rateScale", "expression": "0.02" },
+          { "id": "trigger", "expression": "0" },
+          { "id": "fileName", "resource": "Analysis/C56" },
+          { "id": "analysisFrames", "expression": "8" },
+          { "id": "nbrPartials", "expression": "4" },
+          { "id": "firstPartial", "expression": "1" }
+        ]
+      },
+      {
+        "id": "bank",
+        "typeId": "talas.oscillatorBank",
+        "parameters": [
+          { "id": "nbrOscillators", "expression": "4" },
+          { "id": "bankSize", "expression": "4096" },
+          { "id": "wavetable", "resource": "" }
+        ]
+      },
+      { "id": "out", "typeId": "talas.audioOutput", "parameters": [] }
+    ],
+    "connections": [
+      { "fromNode": "restartControl", "fromPort": "value", "toNode": "source", "toPort": "trigger" },
+      { "fromNode": "source", "fromPort": "spectrumOut", "toNode": "bank", "toPort": "spectrum" },
+      { "fromNode": "bank", "fromPort": "audioOut", "toNode": "out", "toPort": "audioIn" }
+    ]
+  }
+}

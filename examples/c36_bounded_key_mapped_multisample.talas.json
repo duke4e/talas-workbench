@@ -1,0 +1,99 @@
+{
+  "format": "talas.project",
+  "version": 35,
+  "expressionLanguage": "legacyV1",
+  "expressionDefinitions": [],
+  "variableLibrary": { "version": 2, "variables": [] },
+  "soundVariableLibrary": { "version": 1, "variables": [] },
+  "generatorLibrary": { "version": 2, "programs": [] },
+  "liveSetLibrary": { "version": 1, "liveSets": [], "tools": [] },
+  "metadata": { "title": "Bounded Key-Mapped Multisample" },
+  "presentation": {
+    "version": 2,
+    "structureLayouts": [
+      {
+        "scope": { "kind": "project" },
+        "nodes": [
+          { "nodeId": "keymap", "x": 150, "y": 170 },
+          { "nodeId": "out", "x": 510, "y": 170 }
+        ]
+      }
+    ],
+    "performanceControls": [],
+    "performanceMeters": []
+  },
+  "snapshotLibrary": { "version": 1, "banks": [] },
+  "sampleMapLibrary": { "version": 1, "maps": [] },
+  "assets": [
+    {
+      "id": "Samples/C36Root",
+      "kind": "table",
+      "path": "resources/c33-generic-source-sample.txt",
+      "disposition": "referenced",
+      "contentHash": "54e58fa19e33c65f013a9758f497efe8481f684876756f6ab60e79ef6865dcd3",
+      "channelCount": 0,
+      "sampleRate": 0,
+      "frameCount": 0,
+      "encoding": "",
+      "generation": 1,
+      "provenance": "Repository-original C33 waveform table reused by C36"
+    }
+  ],
+  "partialTrackEdits": [],
+  "timeline": {
+    "loop": { "enabled": false, "startSeconds": 0, "endSeconds": 4 },
+    "musicalTime": {
+      "ticksPerQuarter": 960,
+      "tempo": [{ "tick": 0, "microsecondsPerQuarter": 500000 }],
+      "meter": [{ "tick": 0, "numerator": 4, "denominator": 4 }]
+    },
+    "score": { "tracks": [], "clips": [], "automation": [], "markers": [] },
+    "eventValues": []
+  },
+  "deviceSettings": {
+    "configured": false,
+    "audioInputDevice": "",
+    "audioOutputDevice": "",
+    "sampleRate": 0,
+    "bufferSize": 0,
+    "inputChannels": [],
+    "outputChannels": [],
+    "midiInputDevices": [],
+    "transportSync": { "sourceMode": "internal", "sourceIdentifier": "" },
+    "oscIngress": { "enabled": false, "port": 9000 },
+    "oscEgress": { "enabled": false, "port": 9001 }
+  },
+  "soundDefinitions": [],
+  "graph": {
+    "nodes": [
+      {
+        "id": "keymap",
+        "typeId": "talas.keyMappedMultisample",
+        "parameters": [
+          { "id": "frequency", "expression": "220 hz" },
+          { "id": "gate", "expression": "1" },
+          { "id": "velocity", "expression": "0.8" },
+          { "id": "firstSample", "resource": "Samples/C36Root" },
+          { "id": "loFreq", "expression": "110 hz" },
+          { "id": "hiFreq", "expression": "880 hz" },
+          { "id": "mapping", "choice": "byPitchRange" },
+          { "id": "attackTime", "expression": "0.005 s" },
+          { "id": "releaseTime", "expression": "0.01 s" },
+          { "id": "scale", "expression": "0.35" },
+          { "id": "loop", "boolean": true },
+          { "id": "fromDisk", "boolean": false },
+          { "id": "noTransposition", "boolean": false }
+        ]
+      },
+      { "id": "out", "typeId": "talas.audioOutput", "parameters": [] }
+    ],
+    "connections": [
+      {
+        "fromNode": "keymap",
+        "fromPort": "audioOut",
+        "toNode": "out",
+        "toPort": "audioIn"
+      }
+    ]
+  }
+}

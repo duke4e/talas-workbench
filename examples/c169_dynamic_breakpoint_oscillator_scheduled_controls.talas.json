@@ -1,0 +1,99 @@
+{
+  "format": "talas.project",
+  "version": 35,
+  "expressionLanguage": "variablesV2",
+  "expressionDefinitions": [],
+  "variableLibrary": { "version": 2, "variables": [] },
+  "soundVariableLibrary": { "version": 1, "variables": [] },
+  "generatorLibrary": { "version": 2, "programs": [] },
+  "liveSetLibrary": { "version": 1, "liveSets": [], "tools": [] },
+  "metadata": { "title": "Dynamic Breakpoint Oscillator Scheduled Controls" },
+  "presentation": {
+    "version": 2,
+    "structureLayouts": [
+      {
+        "scope": { "kind": "project" },
+        "nodes": [
+          { "nodeId": "dynamic", "x": 180, "y": 220 },
+          { "nodeId": "out", "x": 580, "y": 220 }
+        ]
+      }
+    ],
+    "performanceControls": [],
+    "performanceMeters": []
+  },
+  "snapshotLibrary": { "version": 1, "banks": [] },
+  "sampleMapLibrary": { "version": 1, "maps": [] },
+  "assets": [],
+  "partialTrackEdits": [],
+  "timeline": {
+    "loop": { "enabled": false, "startSeconds": 0, "endSeconds": 2 },
+    "musicalTime": {
+      "ticksPerQuarter": 960,
+      "tempo": [{ "tick": 0, "microsecondsPerQuarter": 500000 }],
+      "meter": [{ "tick": 0, "numerator": 4, "denominator": 4 }]
+    },
+    "score": { "tracks": [], "clips": [], "automation": [], "markers": [] },
+    "eventValues": [
+      { "timeSeconds": 0, "eventName": "C174Reset", "domain": "scalar", "value": 1, "interpolation": "step" },
+      { "timeSeconds": 0, "eventName": "C174Frequency", "domain": "hertz", "value": 600, "interpolation": "step" },
+      { "timeSeconds": 0, "eventName": "C174Volatility", "domain": "scalar", "value": 0.35, "interpolation": "step" },
+      { "timeSeconds": 0, "eventName": "C174Correlation", "domain": "scalar", "value": 0.75, "interpolation": "step" },
+      { "timeSeconds": 0, "eventName": "C174TimingJitter", "domain": "scalar", "value": 0.2, "interpolation": "step" },
+      { "timeSeconds": 0, "eventName": "C174Curve", "domain": "scalar", "value": 0, "interpolation": "step" },
+      { "timeSeconds": 0, "eventName": "C174Level", "domain": "scalar", "value": 0.5, "interpolation": "step" },
+      { "timeSeconds": 0.000020833333333333333, "eventName": "C174Reset", "domain": "scalar", "value": 0, "interpolation": "step" },
+      { "timeSeconds": 0.00016666666666666666, "eventName": "C174Frequency", "domain": "hertz", "value": 300, "interpolation": "step" },
+      { "timeSeconds": 0.00016666666666666666, "eventName": "C174Volatility", "domain": "scalar", "value": 0.7, "interpolation": "step" },
+      { "timeSeconds": 0.00016666666666666666, "eventName": "C174Correlation", "domain": "scalar", "value": -0.6, "interpolation": "step" },
+      { "timeSeconds": 0.00016666666666666666, "eventName": "C174TimingJitter", "domain": "scalar", "value": 0.4, "interpolation": "step" },
+      { "timeSeconds": 0.00016666666666666666, "eventName": "C174Curve", "domain": "scalar", "value": 0.8, "interpolation": "step" },
+      { "timeSeconds": 0.00016666666666666666, "eventName": "C174Level", "domain": "scalar", "value": 1.25, "interpolation": "step" },
+      { "timeSeconds": 0.0005, "eventName": "C174Reset", "domain": "scalar", "value": 1, "interpolation": "step" },
+      { "timeSeconds": 0.0005208333333333333, "eventName": "C174Reset", "domain": "scalar", "value": 0, "interpolation": "step" },
+      { "timeSeconds": 0.0006666666666666666, "eventName": "C174Frequency", "domain": "hertz", "value": 700, "interpolation": "step" },
+      { "timeSeconds": 0.0006666666666666666, "eventName": "C174Volatility", "domain": "scalar", "value": 0.2, "interpolation": "step" },
+      { "timeSeconds": 0.0006666666666666666, "eventName": "C174Correlation", "domain": "scalar", "value": 0.4, "interpolation": "step" },
+      { "timeSeconds": 0.0006666666666666666, "eventName": "C174TimingJitter", "domain": "scalar", "value": 0.1, "interpolation": "step" },
+      { "timeSeconds": 0.0006666666666666666, "eventName": "C174Curve", "domain": "scalar", "value": -0.5, "interpolation": "step" },
+      { "timeSeconds": 0.0006666666666666666, "eventName": "C174Level", "domain": "scalar", "value": 0.75, "interpolation": "step" }
+    ]
+  },
+  "deviceSettings": {
+    "configured": false,
+    "audioInputDevice": "",
+    "audioOutputDevice": "",
+    "sampleRate": 0,
+    "bufferSize": 0,
+    "inputChannels": [],
+    "outputChannels": [],
+    "midiInputDevices": [],
+    "transportSync": { "sourceMode": "internal", "sourceIdentifier": "" },
+    "oscIngress": { "enabled": false, "port": 9000 },
+    "oscEgress": { "enabled": false, "port": 9001 }
+  },
+  "soundDefinitions": [],
+  "graph": {
+    "nodes": [
+      {
+        "id": "dynamic",
+        "typeId": "talas.dynamicBreakpointOscillator",
+        "parameters": [
+          { "id": "reset", "expression": "!C174Reset" },
+          { "id": "frequency", "expression": "!C174Frequency" },
+          { "id": "volatility", "expression": "!C174Volatility" },
+          { "id": "correlation", "expression": "!C174Correlation" },
+          { "id": "timingJitter", "expression": "!C174TimingJitter" },
+          { "id": "curve", "expression": "!C174Curve" },
+          { "id": "level", "expression": "!C174Level" },
+          { "id": "pointCount", "expression": "16" },
+          { "id": "seed", "expression": "211" }
+        ]
+      },
+      { "id": "out", "typeId": "talas.audioOutput", "parameters": [] }
+    ],
+    "connections": [
+      { "fromNode": "dynamic", "fromPort": "audioOut", "toNode": "out", "toPort": "audioIn" }
+    ]
+  }
+}

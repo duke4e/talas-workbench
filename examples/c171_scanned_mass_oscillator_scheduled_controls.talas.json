@@ -1,0 +1,117 @@
+{
+  "format": "talas.project",
+  "version": 35,
+  "expressionLanguage": "variablesV2",
+  "expressionDefinitions": [],
+  "variableLibrary": { "version": 2, "variables": [] },
+  "soundVariableLibrary": { "version": 1, "variables": [] },
+  "generatorLibrary": { "version": 2, "programs": [] },
+  "liveSetLibrary": { "version": 1, "liveSets": [], "tools": [] },
+  "metadata": { "title": "Scanned Mass Oscillator Scheduled Controls" },
+  "presentation": {
+    "version": 2,
+    "structureLayouts": [
+      {
+        "scope": { "kind": "project" },
+        "nodes": [
+          { "nodeId": "scanned", "x": 180, "y": 220 },
+          { "nodeId": "out", "x": 580, "y": 220 }
+        ]
+      }
+    ],
+    "performanceControls": [],
+    "performanceMeters": []
+  },
+  "snapshotLibrary": { "version": 1, "banks": [] },
+  "sampleMapLibrary": { "version": 1, "maps": [] },
+  "assets": [],
+  "partialTrackEdits": [],
+  "timeline": {
+    "loop": { "enabled": false, "startSeconds": 0, "endSeconds": 2 },
+    "musicalTime": {
+      "ticksPerQuarter": 960,
+      "tempo": [{ "tick": 0, "microsecondsPerQuarter": 500000 }],
+      "meter": [{ "tick": 0, "numerator": 4, "denominator": 4 }]
+    },
+    "score": { "tracks": [], "clips": [], "automation": [], "markers": [] },
+    "eventValues": [
+      { "timeSeconds": 0, "eventName": "C176Reset", "domain": "scalar", "value": 1, "interpolation": "step" },
+      { "timeSeconds": 0, "eventName": "C176Excite", "domain": "scalar", "value": 0, "interpolation": "step" },
+      { "timeSeconds": 0, "eventName": "C176Frequency", "domain": "hertz", "value": 600, "interpolation": "step" },
+      { "timeSeconds": 0, "eventName": "C176ModelRate", "domain": "hertz", "value": 750, "interpolation": "step" },
+      { "timeSeconds": 0, "eventName": "C176Coupling", "domain": "scalar", "value": 0.2, "interpolation": "step" },
+      { "timeSeconds": 0, "eventName": "C176Damping", "domain": "scalar", "value": 0.01, "interpolation": "step" },
+      { "timeSeconds": 0, "eventName": "C176Restoring", "domain": "scalar", "value": 0.01, "interpolation": "step" },
+      { "timeSeconds": 0, "eventName": "C176Position", "domain": "scalar", "value": 0.25, "interpolation": "step" },
+      { "timeSeconds": 0, "eventName": "C176Amount", "domain": "scalar", "value": 0.75, "interpolation": "step" },
+      { "timeSeconds": 0, "eventName": "C176Offset", "domain": "scalar", "value": 0, "interpolation": "step" },
+      { "timeSeconds": 0, "eventName": "C176Level", "domain": "scalar", "value": 0.5, "interpolation": "step" },
+      { "timeSeconds": 0.000020833333333333333, "eventName": "C176Reset", "domain": "scalar", "value": 0, "interpolation": "step" },
+      { "timeSeconds": 0.000041666666666666665, "eventName": "C176Excite", "domain": "scalar", "value": 1, "interpolation": "step" },
+      { "timeSeconds": 0.0000625, "eventName": "C176Excite", "domain": "scalar", "value": 0, "interpolation": "step" },
+      { "timeSeconds": 0.00016666666666666666, "eventName": "C176Frequency", "domain": "hertz", "value": 300, "interpolation": "step" },
+      { "timeSeconds": 0.00016666666666666666, "eventName": "C176ModelRate", "domain": "hertz", "value": 1000, "interpolation": "step" },
+      { "timeSeconds": 0.00016666666666666666, "eventName": "C176Coupling", "domain": "scalar", "value": 0.35, "interpolation": "step" },
+      { "timeSeconds": 0.00016666666666666666, "eventName": "C176Damping", "domain": "scalar", "value": 0.08, "interpolation": "step" },
+      { "timeSeconds": 0.00016666666666666666, "eventName": "C176Restoring", "domain": "scalar", "value": 0.12, "interpolation": "step" },
+      { "timeSeconds": 0.00016666666666666666, "eventName": "C176Position", "domain": "scalar", "value": 0.61, "interpolation": "step" },
+      { "timeSeconds": 0.00016666666666666666, "eventName": "C176Amount", "domain": "scalar", "value": -0.8, "interpolation": "step" },
+      { "timeSeconds": 0.00016666666666666666, "eventName": "C176Offset", "domain": "scalar", "value": 0.2, "interpolation": "step" },
+      { "timeSeconds": 0.00016666666666666666, "eventName": "C176Level", "domain": "scalar", "value": 1.25, "interpolation": "step" },
+      { "timeSeconds": 0.0005, "eventName": "C176Reset", "domain": "scalar", "value": 1, "interpolation": "step" },
+      { "timeSeconds": 0.0005208333333333333, "eventName": "C176Reset", "domain": "scalar", "value": 0, "interpolation": "step" },
+      { "timeSeconds": 0.0005416666666666666, "eventName": "C176Excite", "domain": "scalar", "value": 1, "interpolation": "step" },
+      { "timeSeconds": 0.0005625, "eventName": "C176Excite", "domain": "scalar", "value": 0, "interpolation": "step" },
+      { "timeSeconds": 0.0006666666666666666, "eventName": "C176Frequency", "domain": "hertz", "value": 900, "interpolation": "step" },
+      { "timeSeconds": 0.0006666666666666666, "eventName": "C176ModelRate", "domain": "hertz", "value": 375, "interpolation": "step" },
+      { "timeSeconds": 0.0006666666666666666, "eventName": "C176Coupling", "domain": "scalar", "value": 0.1, "interpolation": "step" },
+      { "timeSeconds": 0.0006666666666666666, "eventName": "C176Damping", "domain": "scalar", "value": 0.15, "interpolation": "step" },
+      { "timeSeconds": 0.0006666666666666666, "eventName": "C176Restoring", "domain": "scalar", "value": 0.18, "interpolation": "step" },
+      { "timeSeconds": 0.0006666666666666666, "eventName": "C176Position", "domain": "scalar", "value": 0.8, "interpolation": "step" },
+      { "timeSeconds": 0.0006666666666666666, "eventName": "C176Amount", "domain": "scalar", "value": 0.45, "interpolation": "step" },
+      { "timeSeconds": 0.0006666666666666666, "eventName": "C176Offset", "domain": "scalar", "value": -0.25, "interpolation": "step" },
+      { "timeSeconds": 0.0006666666666666666, "eventName": "C176Level", "domain": "scalar", "value": 0.75, "interpolation": "step" }
+    ]
+  },
+  "deviceSettings": {
+    "configured": false,
+    "audioInputDevice": "",
+    "audioOutputDevice": "",
+    "sampleRate": 0,
+    "bufferSize": 0,
+    "inputChannels": [],
+    "outputChannels": [],
+    "midiInputDevices": [],
+    "transportSync": { "sourceMode": "internal", "sourceIdentifier": "" },
+    "oscIngress": { "enabled": false, "port": 9000 },
+    "oscEgress": { "enabled": false, "port": 9001 }
+  },
+  "soundDefinitions": [],
+  "graph": {
+    "nodes": [
+      {
+        "id": "scanned",
+        "typeId": "talas.scannedMassOscillator",
+        "parameters": [
+          { "id": "reset", "expression": "!C176Reset" },
+          { "id": "excite", "expression": "!C176Excite" },
+          { "id": "frequency", "expression": "!C176Frequency" },
+          { "id": "modelRate", "expression": "!C176ModelRate" },
+          { "id": "coupling", "expression": "!C176Coupling" },
+          { "id": "damping", "expression": "!C176Damping" },
+          { "id": "restoring", "expression": "!C176Restoring" },
+          { "id": "excitationPosition", "expression": "!C176Position" },
+          { "id": "excitationAmount", "expression": "!C176Amount" },
+          { "id": "scanOffset", "expression": "!C176Offset" },
+          { "id": "level", "expression": "!C176Level" },
+          { "id": "massCount", "expression": "16" },
+          { "id": "initialShape", "expression": "0.35" }
+        ]
+      },
+      { "id": "out", "typeId": "talas.audioOutput", "parameters": [] }
+    ],
+    "connections": [
+      { "fromNode": "scanned", "fromPort": "audioOut", "toNode": "out", "toPort": "audioIn" }
+    ]
+  }
+}

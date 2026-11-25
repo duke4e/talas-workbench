@@ -1,0 +1,189 @@
+{
+  "format": "talas.project",
+  "version": 10,
+  "metadata": {
+    "title": "M3 Matrix4 to Output4"
+  },
+  "virtualControls": [],
+  "assets": [],
+  "timeline": {
+    "loop": {
+      "enabled": false,
+      "startSeconds": 0,
+      "endSeconds": 4
+    },
+    "eventValues": []
+  },
+  "deviceSettings": {
+    "configured": false,
+    "audioInputDevice": "",
+    "audioOutputDevice": "",
+    "sampleRate": 0,
+    "bufferSize": 0,
+    "inputChannels": [],
+    "outputChannels": [],
+    "midiInputDevices": []
+  },
+  "soundDefinitions": [],
+  "graph": {
+    "nodes": [
+      {
+        "id": "osc1",
+        "typeId": "talas.oscillator",
+        "position": {
+          "x": 70,
+          "y": 70
+        },
+        "parameters": [
+          {
+            "id": "frequency",
+            "expression": "64 hz"
+          },
+          {
+            "id": "amplitude",
+            "expression": "0.10"
+          }
+        ]
+      },
+      {
+        "id": "osc2",
+        "typeId": "talas.oscillator",
+        "position": {
+          "x": 70,
+          "y": 190
+        },
+        "parameters": [
+          {
+            "id": "frequency",
+            "expression": "128 hz"
+          },
+          {
+            "id": "amplitude",
+            "expression": "0.15"
+          }
+        ]
+      },
+      {
+        "id": "osc3",
+        "typeId": "talas.oscillator",
+        "position": {
+          "x": 70,
+          "y": 310
+        },
+        "parameters": [
+          {
+            "id": "frequency",
+            "expression": "256 hz"
+          },
+          {
+            "id": "amplitude",
+            "expression": "0.20"
+          }
+        ]
+      },
+      {
+        "id": "osc4",
+        "typeId": "talas.oscillator",
+        "position": {
+          "x": 70,
+          "y": 430
+        },
+        "parameters": [
+          {
+            "id": "frequency",
+            "expression": "512 hz"
+          },
+          {
+            "id": "amplitude",
+            "expression": "0.25"
+          }
+        ]
+      },
+      {
+        "id": "matrix",
+        "typeId": "talas.matrix4",
+        "position": {
+          "x": 390,
+          "y": 245
+        },
+        "parameters": [
+          {
+            "id": "insToOut1",
+            "text": "1 0 0 0"
+          },
+          {
+            "id": "insToOut2",
+            "text": "0 1 0 0"
+          },
+          {
+            "id": "insToOut3",
+            "text": "0 0 1 0"
+          },
+          {
+            "id": "insToOut4",
+            "text": "0 0 0 1"
+          }
+        ]
+      },
+      {
+        "id": "out",
+        "typeId": "talas.output4",
+        "position": {
+          "x": 720,
+          "y": 245
+        },
+        "parameters": []
+      }
+    ],
+    "connections": [
+      {
+        "fromNode": "osc1",
+        "fromPort": "audioOut",
+        "toNode": "matrix",
+        "toPort": "in1"
+      },
+      {
+        "fromNode": "osc2",
+        "fromPort": "audioOut",
+        "toNode": "matrix",
+        "toPort": "in2"
+      },
+      {
+        "fromNode": "osc3",
+        "fromPort": "audioOut",
+        "toNode": "matrix",
+        "toPort": "in3"
+      },
+      {
+        "fromNode": "osc4",
+        "fromPort": "audioOut",
+        "toNode": "matrix",
+        "toPort": "in4"
+      },
+      {
+        "fromNode": "matrix",
+        "fromPort": "out1",
+        "toNode": "out",
+        "toPort": "out1"
+      },
+      {
+        "fromNode": "matrix",
+        "fromPort": "out2",
+        "toNode": "out",
+        "toPort": "out2"
+      },
+      {
+        "fromNode": "matrix",
+        "fromPort": "out3",
+        "toNode": "out",
+        "toPort": "out3"
+      },
+      {
+        "fromNode": "matrix",
+        "fromPort": "out4",
+        "toNode": "out",
+        "toPort": "out4"
+      }
+    ]
+  }
+}

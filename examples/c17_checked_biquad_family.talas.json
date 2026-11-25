@@ -1,0 +1,373 @@
+{
+  "format": "talas.project",
+  "version": 43,
+  "expressionLanguage": "legacyV1",
+  "expressionDefinitions": [],
+  "variableLibrary": {
+    "version": 2,
+    "variables": []
+  },
+  "soundVariableLibrary": {
+    "version": 1,
+    "variables": []
+  },
+  "generatorLibrary": {
+    "version": 2,
+    "programs": []
+  },
+  "liveSetLibrary": {
+    "version": 1,
+    "liveSets": [],
+    "tools": []
+  },
+  "metadata": {
+    "title": "C17 Checked Biquad Family"
+  },
+  "presentation": {
+    "version": 2,
+    "structureLayouts": [
+      {
+        "scope": {
+          "kind": "project"
+        },
+        "nodes": [
+          {
+            "nodeId": "source",
+            "x": 0,
+            "y": 0
+          },
+          {
+            "nodeId": "formants",
+            "x": 0,
+            "y": 0
+          },
+          {
+            "nodeId": "voice",
+            "x": 0,
+            "y": 0
+          },
+          {
+            "nodeId": "mix",
+            "x": 0,
+            "y": 0
+          },
+          {
+            "nodeId": "twoPole",
+            "x": 0,
+            "y": 0
+          },
+          {
+            "nodeId": "eq",
+            "x": 0,
+            "y": 0
+          },
+          {
+            "nodeId": "analysis",
+            "x": 0,
+            "y": 0
+          },
+          {
+            "nodeId": "out",
+            "x": 0,
+            "y": 0
+          }
+        ]
+      }
+    ],
+    "performanceControls": [],
+    "performanceMeters": []
+  },
+  "snapshotLibrary": {
+    "version": 1,
+    "banks": []
+  },
+  "sampleMapLibrary": {
+    "version": 1,
+    "maps": []
+  },
+  "virtualControls": [],
+  "assets": [],
+  "partialTrackEdits": [],
+  "timeline": {
+    "loop": {
+      "enabled": false,
+      "startSeconds": 0,
+      "endSeconds": 4
+    },
+    "musicalTime": {
+      "ticksPerQuarter": 960,
+      "tempo": [
+        {
+          "tick": 0,
+          "microsecondsPerQuarter": 500000
+        }
+      ],
+      "meter": [
+        {
+          "tick": 0,
+          "numerator": 4,
+          "denominator": 4
+        }
+      ]
+    },
+    "score": {
+      "tracks": [
+      ],
+      "clips": [
+      ],
+      "automation": [
+      ],
+      "markers": [
+      ]
+    },
+    "eventValues": []
+  },
+  "deviceSettings": {
+    "configured": false,
+    "audioInputDevice": "",
+    "audioOutputDevice": "",
+    "sampleRate": 0,
+    "bufferSize": 0,
+    "inputChannels": [],
+    "outputChannels": [],
+    "midiInputDevices": [],
+    "transportSync": {
+      "sourceMode": "internal",
+      "sourceIdentifier": ""
+    },
+    "oscIngress": {
+      "enabled": false,
+      "port": 9000
+    },
+    "oscEgress": {
+      "enabled": false,
+      "port": 9001
+    }
+  },
+  "soundDefinitions": [],
+  "graph": {
+    "nodes": [
+      {
+        "id": "source",
+        "typeId": "talas.oscillator",
+        "parameters": [
+          {
+            "id": "frequency",
+            "expression": "220 hz"
+          },
+          {
+            "id": "amplitude",
+            "expression": "0.3"
+          }
+        ]
+      },
+      {
+        "id": "formants",
+        "typeId": "talas.twoFormantElement",
+        "parameters": [
+          {
+            "id": "formant1",
+            "expression": "700 hz"
+          },
+          {
+            "id": "bandwidth1",
+            "expression": "120 hz"
+          },
+          {
+            "id": "scale1",
+            "expression": "0.8"
+          },
+          {
+            "id": "formant2",
+            "expression": "1200 hz"
+          },
+          {
+            "id": "bandwidth2",
+            "expression": "160 hz"
+          },
+          {
+            "id": "scale2",
+            "expression": "0.5"
+          }
+        ]
+      },
+      {
+        "id": "voice",
+        "typeId": "talas.twoFormantVoiceElement",
+        "parameters": [
+          {
+            "id": "frequency",
+            "expression": "110 hz"
+          },
+          {
+            "id": "formant1",
+            "expression": "500 hz"
+          },
+          {
+            "id": "bandwidth1",
+            "expression": "90 hz"
+          },
+          {
+            "id": "scale1",
+            "expression": "0.2"
+          },
+          {
+            "id": "formant2",
+            "expression": "1500 hz"
+          },
+          {
+            "id": "bandwidth2",
+            "expression": "150 hz"
+          },
+          {
+            "id": "scale2",
+            "expression": "0.1"
+          },
+          {
+            "id": "seed",
+            "expression": "17"
+          }
+        ]
+      },
+      {
+        "id": "mix",
+        "typeId": "talas.mixerV2",
+        "parameters": [
+          {
+            "id": "left",
+            "expression": "1.0"
+          },
+          {
+            "id": "right",
+            "expression": "1.0"
+          }
+        ]
+      },
+      {
+        "id": "twoPole",
+        "typeId": "talas.dualParallelTwoPoleFilter",
+        "parameters": [
+          {
+            "id": "pole1",
+            "text": "0.75 % 0.1"
+          },
+          {
+            "id": "scale1",
+            "expression": "0.5"
+          },
+          {
+            "id": "pole2",
+            "text": "0.65 % -0.2"
+          },
+          {
+            "id": "scale2",
+            "expression": "0.25"
+          }
+        ]
+      },
+      {
+        "id": "eq",
+        "typeId": "talas.graphicEq",
+        "parameters": [
+          {
+            "id": "cf250Hz",
+            "expression": "1"
+          },
+          {
+            "id": "cf500Hz",
+            "expression": "1.2"
+          },
+          {
+            "id": "cf1000Hz",
+            "expression": "0.8"
+          },
+          {
+            "id": "cf2000Hz",
+            "expression": "1"
+          },
+          {
+            "id": "cf4000Hz",
+            "expression": "1"
+          },
+          {
+            "id": "cf8000Hz",
+            "expression": "1"
+          },
+          {
+            "id": "cf16000Hz",
+            "expression": "1"
+          }
+        ]
+      },
+      {
+        "id": "analysis",
+        "typeId": "talas.analysisFilter",
+        "parameters": [
+          {
+            "id": "fundamental",
+            "expression": "220 hz"
+          },
+          {
+            "id": "harmonic",
+            "expression": "1"
+          }
+        ]
+      },
+      {
+        "id": "out",
+        "typeId": "talas.audioOutput",
+        "parameters": []
+      }
+    ],
+    "connections": [
+      {
+        "fromNode": "source",
+        "fromPort": "audioOut",
+        "toNode": "formants",
+        "toPort": "audioIn"
+      },
+      {
+        "fromNode": "formants",
+        "fromPort": "audioOut",
+        "toNode": "mix",
+        "toPort": "inputs"
+      },
+      {
+        "fromNode": "voice",
+        "fromPort": "audioOut",
+        "toNode": "mix",
+        "toPort": "inputs"
+      },
+      {
+        "fromNode": "mix",
+        "fromPort": "leftOut",
+        "toNode": "twoPole",
+        "toPort": "audioIn"
+      },
+      {
+        "fromNode": "twoPole",
+        "fromPort": "audioOut",
+        "toNode": "eq",
+        "toPort": "audioIn"
+      },
+      {
+        "fromNode": "eq",
+        "fromPort": "audioOut",
+        "toNode": "analysis",
+        "toPort": "audioIn"
+      },
+      {
+        "fromNode": "analysis",
+        "fromPort": "leftOut",
+        "toNode": "out",
+        "toPort": "audioIn"
+      },
+      {
+        "fromNode": "analysis",
+        "fromPort": "rightOut",
+        "toNode": "out",
+        "toPort": "rightIn"
+      }
+    ]
+  }
+}

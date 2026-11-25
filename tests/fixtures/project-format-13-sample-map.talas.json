@@ -1,0 +1,105 @@
+{
+  "format": "talas.project",
+  "version": 13,
+  "metadata": {
+    "title": "Format 12 Sample Map"
+  },
+  "presentation": {
+    "version": 1,
+    "structureLayouts": [
+      {
+        "scope": {
+          "kind": "project"
+        },
+        "nodes": []
+      }
+    ],
+    "performanceControls": []
+  },
+  "snapshotLibrary": {
+    "version": 1,
+    "banks": []
+  },
+  "sampleMapLibrary": {
+    "version": 1,
+    "maps": [
+      {
+        "id": "originalMap",
+        "name": "Original Map",
+        "regions": [
+          {
+            "id": "reverseLayer",
+            "assetId": "originalSample",
+            "rootNote": 60,
+            "lowNote": 48,
+            "highNote": 72,
+            "lowVelocity": 17,
+            "highVelocity": 112,
+            "reverse": true,
+            "sustainLoop": {
+              "mode": "alternate",
+              "startFrame": 10,
+              "endFrameExclusive": 90
+            },
+            "releaseLoop": {
+              "mode": "forward",
+              "startFrame": 91,
+              "endFrameExclusive": 120
+            }
+          },
+          {
+            "id": "upperLayer",
+            "assetId": "originalSample",
+            "rootNote": 67,
+            "lowNote": 60,
+            "highNote": 84,
+            "lowVelocity": 100,
+            "highVelocity": 127,
+            "reverse": false,
+            "sustainLoop": null,
+            "releaseLoop": null
+          }
+        ]
+      }
+    ]
+  },
+  "virtualControls": [],
+  "assets": [
+    {
+      "id": "originalSample",
+      "kind": "audio",
+      "path": "fixtures/original-sample.wav",
+      "disposition": "referenced",
+      "contentHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "channelCount": 1,
+      "sampleRate": 48000,
+      "frameCount": 128,
+      "encoding": "pcm16-wav",
+      "generation": 1,
+      "provenance": "repository-original generated fixture"
+    }
+  ],
+  "timeline": {
+    "loop": {
+      "enabled": false,
+      "startSeconds": 0,
+      "endSeconds": 4
+    },
+    "eventValues": []
+  },
+  "deviceSettings": {
+    "configured": false,
+    "audioInputDevice": "",
+    "audioOutputDevice": "",
+    "sampleRate": 0,
+    "bufferSize": 0,
+    "inputChannels": [],
+    "outputChannels": [],
+    "midiInputDevices": []
+  },
+  "soundDefinitions": [],
+  "graph": {
+    "nodes": [],
+    "connections": []
+  }
+}

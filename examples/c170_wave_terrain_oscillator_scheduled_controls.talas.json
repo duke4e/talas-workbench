@@ -1,0 +1,118 @@
+{
+  "format": "talas.project",
+  "version": 35,
+  "expressionLanguage": "variablesV2",
+  "expressionDefinitions": [],
+  "variableLibrary": { "version": 2, "variables": [] },
+  "soundVariableLibrary": { "version": 1, "variables": [] },
+  "generatorLibrary": { "version": 2, "programs": [] },
+  "liveSetLibrary": { "version": 1, "liveSets": [], "tools": [] },
+  "metadata": { "title": "Wave Terrain Oscillator Scheduled Controls" },
+  "presentation": {
+    "version": 2,
+    "structureLayouts": [
+      {
+        "scope": { "kind": "project" },
+        "nodes": [
+          { "nodeId": "terrain", "x": 180, "y": 220 },
+          { "nodeId": "out", "x": 580, "y": 220 }
+        ]
+      }
+    ],
+    "performanceControls": [],
+    "performanceMeters": []
+  },
+  "snapshotLibrary": { "version": 1, "banks": [] },
+  "sampleMapLibrary": { "version": 1, "maps": [] },
+  "assets": [
+    {
+      "id": "Tables/C170Terrain",
+      "kind": "table",
+      "path": "resources/c170-wave-terrain.txt",
+      "disposition": "referenced",
+      "contentHash": "4dd526eb63192bf29f962d5785ebabba5b8193f0c5156fa405312557263ebe3d",
+      "channelCount": 0,
+      "sampleRate": 0,
+      "frameCount": 0,
+      "encoding": "",
+      "generation": 1,
+      "provenance": "Repository-original C170 finite 8x8 row-major Wave Terrain table"
+    }
+  ],
+  "partialTrackEdits": [],
+  "timeline": {
+    "loop": { "enabled": false, "startSeconds": 0, "endSeconds": 2 },
+    "musicalTime": {
+      "ticksPerQuarter": 960,
+      "tempo": [{ "tick": 0, "microsecondsPerQuarter": 500000 }],
+      "meter": [{ "tick": 0, "numerator": 4, "denominator": 4 }]
+    },
+    "score": { "tracks": [], "clips": [], "automation": [], "markers": [] },
+    "eventValues": [
+      { "timeSeconds": 0, "eventName": "C175Reset", "domain": "scalar", "value": 1, "interpolation": "step" },
+      { "timeSeconds": 0, "eventName": "C175Frequency", "domain": "hertz", "value": 600, "interpolation": "step" },
+      { "timeSeconds": 0, "eventName": "C175XRadius", "domain": "scalar", "value": 0.9, "interpolation": "step" },
+      { "timeSeconds": 0, "eventName": "C175YRadius", "domain": "scalar", "value": 0.8, "interpolation": "step" },
+      { "timeSeconds": 0, "eventName": "C175YRatio", "domain": "scalar", "value": 2, "interpolation": "step" },
+      { "timeSeconds": 0, "eventName": "C175Rotation", "domain": "scalar", "value": 0, "interpolation": "step" },
+      { "timeSeconds": 0, "eventName": "C175PhaseOffset", "domain": "scalar", "value": 0, "interpolation": "step" },
+      { "timeSeconds": 0, "eventName": "C175Level", "domain": "scalar", "value": 0.5, "interpolation": "step" },
+      { "timeSeconds": 0.000020833333333333333, "eventName": "C175Reset", "domain": "scalar", "value": 0, "interpolation": "step" },
+      { "timeSeconds": 0.00016666666666666666, "eventName": "C175Frequency", "domain": "hertz", "value": 300, "interpolation": "step" },
+      { "timeSeconds": 0.00016666666666666666, "eventName": "C175XRadius", "domain": "scalar", "value": 0.45, "interpolation": "step" },
+      { "timeSeconds": 0.00016666666666666666, "eventName": "C175YRadius", "domain": "scalar", "value": 0.65, "interpolation": "step" },
+      { "timeSeconds": 0.00016666666666666666, "eventName": "C175YRatio", "domain": "scalar", "value": 3, "interpolation": "step" },
+      { "timeSeconds": 0.00016666666666666666, "eventName": "C175Rotation", "domain": "scalar", "value": 0.125, "interpolation": "step" },
+      { "timeSeconds": 0.00016666666666666666, "eventName": "C175PhaseOffset", "domain": "scalar", "value": -0.25, "interpolation": "step" },
+      { "timeSeconds": 0.00016666666666666666, "eventName": "C175Level", "domain": "scalar", "value": 1.25, "interpolation": "step" },
+      { "timeSeconds": 0.0005, "eventName": "C175Reset", "domain": "scalar", "value": 1, "interpolation": "step" },
+      { "timeSeconds": 0.0005208333333333333, "eventName": "C175Reset", "domain": "scalar", "value": 0, "interpolation": "step" },
+      { "timeSeconds": 0.0006666666666666666, "eventName": "C175Frequency", "domain": "hertz", "value": 700, "interpolation": "step" },
+      { "timeSeconds": 0.0006666666666666666, "eventName": "C175XRadius", "domain": "scalar", "value": 0.75, "interpolation": "step" },
+      { "timeSeconds": 0.0006666666666666666, "eventName": "C175YRadius", "domain": "scalar", "value": 0.35, "interpolation": "step" },
+      { "timeSeconds": 0.0006666666666666666, "eventName": "C175YRatio", "domain": "scalar", "value": 0.75, "interpolation": "step" },
+      { "timeSeconds": 0.0006666666666666666, "eventName": "C175Rotation", "domain": "scalar", "value": -0.2, "interpolation": "step" },
+      { "timeSeconds": 0.0006666666666666666, "eventName": "C175PhaseOffset", "domain": "scalar", "value": 0.2, "interpolation": "step" },
+      { "timeSeconds": 0.0006666666666666666, "eventName": "C175Level", "domain": "scalar", "value": 0.75, "interpolation": "step" }
+    ]
+  },
+  "deviceSettings": {
+    "configured": false,
+    "audioInputDevice": "",
+    "audioOutputDevice": "",
+    "sampleRate": 0,
+    "bufferSize": 0,
+    "inputChannels": [],
+    "outputChannels": [],
+    "midiInputDevices": [],
+    "transportSync": { "sourceMode": "internal", "sourceIdentifier": "" },
+    "oscIngress": { "enabled": false, "port": 9000 },
+    "oscEgress": { "enabled": false, "port": 9001 }
+  },
+  "soundDefinitions": [],
+  "graph": {
+    "nodes": [
+      {
+        "id": "terrain",
+        "typeId": "talas.waveTerrainOscillator",
+        "parameters": [
+          { "id": "reset", "expression": "!C175Reset" },
+          { "id": "frequency", "expression": "!C175Frequency" },
+          { "id": "xRadius", "expression": "!C175XRadius" },
+          { "id": "yRadius", "expression": "!C175YRadius" },
+          { "id": "yRatio", "expression": "!C175YRatio" },
+          { "id": "rotation", "expression": "!C175Rotation" },
+          { "id": "phaseOffset", "expression": "!C175PhaseOffset" },
+          { "id": "level", "expression": "!C175Level" },
+          { "id": "width", "expression": "8" },
+          { "id": "height", "expression": "8" },
+          { "id": "terrain", "resource": "Tables/C170Terrain" }
+        ]
+      },
+      { "id": "out", "typeId": "talas.audioOutput", "parameters": [] }
+    ],
+    "connections": [
+      { "fromNode": "terrain", "fromPort": "audioOut", "toNode": "out", "toPort": "audioIn" }
+    ]
+  }
+}

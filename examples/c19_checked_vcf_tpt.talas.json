@@ -1,0 +1,49 @@
+{
+  "format": "talas.project",
+  "version": 1,
+  "metadata": {
+    "title": "C19 Checked Four-Pole TPT VCF"
+  },
+  "graph": {
+    "nodes": [
+      {
+        "id": "source",
+        "typeId": "talas.oscillator",
+        "parameters": [
+          { "id": "frequency", "expression": "220 hz" },
+          { "id": "amplitude", "expression": "0.3" }
+        ]
+      },
+      {
+        "id": "vcf",
+        "typeId": "talas.vcf",
+        "parameters": [
+          { "id": "amplitude", "expression": "0.8" },
+          { "id": "cutoff", "expression": "1200 hz" },
+          { "id": "cutoffModulator", "expression": "0.25" },
+          { "id": "cutoffModRange", "expression": "800 hz" },
+          { "id": "resonance", "expression": "0.35" }
+        ]
+      },
+      {
+        "id": "out",
+        "typeId": "talas.audioOutput",
+        "parameters": []
+      }
+    ],
+    "connections": [
+      {
+        "fromNode": "source",
+        "fromPort": "audioOut",
+        "toNode": "vcf",
+        "toPort": "audioIn"
+      },
+      {
+        "fromNode": "vcf",
+        "fromPort": "audioOut",
+        "toNode": "out",
+        "toPort": "audioIn"
+      }
+    ]
+  }
+}

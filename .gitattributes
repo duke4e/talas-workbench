@@ -1,0 +1,17 @@
+# Generated evidence is compared byte-for-byte and must remain portable.
+docs/coverage/*.csv text eol=lf
+docs/coverage/*.json text eol=lf
+docs/coverage/*.md text eol=lf
+docs/help/builtin-node-reference.md text eol=lf
+docs/help/node-example-index.json text eol=lf
+src/core/*.generated.inc text eol=lf
+
+# Hash-verified example assets and governance inputs are compared
+# by their bytes, so a CRLF checkout must not rewrite them.
+examples/**/*.txt text eol=lf
+examples/**/*.json text eol=lf
+docs/governance/*.json text eol=lf
+# CDP8 program outputs the CDP ports are checked against.
+tests/cdp/fixtures/*.txt text eol=lf
+*.wav binary
+*.mid binary

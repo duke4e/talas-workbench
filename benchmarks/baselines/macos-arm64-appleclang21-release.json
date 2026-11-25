@@ -1,0 +1,529 @@
+{
+  "format": "talas.performance-budget",
+  "version": 1,
+  "environment": {
+    "platform": "macos",
+    "architecture": "arm64",
+    "compilerId": "AppleClang",
+    "compilerVersion": "21.0.0.21000101",
+    "buildType": "Release",
+    "preset": "core-bench-release",
+    "buildFingerprint": "c681086e0b7290067fcb6ec943fa76de94586e2beaaa93dcd2389a7c266b9dc9"
+  },
+  "campaign": {
+    "warmups": 8,
+    "samples": 1024,
+    "callbackSamples": 2048,
+    "sampleRate": 48000,
+    "blockFrames": 256,
+    "callbackDeadlineNs": 5333334,
+    "seed": 5131095609121850191
+  },
+  "minimumReports": 5,
+  "scenarios": {
+    "oscillator-small": {
+      "nodeCount": {
+        "mode": "exact",
+        "value": 2
+      },
+      "connectionCount": {
+        "mode": "exact",
+        "value": 1
+      },
+      "callbackDeadlineMissCount": {
+        "mode": "maximum",
+        "maximum": 0
+      },
+      "planStepCount": {
+        "mode": "exact",
+        "value": 2
+      },
+      "planBufferSlots": {
+        "mode": "exact",
+        "value": 1
+      },
+      "estimatedPreparedBytes": {
+        "mode": "exact",
+        "value": 2048
+      },
+      "compile.p50_ns": {
+        "mode": "timing",
+        "baseline": 18166,
+        "absoluteMax": 36332,
+        "relativeMax": 0.5,
+        "maxSpread": 0.3429
+      },
+      "compile.p95_ns": {
+        "mode": "timing",
+        "baseline": 18417,
+        "absoluteMax": 36834,
+        "relativeMax": 0.5,
+        "maxSpread": 0.449
+      },
+      "compile.p99_ns": {
+        "mode": "timing",
+        "baseline": 22166,
+        "absoluteMax": 44332,
+        "relativeMax": 1.0,
+        "maxSpread": 1.0
+      },
+      "compile.max_ns": {
+        "mode": "maximum",
+        "maximum": 129832
+      },
+      "prepare.p50_ns": {
+        "mode": "timing",
+        "baseline": 19709,
+        "absoluteMax": 39418,
+        "relativeMax": 0.5,
+        "maxSpread": 0.1718
+      },
+      "prepare.p95_ns": {
+        "mode": "timing",
+        "baseline": 20875,
+        "absoluteMax": 41750,
+        "relativeMax": 0.5,
+        "maxSpread": 0.2939
+      },
+      "prepare.p99_ns": {
+        "mode": "timing",
+        "baseline": 23250,
+        "absoluteMax": 46500,
+        "relativeMax": 1.0,
+        "maxSpread": 1.0
+      },
+      "prepare.max_ns": {
+        "mode": "maximum",
+        "maximum": 168500
+      },
+      "callback.p50_ns": {
+        "mode": "timing",
+        "baseline": 3458,
+        "absoluteMax": 6916,
+        "relativeMax": 0.5,
+        "maxSpread": 0.15
+      },
+      "callback.p95_ns": {
+        "mode": "timing",
+        "baseline": 3583,
+        "absoluteMax": 7166,
+        "relativeMax": 0.5,
+        "maxSpread": 0.15
+      },
+      "callback.p99_ns": {
+        "mode": "timing",
+        "baseline": 3625,
+        "absoluteMax": 7250,
+        "relativeMax": 1.0,
+        "maxSpread": 1.0
+      },
+      "callback.max_ns": {
+        "mode": "maximum",
+        "maximum": 58836
+      },
+      "graphAdoption.p50_ns": {
+        "mode": "timing",
+        "baseline": 3500,
+        "absoluteMax": 7000,
+        "relativeMax": 0.5,
+        "maxSpread": 0.15
+      },
+      "graphAdoption.p95_ns": {
+        "mode": "timing",
+        "baseline": 3625,
+        "absoluteMax": 7250,
+        "relativeMax": 0.5,
+        "maxSpread": 0.15
+      },
+      "graphAdoption.p99_ns": {
+        "mode": "timing",
+        "baseline": 3750,
+        "absoluteMax": 7500,
+        "relativeMax": 1.0,
+        "maxSpread": 1.0
+      },
+      "graphAdoption.max_ns": {
+        "mode": "maximum",
+        "maximum": 94000
+      }
+    },
+    "oscillator-chain": {
+      "nodeCount": {
+        "mode": "exact",
+        "value": 10
+      },
+      "connectionCount": {
+        "mode": "exact",
+        "value": 9
+      },
+      "callbackDeadlineMissCount": {
+        "mode": "maximum",
+        "maximum": 0
+      },
+      "planStepCount": {
+        "mode": "exact",
+        "value": 10
+      },
+      "planBufferSlots": {
+        "mode": "exact",
+        "value": 9
+      },
+      "estimatedPreparedBytes": {
+        "mode": "exact",
+        "value": 18432
+      },
+      "compile.p50_ns": {
+        "mode": "timing",
+        "baseline": 45875,
+        "absoluteMax": 91750,
+        "relativeMax": 0.5,
+        "maxSpread": 0.15
+      },
+      "compile.p95_ns": {
+        "mode": "timing",
+        "baseline": 47792,
+        "absoluteMax": 95584,
+        "relativeMax": 0.5,
+        "maxSpread": 0.1906
+      },
+      "compile.p99_ns": {
+        "mode": "timing",
+        "baseline": 52334,
+        "absoluteMax": 104668,
+        "relativeMax": 1.0,
+        "maxSpread": 1.0
+      },
+      "compile.max_ns": {
+        "mode": "maximum",
+        "maximum": 695336
+      },
+      "prepare.p50_ns": {
+        "mode": "timing",
+        "baseline": 27875,
+        "absoluteMax": 55750,
+        "relativeMax": 0.5,
+        "maxSpread": 0.15
+      },
+      "prepare.p95_ns": {
+        "mode": "timing",
+        "baseline": 31875,
+        "absoluteMax": 63750,
+        "relativeMax": 0.5,
+        "maxSpread": 0.2222
+      },
+      "prepare.p99_ns": {
+        "mode": "timing",
+        "baseline": 35166,
+        "absoluteMax": 70332,
+        "relativeMax": 1.0,
+        "maxSpread": 1.0
+      },
+      "prepare.max_ns": {
+        "mode": "maximum",
+        "maximum": 882332
+      },
+      "callback.p50_ns": {
+        "mode": "timing",
+        "baseline": 3833,
+        "absoluteMax": 7666,
+        "relativeMax": 0.5,
+        "maxSpread": 0.15
+      },
+      "callback.p95_ns": {
+        "mode": "timing",
+        "baseline": 3875,
+        "absoluteMax": 7750,
+        "relativeMax": 0.5,
+        "maxSpread": 0.1626
+      },
+      "callback.p99_ns": {
+        "mode": "timing",
+        "baseline": 3959,
+        "absoluteMax": 7918,
+        "relativeMax": 1.0,
+        "maxSpread": 1.0
+      },
+      "callback.max_ns": {
+        "mode": "maximum",
+        "maximum": 114000
+      },
+      "graphAdoption.p50_ns": {
+        "mode": "timing",
+        "baseline": 4042,
+        "absoluteMax": 8084,
+        "relativeMax": 0.5,
+        "maxSpread": 0.15
+      },
+      "graphAdoption.p95_ns": {
+        "mode": "timing",
+        "baseline": 4208,
+        "absoluteMax": 8416,
+        "relativeMax": 0.5,
+        "maxSpread": 0.15
+      },
+      "graphAdoption.p99_ns": {
+        "mode": "timing",
+        "baseline": 4292,
+        "absoluteMax": 8584,
+        "relativeMax": 1.0,
+        "maxSpread": 1.0
+      },
+      "graphAdoption.max_ns": {
+        "mode": "maximum",
+        "maximum": 77168
+      }
+    },
+    "spectral-roundtrip": {
+      "nodeCount": {
+        "mode": "exact",
+        "value": 4
+      },
+      "connectionCount": {
+        "mode": "exact",
+        "value": 3
+      },
+      "callbackDeadlineMissCount": {
+        "mode": "maximum",
+        "maximum": 0
+      },
+      "planStepCount": {
+        "mode": "exact",
+        "value": 4
+      },
+      "planBufferSlots": {
+        "mode": "exact",
+        "value": 3
+      },
+      "estimatedPreparedBytes": {
+        "mode": "exact",
+        "value": 13072
+      },
+      "compile.p50_ns": {
+        "mode": "timing",
+        "baseline": 41333,
+        "absoluteMax": 82666,
+        "relativeMax": 0.5,
+        "maxSpread": 0.15
+      },
+      "compile.p95_ns": {
+        "mode": "timing",
+        "baseline": 42791,
+        "absoluteMax": 85582,
+        "relativeMax": 0.5,
+        "maxSpread": 0.15
+      },
+      "compile.p99_ns": {
+        "mode": "timing",
+        "baseline": 44042,
+        "absoluteMax": 88084,
+        "relativeMax": 1.0,
+        "maxSpread": 1.0
+      },
+      "compile.max_ns": {
+        "mode": "maximum",
+        "maximum": 552000
+      },
+      "prepare.p50_ns": {
+        "mode": "timing",
+        "baseline": 23708,
+        "absoluteMax": 47416,
+        "relativeMax": 0.5,
+        "maxSpread": 0.15
+      },
+      "prepare.p95_ns": {
+        "mode": "timing",
+        "baseline": 24750,
+        "absoluteMax": 49500,
+        "relativeMax": 0.5,
+        "maxSpread": 0.15
+      },
+      "prepare.p99_ns": {
+        "mode": "timing",
+        "baseline": 25750,
+        "absoluteMax": 51500,
+        "relativeMax": 1.0,
+        "maxSpread": 1.0
+      },
+      "prepare.max_ns": {
+        "mode": "maximum",
+        "maximum": 165164
+      },
+      "callback.p50_ns": {
+        "mode": "timing",
+        "baseline": 22542,
+        "absoluteMax": 45084,
+        "relativeMax": 0.5,
+        "maxSpread": 0.1562
+      },
+      "callback.p95_ns": {
+        "mode": "timing",
+        "baseline": 23208,
+        "absoluteMax": 46416,
+        "relativeMax": 0.5,
+        "maxSpread": 0.1557
+      },
+      "callback.p99_ns": {
+        "mode": "timing",
+        "baseline": 23417,
+        "absoluteMax": 46834,
+        "relativeMax": 1.0,
+        "maxSpread": 1.0
+      },
+      "callback.max_ns": {
+        "mode": "maximum",
+        "maximum": 339000
+      },
+      "graphAdoption.p50_ns": {
+        "mode": "timing",
+        "baseline": 19084,
+        "absoluteMax": 38168,
+        "relativeMax": 0.5,
+        "maxSpread": 0.15
+      },
+      "graphAdoption.p95_ns": {
+        "mode": "timing",
+        "baseline": 19791,
+        "absoluteMax": 39582,
+        "relativeMax": 0.5,
+        "maxSpread": 0.15
+      },
+      "graphAdoption.p99_ns": {
+        "mode": "timing",
+        "baseline": 19917,
+        "absoluteMax": 39834,
+        "relativeMax": 1.0,
+        "maxSpread": 1.0
+      },
+      "graphAdoption.max_ns": {
+        "mode": "maximum",
+        "maximum": 185168
+      }
+    },
+    "event-control": {
+      "nodeCount": {
+        "mode": "exact",
+        "value": 3
+      },
+      "connectionCount": {
+        "mode": "exact",
+        "value": 2
+      },
+      "callbackDeadlineMissCount": {
+        "mode": "maximum",
+        "maximum": 0
+      },
+      "planStepCount": {
+        "mode": "exact",
+        "value": 3
+      },
+      "planBufferSlots": {
+        "mode": "exact",
+        "value": 2
+      },
+      "estimatedPreparedBytes": {
+        "mode": "exact",
+        "value": 4096
+      },
+      "compile.p50_ns": {
+        "mode": "timing",
+        "baseline": 22833,
+        "absoluteMax": 45666,
+        "relativeMax": 0.5,
+        "maxSpread": 0.15
+      },
+      "compile.p95_ns": {
+        "mode": "timing",
+        "baseline": 23750,
+        "absoluteMax": 47500,
+        "relativeMax": 0.5,
+        "maxSpread": 0.15
+      },
+      "compile.p99_ns": {
+        "mode": "timing",
+        "baseline": 24208,
+        "absoluteMax": 48416,
+        "relativeMax": 1.0,
+        "maxSpread": 1.0
+      },
+      "compile.max_ns": {
+        "mode": "maximum",
+        "maximum": 236500
+      },
+      "prepare.p50_ns": {
+        "mode": "timing",
+        "baseline": 20916,
+        "absoluteMax": 41832,
+        "relativeMax": 0.5,
+        "maxSpread": 0.15
+      },
+      "prepare.p95_ns": {
+        "mode": "timing",
+        "baseline": 22375,
+        "absoluteMax": 44750,
+        "relativeMax": 0.5,
+        "maxSpread": 0.1854
+      },
+      "prepare.p99_ns": {
+        "mode": "timing",
+        "baseline": 23792,
+        "absoluteMax": 47584,
+        "relativeMax": 1.0,
+        "maxSpread": 1.0
+      },
+      "prepare.max_ns": {
+        "mode": "maximum",
+        "maximum": 399332
+      },
+      "callback.p50_ns": {
+        "mode": "timing",
+        "baseline": 3541,
+        "absoluteMax": 7082,
+        "relativeMax": 0.5,
+        "maxSpread": 0.15
+      },
+      "callback.p95_ns": {
+        "mode": "timing",
+        "baseline": 3667,
+        "absoluteMax": 7334,
+        "relativeMax": 0.5,
+        "maxSpread": 0.15
+      },
+      "callback.p99_ns": {
+        "mode": "timing",
+        "baseline": 3708,
+        "absoluteMax": 7416,
+        "relativeMax": 1.0,
+        "maxSpread": 1.0
+      },
+      "callback.max_ns": {
+        "mode": "maximum",
+        "maximum": 54168
+      },
+      "graphAdoption.p50_ns": {
+        "mode": "timing",
+        "baseline": 3583,
+        "absoluteMax": 7166,
+        "relativeMax": 0.5,
+        "maxSpread": 0.15
+      },
+      "graphAdoption.p95_ns": {
+        "mode": "timing",
+        "baseline": 3667,
+        "absoluteMax": 7334,
+        "relativeMax": 0.5,
+        "maxSpread": 0.15
+      },
+      "graphAdoption.p99_ns": {
+        "mode": "timing",
+        "baseline": 3750,
+        "absoluteMax": 7500,
+        "relativeMax": 1.0,
+        "maxSpread": 1.0
+      },
+      "graphAdoption.max_ns": {
+        "mode": "maximum",
+        "maximum": 94000
+      }
+    }
+  }
+}

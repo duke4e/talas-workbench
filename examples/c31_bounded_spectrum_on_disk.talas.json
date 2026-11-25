@@ -1,0 +1,155 @@
+{
+  "format": "talas.project",
+  "version": 35,
+  "expressionLanguage": "legacyV1",
+  "expressionDefinitions": [],
+  "variableLibrary": {
+    "version": 2,
+    "variables": []
+  },
+  "soundVariableLibrary": {
+    "version": 1,
+    "variables": []
+  },
+  "generatorLibrary": {
+    "version": 2,
+    "programs": []
+  },
+  "liveSetLibrary": {
+    "version": 1,
+    "liveSets": [],
+    "tools": []
+  },
+  "metadata": {
+    "title": "Bounded Spectrum On Disk"
+  },
+  "presentation": {
+    "version": 2,
+    "structureLayouts": [
+      {
+        "scope": { "kind": "project" },
+        "nodes": [
+          { "nodeId": "source", "x": 80, "y": 170 },
+          { "nodeId": "bank", "x": 360, "y": 170 },
+          { "nodeId": "out", "x": 640, "y": 170 }
+        ]
+      }
+    ],
+    "performanceControls": [],
+    "performanceMeters": []
+  },
+  "snapshotLibrary": {
+    "version": 1,
+    "banks": []
+  },
+  "sampleMapLibrary": {
+    "version": 1,
+    "maps": []
+  },
+  "assets": [
+    {
+      "id": "Analysis/C31",
+      "kind": "table",
+      "path": "resources/c31-spectrum-frame.txt",
+      "disposition": "referenced",
+      "contentHash": "a219cf0b589a975025d40f529bf460c82540475f48524632ca18ed34104f7691",
+      "channelCount": 0,
+      "sampleRate": 0,
+      "frameCount": 0,
+      "encoding": "",
+      "generation": 1,
+      "provenance": "Repository-original C31 static Spectrum analysis frame"
+    }
+  ],
+  "partialTrackEdits": [],
+  "timeline": {
+    "loop": {
+      "enabled": false,
+      "startSeconds": 0,
+      "endSeconds": 4
+    },
+    "musicalTime": {
+      "ticksPerQuarter": 960,
+      "tempo": [
+        { "tick": 0, "microsecondsPerQuarter": 500000 }
+      ],
+      "meter": [
+        { "tick": 0, "numerator": 4, "denominator": 4 }
+      ]
+    },
+    "score": {
+      "tracks": [],
+      "clips": [],
+      "automation": [],
+      "markers": []
+    },
+    "eventValues": []
+  },
+  "deviceSettings": {
+    "configured": false,
+    "audioInputDevice": "",
+    "audioOutputDevice": "",
+    "sampleRate": 0,
+    "bufferSize": 0,
+    "inputChannels": [],
+    "outputChannels": [],
+    "midiInputDevices": [],
+    "transportSync": {
+      "sourceMode": "internal",
+      "sourceIdentifier": ""
+    },
+    "oscIngress": {
+      "enabled": false,
+      "port": 9000
+    },
+    "oscEgress": {
+      "enabled": false,
+      "port": 9001
+    }
+  },
+  "soundDefinitions": [],
+  "graph": {
+    "nodes": [
+      {
+        "id": "source",
+        "typeId": "talas.spectrumOnDisk",
+        "parameters": [
+          { "id": "frequency", "expression": "110 hz" },
+          { "id": "level", "expression": "1" },
+          { "id": "rateScale", "expression": "1" },
+          { "id": "fileName", "resource": "Analysis/C31" },
+          { "id": "nbrPartials", "expression": "3" },
+          { "id": "firstPartial", "expression": "1" }
+        ]
+      },
+      {
+        "id": "bank",
+        "typeId": "talas.oscillatorBank",
+        "parameters": [
+          { "id": "nbrOscillators", "expression": "3" },
+          { "id": "bankSize", "expression": "2" },
+          { "id": "wavetable", "resource": "" }
+        ]
+      },
+      {
+        "id": "out",
+        "typeId": "talas.audioOutput",
+        "parameters": []
+      }
+    ],
+    "connections": [
+      {
+        "fromNode": "source",
+        "fromPort": "spectrumOut",
+        "toNode": "bank",
+        "toPort": "spectrum"
+      },
+      {
+        "fromNode": "bank",
+        "fromPort": "audioOut",
+        "toNode": "out",
+        "toPort": "audioIn"
+      }
+    ]
+  }
+}

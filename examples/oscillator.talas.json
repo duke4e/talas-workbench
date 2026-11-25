@@ -1,0 +1,38 @@
+{
+  "format": "talas.project",
+  "version": 1,
+  "metadata": {
+    "title": "Oscillator Example"
+  },
+  "graph": {
+    "nodes": [
+      {
+        "id": "out",
+        "typeId": "talas.audioOutput",
+        "parameters": []
+      },
+      {
+        "id": "osc",
+        "typeId": "talas.oscillator",
+        "parameters": [
+          {
+            "id": "frequency",
+            "expression": "1 hz"
+          },
+          {
+            "id": "amplitude",
+            "expression": "1.0"
+          }
+        ]
+      }
+    ],
+    "connections": [
+      {
+        "fromNode": "osc",
+        "fromPort": "audioOut",
+        "toNode": "out",
+        "toPort": "audioIn"
+      }
+    ]
+  }
+}

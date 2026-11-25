@@ -1,0 +1,137 @@
+{
+  "format": "talas.project",
+  "version": 35,
+  "expressionLanguage": "variablesV2",
+  "expressionDefinitions": [],
+  "variableLibrary": { "version": 2, "variables": [] },
+  "soundVariableLibrary": { "version": 1, "variables": [] },
+  "generatorLibrary": { "version": 2, "programs": [] },
+  "liveSetLibrary": { "version": 1, "liveSets": [], "tools": [] },
+  "metadata": { "title": "Running Min Reset Baseline" },
+  "presentation": {
+    "version": 2,
+    "structureLayouts": [
+      {
+        "scope": { "kind": "project" },
+        "nodes": [
+          { "nodeId": "carrier", "x": 80, "y": 80 },
+          { "nodeId": "input", "x": 80, "y": 220 },
+          { "nodeId": "baselineRamp", "x": 80, "y": 340 },
+          { "nodeId": "resetRamp", "x": 80, "y": 460 },
+          { "nodeId": "resetPoint", "x": 300, "y": 540 },
+          { "nodeId": "resetPulse", "x": 500, "y": 460 },
+          { "nodeId": "running", "x": 700, "y": 300 },
+          { "nodeId": "vca", "x": 900, "y": 160 },
+          { "nodeId": "out", "x": 1080, "y": 160 }
+        ]
+      }
+    ],
+    "performanceControls": [],
+    "performanceMeters": []
+  },
+  "snapshotLibrary": { "version": 1, "banks": [] },
+  "sampleMapLibrary": { "version": 1, "maps": [] },
+  "assets": [],
+  "partialTrackEdits": [],
+  "timeline": {
+    "loop": { "enabled": false, "startSeconds": 0, "endSeconds": 1 },
+    "musicalTime": {
+      "ticksPerQuarter": 960,
+      "tempo": [{ "tick": 0, "microsecondsPerQuarter": 500000 }],
+      "meter": [{ "tick": 0, "numerator": 4, "denominator": 4 }]
+    },
+    "score": { "tracks": [], "clips": [], "automation": [], "markers": [] },
+    "eventValues": []
+  },
+  "deviceSettings": {
+    "configured": false,
+    "audioInputDevice": "",
+    "audioOutputDevice": "",
+    "sampleRate": 0,
+    "bufferSize": 0,
+    "inputChannels": [],
+    "outputChannels": [],
+    "midiInputDevices": [],
+    "transportSync": { "sourceMode": "internal", "sourceIdentifier": "" },
+    "oscIngress": { "enabled": false, "port": 9000 },
+    "oscEgress": { "enabled": false, "port": 9001 }
+  },
+  "soundDefinitions": [],
+  "graph": {
+    "nodes": [
+      {
+        "id": "carrier",
+        "typeId": "talas.oscillator",
+        "parameters": [
+          { "id": "frequency", "expression": "1 hz" },
+          { "id": "amplitude", "expression": "0.25" }
+        ]
+      },
+      {
+        "id": "input",
+        "typeId": "talas.lfo",
+        "parameters": [
+          { "id": "frequency", "expression": "1 hz" },
+          { "id": "minimum", "expression": "-1" },
+          { "id": "maximum", "expression": "1" }
+        ]
+      },
+      {
+        "id": "baselineRamp",
+        "typeId": "talas.linearRamp",
+        "parameters": [
+          { "id": "duration", "expression": "1 s" },
+          { "id": "start", "expression": "0.75" },
+          { "id": "end", "expression": "-0.25" }
+        ]
+      },
+      {
+        "id": "resetRamp",
+        "typeId": "talas.linearRamp",
+        "parameters": [
+          { "id": "duration", "expression": "1 s" },
+          { "id": "start", "expression": "0" },
+          { "id": "end", "expression": "1" }
+        ]
+      },
+      {
+        "id": "resetPoint",
+        "typeId": "talas.constant",
+        "parameters": [{ "id": "value", "expression": "0.25" }]
+      },
+      {
+        "id": "resetPulse",
+        "typeId": "talas.equality",
+        "parameters": []
+      },
+      {
+        "id": "running",
+        "typeId": "talas.runningMin",
+        "parameters": [
+          { "id": "reset", "expression": "-1" },
+          { "id": "maximumAmplitude", "expression": "-0.75" }
+        ]
+      },
+      {
+        "id": "vca",
+        "typeId": "talas.vca",
+        "parameters": []
+      },
+      {
+        "id": "out",
+        "typeId": "talas.audioOutput",
+        "parameters": []
+      }
+    ],
+    "connections": [
+      { "fromNode": "input", "fromPort": "value", "toNode": "running", "toPort": "value" },
+      { "fromNode": "baselineRamp", "fromPort": "value", "toNode": "running", "toPort": "maximumAmplitude" },
+      { "fromNode": "resetRamp", "fromPort": "value", "toNode": "resetPulse", "toPort": "left" },
+      { "fromNode": "resetPoint", "fromPort": "value", "toNode": "resetPulse", "toPort": "right" },
+      { "fromNode": "resetPulse", "fromPort": "value", "toNode": "running", "toPort": "reset" },
+      { "fromNode": "carrier", "fromPort": "audioOut", "toNode": "vca", "toPort": "audioIn" },
+      { "fromNode": "running", "fromPort": "value", "toNode": "vca", "toPort": "gain" },
+      { "fromNode": "vca", "fromPort": "audioOut", "toNode": "out", "toPort": "audioIn" }
+    ]
+  }
+}

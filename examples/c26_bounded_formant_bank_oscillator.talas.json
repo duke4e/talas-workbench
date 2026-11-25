@@ -1,0 +1,69 @@
+{
+  "format": "talas.project",
+  "version": 1,
+  "metadata": {
+    "title": "C26 Bounded Formant Bank Oscillator"
+  },
+  "graph": {
+    "nodes": [
+      {
+        "id": "spectrum",
+        "typeId": "talas.syntheticSpectrumFromArray",
+        "parameters": [
+          { "id": "nbrPartials", "expression": "4" },
+          { "id": "logScale", "boolean": false },
+          { "id": "sendBandwidths", "boolean": true },
+          { "id": "envelope", "expression": "1" },
+          { "id": "amplitudes", "text": "0.05 0.35 0.2 0.1" },
+          { "id": "frequencies", "text": "250 500 1100 2200" },
+          { "id": "bandwidths", "text": "100 100 150 200" }
+        ]
+      },
+      {
+        "id": "cascade",
+        "typeId": "talas.oscillator",
+        "parameters": [
+          { "id": "frequency", "expression": "55 hz" },
+          { "id": "amplitude", "expression": "0.08" }
+        ]
+      },
+      {
+        "id": "bank",
+        "typeId": "talas.formantBankOscillator",
+        "parameters": [
+          { "id": "frequency", "expression": "110 hz" },
+          { "id": "firstFormant", "expression": "2" },
+          { "id": "nbrFormants", "expression": "3" },
+          { "id": "formantImpulse", "resource": "" },
+          { "id": "nbrImpulses", "expression": "2" },
+          { "id": "allowFormantAtDC", "boolean": false }
+        ]
+      },
+      {
+        "id": "out",
+        "typeId": "talas.audioOutput",
+        "parameters": []
+      }
+    ],
+    "connections": [
+      {
+        "fromNode": "spectrum",
+        "fromPort": "spectrumOut",
+        "toNode": "bank",
+        "toPort": "spectrum"
+      },
+      {
+        "fromNode": "cascade",
+        "fromPort": "audioOut",
+        "toNode": "bank",
+        "toPort": "cascadeInput"
+      },
+      {
+        "fromNode": "bank",
+        "fromPort": "audioOut",
+        "toNode": "out",
+        "toPort": "audioIn"
+      }
+    ]
+  }
+}

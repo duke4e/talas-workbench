@@ -1,0 +1,52 @@
+{
+  "format": "talas.project",
+  "version": 13,
+  "metadata": {
+    "title": ""
+  },
+  "presentation": {
+    "version": 1,
+    "structureLayouts": [
+      {
+        "scope": {
+          "kind": "project"
+        },
+        "nodes": []
+      }
+    ],
+    "performanceControls": []
+  },
+  "snapshotLibrary": {
+    "version": 1,
+    "banks": []
+  },
+  "sampleMapLibrary": {
+    "version": 1,
+    "maps": []
+  },
+  "virtualControls": [],
+  "assets": [],
+  "timeline": {
+    "loop": {
+      "enabled": false,
+      "startSeconds": 0,
+      "endSeconds": 4
+    },
+    "eventValues": []
+  },
+  "deviceSettings": {
+    "configured": false,
+    "audioInputDevice": "",
+    "audioOutputDevice": "",
+    "sampleRate": 0,
+    "bufferSize": 0,
+    "inputChannels": [],
+    "outputChannels": [],
+    "midiInputDevices": []
+  },
+  "soundDefinitions": [],
+  "graph": {
+    "nodes": [],
+    "connections": []
+  }
+}

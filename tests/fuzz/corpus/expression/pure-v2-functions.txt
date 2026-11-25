@@ -1,0 +1,1 @@
+map(clamp(!Fader, 0, 1), 0, 1, 100 hz, 200 hz)

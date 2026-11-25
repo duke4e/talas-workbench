@@ -1,0 +1,337 @@
+{
+  "format": "talas.project",
+  "version": 43,
+  "expressionLanguage": "legacyV1",
+  "expressionDefinitions": [],
+  "variableLibrary": {
+    "version": 2,
+    "variables": []
+  },
+  "soundVariableLibrary": {
+    "version": 1,
+    "variables": []
+  },
+  "generatorLibrary": {
+    "version": 2,
+    "programs": []
+  },
+  "liveSetLibrary": {
+    "version": 1,
+    "liveSets": [],
+    "tools": []
+  },
+  "metadata": {
+    "title": "Bounded Synthetic Spectrum From Sounds"
+  },
+  "presentation": {
+    "version": 2,
+    "structureLayouts": [
+      {
+        "scope": {
+          "kind": "project"
+        },
+        "nodes": [
+          {
+            "nodeId": "amplitudeWave",
+            "x": 0,
+            "y": 0
+          },
+          {
+            "nodeId": "amplitudes",
+            "x": 0,
+            "y": 0
+          },
+          {
+            "nodeId": "frequencyWave",
+            "x": 0,
+            "y": 0
+          },
+          {
+            "nodeId": "frequencyMagnitude",
+            "x": 0,
+            "y": 0
+          },
+          {
+            "nodeId": "frequencies",
+            "x": 0,
+            "y": 0
+          },
+          {
+            "nodeId": "spectrum",
+            "x": 0,
+            "y": 0
+          },
+          {
+            "nodeId": "bank",
+            "x": 0,
+            "y": 0
+          },
+          {
+            "nodeId": "out",
+            "x": 0,
+            "y": 0
+          },
+          {
+            "nodeId": "vca1",
+            "x": -200,
+            "y": -60
+          },
+          {
+            "nodeId": "vca2",
+            "x": -200,
+            "y": 60
+          }
+        ]
+      }
+    ],
+    "performanceControls": [],
+    "performanceMeters": []
+  },
+  "snapshotLibrary": {
+    "version": 1,
+    "banks": []
+  },
+  "sampleMapLibrary": {
+    "version": 1,
+    "maps": []
+  },
+  "virtualControls": [],
+  "assets": [],
+  "partialTrackEdits": [],
+  "timeline": {
+    "loop": {
+      "enabled": false,
+      "startSeconds": 0,
+      "endSeconds": 4
+    },
+    "musicalTime": {
+      "ticksPerQuarter": 960,
+      "tempo": [
+        {
+          "tick": 0,
+          "microsecondsPerQuarter": 500000
+        }
+      ],
+      "meter": [
+        {
+          "tick": 0,
+          "numerator": 4,
+          "denominator": 4
+        }
+      ]
+    },
+    "score": {
+      "tracks": [
+      ],
+      "clips": [
+      ],
+      "automation": [
+      ],
+      "markers": [
+      ]
+    },
+    "eventValues": []
+  },
+  "deviceSettings": {
+    "configured": false,
+    "audioInputDevice": "",
+    "audioOutputDevice": "",
+    "sampleRate": 0,
+    "bufferSize": 0,
+    "inputChannels": [],
+    "outputChannels": [],
+    "midiInputDevices": [],
+    "transportSync": {
+      "sourceMode": "internal",
+      "sourceIdentifier": ""
+    },
+    "oscIngress": {
+      "enabled": false,
+      "port": 9000
+    },
+    "oscEgress": {
+      "enabled": false,
+      "port": 9001
+    }
+  },
+  "soundDefinitions": [],
+  "graph": {
+    "nodes": [
+      {
+        "id": "amplitudeWave",
+        "typeId": "talas.oscillator",
+        "parameters": [
+          {
+            "id": "frequency",
+            "expression": "220 hz"
+          },
+          {
+            "id": "amplitude",
+            "expression": "0.5"
+          }
+        ]
+      },
+      {
+        "id": "amplitudes",
+        "typeId": "talas.sqrtMagnitude",
+        "parameters": []
+      },
+      {
+        "id": "frequencyWave",
+        "typeId": "talas.oscillator",
+        "parameters": [
+          {
+            "id": "frequency",
+            "expression": "440 hz"
+          },
+          {
+            "id": "amplitude",
+            "expression": "1"
+          }
+        ]
+      },
+      {
+        "id": "frequencyMagnitude",
+        "typeId": "talas.sqrtMagnitude",
+        "parameters": []
+      },
+      {
+        "id": "frequencies",
+        "typeId": "talas.mixerV2",
+        "parameters": [
+          {
+            "id": "left",
+            "expression": "1.0"
+          },
+          {
+            "id": "right",
+            "expression": "1.0"
+          }
+        ]
+      },
+      {
+        "id": "spectrum",
+        "typeId": "talas.syntheticSpectrumFromSounds",
+        "parameters": [
+          {
+            "id": "nbrPartials",
+            "expression": "4"
+          },
+          {
+            "id": "logScale",
+            "boolean": false
+          },
+          {
+            "id": "includesBandwidths",
+            "boolean": false
+          }
+        ]
+      },
+      {
+        "id": "bank",
+        "typeId": "talas.oscillatorBank",
+        "parameters": [
+          {
+            "id": "nbrOscillators",
+            "expression": "4"
+          },
+          {
+            "id": "bankSize",
+            "expression": "4096"
+          },
+          {
+            "id": "wavetable",
+            "resource": ""
+          }
+        ]
+      },
+      {
+        "id": "out",
+        "typeId": "talas.audioOutput",
+        "parameters": []
+      },
+      {
+        "id": "vca1",
+        "typeId": "talas.vca",
+        "parameters": [
+          {
+            "id": "gain",
+            "expression": "880"
+          }
+        ]
+      },
+      {
+        "id": "vca2",
+        "typeId": "talas.vca",
+        "parameters": [
+          {
+            "id": "gain",
+            "expression": "0"
+          }
+        ]
+      }
+    ],
+    "connections": [
+      {
+        "fromNode": "amplitudeWave",
+        "fromPort": "audioOut",
+        "toNode": "amplitudes",
+        "toPort": "audioIn"
+      },
+      {
+        "fromNode": "frequencyWave",
+        "fromPort": "audioOut",
+        "toNode": "frequencyMagnitude",
+        "toPort": "audioIn"
+      },
+      {
+        "fromNode": "frequencyMagnitude",
+        "fromPort": "audioOut",
+        "toNode": "vca1",
+        "toPort": "audioIn"
+      },
+      {
+        "fromNode": "frequencyMagnitude",
+        "fromPort": "audioOut",
+        "toNode": "vca2",
+        "toPort": "audioIn"
+      },
+      {
+        "fromNode": "amplitudes",
+        "fromPort": "audioOut",
+        "toNode": "spectrum",
+        "toPort": "amplitudes"
+      },
+      {
+        "fromNode": "frequencies",
+        "fromPort": "leftOut",
+        "toNode": "spectrum",
+        "toPort": "frequenciesAndBandwidths"
+      },
+      {
+        "fromNode": "spectrum",
+        "fromPort": "spectrumOut",
+        "toNode": "bank",
+        "toPort": "spectrum"
+      },
+      {
+        "fromNode": "bank",
+        "fromPort": "audioOut",
+        "toNode": "out",
+        "toPort": "audioIn"
+      },
+      {
+        "fromNode": "vca1",
+        "fromPort": "audioOut",
+        "toNode": "frequencies",
+        "toPort": "inputs"
+      },
+      {
+        "fromNode": "vca2",
+        "fromPort": "audioOut",
+        "toNode": "frequencies",
+        "toPort": "inputs"
+      }
+    ]
+  }
+}

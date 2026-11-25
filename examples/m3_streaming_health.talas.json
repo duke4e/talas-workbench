@@ -1,0 +1,117 @@
+{
+  "format": "talas.project",
+  "version": 10,
+  "metadata": {
+    "title": "M3 Immutable Streaming Health"
+  },
+  "virtualControls": [],
+  "assets": [
+    {
+      "id": "Audio/M3Stream",
+      "kind": "audio",
+      "path": "resources/m3-stream-source.wav",
+      "disposition": "referenced",
+      "contentHash": "db335f904b35a742ab63a0fd1cb0a81a79c169d3855ef0623e54c731eff00d89",
+      "channelCount": 1,
+      "sampleRate": 8192,
+      "frameCount": 2048,
+      "encoding": "pcm16-wav",
+      "generation": 1,
+      "provenance": "Original Talas oscillator render for the M3 streaming demonstrator"
+    }
+  ],
+  "timeline": {
+    "loop": {
+      "enabled": false,
+      "startSeconds": 0,
+      "endSeconds": 4
+    },
+    "eventValues": []
+  },
+  "deviceSettings": {
+    "configured": false,
+    "audioInputDevice": "",
+    "audioOutputDevice": "",
+    "sampleRate": 0,
+    "bufferSize": 0,
+    "inputChannels": [],
+    "outputChannels": [],
+    "midiInputDevices": []
+  },
+  "soundDefinitions": [],
+  "graph": {
+    "nodes": [
+      {
+        "id": "player",
+        "typeId": "talas.diskPlayer",
+        "position": {
+          "x": 80,
+          "y": 170
+        },
+        "parameters": [
+          {
+            "id": "fileName",
+            "resource": "Audio/M3Stream"
+          },
+          {
+            "id": "filePosition",
+            "expression": "0 s"
+          },
+          {
+            "id": "duration",
+            "expression": "0.25 s"
+          },
+          {
+            "id": "rateScale",
+            "expression": "1"
+          },
+          {
+            "id": "trigger",
+            "expression": "1"
+          }
+        ]
+      },
+      {
+        "id": "cache",
+        "typeId": "talas.diskCache",
+        "position": {
+          "x": 380,
+          "y": 170
+        },
+        "parameters": [
+          {
+            "id": "fileName",
+            "resource": "Audio/M3Stream"
+          },
+          {
+            "id": "record",
+            "boolean": false
+          }
+        ]
+      },
+      {
+        "id": "out",
+        "typeId": "talas.audioOutput",
+        "position": {
+          "x": 680,
+          "y": 170
+        },
+        "parameters": []
+      }
+    ],
+    "connections": [
+      {
+        "fromNode": "player",
+        "fromPort": "audioOut",
+        "toNode": "cache",
+        "toPort": "audioIn"
+      },
+      {
+        "fromNode": "cache",
+        "fromPort": "audioOut",
+        "toNode": "out",
+        "toPort": "audioIn"
+      }
+    ]
+  }
+}

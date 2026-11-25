@@ -1,0 +1,126 @@
+{
+  "format": "talas.project",
+  "version": 35,
+  "expressionLanguage": "variablesV2",
+  "expressionDefinitions": [],
+  "variableLibrary": { "version": 2, "variables": [] },
+  "soundVariableLibrary": { "version": 1, "variables": [] },
+  "generatorLibrary": { "version": 2, "programs": [] },
+  "liveSetLibrary": { "version": 1, "liveSets": [], "tools": [] },
+  "metadata": { "title": "Crossfade Checked Finite Live Controls" },
+  "presentation": {
+    "version": 2,
+    "structureLayouts": [
+      {
+        "scope": { "kind": "project" },
+        "nodes": [
+          { "nodeId": "firstCarrier", "x": 40, "y": 100 },
+          { "nodeId": "secondCarrier", "x": 40, "y": 200 },
+          { "nodeId": "panControl", "x": 40, "y": 330 },
+          { "nodeId": "scaleControl", "x": 40, "y": 430 },
+          { "nodeId": "fadeControl", "x": 40, "y": 530 },
+          { "nodeId": "crossfade", "x": 380, "y": 260 },
+          { "nodeId": "out", "x": 700, "y": 260 }
+        ]
+      }
+    ],
+    "performanceControls": [],
+    "performanceMeters": []
+  },
+  "snapshotLibrary": { "version": 1, "banks": [] },
+  "sampleMapLibrary": { "version": 1, "maps": [] },
+  "assets": [],
+  "partialTrackEdits": [],
+  "timeline": {
+    "loop": { "enabled": false, "startSeconds": 0, "endSeconds": 0.125 },
+    "musicalTime": {
+      "ticksPerQuarter": 960,
+      "tempo": [{ "tick": 0, "microsecondsPerQuarter": 500000 }],
+      "meter": [{ "tick": 0, "numerator": 4, "denominator": 4 }]
+    },
+    "score": { "tracks": [], "clips": [], "automation": [], "markers": [] },
+    "eventValues": [
+      { "timeSeconds": 0, "eventName": "C135Pan", "domain": "scalar", "value": 0, "interpolation": "step" },
+      { "timeSeconds": 0, "eventName": "C135Scale", "domain": "scalar", "value": 0.25, "interpolation": "step" },
+      { "timeSeconds": 0, "eventName": "C135Fade", "domain": "scalar", "value": 0, "interpolation": "step" },
+      { "timeSeconds": 0.03125, "eventName": "C135Pan", "domain": "scalar", "value": 0.5, "interpolation": "step" },
+      { "timeSeconds": 0.03125, "eventName": "C135Scale", "domain": "scalar", "value": 0.5, "interpolation": "step" },
+      { "timeSeconds": 0.03125, "eventName": "C135Fade", "domain": "scalar", "value": 0.3333333333333333, "interpolation": "step" },
+      { "timeSeconds": 0.0625, "eventName": "C135Pan", "domain": "scalar", "value": 1, "interpolation": "step" },
+      { "timeSeconds": 0.0625, "eventName": "C135Scale", "domain": "scalar", "value": 0.75, "interpolation": "step" },
+      { "timeSeconds": 0.0625, "eventName": "C135Fade", "domain": "scalar", "value": 1, "interpolation": "step" },
+      { "timeSeconds": 0.09375, "eventName": "C135Pan", "domain": "scalar", "value": 0.25, "interpolation": "step" },
+      { "timeSeconds": 0.09375, "eventName": "C135Scale", "domain": "scalar", "value": 1, "interpolation": "step" },
+      { "timeSeconds": 0.09375, "eventName": "C135Fade", "domain": "scalar", "value": 0.6666666666666666, "interpolation": "step" }
+    ]
+  },
+  "deviceSettings": {
+    "configured": false,
+    "audioInputDevice": "",
+    "audioOutputDevice": "",
+    "sampleRate": 0,
+    "bufferSize": 0,
+    "inputChannels": [],
+    "outputChannels": [],
+    "midiInputDevices": [],
+    "transportSync": { "sourceMode": "internal", "sourceIdentifier": "" },
+    "oscIngress": { "enabled": false, "port": 9000 },
+    "oscEgress": { "enabled": false, "port": 9001 }
+  },
+  "soundDefinitions": [],
+  "graph": {
+    "nodes": [
+      {
+        "id": "firstCarrier",
+        "typeId": "talas.oscillator",
+        "parameters": [
+          { "id": "frequency", "expression": "64 hz" },
+          { "id": "amplitude", "expression": "0.3" }
+        ]
+      },
+      {
+        "id": "secondCarrier",
+        "typeId": "talas.oscillator",
+        "parameters": [
+          { "id": "frequency", "expression": "96 hz" },
+          { "id": "amplitude", "expression": "0.2" }
+        ]
+      },
+      {
+        "id": "panControl",
+        "typeId": "talas.constant",
+        "parameters": [{ "id": "value", "expression": "!C135Pan" }]
+      },
+      {
+        "id": "scaleControl",
+        "typeId": "talas.constant",
+        "parameters": [{ "id": "value", "expression": "!C135Scale" }]
+      },
+      {
+        "id": "fadeControl",
+        "typeId": "talas.constant",
+        "parameters": [{ "id": "value", "expression": "!C135Fade" }]
+      },
+      {
+        "id": "crossfade",
+        "typeId": "talas.crossfade",
+        "parameters": [
+          { "id": "pan", "expression": "0" },
+          { "id": "scale", "expression": "1" },
+          { "id": "fade", "expression": "0" },
+          { "id": "type", "choice": "power" }
+        ]
+      },
+      { "id": "out", "typeId": "talas.audioOutput", "parameters": [] }
+    ],
+    "connections": [
+      { "fromNode": "firstCarrier", "fromPort": "audioOut", "toNode": "crossfade", "toPort": "snd1" },
+      { "fromNode": "secondCarrier", "fromPort": "audioOut", "toNode": "crossfade", "toPort": "snd2" },
+      { "fromNode": "panControl", "fromPort": "value", "toNode": "crossfade", "toPort": "pan" },
+      { "fromNode": "scaleControl", "fromPort": "value", "toNode": "crossfade", "toPort": "scale" },
+      { "fromNode": "fadeControl", "fromPort": "value", "toNode": "crossfade", "toPort": "fade" },
+      { "fromNode": "crossfade", "fromPort": "leftOut", "toNode": "out", "toPort": "audioIn" },
+      { "fromNode": "crossfade", "fromPort": "rightOut", "toNode": "out", "toPort": "rightIn" }
+    ]
+  }
+}

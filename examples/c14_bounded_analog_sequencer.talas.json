@@ -1,0 +1,136 @@
+{
+  "format": "talas.project",
+  "version": 1,
+  "metadata": {
+    "title": "C14 Bounded Analog Sequencer"
+  },
+  "graph": {
+    "nodes": [
+      {
+        "id": "source",
+        "typeId": "talas.oscillator",
+        "parameters": [
+          {
+            "id": "frequency",
+            "expression": "220 hz"
+          },
+          {
+            "id": "amplitude",
+            "expression": "0.35"
+          }
+        ]
+      },
+      {
+        "id": "rateMotion",
+        "typeId": "talas.lfo",
+        "parameters": [
+          {
+            "id": "frequency",
+            "expression": "0.5 hz"
+          },
+          {
+            "id": "minimum",
+            "expression": "0.75"
+          },
+          {
+            "id": "maximum",
+            "expression": "1.25"
+          }
+        ]
+      },
+      {
+        "id": "sequence",
+        "typeId": "talas.analogSequencer",
+        "parameters": [
+          {
+            "id": "left",
+            "expression": "0.8"
+          },
+          {
+            "id": "right",
+            "expression": "-0.35"
+          },
+          {
+            "id": "gate",
+            "expression": "1"
+          },
+          {
+            "id": "step",
+            "expression": "0"
+          },
+          {
+            "id": "rate",
+            "expression": "1"
+          },
+          {
+            "id": "loop",
+            "boolean": true
+          },
+          {
+            "id": "startIndex",
+            "expression": "1"
+          },
+          {
+            "id": "endIndex",
+            "expression": "4"
+          },
+          {
+            "id": "polyphony",
+            "expression": "1"
+          },
+          {
+            "id": "durations",
+            "text": "{20 ms} {20 ms} {40 ms} {40 ms}"
+          },
+          {
+            "id": "dutyCycles",
+            "text": "{0.5} {0.25} {0.75} {1}"
+          },
+          {
+            "id": "pitches",
+            "text": ""
+          },
+          {
+            "id": "velocities",
+            "text": "{1} {0.6} {0.85} {0.4}"
+          },
+          {
+            "id": "extraValues",
+            "text": ""
+          }
+        ]
+      },
+      {
+        "id": "out",
+        "typeId": "talas.audioOutput",
+        "parameters": []
+      }
+    ],
+    "connections": [
+      {
+        "fromNode": "source",
+        "fromPort": "audioOut",
+        "toNode": "sequence",
+        "toPort": "audioIn"
+      },
+      {
+        "fromNode": "rateMotion",
+        "fromPort": "value",
+        "toNode": "sequence",
+        "toPort": "rate"
+      },
+      {
+        "fromNode": "sequence",
+        "fromPort": "leftOut",
+        "toNode": "out",
+        "toPort": "audioIn"
+      },
+      {
+        "fromNode": "sequence",
+        "fromPort": "rightOut",
+        "toNode": "out",
+        "toPort": "rightIn"
+      }
+    ]
+  }
+}

@@ -1,0 +1,2 @@
+# Minimal source-controlled sample table.
+1, 0, -1

@@ -1,0 +1,248 @@
+{
+  "format": "talas.project",
+  "version": 13,
+  "metadata": {
+    "title": "M4 Missing Component Preservation"
+  },
+  "presentation": {
+    "version": 1,
+    "structureLayouts": [
+      {
+        "scope": {
+          "kind": "project"
+        },
+        "nodes": [
+          {
+            "nodeId": "oscillator",
+            "x": 80,
+            "y": 180
+          },
+          {
+            "nodeId": "missingColour",
+            "x": 370,
+            "y": 160
+          },
+          {
+            "nodeId": "output",
+            "x": 680,
+            "y": 180
+          }
+        ]
+      }
+    ],
+    "performanceControls": []
+  },
+  "snapshotLibrary": {
+    "version": 1,
+    "banks": [
+      {
+        "id": "missing-component",
+        "name": "Missing Component",
+        "scope": {
+          "kind": "project"
+        },
+        "smoothingSeconds": 0.050000000000000003,
+        "parameterPolicies": [],
+        "snapshots": [
+          {
+            "id": "preserved-colour",
+            "name": "Preserved Colour",
+            "values": [
+              {
+                "target": {
+                  "kind": "nodeParameter",
+                  "instancePath": [],
+                  "containingDefinitionId": null,
+                  "nodeId": "missingColour",
+                  "parameterId": "mode"
+                },
+                "value": {
+                  "kind": "choice",
+                  "value": "colour"
+                }
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "sampleMapLibrary": {
+    "version": 1,
+    "maps": []
+  },
+  "virtualControls": [],
+  "assets": [],
+  "timeline": {
+    "loop": {
+      "enabled": false,
+      "startSeconds": 0,
+      "endSeconds": 4
+    },
+    "eventValues": []
+  },
+  "deviceSettings": {
+    "configured": false,
+    "audioInputDevice": "",
+    "audioOutputDevice": "",
+    "sampleRate": 0,
+    "bufferSize": 0,
+    "inputChannels": [],
+    "outputChannels": [],
+    "midiInputDevices": []
+  },
+  "soundDefinitions": [],
+  "graph": {
+    "nodes": [
+      {
+        "id": "oscillator",
+        "typeId": "talas.oscillator",
+        "parameters": [
+          {
+            "id": "frequency",
+            "expression": "220 hz"
+          },
+          {
+            "id": "amplitude",
+            "expression": "0.2"
+          }
+        ]
+      },
+      {
+        "id": "missingColour",
+        "typeId": "org.talas.example.spectral-colour",
+        "parameters": [
+          {
+            "id": "mode",
+            "choice": "colour"
+          },
+          {
+            "id": "mix",
+            "expression": "0.75"
+          },
+          {
+            "id": "enabled",
+            "boolean": true
+          },
+          {
+            "id": "label",
+            "text": "Preserved tone"
+          }
+        ],
+        "preservedComponent": {
+          "schemaVersion": 1,
+          "typeVersion": "1.4.2",
+          "stateSchemaVersion": 7,
+          "stateEncoding": "base64",
+          "state": "AP9BgBAgfw==",
+          "displayName": "Spectral Colour Archive",
+          "bundleId": "org.talas.example.spectral-colour",
+          "inputs": [
+            {
+              "id": "audioIn",
+              "type": "audio",
+              "required": true,
+              "signal": {
+                "rate": "sample",
+                "audioLayout": "mono",
+                "edge": "continuous",
+                "spectralFormat": "notApplicable",
+                "timelineBearing": true
+              }
+            },
+            {
+              "id": "modulation",
+              "type": "control",
+              "required": false,
+              "signal": {
+                "rate": "variableOrUnknown",
+                "audioLayout": "notApplicable",
+                "edge": "continuous",
+                "spectralFormat": "notApplicable",
+                "timelineBearing": false
+              }
+            }
+          ],
+          "outputs": [
+            {
+              "id": "audioOut",
+              "type": "audio",
+              "required": false,
+              "signal": {
+                "rate": "sample",
+                "audioLayout": "mono",
+                "edge": "continuous",
+                "spectralFormat": "notApplicable",
+                "timelineBearing": true
+              }
+            },
+            {
+              "id": "changed",
+              "type": "event",
+              "required": false,
+              "signal": {
+                "rate": "event",
+                "audioLayout": "notApplicable",
+                "edge": "notApplicable",
+                "spectralFormat": "notApplicable",
+                "timelineBearing": false
+              }
+            }
+          ],
+          "parameters": [
+            {
+              "id": "mode",
+              "kind": "choice",
+              "domain": "scalar",
+              "choices": ["clean", "colour", "archive"]
+            },
+            {
+              "id": "mix",
+              "kind": "expression",
+              "domain": "scalar",
+              "choices": []
+            },
+            {
+              "id": "enabled",
+              "kind": "boolean",
+              "domain": "scalar",
+              "choices": []
+            },
+            {
+              "id": "label",
+              "kind": "text",
+              "domain": "scalar",
+              "choices": []
+            },
+            {
+              "id": "impulse",
+              "kind": "resource",
+              "domain": "scalar",
+              "choices": []
+            }
+          ],
+          "recoveryHint": "Install bundle org.talas.example.spectral-colour 1.4.2 from an owner-approved local source"
+        }
+      },
+      {
+        "id": "output",
+        "typeId": "talas.audioOutput",
+        "parameters": []
+      }
+    ],
+    "connections": [
+      {
+        "fromNode": "oscillator",
+        "fromPort": "audioOut",
+        "toNode": "missingColour",
+        "toPort": "audioIn"
+      },
+      {
+        "fromNode": "missingColour",
+        "fromPort": "audioOut",
+        "toNode": "output",
+        "toPort": "audioIn"
+      }
+    ]
+  }
+}

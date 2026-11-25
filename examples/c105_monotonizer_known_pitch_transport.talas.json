@@ -1,0 +1,100 @@
+{
+  "format": "talas.project",
+  "version": 35,
+  "expressionLanguage": "variablesV2",
+  "expressionDefinitions": [],
+  "variableLibrary": { "version": 2, "variables": [] },
+  "soundVariableLibrary": { "version": 1, "variables": [] },
+  "generatorLibrary": { "version": 2, "programs": [] },
+  "liveSetLibrary": { "version": 1, "liveSets": [], "tools": [] },
+  "metadata": { "title": "Monotonizer Known-Pitch Transport" },
+  "presentation": {
+    "version": 2,
+    "structureLayouts": [
+      {
+        "scope": { "kind": "project" },
+        "nodes": [
+          { "nodeId": "source", "x": 40, "y": 220 },
+          { "nodeId": "amplitude", "x": 40, "y": 60 },
+          { "nodeId": "target", "x": 40, "y": 430 },
+          { "nodeId": "monotonizer", "x": 410, "y": 280 },
+          { "nodeId": "out", "x": 760, "y": 280 }
+        ]
+      }
+    ],
+    "performanceControls": [],
+    "performanceMeters": []
+  },
+  "snapshotLibrary": { "version": 1, "banks": [] },
+  "sampleMapLibrary": { "version": 1, "maps": [] },
+  "assets": [],
+  "partialTrackEdits": [],
+  "timeline": {
+    "loop": { "enabled": false, "startSeconds": 0, "endSeconds": 2 },
+    "musicalTime": {
+      "ticksPerQuarter": 960,
+      "tempo": [{ "tick": 0, "microsecondsPerQuarter": 500000 }],
+      "meter": [{ "tick": 0, "numerator": 4, "denominator": 4 }]
+    },
+    "score": { "tracks": [], "clips": [], "automation": [], "markers": [] },
+    "eventValues": []
+  },
+  "deviceSettings": {
+    "configured": false,
+    "audioInputDevice": "",
+    "audioOutputDevice": "",
+    "sampleRate": 0,
+    "bufferSize": 0,
+    "inputChannels": [],
+    "outputChannels": [],
+    "midiInputDevices": [],
+    "transportSync": { "sourceMode": "internal", "sourceIdentifier": "" },
+    "oscIngress": { "enabled": false, "port": 9000 },
+    "oscEgress": { "enabled": false, "port": 9001 }
+  },
+  "soundDefinitions": [],
+  "graph": {
+    "nodes": [
+      {
+        "id": "amplitude",
+        "typeId": "talas.linearRamp",
+        "parameters": [
+          { "id": "duration", "expression": "0.1 s" },
+          { "id": "start", "expression": "0" },
+          { "id": "end", "expression": "0.5" }
+        ]
+      },
+      {
+        "id": "source",
+        "typeId": "talas.oscillator",
+        "parameters": [
+          { "id": "frequency", "expression": "468.75 hz" },
+          { "id": "amplitude", "expression": "0.5" }
+        ]
+      },
+      {
+        "id": "target",
+        "typeId": "talas.constant",
+        "parameters": [
+          { "id": "value", "expression": "703.125" }
+        ]
+      },
+      {
+        "id": "monotonizer",
+        "typeId": "talas.monotonizer",
+        "parameters": [
+          { "id": "frequency", "expression": "703.125 hz" },
+          { "id": "minInputPitch", "expression": "468.75 hz" },
+          { "id": "maxInputPitch", "expression": "468.75 hz" }
+        ]
+      },
+      { "id": "out", "typeId": "talas.audioOutput", "parameters": [] }
+    ],
+    "connections": [
+      { "fromNode": "amplitude", "fromPort": "value", "toNode": "source", "toPort": "amplitude" },
+      { "fromNode": "source", "fromPort": "audioOut", "toNode": "monotonizer", "toPort": "audioIn" },
+      { "fromNode": "target", "fromPort": "value", "toNode": "monotonizer", "toPort": "frequency" },
+      { "fromNode": "monotonizer", "fromPort": "audioOut", "toNode": "out", "toPort": "audioIn" }
+    ]
+  }
+}

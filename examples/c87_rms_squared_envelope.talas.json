@@ -1,0 +1,122 @@
+{
+  "format": "talas.project",
+  "version": 35,
+  "expressionLanguage": "variablesV2",
+  "expressionDefinitions": [],
+  "variableLibrary": { "version": 2, "variables": [] },
+  "soundVariableLibrary": { "version": 1, "variables": [] },
+  "generatorLibrary": { "version": 2, "programs": [] },
+  "liveSetLibrary": { "version": 1, "liveSets": [], "tools": [] },
+  "metadata": { "title": "RMS Squared Envelope" },
+  "presentation": {
+    "version": 2,
+    "structureLayouts": [
+      {
+        "scope": { "kind": "project" },
+        "nodes": [
+          { "nodeId": "source", "x": 80, "y": 100 },
+          { "nodeId": "timeConstantRamp", "x": 80, "y": 260 },
+          { "nodeId": "scaleRamp", "x": 80, "y": 400 },
+          { "nodeId": "detector", "x": 420, "y": 240 },
+          { "nodeId": "carrier", "x": 420, "y": 80 },
+          { "nodeId": "vca", "x": 720, "y": 160 },
+          { "nodeId": "out", "x": 980, "y": 160 }
+        ]
+      }
+    ],
+    "performanceControls": [],
+    "performanceMeters": []
+  },
+  "snapshotLibrary": { "version": 1, "banks": [] },
+  "sampleMapLibrary": { "version": 1, "maps": [] },
+  "assets": [],
+  "partialTrackEdits": [],
+  "timeline": {
+    "loop": { "enabled": false, "startSeconds": 0, "endSeconds": 1 },
+    "musicalTime": {
+      "ticksPerQuarter": 960,
+      "tempo": [{ "tick": 0, "microsecondsPerQuarter": 500000 }],
+      "meter": [{ "tick": 0, "numerator": 4, "denominator": 4 }]
+    },
+    "score": { "tracks": [], "clips": [], "automation": [], "markers": [] },
+    "eventValues": []
+  },
+  "deviceSettings": {
+    "configured": false,
+    "audioInputDevice": "",
+    "audioOutputDevice": "",
+    "sampleRate": 0,
+    "bufferSize": 0,
+    "inputChannels": [],
+    "outputChannels": [],
+    "midiInputDevices": [],
+    "transportSync": { "sourceMode": "internal", "sourceIdentifier": "" },
+    "oscIngress": { "enabled": false, "port": 9000 },
+    "oscEgress": { "enabled": false, "port": 9001 }
+  },
+  "soundDefinitions": [],
+  "graph": {
+    "nodes": [
+      {
+        "id": "source",
+        "typeId": "talas.oscillator",
+        "parameters": [
+          { "id": "frequency", "expression": "1 hz" },
+          { "id": "amplitude", "expression": "1" }
+        ]
+      },
+      {
+        "id": "timeConstantRamp",
+        "typeId": "talas.linearRamp",
+        "parameters": [
+          { "id": "duration", "expression": "1 s" },
+          { "id": "start", "expression": "0.125" },
+          { "id": "end", "expression": "0.5" }
+        ]
+      },
+      {
+        "id": "scaleRamp",
+        "typeId": "talas.linearRamp",
+        "parameters": [
+          { "id": "duration", "expression": "1 s" },
+          { "id": "start", "expression": "1" },
+          { "id": "end", "expression": "0.5" }
+        ]
+      },
+      {
+        "id": "detector",
+        "typeId": "talas.rmsSquared",
+        "parameters": [
+          { "id": "timeConstant", "expression": "2 s" },
+          { "id": "scale", "expression": "0" }
+        ]
+      },
+      {
+        "id": "carrier",
+        "typeId": "talas.oscillator",
+        "parameters": [
+          { "id": "frequency", "expression": "0.5 hz" },
+          { "id": "amplitude", "expression": "0.25" }
+        ]
+      },
+      {
+        "id": "vca",
+        "typeId": "talas.vca",
+        "parameters": []
+      },
+      {
+        "id": "out",
+        "typeId": "talas.audioOutput",
+        "parameters": []
+      }
+    ],
+    "connections": [
+      { "fromNode": "source", "fromPort": "audioOut", "toNode": "detector", "toPort": "audioIn" },
+      { "fromNode": "timeConstantRamp", "fromPort": "value", "toNode": "detector", "toPort": "timeConstant" },
+      { "fromNode": "scaleRamp", "fromPort": "value", "toNode": "detector", "toPort": "scale" },
+      { "fromNode": "carrier", "fromPort": "audioOut", "toNode": "vca", "toPort": "audioIn" },
+      { "fromNode": "detector", "fromPort": "value", "toNode": "vca", "toPort": "gain" },
+      { "fromNode": "vca", "fromPort": "audioOut", "toNode": "out", "toPort": "audioIn" }
+    ]
+  }
+}

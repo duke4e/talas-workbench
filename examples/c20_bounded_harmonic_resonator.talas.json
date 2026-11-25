@@ -1,0 +1,50 @@
+{
+  "format": "talas.project",
+  "version": 1,
+  "metadata": {
+    "title": "C20 Bounded Harmonic Resonator"
+  },
+  "graph": {
+    "nodes": [
+      {
+        "id": "source",
+        "typeId": "talas.oscillator",
+        "parameters": [
+          { "id": "frequency", "expression": "220 hz" },
+          { "id": "amplitude", "expression": "0.3" }
+        ]
+      },
+      {
+        "id": "resonator",
+        "typeId": "talas.harmonicResonator",
+        "parameters": [
+          { "id": "decayTime", "expression": "750 ms" },
+          { "id": "brightness", "expression": "1.75" },
+          { "id": "frequency", "expression": "440 hz" },
+          { "id": "wavetable", "resource": "Private" },
+          { "id": "prezero", "boolean": false },
+          { "id": "scale", "expression": "0.4" }
+        ]
+      },
+      {
+        "id": "out",
+        "typeId": "talas.audioOutput",
+        "parameters": []
+      }
+    ],
+    "connections": [
+      {
+        "fromNode": "source",
+        "fromPort": "audioOut",
+        "toNode": "resonator",
+        "toPort": "audioIn"
+      },
+      {
+        "fromNode": "resonator",
+        "fromPort": "audioOut",
+        "toNode": "out",
+        "toPort": "audioIn"
+      }
+    ]
+  }
+}

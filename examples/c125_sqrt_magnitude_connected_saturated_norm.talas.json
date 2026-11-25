@@ -1,0 +1,91 @@
+{
+  "format": "talas.project",
+  "version": 35,
+  "expressionLanguage": "variablesV2",
+  "expressionDefinitions": [],
+  "variableLibrary": { "version": 2, "variables": [] },
+  "soundVariableLibrary": { "version": 1, "variables": [] },
+  "generatorLibrary": { "version": 2, "programs": [] },
+  "liveSetLibrary": { "version": 1, "liveSets": [], "tools": [] },
+  "metadata": { "title": "Sqrt Magnitude Connected Saturated Norm" },
+  "presentation": {
+    "version": 2,
+    "structureLayouts": [
+      {
+        "scope": { "kind": "project" },
+        "nodes": [
+          { "nodeId": "left", "x": 40, "y": 80 },
+          { "nodeId": "right", "x": 40, "y": 260 },
+          { "nodeId": "magnitude", "x": 360, "y": 170 },
+          { "nodeId": "out", "x": 670, "y": 170 }
+        ]
+      }
+    ],
+    "performanceControls": [],
+    "performanceMeters": []
+  },
+  "snapshotLibrary": { "version": 1, "banks": [] },
+  "sampleMapLibrary": { "version": 1, "maps": [] },
+  "assets": [],
+  "partialTrackEdits": [],
+  "timeline": {
+    "loop": { "enabled": false, "startSeconds": 0, "endSeconds": 0.125 },
+    "musicalTime": {
+      "ticksPerQuarter": 960,
+      "tempo": [{ "tick": 0, "microsecondsPerQuarter": 500000 }],
+      "meter": [{ "tick": 0, "numerator": 4, "denominator": 4 }]
+    },
+    "score": { "tracks": [], "clips": [], "automation": [], "markers": [] },
+    "eventValues": [
+      { "timeSeconds": 0, "eventName": "C125LeftAmplitude", "domain": "scalar", "value": 0.5, "interpolation": "step" },
+      { "timeSeconds": 0, "eventName": "C125RightAmplitude", "domain": "scalar", "value": 0, "interpolation": "step" },
+      { "timeSeconds": 0.03125, "eventName": "C125LeftAmplitude", "domain": "scalar", "value": 0.3, "interpolation": "step" },
+      { "timeSeconds": 0.03125, "eventName": "C125RightAmplitude", "domain": "scalar", "value": 0.4, "interpolation": "step" },
+      { "timeSeconds": 0.0625, "eventName": "C125LeftAmplitude", "domain": "scalar", "value": 0.6, "interpolation": "step" },
+      { "timeSeconds": 0.0625, "eventName": "C125RightAmplitude", "domain": "scalar", "value": 0.8, "interpolation": "step" },
+      { "timeSeconds": 0.09375, "eventName": "C125LeftAmplitude", "domain": "scalar", "value": 0.8, "interpolation": "step" },
+      { "timeSeconds": 0.09375, "eventName": "C125RightAmplitude", "domain": "scalar", "value": 0.8, "interpolation": "step" }
+    ]
+  },
+  "deviceSettings": {
+    "configured": false,
+    "audioInputDevice": "",
+    "audioOutputDevice": "",
+    "sampleRate": 0,
+    "bufferSize": 0,
+    "inputChannels": [],
+    "outputChannels": [],
+    "midiInputDevices": [],
+    "transportSync": { "sourceMode": "internal", "sourceIdentifier": "" },
+    "oscIngress": { "enabled": false, "port": 9000 },
+    "oscEgress": { "enabled": false, "port": 9001 }
+  },
+  "soundDefinitions": [],
+  "graph": {
+    "nodes": [
+      {
+        "id": "left",
+        "typeId": "talas.oscillator",
+        "parameters": [
+          { "id": "frequency", "expression": "64 hz" },
+          { "id": "amplitude", "expression": "!C125LeftAmplitude" }
+        ]
+      },
+      {
+        "id": "right",
+        "typeId": "talas.oscillator",
+        "parameters": [
+          { "id": "frequency", "expression": "64 hz" },
+          { "id": "amplitude", "expression": "!C125RightAmplitude" }
+        ]
+      },
+      { "id": "magnitude", "typeId": "talas.sqrtMagnitude", "parameters": [] },
+      { "id": "out", "typeId": "talas.audioOutput", "parameters": [] }
+    ],
+    "connections": [
+      { "fromNode": "left", "fromPort": "audioOut", "toNode": "magnitude", "toPort": "audioIn" },
+      { "fromNode": "right", "fromPort": "audioOut", "toNode": "magnitude", "toPort": "rightIn" },
+      { "fromNode": "magnitude", "fromPort": "audioOut", "toNode": "out", "toPort": "audioIn" }
+    ]
+  }
+}

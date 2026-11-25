@@ -1,0 +1,96 @@
+{
+  "format": "talas.project",
+  "version": 35,
+  "expressionLanguage": "variablesV2",
+  "expressionDefinitions": [],
+  "variableLibrary": { "version": 2, "variables": [] },
+  "soundVariableLibrary": { "version": 1, "variables": [] },
+  "generatorLibrary": { "version": 2, "programs": [] },
+  "liveSetLibrary": { "version": 1, "liveSets": [], "tools": [] },
+  "metadata": { "title": "SOS Oscillators Static Spectrum Sine Bank" },
+  "presentation": {
+    "version": 2,
+    "structureLayouts": [
+      {
+        "scope": { "kind": "project" },
+        "nodes": [
+          { "nodeId": "spectrum", "x": 60, "y": 160 },
+          { "nodeId": "cascade", "x": 60, "y": 400 },
+          { "nodeId": "bank", "x": 420, "y": 260 },
+          { "nodeId": "out", "x": 760, "y": 260 }
+        ]
+      }
+    ],
+    "performanceControls": [],
+    "performanceMeters": []
+  },
+  "snapshotLibrary": { "version": 1, "banks": [] },
+  "sampleMapLibrary": { "version": 1, "maps": [] },
+  "virtualControls": [],
+  "assets": [],
+  "partialTrackEdits": [],
+  "timeline": {
+    "loop": { "enabled": false, "startSeconds": 0, "endSeconds": 1 },
+    "musicalTime": {
+      "ticksPerQuarter": 960,
+      "tempo": [{ "tick": 0, "microsecondsPerQuarter": 500000 }],
+      "meter": [{ "tick": 0, "numerator": 4, "denominator": 4 }]
+    },
+    "score": { "tracks": [], "clips": [], "automation": [], "markers": [] },
+    "eventValues": []
+  },
+  "deviceSettings": {
+    "configured": false,
+    "audioInputDevice": "",
+    "audioOutputDevice": "",
+    "sampleRate": 0,
+    "bufferSize": 0,
+    "inputChannels": [],
+    "outputChannels": [],
+    "midiInputDevices": [],
+    "transportSync": { "sourceMode": "internal", "sourceIdentifier": "" },
+    "oscIngress": { "enabled": false, "port": 9000 },
+    "oscEgress": { "enabled": false, "port": 9001 }
+  },
+  "soundDefinitions": [],
+  "graph": {
+    "nodes": [
+      {
+        "id": "spectrum",
+        "typeId": "talas.syntheticSpectrumFromArray",
+        "parameters": [
+          { "id": "nbrPartials", "expression": "4" },
+          { "id": "logScale", "boolean": false },
+          { "id": "sendBandwidths", "boolean": true },
+          { "id": "envelope", "expression": "1" },
+          { "id": "amplitudes", "text": "0.35 0.25 0.15 0.1" },
+          { "id": "frequencies", "text": "1 2 3 4" },
+          { "id": "bandwidths", "text": "0 0 0 0" }
+        ]
+      },
+      {
+        "id": "cascade",
+        "typeId": "talas.oscillator",
+        "parameters": [
+          { "id": "frequency", "expression": "0.25 hz" },
+          { "id": "amplitude", "expression": "0.125" }
+        ]
+      },
+      {
+        "id": "bank",
+        "typeId": "talas.sosOscillators",
+        "parameters": [
+          { "id": "nbrOscillators", "expression": "2" },
+          { "id": "firstOscillator", "expression": "2" },
+          { "id": "wavetable", "resource": "" }
+        ]
+      },
+      { "id": "out", "typeId": "talas.audioOutput", "parameters": [] }
+    ],
+    "connections": [
+      { "fromNode": "spectrum", "fromPort": "spectrumOut", "toNode": "bank", "toPort": "spectrum" },
+      { "fromNode": "cascade", "fromPort": "audioOut", "toNode": "bank", "toPort": "cascadeInput" },
+      { "fromNode": "bank", "fromPort": "audioOut", "toNode": "out", "toPort": "audioIn" }
+    ]
+  }
+}

@@ -1,0 +1,128 @@
+{
+  "format": "talas.project",
+  "version": 35,
+  "expressionLanguage": "variablesV2",
+  "expressionDefinitions": [],
+  "variableLibrary": { "version": 2, "variables": [] },
+  "soundVariableLibrary": { "version": 1, "variables": [] },
+  "generatorLibrary": { "version": 2, "programs": [] },
+  "liveSetLibrary": { "version": 1, "liveSets": [], "tools": [] },
+  "metadata": { "title": "Multifile Disk Player Selection Transport" },
+  "presentation": {
+    "version": 2,
+    "structureLayouts": [
+      {
+        "scope": { "kind": "project" },
+        "nodes": [
+          { "nodeId": "index", "x": 40, "y": 80 },
+          { "nodeId": "trigger", "x": 40, "y": 220 },
+          { "nodeId": "rateScale", "x": 40, "y": 360 },
+          { "nodeId": "multiDisk", "x": 360, "y": 220 },
+          { "nodeId": "out", "x": 700, "y": 220 }
+        ]
+      }
+    ],
+    "performanceControls": [],
+    "performanceMeters": []
+  },
+  "snapshotLibrary": { "version": 1, "banks": [] },
+  "sampleMapLibrary": { "version": 1, "maps": [] },
+  "assets": [
+    {
+      "id": "Samples/C37Hit",
+      "kind": "table",
+      "path": "resources/hit.txt",
+      "disposition": "referenced",
+      "contentHash": "ce5449356b67e84f906f73a1743e5d8aebed474e3bc3feb60f0e3001f0f42e98",
+      "channelCount": 0,
+      "sampleRate": 0,
+      "frameCount": 0,
+      "encoding": "",
+      "generation": 1,
+      "provenance": "Repository-original C37 hit table reused unchanged by C106"
+    },
+    {
+      "id": "Samples/C37Wave",
+      "kind": "table",
+      "path": "resources/c33-generic-source-sample.txt",
+      "disposition": "referenced",
+      "contentHash": "54e58fa19e33c65f013a9758f497efe8481f684876756f6ab60e79ef6865dcd3",
+      "channelCount": 0,
+      "sampleRate": 0,
+      "frameCount": 0,
+      "encoding": "",
+      "generation": 1,
+      "provenance": "Repository-original C33 waveform table reused unchanged by C106"
+    }
+  ],
+  "partialTrackEdits": [],
+  "timeline": {
+    "loop": { "enabled": false, "startSeconds": 0, "endSeconds": 2 },
+    "musicalTime": {
+      "ticksPerQuarter": 960,
+      "tempo": [{ "tick": 0, "microsecondsPerQuarter": 500000 }],
+      "meter": [{ "tick": 0, "numerator": 4, "denominator": 4 }]
+    },
+    "score": { "tracks": [], "clips": [], "automation": [], "markers": [] },
+    "eventValues": [
+      { "timeSeconds": 0, "eventName": "C106Index", "domain": "scalar", "value": 0, "interpolation": "step" },
+      { "timeSeconds": 0, "eventName": "C106Trigger", "domain": "scalar", "value": 1, "interpolation": "step" },
+      { "timeSeconds": 0, "eventName": "C106RateScale", "domain": "scalar", "value": -0.5, "interpolation": "step" },
+      { "timeSeconds": 0.5, "eventName": "C106Trigger", "domain": "scalar", "value": 0, "interpolation": "step" },
+      { "timeSeconds": 0.75, "eventName": "C106Index", "domain": "scalar", "value": 1, "interpolation": "step" },
+      { "timeSeconds": 0.75, "eventName": "C106Trigger", "domain": "scalar", "value": 1, "interpolation": "step" },
+      { "timeSeconds": 1.25, "eventName": "C106Trigger", "domain": "scalar", "value": 0, "interpolation": "step" }
+    ]
+  },
+  "deviceSettings": {
+    "configured": false,
+    "audioInputDevice": "",
+    "audioOutputDevice": "",
+    "sampleRate": 0,
+    "bufferSize": 0,
+    "inputChannels": [],
+    "outputChannels": [],
+    "midiInputDevices": [],
+    "transportSync": { "sourceMode": "internal", "sourceIdentifier": "" },
+    "oscIngress": { "enabled": false, "port": 9000 },
+    "oscEgress": { "enabled": false, "port": 9001 }
+  },
+  "soundDefinitions": [],
+  "graph": {
+    "nodes": [
+      {
+        "id": "index",
+        "typeId": "talas.constant",
+        "parameters": [{ "id": "value", "expression": "!C106Index" }]
+      },
+      {
+        "id": "trigger",
+        "typeId": "talas.constant",
+        "parameters": [{ "id": "value", "expression": "!C106Trigger" }]
+      },
+      {
+        "id": "rateScale",
+        "typeId": "talas.constant",
+        "parameters": [{ "id": "value", "expression": "!C106RateScale" }]
+      },
+      {
+        "id": "multiDisk",
+        "typeId": "talas.multifileDiskPlayer",
+        "parameters": [
+          { "id": "fileNames", "text": "Samples/C37Hit, Samples/C37Wave" },
+          { "id": "rateScale", "expression": "1 / 0" },
+          { "id": "trigger", "expression": "1 / 0" },
+          { "id": "gated", "boolean": false },
+          { "id": "index", "expression": "1 / 0" }
+        ]
+      },
+      { "id": "out", "typeId": "talas.audioOutput", "parameters": [] }
+    ],
+    "connections": [
+      { "fromNode": "index", "fromPort": "value", "toNode": "multiDisk", "toPort": "index" },
+      { "fromNode": "trigger", "fromPort": "value", "toNode": "multiDisk", "toPort": "trigger" },
+      { "fromNode": "rateScale", "fromPort": "value", "toNode": "multiDisk", "toPort": "rateScale" },
+      { "fromNode": "multiDisk", "fromPort": "audioOut", "toNode": "out", "toPort": "audioIn" }
+    ]
+  }
+}

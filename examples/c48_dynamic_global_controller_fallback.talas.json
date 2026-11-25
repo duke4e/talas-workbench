@@ -1,0 +1,68 @@
+{
+  "format": "talas.project",
+  "version": 35,
+  "expressionLanguage": "legacyV1",
+  "expressionDefinitions": [],
+  "variableLibrary": { "version": 2, "variables": [] },
+  "soundVariableLibrary": { "version": 1, "variables": [] },
+  "generatorLibrary": { "version": 2, "programs": [] },
+  "liveSetLibrary": { "version": 1, "liveSets": [], "tools": [] },
+  "metadata": { "title": "Dynamic Global Controller Fallback" },
+  "presentation": {
+    "version": 2,
+    "structureLayouts": [
+      {
+        "scope": { "kind": "project" },
+        "nodes": [{ "nodeId": "terminal", "x": 280, "y": 170 }]
+      }
+    ],
+    "performanceControls": [],
+    "performanceMeters": []
+  },
+  "snapshotLibrary": { "version": 1, "banks": [] },
+  "sampleMapLibrary": { "version": 1, "maps": [] },
+  "assets": [],
+  "partialTrackEdits": [],
+  "timeline": {
+    "loop": { "enabled": false, "startSeconds": 0, "endSeconds": 1 },
+    "musicalTime": {
+      "ticksPerQuarter": 960,
+      "tempo": [{ "tick": 0, "microsecondsPerQuarter": 500000 }],
+      "meter": [{ "tick": 0, "numerator": 4, "denominator": 4 }]
+    },
+    "score": { "tracks": [], "clips": [], "automation": [], "markers": [] },
+    "eventValues": [
+      { "timeSeconds": 0, "eventName": "C48Value", "domain": "scalar", "value": 0.25, "interpolation": "step" },
+      { "timeSeconds": 0.25, "eventName": "C48Value", "domain": "scalar", "value": 0.75, "interpolation": "step" },
+      { "timeSeconds": 0.5, "eventName": "C48Value", "domain": "scalar", "value": 0.7500000000005, "interpolation": "step" },
+      { "timeSeconds": 0.625, "eventName": "C48Value", "domain": "scalar", "value": -0.5, "interpolation": "step" }
+    ]
+  },
+  "deviceSettings": {
+    "configured": false,
+    "audioInputDevice": "",
+    "audioOutputDevice": "",
+    "sampleRate": 0,
+    "bufferSize": 0,
+    "inputChannels": [],
+    "outputChannels": [],
+    "midiInputDevices": [],
+    "transportSync": { "sourceMode": "internal", "sourceIdentifier": "" },
+    "oscIngress": { "enabled": false, "port": 9000 },
+    "oscEgress": { "enabled": false, "port": 9001 }
+  },
+  "soundDefinitions": [],
+  "graph": {
+    "nodes": [
+      {
+        "id": "terminal",
+        "typeId": "talas.soundToGlobalController",
+        "parameters": [
+          { "id": "generatedEvent", "text": "!C48Generated" },
+          { "id": "value", "text": "{!C48Value}" }
+        ]
+      }
+    ],
+    "connections": []
+  }
+}

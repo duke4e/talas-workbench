@@ -1,0 +1,109 @@
+{
+  "format": "talas.project",
+  "version": 35,
+  "expressionLanguage": "variablesV2",
+  "expressionDefinitions": [],
+  "variableLibrary": { "version": 2, "variables": [] },
+  "soundVariableLibrary": { "version": 1, "variables": [] },
+  "generatorLibrary": { "version": 2, "programs": [] },
+  "liveSetLibrary": { "version": 1, "liveSets": [], "tools": [] },
+  "metadata": { "title": "Spectrum In RAM Normalized TimeIndex" },
+  "presentation": {
+    "version": 2,
+    "structureLayouts": [
+      {
+        "scope": { "kind": "project" },
+        "nodes": [
+          { "nodeId": "timeIndexControl", "x": 80, "y": 320 },
+          { "nodeId": "source", "x": 220, "y": 180 },
+          { "nodeId": "selector", "x": 500, "y": 180 },
+          { "nodeId": "out", "x": 760, "y": 180 }
+        ]
+      }
+    ],
+    "performanceControls": [],
+    "performanceMeters": []
+  },
+  "snapshotLibrary": { "version": 1, "banks": [] },
+  "sampleMapLibrary": { "version": 1, "maps": [] },
+  "assets": [
+    {
+      "id": "Analysis/C58",
+      "kind": "table",
+      "path": "resources/c58-spectrum-in-ram-frames.txt",
+      "disposition": "referenced",
+      "contentHash": "094edff186973a2365770c4ca8975d0ed994804cc4e9a96c61c673c15228a1a5",
+      "channelCount": 0,
+      "sampleRate": 0,
+      "frameCount": 0,
+      "encoding": "",
+      "generation": 1,
+      "provenance": "Repository-original C58 normalized fixed-width SpectrumInRAM table"
+    }
+  ],
+  "partialTrackEdits": [],
+  "timeline": {
+    "loop": { "enabled": false, "startSeconds": 0, "endSeconds": 8 },
+    "musicalTime": {
+      "ticksPerQuarter": 960,
+      "tempo": [{ "tick": 0, "microsecondsPerQuarter": 500000 }],
+      "meter": [{ "tick": 0, "numerator": 4, "denominator": 4 }]
+    },
+    "score": { "tracks": [], "clips": [], "automation": [], "markers": [] },
+    "eventValues": [
+      { "timeSeconds": 0, "eventName": "C58TimeIndex", "domain": "scalar", "value": -1, "interpolation": "step" }
+    ]
+  },
+  "deviceSettings": {
+    "configured": false,
+    "audioInputDevice": "",
+    "audioOutputDevice": "",
+    "sampleRate": 0,
+    "bufferSize": 0,
+    "inputChannels": [],
+    "outputChannels": [],
+    "midiInputDevices": [],
+    "transportSync": { "sourceMode": "internal", "sourceIdentifier": "" },
+    "oscIngress": { "enabled": false, "port": 9000 },
+    "oscEgress": { "enabled": false, "port": 9001 }
+  },
+  "soundDefinitions": [],
+  "graph": {
+    "nodes": [
+      {
+        "id": "timeIndexControl",
+        "typeId": "talas.constant",
+        "parameters": [{ "id": "value", "expression": "!C58TimeIndex" }]
+      },
+      {
+        "id": "source",
+        "typeId": "talas.spectrumInRam",
+        "parameters": [
+          { "id": "frequency", "expression": "100 hz" },
+          { "id": "level", "expression": "1" },
+          { "id": "timeIndex", "expression": "-1" },
+          { "id": "analysis", "resource": "Analysis/C58" },
+          { "id": "analysisFrames", "expression": "3" },
+          { "id": "nbrPartials", "expression": "2" },
+          { "id": "firstPartial", "expression": "1" }
+        ]
+      },
+      {
+        "id": "selector",
+        "typeId": "talas.spectrumTrackSelector",
+        "parameters": [
+          { "id": "track", "expression": "1" },
+          { "id": "amp", "boolean": true },
+          { "id": "freq", "boolean": true }
+        ]
+      },
+      { "id": "out", "typeId": "talas.audioOutput", "parameters": [] }
+    ],
+    "connections": [
+      { "fromNode": "timeIndexControl", "fromPort": "value", "toNode": "source", "toPort": "timeIndex" },
+      { "fromNode": "source", "fromPort": "spectrumOut", "toNode": "selector", "toPort": "spectrumIn" },
+      { "fromNode": "selector", "fromPort": "leftOut", "toNode": "out", "toPort": "audioIn" },
+      { "fromNode": "selector", "fromPort": "rightOut", "toNode": "out", "toPort": "rightIn" }
+    ]
+  }
+}

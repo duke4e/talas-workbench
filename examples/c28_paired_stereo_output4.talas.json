@@ -1,0 +1,46 @@
+{
+  "format": "talas.project",
+  "version": 1,
+  "metadata": {
+    "title": "C28 Paired Stereo Output 4"
+  },
+  "graph": {
+    "nodes": [
+      {
+        "id": "frontPair",
+        "typeId": "talas.oscillator",
+        "parameters": [
+          { "id": "frequency", "expression": "220 hz" },
+          { "id": "amplitude", "expression": "0.2" }
+        ]
+      },
+      {
+        "id": "rearPair",
+        "typeId": "talas.oscillator",
+        "parameters": [
+          { "id": "frequency", "expression": "330 hz" },
+          { "id": "amplitude", "expression": "-0.15" }
+        ]
+      },
+      {
+        "id": "out",
+        "typeId": "talas.stereoInOutput4",
+        "parameters": []
+      }
+    ],
+    "connections": [
+      {
+        "fromNode": "frontPair",
+        "fromPort": "audioOut",
+        "toNode": "out",
+        "toPort": "out12"
+      },
+      {
+        "fromNode": "rearPair",
+        "fromPort": "audioOut",
+        "toNode": "out",
+        "toPort": "out34"
+      }
+    ]
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "format": "talas.project",
+  "version": 1,
+  "metadata": {
+    "title": "Fuzz seed oscillator"
+  },
+  "graph": {
+    "nodes": [
+      {
+        "id": "osc",
+        "typeId": "talas.oscillator",
+        "parameters": [
+          {
+            "id": "frequency",
+            "expression": "440 hz"
+          }
+        ]
+      }
+    ],
+    "connections": []
+  }
+}

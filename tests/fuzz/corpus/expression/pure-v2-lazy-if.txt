@@ -1,0 +1,1 @@
+if(!Gate != 0, sqrt(abs(value)), 1 / 0)

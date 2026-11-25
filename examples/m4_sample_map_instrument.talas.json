@@ -1,0 +1,167 @@
+{
+  "format": "talas.project",
+  "version": 13,
+  "metadata": {
+    "title": "M4 Sample Map Instrument"
+  },
+  "presentation": {
+    "version": 1,
+    "structureLayouts": [
+      {
+        "scope": {
+          "kind": "project"
+        },
+        "nodes": [
+          {
+            "nodeId": "sampleMapVoice",
+            "x": 112,
+            "y": 144
+          },
+          {
+            "nodeId": "output",
+            "x": 456,
+            "y": 144
+          }
+        ]
+      }
+    ],
+    "performanceControls": []
+  },
+  "snapshotLibrary": {
+    "version": 1,
+    "banks": []
+  },
+  "sampleMapLibrary": {
+    "version": 1,
+    "maps": [
+      {
+        "id": "originalInstrument",
+        "name": "Original Instrument",
+        "regions": [
+          {
+            "id": "mainForward",
+            "assetId": "Audio/M4SampleMapSource",
+            "rootNote": 69,
+            "lowNote": 36,
+            "highNote": 96,
+            "lowVelocity": 1,
+            "highVelocity": 112,
+            "reverse": false,
+            "sustainLoop": {
+              "mode": "forward",
+              "startFrame": 256,
+              "endFrameExclusive": 1792
+            },
+            "releaseLoop": {
+              "mode": "alternate",
+              "startFrame": 512,
+              "endFrameExclusive": 1536
+            }
+          },
+          {
+            "id": "accentReverse",
+            "assetId": "Audio/M4SampleMapSource",
+            "rootNote": 81,
+            "lowNote": 60,
+            "highNote": 96,
+            "lowVelocity": 96,
+            "highVelocity": 127,
+            "reverse": true,
+            "sustainLoop": {
+              "mode": "alternate",
+              "startFrame": 384,
+              "endFrameExclusive": 1664
+            },
+            "releaseLoop": null
+          }
+        ]
+      }
+    ]
+  },
+  "virtualControls": [],
+  "assets": [
+    {
+      "id": "Audio/M4SampleMapSource",
+      "kind": "audio",
+      "path": "resources/m3-stream-source.wav",
+      "disposition": "referenced",
+      "contentHash": "db335f904b35a742ab63a0fd1cb0a81a79c169d3855ef0623e54c731eff00d89",
+      "channelCount": 1,
+      "sampleRate": 8192,
+      "frameCount": 2048,
+      "encoding": "pcm16-wav",
+      "generation": 1,
+      "provenance": "Original Talas oscillator render reused for the M4 sample-map instrument"
+    }
+  ],
+  "timeline": {
+    "loop": {
+      "enabled": false,
+      "startSeconds": 0,
+      "endSeconds": 4
+    },
+    "eventValues": []
+  },
+  "deviceSettings": {
+    "configured": false,
+    "audioInputDevice": "",
+    "audioOutputDevice": "",
+    "sampleRate": 0,
+    "bufferSize": 0,
+    "inputChannels": [],
+    "outputChannels": [],
+    "midiInputDevices": []
+  },
+  "soundDefinitions": [],
+  "graph": {
+    "nodes": [
+      {
+        "id": "sampleMapVoice",
+        "typeId": "talas.sampleMapPlayer",
+        "parameters": [
+          {
+            "id": "sampleMapId",
+            "text": "originalInstrument"
+          },
+          {
+            "id": "frequency",
+            "expression": "440 hz"
+          },
+          {
+            "id": "gate",
+            "expression": "1"
+          },
+          {
+            "id": "velocity",
+            "expression": "0.5"
+          },
+          {
+            "id": "scale",
+            "expression": "1"
+          },
+          {
+            "id": "attackTime",
+            "expression": "0 s"
+          },
+          {
+            "id": "releaseTime",
+            "expression": "0 s"
+          }
+        ]
+      },
+      {
+        "id": "output",
+        "typeId": "talas.audioOutput",
+        "parameters": []
+      }
+    ],
+    "connections": [
+      {
+        "fromNode": "sampleMapVoice",
+        "fromPort": "audioOut",
+        "toNode": "output",
+        "toPort": "audioIn"
+      }
+    ]
+  }
+}

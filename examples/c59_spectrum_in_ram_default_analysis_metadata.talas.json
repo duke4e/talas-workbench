@@ -1,0 +1,95 @@
+{
+  "format": "talas.project",
+  "version": 35,
+  "expressionLanguage": "variablesV2",
+  "expressionDefinitions": [],
+  "variableLibrary": { "version": 2, "variables": [] },
+  "soundVariableLibrary": { "version": 1, "variables": [] },
+  "generatorLibrary": { "version": 2, "programs": [] },
+  "liveSetLibrary": { "version": 1, "liveSets": [], "tools": [] },
+  "metadata": { "title": "Spectrum In RAM Default Analysis Metadata" },
+  "presentation": {
+    "version": 2,
+    "structureLayouts": [
+      {
+        "scope": { "kind": "project" },
+        "nodes": [
+          { "nodeId": "source", "x": 180, "y": 180 },
+          { "nodeId": "selector", "x": 480, "y": 180 },
+          { "nodeId": "out", "x": 740, "y": 180 }
+        ]
+      }
+    ],
+    "performanceControls": [],
+    "performanceMeters": []
+  },
+  "snapshotLibrary": { "version": 1, "banks": [] },
+  "sampleMapLibrary": { "version": 1, "maps": [] },
+  "assets": [
+    {
+      "id": "Analysis/C59",
+      "kind": "table",
+      "path": "resources/c59-spectrum-in-ram-defaults.txt",
+      "disposition": "referenced",
+      "contentHash": "33229df355e62d037191851a5467322e95f22d884f5c25a03de264d004901139",
+      "channelCount": 0,
+      "sampleRate": 0,
+      "frameCount": 0,
+      "encoding": "",
+      "generation": 1,
+      "provenance": "Repository-original C59 SpectrumInRAM default analysis metadata table"
+    }
+  ],
+  "partialTrackEdits": [],
+  "timeline": {
+    "loop": { "enabled": false, "startSeconds": 0, "endSeconds": 8 },
+    "musicalTime": {
+      "ticksPerQuarter": 960,
+      "tempo": [{ "tick": 0, "microsecondsPerQuarter": 500000 }],
+      "meter": [{ "tick": 0, "numerator": 4, "denominator": 4 }]
+    },
+    "score": { "tracks": [], "clips": [], "automation": [], "markers": [] },
+    "eventValues": []
+  },
+  "deviceSettings": {
+    "configured": false,
+    "audioInputDevice": "",
+    "audioOutputDevice": "",
+    "sampleRate": 0,
+    "bufferSize": 0,
+    "inputChannels": [],
+    "outputChannels": [],
+    "midiInputDevices": [],
+    "transportSync": { "sourceMode": "internal", "sourceIdentifier": "" },
+    "oscIngress": { "enabled": false, "port": 9000 },
+    "oscEgress": { "enabled": false, "port": 9001 }
+  },
+  "soundDefinitions": [],
+  "graph": {
+    "nodes": [
+      {
+        "id": "source",
+        "typeId": "talas.spectrumInRam",
+        "parameters": [
+          { "id": "analysis", "resource": "Analysis/C59" },
+          { "id": "analysisFrequency", "expression": "125 hz" }
+        ]
+      },
+      {
+        "id": "selector",
+        "typeId": "talas.spectrumTrackSelector",
+        "parameters": [
+          { "id": "track", "expression": "3" },
+          { "id": "amp", "boolean": true },
+          { "id": "freq", "boolean": true }
+        ]
+      },
+      { "id": "out", "typeId": "talas.audioOutput", "parameters": [] }
+    ],
+    "connections": [
+      { "fromNode": "source", "fromPort": "spectrumOut", "toNode": "selector", "toPort": "spectrumIn" },
+      { "fromNode": "selector", "fromPort": "leftOut", "toNode": "out", "toPort": "audioIn" },
+      { "fromNode": "selector", "fromPort": "rightOut", "toNode": "out", "toPort": "rightIn" }
+    ]
+  }
+}

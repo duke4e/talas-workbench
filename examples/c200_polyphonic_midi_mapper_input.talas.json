@@ -1,0 +1,216 @@
+{
+  "format": "talas.project",
+  "version": 38,
+  "expressionLanguage": "variablesV2",
+  "expressionDefinitions": [],
+  "variableLibrary": {
+    "version": 2,
+    "variables": []
+  },
+  "soundVariableLibrary": {
+    "version": 1,
+    "variables": []
+  },
+  "generatorLibrary": {
+    "version": 2,
+    "programs": []
+  },
+  "liveSetLibrary": {
+    "version": 1,
+    "liveSets": [],
+    "tools": []
+  },
+  "metadata": {
+    "title": "C200 Polyphonic MIDI Mapper Input"
+  },
+  "presentation": {
+    "version": 2,
+    "structureLayouts": [
+      {
+        "scope": {
+          "kind": "project"
+        },
+        "nodes": [
+          {
+            "nodeId": "osc",
+            "x": 80,
+            "y": 180
+          },
+          {
+            "nodeId": "mapper",
+            "x": 320,
+            "y": 180
+          },
+          {
+            "nodeId": "out",
+            "x": 560,
+            "y": 180
+          }
+        ]
+      }
+    ],
+    "performanceControls": [],
+    "performanceMeters": []
+  },
+  "snapshotLibrary": {
+    "version": 1,
+    "banks": []
+  },
+  "sampleMapLibrary": {
+    "version": 1,
+    "maps": []
+  },
+  "virtualControls": [],
+  "assets": [],
+  "partialTrackEdits": [],
+  "timeline": {
+    "loop": {
+      "enabled": false,
+      "startSeconds": 0,
+      "endSeconds": 4
+    },
+    "musicalTime": {
+      "ticksPerQuarter": 960,
+      "tempo": [
+        {
+          "tick": 0,
+          "microsecondsPerQuarter": 500000
+        }
+      ],
+      "meter": [
+        {
+          "tick": 0,
+          "numerator": 4,
+          "denominator": 4
+        }
+      ]
+    },
+    "score": {
+      "tracks": [],
+      "clips": [],
+      "automation": [],
+      "markers": []
+    },
+    "eventValues": []
+  },
+  "deviceSettings": {
+    "configured": false,
+    "audioInputDevice": "",
+    "audioOutputDevice": "",
+    "sampleRate": 0,
+    "bufferSize": 0,
+    "inputChannels": [],
+    "outputChannels": [],
+    "midiInputDevices": [],
+    "transportSync": {
+      "sourceMode": "internal",
+      "sourceIdentifier": ""
+    },
+    "oscIngress": {
+      "enabled": false,
+      "port": 9000
+    },
+    "oscEgress": {
+      "enabled": false,
+      "port": 9001
+    }
+  },
+  "soundDefinitions": [],
+  "graph": {
+    "nodes": [
+      {
+        "id": "out",
+        "typeId": "talas.audioOutput",
+        "parameters": []
+      },
+      {
+        "id": "osc",
+        "typeId": "talas.oscillator",
+        "parameters": [
+          {
+            "id": "frequency",
+            "expression": "7 hz"
+          },
+          {
+            "id": "amplitude",
+            "expression": "1.0"
+          }
+        ]
+      },
+      {
+        "id": "mapper",
+        "typeId": "talas.midiMapper",
+        "parameters": [
+          {
+            "id": "map",
+            "text": ""
+          },
+          {
+            "id": "voiceModel",
+            "choice": "polyphonicInput"
+          },
+          {
+            "id": "left",
+            "expression": "1"
+          },
+          {
+            "id": "right",
+            "expression": "-0.5"
+          },
+          {
+            "id": "channel",
+            "expression": "1"
+          },
+          {
+            "id": "source",
+            "text": ""
+          },
+          {
+            "id": "midiFile",
+            "resource": ""
+          },
+          {
+            "id": "polyphony",
+            "expression": "2"
+          },
+          {
+            "id": "lowPitch",
+            "expression": "0 nn"
+          },
+          {
+            "id": "highPitch",
+            "expression": "127 nn"
+          },
+          {
+            "id": "script",
+            "text": ""
+          },
+          {
+            "id": "shared",
+            "boolean": false
+          }
+        ]
+      }
+    ],
+    "connections": [
+      {
+        "fromNode": "osc",
+        "fromPort": "audioOut",
+        "toNode": "mapper",
+        "toPort": "audioIn"
+      },
+      {
+        "fromNode": "mapper",
+        "fromPort": "leftOut",
+        "toNode": "out",
+        "toPort": "audioIn"
+      },
+      {
+        "fromNode": "mapper",
+        "fromPort": "rightOut",
+        "toNode": "out",
+        "toPort": "rightIn"
+      }
+    ]
+  }
+}

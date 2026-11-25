@@ -1,0 +1,105 @@
+{
+  "format": "talas.project",
+  "version": 35,
+  "expressionLanguage": "variablesV2",
+  "expressionDefinitions": [],
+  "variableLibrary": { "version": 2, "variables": [] },
+  "soundVariableLibrary": { "version": 1, "variables": [] },
+  "generatorLibrary": { "version": 2, "programs": [] },
+  "liveSetLibrary": { "version": 1, "liveSets": [], "tools": [] },
+  "metadata": { "title": "Triggered Sample And Hold Scheduled Edges" },
+  "presentation": {
+    "version": 2,
+    "structureLayouts": [
+      {
+        "scope": { "kind": "project" },
+        "nodes": [
+          { "nodeId": "source", "x": 80, "y": 300 },
+          { "nodeId": "hold", "x": 360, "y": 300 },
+          { "nodeId": "carrier", "x": 360, "y": 100 },
+          { "nodeId": "gain", "x": 640, "y": 180 },
+          { "nodeId": "out", "x": 880, "y": 180 }
+        ]
+      }
+    ],
+    "performanceControls": [],
+    "performanceMeters": []
+  },
+  "snapshotLibrary": { "version": 1, "banks": [] },
+  "sampleMapLibrary": { "version": 1, "maps": [] },
+  "assets": [],
+  "partialTrackEdits": [],
+  "timeline": {
+    "loop": { "enabled": false, "startSeconds": 0, "endSeconds": 1 },
+    "musicalTime": {
+      "ticksPerQuarter": 960,
+      "tempo": [{ "tick": 0, "microsecondsPerQuarter": 500000 }],
+      "meter": [{ "tick": 0, "numerator": 4, "denominator": 4 }]
+    },
+    "score": { "tracks": [], "clips": [], "automation": [], "markers": [] },
+    "eventValues": [
+      { "timeSeconds": 0, "eventName": "C153Trigger", "domain": "scalar", "value": 0, "interpolation": "step" },
+      { "timeSeconds": 0.125, "eventName": "C153Trigger", "domain": "scalar", "value": 1, "interpolation": "step" },
+      { "timeSeconds": 0.375, "eventName": "C153Trigger", "domain": "scalar", "value": 0, "interpolation": "step" },
+      { "timeSeconds": 0.5, "eventName": "C153Trigger", "domain": "scalar", "value": 1, "interpolation": "step" }
+    ]
+  },
+  "deviceSettings": {
+    "configured": false,
+    "audioInputDevice": "",
+    "audioOutputDevice": "",
+    "sampleRate": 0,
+    "bufferSize": 0,
+    "inputChannels": [],
+    "outputChannels": [],
+    "midiInputDevices": [],
+    "transportSync": { "sourceMode": "internal", "sourceIdentifier": "" },
+    "oscIngress": { "enabled": false, "port": 9000 },
+    "oscEgress": { "enabled": false, "port": 9001 }
+  },
+  "soundDefinitions": [],
+  "graph": {
+    "nodes": [
+      {
+        "id": "source",
+        "typeId": "talas.linearRamp",
+        "parameters": [
+          { "id": "duration", "expression": "1 s" },
+          { "id": "start", "expression": "0.25" },
+          { "id": "end", "expression": "1" }
+        ]
+      },
+      {
+        "id": "hold",
+        "typeId": "talas.triggeredSampleAndHold",
+        "parameters": [
+          { "id": "trigger", "expression": "!C153Trigger" }
+        ]
+      },
+      {
+        "id": "carrier",
+        "typeId": "talas.oscillator",
+        "parameters": [
+          { "id": "frequency", "expression": "0.5 hz" },
+          { "id": "amplitude", "expression": "0.5" }
+        ]
+      },
+      {
+        "id": "gain",
+        "typeId": "talas.vca",
+        "parameters": []
+      },
+      {
+        "id": "out",
+        "typeId": "talas.audioOutput",
+        "parameters": []
+      }
+    ],
+    "connections": [
+      { "fromNode": "source", "fromPort": "value", "toNode": "hold", "toPort": "value" },
+      { "fromNode": "carrier", "fromPort": "audioOut", "toNode": "gain", "toPort": "audioIn" },
+      { "fromNode": "hold", "fromPort": "value", "toNode": "gain", "toPort": "gain" },
+      { "fromNode": "gain", "fromPort": "audioOut", "toNode": "out", "toPort": "audioIn" }
+    ]
+  }
+}

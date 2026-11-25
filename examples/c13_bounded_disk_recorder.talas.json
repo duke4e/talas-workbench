@@ -1,0 +1,67 @@
+{
+  "format": "talas.project",
+  "version": 1,
+  "metadata": {
+    "title": "C13 Bounded Disk Recorder"
+  },
+  "graph": {
+    "nodes": [
+      {
+        "id": "recorder",
+        "typeId": "talas.diskRecorder",
+        "parameters": [
+          {
+            "id": "fileName",
+            "resource": "Recordings/C13 Bounded Take"
+          },
+          {
+            "id": "format",
+            "text": "WAV"
+          },
+          {
+            "id": "wordSize",
+            "text": "16"
+          },
+          {
+            "id": "channels",
+            "choice": "mono"
+          },
+          {
+            "id": "trigger",
+            "expression": "1"
+          },
+          {
+            "id": "captureDuration",
+            "expression": "20 ms"
+          },
+          {
+            "id": "gated",
+            "boolean": false
+          }
+        ]
+      },
+      {
+        "id": "osc",
+        "typeId": "talas.oscillator",
+        "parameters": [
+          {
+            "id": "frequency",
+            "expression": "220 hz"
+          },
+          {
+            "id": "amplitude",
+            "expression": "0.25"
+          }
+        ]
+      }
+    ],
+    "connections": [
+      {
+        "fromNode": "osc",
+        "fromPort": "audioOut",
+        "toNode": "recorder",
+        "toPort": "audioIn"
+      }
+    ]
+  }
+}

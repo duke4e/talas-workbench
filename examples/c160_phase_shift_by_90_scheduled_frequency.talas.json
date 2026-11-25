@@ -1,0 +1,84 @@
+{
+  "format": "talas.project",
+  "version": 35,
+  "expressionLanguage": "variablesV2",
+  "expressionDefinitions": [],
+  "variableLibrary": { "version": 2, "variables": [] },
+  "soundVariableLibrary": { "version": 1, "variables": [] },
+  "generatorLibrary": { "version": 2, "programs": [] },
+  "liveSetLibrary": { "version": 1, "liveSets": [], "tools": [] },
+  "metadata": { "title": "Phase Shift By 90 Scheduled Frequency" },
+  "presentation": {
+    "version": 2,
+    "structureLayouts": [
+      {
+        "scope": { "kind": "project" },
+        "nodes": [
+          { "nodeId": "carrier", "x": 180, "y": 180 },
+          { "nodeId": "phase", "x": 500, "y": 180 },
+          { "nodeId": "out", "x": 800, "y": 180 }
+        ]
+      }
+    ],
+    "performanceControls": [],
+    "performanceMeters": []
+  },
+  "snapshotLibrary": { "version": 1, "banks": [] },
+  "sampleMapLibrary": { "version": 1, "maps": [] },
+  "assets": [],
+  "partialTrackEdits": [],
+  "timeline": {
+    "loop": { "enabled": false, "startSeconds": 0, "endSeconds": 1 },
+    "musicalTime": {
+      "ticksPerQuarter": 960,
+      "tempo": [{ "tick": 0, "microsecondsPerQuarter": 500000 }],
+      "meter": [{ "tick": 0, "numerator": 4, "denominator": 4 }]
+    },
+    "score": { "tracks": [], "clips": [], "automation": [], "markers": [] },
+    "eventValues": [
+      { "timeSeconds": 0, "eventName": "C165Frequency", "domain": "hertz", "value": 64, "interpolation": "step" },
+      { "timeSeconds": 0.001953125, "eventName": "C165Frequency", "domain": "hertz", "value": 128, "interpolation": "step" },
+      { "timeSeconds": 0.0048828125, "eventName": "C165Frequency", "domain": "hertz", "value": 192, "interpolation": "step" },
+      { "timeSeconds": 0.0068359375, "eventName": "C165Frequency", "domain": "hertz", "value": 32, "interpolation": "step" }
+    ]
+  },
+  "deviceSettings": {
+    "configured": false,
+    "audioInputDevice": "",
+    "audioOutputDevice": "",
+    "sampleRate": 0,
+    "bufferSize": 0,
+    "inputChannels": [],
+    "outputChannels": [],
+    "midiInputDevices": [],
+    "transportSync": { "sourceMode": "internal", "sourceIdentifier": "" },
+    "oscIngress": { "enabled": false, "port": 9000 },
+    "oscEgress": { "enabled": false, "port": 9001 }
+  },
+  "soundDefinitions": [],
+  "graph": {
+    "nodes": [
+      {
+        "id": "carrier",
+        "typeId": "talas.oscillator",
+        "parameters": [
+          { "id": "frequency", "expression": "64 hz" },
+          { "id": "amplitude", "expression": "0.5" }
+        ]
+      },
+      {
+        "id": "phase",
+        "typeId": "talas.phaseShiftBy90",
+        "parameters": [
+          { "id": "frequency", "expression": "!C165Frequency" }
+        ]
+      },
+      { "id": "out", "typeId": "talas.audioOutput", "parameters": [] }
+    ],
+    "connections": [
+      { "fromNode": "carrier", "fromPort": "audioOut", "toNode": "phase", "toPort": "audioIn" },
+      { "fromNode": "phase", "fromPort": "audioOut", "toNode": "out", "toPort": "audioIn" },
+      { "fromNode": "phase", "fromPort": "rightOut", "toNode": "out", "toPort": "rightIn" }
+    ]
+  }
+}

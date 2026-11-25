@@ -1,0 +1,127 @@
+{
+  "format": "talas.project",
+  "version": 35,
+  "expressionLanguage": "variablesV2",
+  "expressionDefinitions": [],
+  "variableLibrary": { "version": 2, "variables": [] },
+  "soundVariableLibrary": { "version": 1, "variables": [] },
+  "generatorLibrary": { "version": 2, "programs": [] },
+  "liveSetLibrary": { "version": 1, "liveSets": [], "tools": [] },
+  "metadata": { "title": "Sum Of Sines Controlled-Time Frames" },
+  "presentation": {
+    "version": 2,
+    "structureLayouts": [
+      {
+        "scope": { "kind": "project" },
+        "nodes": [
+          { "nodeId": "timeIndex", "x": 80, "y": 300 },
+          { "nodeId": "source", "x": 320, "y": 180 },
+          { "nodeId": "out", "x": 620, "y": 180 }
+        ]
+      }
+    ],
+    "performanceControls": [],
+    "performanceMeters": []
+  },
+  "snapshotLibrary": { "version": 1, "banks": [] },
+  "sampleMapLibrary": { "version": 1, "maps": [] },
+  "assets": [
+    {
+      "id": "Analysis/C62",
+      "kind": "table",
+      "path": "resources/c62-sum-of-sines-controlled-frames.txt",
+      "disposition": "referenced",
+      "contentHash": "ab96cf895eb20ff99ee746aa234b0f0a9f8369963866034a0b9dc95497f4245e",
+      "channelCount": 0,
+      "sampleRate": 0,
+      "frameCount": 0,
+      "encoding": "",
+      "generation": 1,
+      "provenance": "Repository-original C62 SumOfSines controlled-time amplitude frames"
+    },
+    {
+      "id": "Control/C62TimeIndex",
+      "kind": "table",
+      "path": "resources/c62-sum-of-sines-time-index.txt",
+      "disposition": "referenced",
+      "contentHash": "21d24ee1bb029545140805f7611a1f3565b381fa9e47ff11daf18399d8e1384c",
+      "channelCount": 0,
+      "sampleRate": 0,
+      "frameCount": 0,
+      "encoding": "",
+      "generation": 1,
+      "provenance": "Repository-original C62 normalized controlled-time sequence"
+    }
+  ],
+  "partialTrackEdits": [],
+  "timeline": {
+    "loop": { "enabled": false, "startSeconds": 0, "endSeconds": 8 },
+    "musicalTime": {
+      "ticksPerQuarter": 960,
+      "tempo": [{ "tick": 0, "microsecondsPerQuarter": 500000 }],
+      "meter": [{ "tick": 0, "numerator": 4, "denominator": 4 }]
+    },
+    "score": { "tracks": [], "clips": [], "automation": [], "markers": [] },
+    "eventValues": []
+  },
+  "deviceSettings": {
+    "configured": false,
+    "audioInputDevice": "",
+    "audioOutputDevice": "",
+    "sampleRate": 0,
+    "bufferSize": 0,
+    "inputChannels": [],
+    "outputChannels": [],
+    "midiInputDevices": [],
+    "transportSync": { "sourceMode": "internal", "sourceIdentifier": "" },
+    "oscIngress": { "enabled": false, "port": 9000 },
+    "oscEgress": { "enabled": false, "port": 9001 }
+  },
+  "soundDefinitions": [],
+  "graph": {
+    "nodes": [
+      {
+        "id": "timeIndex",
+        "typeId": "talas.triggeredTableRead",
+        "parameters": [
+          { "id": "trigger", "expression": "1" },
+          { "id": "wavetable", "resource": "Control/C62TimeIndex" },
+          { "id": "gate", "expression": "1" },
+          { "id": "ignoreLoops", "boolean": true },
+          { "id": "fromMemoryWriter", "boolean": false }
+        ]
+      },
+      {
+        "id": "source",
+        "typeId": "talas.sumOfSines",
+        "parameters": [
+          { "id": "onDuration", "expression": "1 s" },
+          { "id": "frequency0", "expression": "1 hz" },
+          { "id": "frequency1", "expression": "1 hz" },
+          { "id": "analysis0", "resource": "Analysis/C62" },
+          { "id": "analysisFrequency0", "expression": "1 hz" },
+          { "id": "analysisFrames0", "expression": "3" },
+          { "id": "analysis1", "resource": "" },
+          { "id": "analysisFrequency1", "expression": "1 hz" },
+          { "id": "analysisFrames1", "expression": "1" },
+          { "id": "dbMorph", "expression": "0" },
+          { "id": "pchMorph", "expression": "0" },
+          { "id": "nbrPartials", "expression": "1" },
+          { "id": "bankSize", "expression": "1" },
+          { "id": "timeIndex", "expression": "0" },
+          { "id": "gate", "expression": "0" },
+          { "id": "loop", "boolean": true },
+          { "id": "loopStart", "expression": "0" },
+          { "id": "loopEnd", "expression": "1" },
+          { "id": "ctrlTime", "boolean": true },
+          { "id": "envelope", "expression": "1" }
+        ]
+      },
+      { "id": "out", "typeId": "talas.audioOutput", "parameters": [] }
+    ],
+    "connections": [
+      { "fromNode": "timeIndex", "fromPort": "value", "toNode": "source", "toPort": "timeIndex" },
+      { "fromNode": "source", "fromPort": "audioOut", "toNode": "out", "toPort": "audioIn" }
+    ]
+  }
+}

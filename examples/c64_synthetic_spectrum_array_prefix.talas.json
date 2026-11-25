@@ -1,0 +1,52 @@
+{
+  "format": "talas.project",
+  "version": 1,
+  "metadata": {
+    "title": "Synthetic Spectrum Array Prefix"
+  },
+  "graph": {
+    "nodes": [
+      {
+        "id": "spectrum",
+        "typeId": "talas.syntheticSpectrumFromArray",
+        "parameters": [
+          { "id": "nbrPartials", "expression": "3" },
+          { "id": "logScale", "boolean": false },
+          { "id": "sendBandwidths", "boolean": true },
+          { "id": "envelope", "expression": "1" },
+          { "id": "amplitudes", "text": "0.75" },
+          { "id": "frequencies", "text": "1 -2" },
+          { "id": "bandwidths", "text": "0 -1 -1" }
+        ]
+      },
+      {
+        "id": "bank",
+        "typeId": "talas.oscillatorBank",
+        "parameters": [
+          { "id": "nbrOscillators", "expression": "1" },
+          { "id": "bankSize", "expression": "1" },
+          { "id": "wavetable", "resource": "" }
+        ]
+      },
+      {
+        "id": "out",
+        "typeId": "talas.audioOutput",
+        "parameters": []
+      }
+    ],
+    "connections": [
+      {
+        "fromNode": "spectrum",
+        "fromPort": "spectrumOut",
+        "toNode": "bank",
+        "toPort": "spectrum"
+      },
+      {
+        "fromNode": "bank",
+        "fromPort": "audioOut",
+        "toNode": "out",
+        "toPort": "audioIn"
+      }
+    ]
+  }
+}

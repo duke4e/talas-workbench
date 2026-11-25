@@ -1,0 +1,100 @@
+{
+  "format": "talas.project",
+  "version": 35,
+  "expressionLanguage": "variablesV2",
+  "expressionDefinitions": [],
+  "variableLibrary": { "version": 2, "variables": [] },
+  "soundVariableLibrary": { "version": 1, "variables": [] },
+  "generatorLibrary": { "version": 2, "programs": [] },
+  "liveSetLibrary": { "version": 1, "liveSets": [], "tools": [] },
+  "metadata": { "title": "Filter Scheduled Controls" },
+  "presentation": {
+    "version": 2,
+    "structureLayouts": [
+      {
+        "scope": { "kind": "project" },
+        "nodes": [
+          { "nodeId": "source", "x": 80, "y": 220 },
+          { "nodeId": "filter", "x": 400, "y": 220 },
+          { "nodeId": "out", "x": 740, "y": 220 }
+        ]
+      }
+    ],
+    "performanceControls": [],
+    "performanceMeters": []
+  },
+  "snapshotLibrary": { "version": 1, "banks": [] },
+  "sampleMapLibrary": { "version": 1, "maps": [] },
+  "assets": [],
+  "partialTrackEdits": [],
+  "timeline": {
+    "loop": { "enabled": false, "startSeconds": 0, "endSeconds": 2 },
+    "musicalTime": {
+      "ticksPerQuarter": 960,
+      "tempo": [{ "tick": 0, "microsecondsPerQuarter": 500000 }],
+      "meter": [{ "tick": 0, "numerator": 4, "denominator": 4 }]
+    },
+    "score": { "tracks": [], "clips": [], "automation": [], "markers": [] },
+    "eventValues": [
+      { "timeSeconds": 0, "eventName": "C191Frequency", "domain": "hertz", "value": 600, "interpolation": "step" },
+      { "timeSeconds": 0, "eventName": "C191Q", "domain": "scalar", "value": 0.75, "interpolation": "step" },
+      { "timeSeconds": 0, "eventName": "C191Scale", "domain": "scalar", "value": 1, "interpolation": "step" },
+      { "timeSeconds": 0, "eventName": "C191Feedback", "domain": "scalar", "value": 0, "interpolation": "step" },
+      { "timeSeconds": 0.00016666666666666666, "eventName": "C191Frequency", "domain": "hertz", "value": 1800, "interpolation": "step" },
+      { "timeSeconds": 0.00016666666666666666, "eventName": "C191Q", "domain": "scalar", "value": 1.25, "interpolation": "step" },
+      { "timeSeconds": 0.00016666666666666666, "eventName": "C191Scale", "domain": "scalar", "value": 0.5, "interpolation": "step" },
+      { "timeSeconds": 0.00016666666666666666, "eventName": "C191Feedback", "domain": "scalar", "value": 0.2, "interpolation": "step" },
+      { "timeSeconds": 0.0005, "eventName": "C191Frequency", "domain": "hertz", "value": 3500, "interpolation": "step" },
+      { "timeSeconds": 0.0005, "eventName": "C191Q", "domain": "scalar", "value": 0.5, "interpolation": "step" },
+      { "timeSeconds": 0.0005, "eventName": "C191Scale", "domain": "scalar", "value": 1.5, "interpolation": "step" },
+      { "timeSeconds": 0.0005, "eventName": "C191Feedback", "domain": "scalar", "value": -0.25, "interpolation": "step" },
+      { "timeSeconds": 0.0006666666666666666, "eventName": "C191Frequency", "domain": "hertz", "value": 900, "interpolation": "step" },
+      { "timeSeconds": 0.0006666666666666666, "eventName": "C191Q", "domain": "scalar", "value": 2, "interpolation": "step" },
+      { "timeSeconds": 0.0006666666666666666, "eventName": "C191Scale", "domain": "scalar", "value": 0.8, "interpolation": "step" },
+      { "timeSeconds": 0.0006666666666666666, "eventName": "C191Feedback", "domain": "scalar", "value": 0.4, "interpolation": "step" }
+    ]
+  },
+  "deviceSettings": {
+    "configured": false,
+    "audioInputDevice": "",
+    "audioOutputDevice": "",
+    "sampleRate": 0,
+    "bufferSize": 0,
+    "inputChannels": [],
+    "outputChannels": [],
+    "midiInputDevices": [],
+    "transportSync": { "sourceMode": "internal", "sourceIdentifier": "" },
+    "oscIngress": { "enabled": false, "port": 9000 },
+    "oscEgress": { "enabled": false, "port": 9001 }
+  },
+  "soundDefinitions": [],
+  "graph": {
+    "nodes": [
+      {
+        "id": "source",
+        "typeId": "talas.oscillator",
+        "parameters": [
+          { "id": "frequency", "expression": "220 hz" },
+          { "id": "amplitude", "expression": "0.6" }
+        ]
+      },
+      {
+        "id": "filter",
+        "typeId": "talas.filter",
+        "parameters": [
+          { "id": "type", "choice": "lowPass" },
+          { "id": "frequency", "expression": "!C191Frequency" },
+          { "id": "q", "expression": "!C191Q + 0.25" },
+          { "id": "scale", "expression": "!C191Scale" },
+          { "id": "feedback", "expression": "!C191Feedback" },
+          { "id": "order", "expression": "4" }
+        ]
+      },
+      { "id": "out", "typeId": "talas.audioOutput", "parameters": [] }
+    ],
+    "connections": [
+      { "fromNode": "source", "fromPort": "audioOut", "toNode": "filter", "toPort": "audioIn" },
+      { "fromNode": "filter", "fromPort": "audioOut", "toNode": "out", "toPort": "audioIn" }
+    ]
+  }
+}

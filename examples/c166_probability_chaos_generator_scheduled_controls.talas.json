@@ -1,0 +1,90 @@
+{
+  "format": "talas.project",
+  "version": 35,
+  "expressionLanguage": "variablesV2",
+  "expressionDefinitions": [],
+  "variableLibrary": { "version": 2, "variables": [] },
+  "soundVariableLibrary": { "version": 1, "variables": [] },
+  "generatorLibrary": { "version": 2, "programs": [] },
+  "liveSetLibrary": { "version": 1, "liveSets": [], "tools": [] },
+  "metadata": { "title": "Probability Chaos Generator Scheduled Controls" },
+  "presentation": {
+    "version": 2,
+    "structureLayouts": [
+      {
+        "scope": { "kind": "project" },
+        "nodes": [
+          { "nodeId": "chaos", "x": 160, "y": 220 },
+          { "nodeId": "out", "x": 580, "y": 220 }
+        ]
+      }
+    ],
+    "performanceControls": [],
+    "performanceMeters": []
+  },
+  "snapshotLibrary": { "version": 1, "banks": [] },
+  "sampleMapLibrary": { "version": 1, "maps": [] },
+  "assets": [],
+  "partialTrackEdits": [],
+  "timeline": {
+    "loop": { "enabled": false, "startSeconds": 0, "endSeconds": 2 },
+    "musicalTime": {
+      "ticksPerQuarter": 960,
+      "tempo": [{ "tick": 0, "microsecondsPerQuarter": 500000 }],
+      "meter": [{ "tick": 0, "numerator": 4, "denominator": 4 }]
+    },
+    "score": { "tracks": [], "clips": [], "automation": [], "markers": [] },
+    "eventValues": [
+      { "timeSeconds": 0, "eventName": "C171Frequency", "domain": "hertz", "value": 0.5, "interpolation": "step" },
+      { "timeSeconds": 0, "eventName": "C171Probability", "domain": "scalar", "value": 0, "interpolation": "step" },
+      { "timeSeconds": 0, "eventName": "C171Chaos", "domain": "scalar", "value": 0, "interpolation": "step" },
+      { "timeSeconds": 0, "eventName": "C171Slew", "domain": "seconds", "value": 0, "interpolation": "step" },
+      { "timeSeconds": 0, "eventName": "C171Scale", "domain": "scalar", "value": 1, "interpolation": "step" },
+      { "timeSeconds": 0.5, "eventName": "C171Frequency", "domain": "hertz", "value": 3, "interpolation": "step" },
+      { "timeSeconds": 0.5, "eventName": "C171Probability", "domain": "scalar", "value": 1, "interpolation": "step" },
+      { "timeSeconds": 0.5, "eventName": "C171Chaos", "domain": "scalar", "value": 1, "interpolation": "step" },
+      { "timeSeconds": 0.5, "eventName": "C171Slew", "domain": "seconds", "value": 0.1, "interpolation": "step" },
+      { "timeSeconds": 0.5, "eventName": "C171Scale", "domain": "scalar", "value": 0.5, "interpolation": "step" },
+      { "timeSeconds": 1, "eventName": "C171Frequency", "domain": "hertz", "value": 1, "interpolation": "step" },
+      { "timeSeconds": 1, "eventName": "C171Probability", "domain": "scalar", "value": 0.5, "interpolation": "step" },
+      { "timeSeconds": 1, "eventName": "C171Chaos", "domain": "scalar", "value": 0.5, "interpolation": "step" },
+      { "timeSeconds": 1, "eventName": "C171Slew", "domain": "seconds", "value": 10, "interpolation": "step" },
+      { "timeSeconds": 1, "eventName": "C171Scale", "domain": "scalar", "value": 2, "interpolation": "step" }
+    ]
+  },
+  "deviceSettings": {
+    "configured": false,
+    "audioInputDevice": "",
+    "audioOutputDevice": "",
+    "sampleRate": 0,
+    "bufferSize": 0,
+    "inputChannels": [],
+    "outputChannels": [],
+    "midiInputDevices": [],
+    "transportSync": { "sourceMode": "internal", "sourceIdentifier": "" },
+    "oscIngress": { "enabled": false, "port": 9000 },
+    "oscEgress": { "enabled": false, "port": 9001 }
+  },
+  "soundDefinitions": [],
+  "graph": {
+    "nodes": [
+      {
+        "id": "chaos",
+        "typeId": "talas.probabilityChaosGenerator",
+        "parameters": [
+          { "id": "frequency", "expression": "!C171Frequency" },
+          { "id": "probability", "expression": "!C171Probability" },
+          { "id": "chaos", "expression": "!C171Chaos" },
+          { "id": "slew", "expression": "!C171Slew" },
+          { "id": "scale", "expression": "!C171Scale" },
+          { "id": "seed", "expression": "1701" }
+        ]
+      },
+      { "id": "out", "typeId": "talas.audioOutput", "parameters": [] }
+    ],
+    "connections": [
+      { "fromNode": "chaos", "fromPort": "valueOut", "toNode": "out", "toPort": "audioIn" },
+      { "fromNode": "chaos", "fromPort": "gateOut", "toNode": "out", "toPort": "rightIn" }
+    ]
+  }
+}

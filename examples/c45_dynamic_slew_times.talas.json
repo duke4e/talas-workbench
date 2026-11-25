@@ -1,0 +1,98 @@
+{
+  "format": "talas.project",
+  "version": 35,
+  "expressionLanguage": "legacyV1",
+  "expressionDefinitions": [],
+  "variableLibrary": { "version": 2, "variables": [] },
+  "soundVariableLibrary": { "version": 1, "variables": [] },
+  "generatorLibrary": { "version": 2, "programs": [] },
+  "liveSetLibrary": { "version": 1, "liveSets": [], "tools": [] },
+  "metadata": { "title": "Dynamic Slew Times" },
+  "presentation": {
+    "version": 2,
+    "structureLayouts": [
+      {
+        "scope": { "kind": "project" },
+        "nodes": [
+          { "nodeId": "clock", "x": 80, "y": 100 },
+          { "nodeId": "slew", "x": 280, "y": 100 },
+          { "nodeId": "oscillator", "x": 280, "y": 280 },
+          { "nodeId": "vca", "x": 480, "y": 220 },
+          { "nodeId": "out", "x": 680, "y": 220 }
+        ]
+      }
+    ],
+    "performanceControls": [],
+    "performanceMeters": []
+  },
+  "snapshotLibrary": { "version": 1, "banks": [] },
+  "sampleMapLibrary": { "version": 1, "maps": [] },
+  "assets": [],
+  "partialTrackEdits": [],
+  "timeline": {
+    "loop": { "enabled": false, "startSeconds": 0, "endSeconds": 4 },
+    "musicalTime": {
+      "ticksPerQuarter": 960,
+      "tempo": [{ "tick": 0, "microsecondsPerQuarter": 500000 }],
+      "meter": [{ "tick": 0, "numerator": 4, "denominator": 4 }]
+    },
+    "score": { "tracks": [], "clips": [], "automation": [], "markers": [] },
+    "eventValues": [
+      { "timeSeconds": 0, "eventName": "C45Rise", "domain": "seconds", "value": 0.5, "interpolation": "step" },
+      { "timeSeconds": 0, "eventName": "C45Fall", "domain": "seconds", "value": 0.5, "interpolation": "step" },
+      { "timeSeconds": 0.625, "eventName": "C45Fall", "domain": "seconds", "value": 0, "interpolation": "step" },
+      { "timeSeconds": 1.125, "eventName": "C45Rise", "domain": "seconds", "value": 0, "interpolation": "step" }
+    ]
+  },
+  "deviceSettings": {
+    "configured": false,
+    "audioInputDevice": "",
+    "audioOutputDevice": "",
+    "sampleRate": 0,
+    "bufferSize": 0,
+    "inputChannels": [],
+    "outputChannels": [],
+    "midiInputDevices": [],
+    "transportSync": { "sourceMode": "internal", "sourceIdentifier": "" },
+    "oscIngress": { "enabled": false, "port": 9000 },
+    "oscEgress": { "enabled": false, "port": 9001 }
+  },
+  "soundDefinitions": [],
+  "graph": {
+    "nodes": [
+      { "id": "out", "typeId": "talas.audioOutput", "parameters": [] },
+      { "id": "vca", "typeId": "talas.vca", "parameters": [] },
+      {
+        "id": "oscillator",
+        "typeId": "talas.oscillator",
+        "parameters": [
+          { "id": "frequency", "expression": "0.5 hz" },
+          { "id": "amplitude", "expression": "1" }
+        ]
+      },
+      {
+        "id": "clock",
+        "typeId": "talas.clock",
+        "parameters": [
+          { "id": "frequency", "expression": "1 hz" },
+          { "id": "dutyCycle", "expression": "0.5" },
+          { "id": "enabled", "boolean": true }
+        ]
+      },
+      {
+        "id": "slew",
+        "typeId": "talas.slew",
+        "parameters": [
+          { "id": "riseTime", "expression": "!C45Rise" },
+          { "id": "fallTime", "expression": "!C45Fall" }
+        ]
+      }
+    ],
+    "connections": [
+      { "fromNode": "clock", "fromPort": "gate", "toNode": "slew", "toPort": "value" },
+      { "fromNode": "slew", "fromPort": "value", "toNode": "vca", "toPort": "gain" },
+      { "fromNode": "oscillator", "fromPort": "audioOut", "toNode": "vca", "toPort": "audioIn" },
+      { "fromNode": "vca", "fromPort": "audioOut", "toNode": "out", "toPort": "audioIn" }
+    ]
+  }
+}

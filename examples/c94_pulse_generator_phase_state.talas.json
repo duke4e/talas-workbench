@@ -1,0 +1,496 @@
+{
+  "format": "talas.project",
+  "version": 43,
+  "expressionLanguage": "legacyV1",
+  "expressionDefinitions": [],
+  "variableLibrary": {
+    "version": 2,
+    "variables": []
+  },
+  "soundVariableLibrary": {
+    "version": 1,
+    "variables": []
+  },
+  "generatorLibrary": {
+    "version": 2,
+    "programs": []
+  },
+  "liveSetLibrary": {
+    "version": 1,
+    "liveSets": [],
+    "tools": []
+  },
+  "metadata": {
+    "title": "Pulse Generator Phase State"
+  },
+  "presentation": {
+    "version": 2,
+    "structureLayouts": [
+      {
+        "scope": {
+          "kind": "project"
+        },
+        "nodes": [
+          {
+            "nodeId": "linearPulse",
+            "x": 40,
+            "y": 60
+          },
+          {
+            "nodeId": "hardPulse",
+            "x": 40,
+            "y": 260
+          },
+          {
+            "nodeId": "fmFrequency",
+            "x": 40,
+            "y": 500
+          },
+          {
+            "nodeId": "fmModulator",
+            "x": 40,
+            "y": 620
+          },
+          {
+            "nodeId": "fmPulse",
+            "x": 330,
+            "y": 560
+          },
+          {
+            "nodeId": "mixEdges",
+            "x": 620,
+            "y": 180
+          },
+          {
+            "nodeId": "mixAll",
+            "x": 850,
+            "y": 360
+          },
+          {
+            "nodeId": "out",
+            "x": 1080,
+            "y": 360
+          }
+        ]
+      }
+    ],
+    "performanceControls": [],
+    "performanceMeters": []
+  },
+  "snapshotLibrary": {
+    "version": 1,
+    "banks": []
+  },
+  "sampleMapLibrary": {
+    "version": 1,
+    "maps": []
+  },
+  "virtualControls": [],
+  "assets": [],
+  "partialTrackEdits": [],
+  "timeline": {
+    "loop": {
+      "enabled": false,
+      "startSeconds": 0,
+      "endSeconds": 3
+    },
+    "musicalTime": {
+      "ticksPerQuarter": 960,
+      "tempo": [
+        {
+          "tick": 0,
+          "microsecondsPerQuarter": 500000
+        }
+      ],
+      "meter": [
+        {
+          "tick": 0,
+          "numerator": 4,
+          "denominator": 4
+        }
+      ]
+    },
+    "score": {
+      "tracks": [
+      ],
+      "clips": [
+      ],
+      "automation": [
+      ],
+      "markers": [
+      ]
+    },
+    "eventValues": [
+      {
+        "timeSeconds": 0,
+        "eventName": "C94LinearFrequency",
+        "domain": "scalar",
+        "value": 2,
+        "interpolation": "step"
+      },
+      {
+        "timeSeconds": 0,
+        "eventName": "C94LinearEnvelope",
+        "domain": "scalar",
+        "value": 0.20000000000000001,
+        "interpolation": "step"
+      },
+      {
+        "timeSeconds": 0,
+        "eventName": "C94LinearDuty",
+        "domain": "scalar",
+        "value": 0.25,
+        "interpolation": "step"
+      },
+      {
+        "timeSeconds": 0,
+        "eventName": "C94LinearReset",
+        "domain": "scalar",
+        "value": 0,
+        "interpolation": "step"
+      },
+      {
+        "timeSeconds": 0,
+        "eventName": "C94HardFrequency",
+        "domain": "scalar",
+        "value": 1,
+        "interpolation": "step"
+      },
+      {
+        "timeSeconds": 0,
+        "eventName": "C94HardEnvelope",
+        "domain": "scalar",
+        "value": 0.14999999999999999,
+        "interpolation": "step"
+      },
+      {
+        "timeSeconds": 0,
+        "eventName": "C94HardDuty",
+        "domain": "scalar",
+        "value": 0.5,
+        "interpolation": "step"
+      },
+      {
+        "timeSeconds": 0,
+        "eventName": "C94HardReset",
+        "domain": "scalar",
+        "value": 0,
+        "interpolation": "step"
+      },
+      {
+        "timeSeconds": 0,
+        "eventName": "C94FmFrequency",
+        "domain": "scalar",
+        "value": 0.75,
+        "interpolation": "step"
+      },
+      {
+        "timeSeconds": 0.5,
+        "eventName": "C94LinearFrequency",
+        "domain": "scalar",
+        "value": 1,
+        "interpolation": "step"
+      },
+      {
+        "timeSeconds": 0.75,
+        "eventName": "C94LinearEnvelope",
+        "domain": "scalar",
+        "value": 0,
+        "interpolation": "step"
+      },
+      {
+        "timeSeconds": 0.875,
+        "eventName": "C94LinearDuty",
+        "domain": "scalar",
+        "value": 0,
+        "interpolation": "step"
+      },
+      {
+        "timeSeconds": 1,
+        "eventName": "C94LinearReset",
+        "domain": "scalar",
+        "value": -1,
+        "interpolation": "step"
+      },
+      {
+        "timeSeconds": 1.0625,
+        "eventName": "C94LinearReset",
+        "domain": "scalar",
+        "value": 0,
+        "interpolation": "step"
+      },
+      {
+        "timeSeconds": 1.125,
+        "eventName": "C94LinearDuty",
+        "domain": "scalar",
+        "value": 0.25,
+        "interpolation": "step"
+      },
+      {
+        "timeSeconds": 1.125,
+        "eventName": "C94LinearEnvelope",
+        "domain": "scalar",
+        "value": 0.20000000000000001,
+        "interpolation": "step"
+      },
+      {
+        "timeSeconds": 1.5,
+        "eventName": "C94HardDuty",
+        "domain": "scalar",
+        "value": 0.25,
+        "interpolation": "step"
+      },
+      {
+        "timeSeconds": 2,
+        "eventName": "C94HardReset",
+        "domain": "scalar",
+        "value": 1,
+        "interpolation": "step"
+      },
+      {
+        "timeSeconds": 2.0625,
+        "eventName": "C94HardReset",
+        "domain": "scalar",
+        "value": 0,
+        "interpolation": "step"
+      },
+      {
+        "timeSeconds": 2.25,
+        "eventName": "C94FmFrequency",
+        "domain": "scalar",
+        "value": 1.25,
+        "interpolation": "step"
+      }
+    ]
+  },
+  "deviceSettings": {
+    "configured": false,
+    "audioInputDevice": "",
+    "audioOutputDevice": "",
+    "sampleRate": 0,
+    "bufferSize": 0,
+    "inputChannels": [],
+    "outputChannels": [],
+    "midiInputDevices": [],
+    "transportSync": {
+      "sourceMode": "internal",
+      "sourceIdentifier": ""
+    },
+    "oscIngress": {
+      "enabled": false,
+      "port": 9000
+    },
+    "oscEgress": {
+      "enabled": false,
+      "port": 9001
+    }
+  },
+  "soundDefinitions": [],
+  "graph": {
+    "nodes": [
+      {
+        "id": "linearPulse",
+        "typeId": "talas.pulseGenerator",
+        "parameters": [
+          {
+            "id": "frequency",
+            "expression": "!C94LinearFrequency * 1 hz"
+          },
+          {
+            "id": "modulation",
+            "text": ""
+          },
+          {
+            "id": "maxMI",
+            "expression": "0"
+          },
+          {
+            "id": "interpolation",
+            "choice": "linear"
+          },
+          {
+            "id": "envelope",
+            "expression": "!C94LinearEnvelope"
+          },
+          {
+            "id": "dutyCycle",
+            "expression": "!C94LinearDuty"
+          },
+          {
+            "id": "reset",
+            "expression": "!C94LinearReset"
+          }
+        ]
+      },
+      {
+        "id": "hardPulse",
+        "typeId": "talas.pulseGenerator",
+        "parameters": [
+          {
+            "id": "frequency",
+            "expression": "!C94HardFrequency * 1 hz"
+          },
+          {
+            "id": "modulation",
+            "text": ""
+          },
+          {
+            "id": "maxMI",
+            "expression": "0"
+          },
+          {
+            "id": "interpolation",
+            "choice": "none"
+          },
+          {
+            "id": "envelope",
+            "expression": "!C94HardEnvelope"
+          },
+          {
+            "id": "dutyCycle",
+            "expression": "!C94HardDuty"
+          },
+          {
+            "id": "reset",
+            "expression": "!C94HardReset"
+          }
+        ]
+      },
+      {
+        "id": "fmFrequency",
+        "typeId": "talas.constant",
+        "parameters": [
+          {
+            "id": "value",
+            "expression": "!C94FmFrequency"
+          }
+        ]
+      },
+      {
+        "id": "fmModulator",
+        "typeId": "talas.oscillator",
+        "parameters": [
+          {
+            "id": "frequency",
+            "expression": "0.5 hz"
+          },
+          {
+            "id": "amplitude",
+            "expression": "0.5"
+          }
+        ]
+      },
+      {
+        "id": "fmPulse",
+        "typeId": "talas.pulseGenerator",
+        "parameters": [
+          {
+            "id": "frequency",
+            "expression": "1 hz"
+          },
+          {
+            "id": "modulation",
+            "text": "frequency"
+          },
+          {
+            "id": "maxMI",
+            "expression": "0.25"
+          },
+          {
+            "id": "interpolation",
+            "choice": "linear"
+          },
+          {
+            "id": "envelope",
+            "expression": "0.1"
+          },
+          {
+            "id": "dutyCycle",
+            "expression": "0.5"
+          },
+          {
+            "id": "reset",
+            "expression": "0"
+          }
+        ]
+      },
+      {
+        "id": "mixEdges",
+        "typeId": "talas.mixerV2",
+        "parameters": [
+          {
+            "id": "left",
+            "expression": "1.0"
+          },
+          {
+            "id": "right",
+            "expression": "1.0"
+          }
+        ]
+      },
+      {
+        "id": "mixAll",
+        "typeId": "talas.mixerV2",
+        "parameters": [
+          {
+            "id": "left",
+            "expression": "1.0"
+          },
+          {
+            "id": "right",
+            "expression": "1.0"
+          }
+        ]
+      },
+      {
+        "id": "out",
+        "typeId": "talas.audioOutput",
+        "parameters": []
+      }
+    ],
+    "connections": [
+      {
+        "fromNode": "fmFrequency",
+        "fromPort": "value",
+        "toNode": "fmPulse",
+        "toPort": "frequency"
+      },
+      {
+        "fromNode": "fmModulator",
+        "fromPort": "audioOut",
+        "toNode": "fmPulse",
+        "toPort": "modulator"
+      },
+      {
+        "fromNode": "linearPulse",
+        "fromPort": "audioOut",
+        "toNode": "mixEdges",
+        "toPort": "inputs"
+      },
+      {
+        "fromNode": "hardPulse",
+        "fromPort": "audioOut",
+        "toNode": "mixEdges",
+        "toPort": "inputs"
+      },
+      {
+        "fromNode": "mixEdges",
+        "fromPort": "leftOut",
+        "toNode": "mixAll",
+        "toPort": "inputs"
+      },
+      {
+        "fromNode": "fmPulse",
+        "fromPort": "audioOut",
+        "toNode": "mixAll",
+        "toPort": "inputs"
+      },
+      {
+        "fromNode": "mixAll",
+        "fromPort": "leftOut",
+        "toNode": "out",
+        "toPort": "audioIn"
+      }
+    ]
+  }
+}

@@ -1,0 +1,111 @@
+{
+  "format": "talas.project",
+  "version": 35,
+  "expressionLanguage": "variablesV2",
+  "expressionDefinitions": [],
+  "variableLibrary": { "version": 2, "variables": [] },
+  "soundVariableLibrary": { "version": 1, "variables": [] },
+  "generatorLibrary": { "version": 2, "programs": [] },
+  "liveSetLibrary": { "version": 1, "liveSets": [], "tools": [] },
+  "metadata": { "title": "ADSR Scheduled Typed Gate Controls" },
+  "presentation": {
+    "version": 2,
+    "structureLayouts": [
+      {
+        "scope": { "kind": "project" },
+        "nodes": [
+          { "nodeId": "envelope", "x": 300, "y": 160 },
+          { "nodeId": "carrier", "x": 300, "y": 360 },
+          { "nodeId": "vca", "x": 580, "y": 240 },
+          { "nodeId": "out", "x": 820, "y": 240 }
+        ]
+      }
+    ],
+    "performanceControls": [],
+    "performanceMeters": []
+  },
+  "snapshotLibrary": { "version": 1, "banks": [] },
+  "sampleMapLibrary": { "version": 1, "maps": [] },
+  "assets": [],
+  "partialTrackEdits": [],
+  "timeline": {
+    "loop": { "enabled": false, "startSeconds": 0, "endSeconds": 1 },
+    "musicalTime": {
+      "ticksPerQuarter": 960,
+      "tempo": [{ "tick": 0, "microsecondsPerQuarter": 500000 }],
+      "meter": [{ "tick": 0, "numerator": 4, "denominator": 4 }]
+    },
+    "score": { "tracks": [], "clips": [], "automation": [], "markers": [] },
+    "eventValues": [
+      { "timeSeconds": 0, "eventName": "C159Attack", "domain": "seconds", "value": 0.375, "interpolation": "step" },
+      { "timeSeconds": 0, "eventName": "C159Decay", "domain": "seconds", "value": 0.375, "interpolation": "step" },
+      { "timeSeconds": 0, "eventName": "C159Sustain", "domain": "scalar", "value": 0.5, "interpolation": "step" },
+      { "timeSeconds": 0, "eventName": "C159Release", "domain": "seconds", "value": 0.375, "interpolation": "step" },
+      { "timeSeconds": 0, "eventName": "C159Scale", "domain": "scalar", "value": 0.5, "interpolation": "step" },
+      { "timeSeconds": 0, "eventName": "C159Gate", "domain": "scalar", "value": 0, "interpolation": "step" },
+      { "timeSeconds": 0, "eventName": "C159Legato", "domain": "scalar", "value": 0, "interpolation": "step" },
+      { "timeSeconds": 0.125, "eventName": "C159Gate", "domain": "scalar", "value": 1, "interpolation": "step" },
+      { "timeSeconds": 0.25, "eventName": "C159Attack", "domain": "seconds", "value": 0.125, "interpolation": "step" },
+      { "timeSeconds": 0.375, "eventName": "C159Decay", "domain": "seconds", "value": 0.125, "interpolation": "step" },
+      { "timeSeconds": 0.375, "eventName": "C159Sustain", "domain": "scalar", "value": 0.25, "interpolation": "step" },
+      { "timeSeconds": 0.5, "eventName": "C159Scale", "domain": "scalar", "value": 0.75, "interpolation": "step" },
+      { "timeSeconds": 0.5, "eventName": "C159Gate", "domain": "scalar", "value": 0, "interpolation": "step" },
+      { "timeSeconds": 0.625, "eventName": "C159Attack", "domain": "seconds", "value": 0.375, "interpolation": "step" },
+      { "timeSeconds": 0.625, "eventName": "C159Scale", "domain": "scalar", "value": 0.5, "interpolation": "step" },
+      { "timeSeconds": 0.625, "eventName": "C159Legato", "domain": "scalar", "value": 1, "interpolation": "step" },
+      { "timeSeconds": 0.625, "eventName": "C159Gate", "domain": "scalar", "value": 1, "interpolation": "step" },
+      { "timeSeconds": 0.75, "eventName": "C159Release", "domain": "seconds", "value": 0.125, "interpolation": "step" },
+      { "timeSeconds": 0.75, "eventName": "C159Gate", "domain": "scalar", "value": 0, "interpolation": "step" },
+      { "timeSeconds": 0.875, "eventName": "C159Scale", "domain": "scalar", "value": 1, "interpolation": "step" },
+      { "timeSeconds": 0.875, "eventName": "C159Legato", "domain": "scalar", "value": 0, "interpolation": "step" },
+      { "timeSeconds": 0.875, "eventName": "C159Gate", "domain": "scalar", "value": 1, "interpolation": "step" }
+    ]
+  },
+  "deviceSettings": {
+    "configured": false,
+    "audioInputDevice": "",
+    "audioOutputDevice": "",
+    "sampleRate": 0,
+    "bufferSize": 0,
+    "inputChannels": [],
+    "outputChannels": [],
+    "midiInputDevices": [],
+    "transportSync": { "sourceMode": "internal", "sourceIdentifier": "" },
+    "oscIngress": { "enabled": false, "port": 9000 },
+    "oscEgress": { "enabled": false, "port": 9001 }
+  },
+  "soundDefinitions": [],
+  "graph": {
+    "nodes": [
+      {
+        "id": "envelope",
+        "typeId": "talas.adsr",
+        "parameters": [
+          { "id": "attackTime", "expression": "0.125 s + !C159Attack" },
+          { "id": "decayTime", "expression": "0.125 s + !C159Decay" },
+          { "id": "sustainLevel", "expression": "!C159Sustain" },
+          { "id": "releaseTime", "expression": "0.125 s + !C159Release" },
+          { "id": "type", "choice": "linear" },
+          { "id": "scale", "expression": "!C159Scale" },
+          { "id": "gate", "expression": "!C159Gate" },
+          { "id": "legato", "expression": "!C159Legato" }
+        ]
+      },
+      {
+        "id": "carrier",
+        "typeId": "talas.oscillator",
+        "parameters": [
+          { "id": "frequency", "expression": "0.5 hz" },
+          { "id": "amplitude", "expression": "0.5" }
+        ]
+      },
+      { "id": "vca", "typeId": "talas.vca", "parameters": [] },
+      { "id": "out", "typeId": "talas.audioOutput", "parameters": [] }
+    ],
+    "connections": [
+      { "fromNode": "carrier", "fromPort": "audioOut", "toNode": "vca", "toPort": "audioIn" },
+      { "fromNode": "envelope", "fromPort": "value", "toNode": "vca", "toPort": "gain" },
+      { "fromNode": "vca", "fromPort": "audioOut", "toNode": "out", "toPort": "audioIn" }
+    ]
+  }
+}

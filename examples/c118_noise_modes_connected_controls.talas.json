@@ -1,0 +1,396 @@
+{
+  "format": "talas.project",
+  "version": 43,
+  "expressionLanguage": "variablesV2",
+  "expressionDefinitions": [],
+  "variableLibrary": {
+    "version": 2,
+    "variables": []
+  },
+  "soundVariableLibrary": {
+    "version": 1,
+    "variables": []
+  },
+  "generatorLibrary": {
+    "version": 2,
+    "programs": []
+  },
+  "liveSetLibrary": {
+    "version": 1,
+    "liveSets": [],
+    "tools": []
+  },
+  "metadata": {
+    "title": "Noise Modes Connected Controls"
+  },
+  "presentation": {
+    "version": 2,
+    "structureLayouts": [
+      {
+        "scope": {
+          "kind": "project"
+        },
+        "nodes": [
+          {
+            "nodeId": "frequency",
+            "x": 40,
+            "y": 60
+          },
+          {
+            "nodeId": "center",
+            "x": 40,
+            "y": 190
+          },
+          {
+            "nodeId": "scale",
+            "x": 40,
+            "y": 320
+          },
+          {
+            "nodeId": "pink",
+            "x": 330,
+            "y": 100
+          },
+          {
+            "nodeId": "hotPink",
+            "x": 330,
+            "y": 300
+          },
+          {
+            "nodeId": "mix",
+            "x": 610,
+            "y": 200
+          },
+          {
+            "nodeId": "out",
+            "x": 850,
+            "y": 200
+          },
+          {
+            "nodeId": "vca1",
+            "x": 410,
+            "y": 140
+          },
+          {
+            "nodeId": "vca2",
+            "x": 410,
+            "y": 260
+          }
+        ]
+      }
+    ],
+    "performanceControls": [],
+    "performanceMeters": []
+  },
+  "snapshotLibrary": {
+    "version": 1,
+    "banks": []
+  },
+  "sampleMapLibrary": {
+    "version": 1,
+    "maps": []
+  },
+  "virtualControls": [],
+  "assets": [],
+  "partialTrackEdits": [],
+  "timeline": {
+    "loop": {
+      "enabled": false,
+      "startSeconds": 0,
+      "endSeconds": 0.125
+    },
+    "musicalTime": {
+      "ticksPerQuarter": 960,
+      "tempo": [
+        {
+          "tick": 0,
+          "microsecondsPerQuarter": 500000
+        }
+      ],
+      "meter": [
+        {
+          "tick": 0,
+          "numerator": 4,
+          "denominator": 4
+        }
+      ]
+    },
+    "score": {
+      "tracks": [
+      ],
+      "clips": [
+      ],
+      "automation": [
+      ],
+      "markers": [
+      ]
+    },
+    "eventValues": [
+      {
+        "timeSeconds": 0,
+        "eventName": "C118Frequency",
+        "domain": "scalar",
+        "value": 64,
+        "interpolation": "step"
+      },
+      {
+        "timeSeconds": 0,
+        "eventName": "C118Center",
+        "domain": "scalar",
+        "value": 0,
+        "interpolation": "step"
+      },
+      {
+        "timeSeconds": 0,
+        "eventName": "C118Scale",
+        "domain": "scalar",
+        "value": 0.34999999999999998,
+        "interpolation": "step"
+      },
+      {
+        "timeSeconds": 0.03125,
+        "eventName": "C118Frequency",
+        "domain": "scalar",
+        "value": 512,
+        "interpolation": "step"
+      },
+      {
+        "timeSeconds": 0.0625,
+        "eventName": "C118Center",
+        "domain": "scalar",
+        "value": 0.10000000000000001,
+        "interpolation": "step"
+      },
+      {
+        "timeSeconds": 0.09375,
+        "eventName": "C118Scale",
+        "domain": "scalar",
+        "value": 0.20000000000000001,
+        "interpolation": "step"
+      },
+      {
+        "timeSeconds": 0.109375,
+        "eventName": "C118Center",
+        "domain": "scalar",
+        "value": -0.050000000000000003,
+        "interpolation": "step"
+      }
+    ]
+  },
+  "deviceSettings": {
+    "configured": false,
+    "audioInputDevice": "",
+    "audioOutputDevice": "",
+    "sampleRate": 0,
+    "bufferSize": 0,
+    "inputChannels": [],
+    "outputChannels": [],
+    "midiInputDevices": [],
+    "transportSync": {
+      "sourceMode": "internal",
+      "sourceIdentifier": ""
+    },
+    "oscIngress": {
+      "enabled": false,
+      "port": 9000
+    },
+    "oscEgress": {
+      "enabled": false,
+      "port": 9001
+    }
+  },
+  "soundDefinitions": [],
+  "graph": {
+    "nodes": [
+      {
+        "id": "frequency",
+        "typeId": "talas.constant",
+        "parameters": [
+          {
+            "id": "value",
+            "expression": "!C118Frequency"
+          }
+        ]
+      },
+      {
+        "id": "center",
+        "typeId": "talas.constant",
+        "parameters": [
+          {
+            "id": "value",
+            "expression": "!C118Center"
+          }
+        ]
+      },
+      {
+        "id": "scale",
+        "typeId": "talas.constant",
+        "parameters": [
+          {
+            "id": "value",
+            "expression": "!C118Scale"
+          }
+        ]
+      },
+      {
+        "id": "pink",
+        "typeId": "talas.noise",
+        "parameters": [
+          {
+            "id": "initialState",
+            "expression": "-0.25"
+          },
+          {
+            "id": "type",
+            "choice": "pink"
+          },
+          {
+            "id": "frequency",
+            "expression": "1 / 0"
+          },
+          {
+            "id": "centerValue",
+            "expression": "1 / 0"
+          },
+          {
+            "id": "scale",
+            "expression": "1 / 0"
+          }
+        ]
+      },
+      {
+        "id": "hotPink",
+        "typeId": "talas.noise",
+        "parameters": [
+          {
+            "id": "initialState",
+            "expression": "0.25"
+          },
+          {
+            "id": "type",
+            "choice": "hotPink"
+          },
+          {
+            "id": "frequency",
+            "expression": "1 / 0"
+          },
+          {
+            "id": "centerValue",
+            "expression": "1 / 0"
+          },
+          {
+            "id": "scale",
+            "expression": "1 / 0"
+          }
+        ]
+      },
+      {
+        "id": "mix",
+        "typeId": "talas.mixerV2",
+        "parameters": [
+          {
+            "id": "left",
+            "expression": "1.0"
+          },
+          {
+            "id": "right",
+            "expression": "1.0"
+          }
+        ]
+      },
+      {
+        "id": "out",
+        "typeId": "talas.audioOutput",
+        "parameters": []
+      },
+      {
+        "id": "vca1",
+        "typeId": "talas.vca",
+        "parameters": [
+          {
+            "id": "gain",
+            "expression": "0.5"
+          }
+        ]
+      },
+      {
+        "id": "vca2",
+        "typeId": "talas.vca",
+        "parameters": [
+          {
+            "id": "gain",
+            "expression": "0.5"
+          }
+        ]
+      }
+    ],
+    "connections": [
+      {
+        "fromNode": "frequency",
+        "fromPort": "value",
+        "toNode": "pink",
+        "toPort": "frequency"
+      },
+      {
+        "fromNode": "center",
+        "fromPort": "value",
+        "toNode": "pink",
+        "toPort": "centerValue"
+      },
+      {
+        "fromNode": "scale",
+        "fromPort": "value",
+        "toNode": "pink",
+        "toPort": "scale"
+      },
+      {
+        "fromNode": "frequency",
+        "fromPort": "value",
+        "toNode": "hotPink",
+        "toPort": "frequency"
+      },
+      {
+        "fromNode": "center",
+        "fromPort": "value",
+        "toNode": "hotPink",
+        "toPort": "centerValue"
+      },
+      {
+        "fromNode": "scale",
+        "fromPort": "value",
+        "toNode": "hotPink",
+        "toPort": "scale"
+      },
+      {
+        "fromNode": "pink",
+        "fromPort": "audioOut",
+        "toNode": "vca1",
+        "toPort": "audioIn"
+      },
+      {
+        "fromNode": "hotPink",
+        "fromPort": "audioOut",
+        "toNode": "vca2",
+        "toPort": "audioIn"
+      },
+      {
+        "fromNode": "mix",
+        "fromPort": "leftOut",
+        "toNode": "out",
+        "toPort": "audioIn"
+      },
+      {
+        "fromNode": "vca1",
+        "fromPort": "audioOut",
+        "toNode": "mix",
+        "toPort": "inputs"
+      },
+      {
+        "fromNode": "vca2",
+        "fromPort": "audioOut",
+        "toNode": "mix",
+        "toPort": "inputs"
+      }
+    ]
+  }
+}

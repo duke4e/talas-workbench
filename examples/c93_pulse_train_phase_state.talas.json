@@ -1,0 +1,522 @@
+{
+  "format": "talas.project",
+  "version": 43,
+  "expressionLanguage": "legacyV1",
+  "expressionDefinitions": [],
+  "variableLibrary": {
+    "version": 2,
+    "variables": []
+  },
+  "soundVariableLibrary": {
+    "version": 1,
+    "variables": []
+  },
+  "generatorLibrary": {
+    "version": 2,
+    "programs": []
+  },
+  "liveSetLibrary": {
+    "version": 1,
+    "liveSets": [],
+    "tools": []
+  },
+  "metadata": {
+    "title": "Pulse Train Phase State"
+  },
+  "presentation": {
+    "version": 2,
+    "structureLayouts": [
+      {
+        "scope": {
+          "kind": "project"
+        },
+        "nodes": [
+          {
+            "nodeId": "fixedPulse",
+            "x": 290,
+            "y": 100
+          },
+          {
+            "nodeId": "fixedPeriod",
+            "x": 40,
+            "y": 20
+          },
+          {
+            "nodeId": "fixedGate",
+            "x": 40,
+            "y": 100
+          },
+          {
+            "nodeId": "ignoredDuty",
+            "x": 40,
+            "y": 180
+          },
+          {
+            "nodeId": "fixedCarrier",
+            "x": 290,
+            "y": 260
+          },
+          {
+            "nodeId": "fixedVca",
+            "x": 580,
+            "y": 180
+          },
+          {
+            "nodeId": "widePulse",
+            "x": 290,
+            "y": 500
+          },
+          {
+            "nodeId": "widePeriod",
+            "x": 40,
+            "y": 420
+          },
+          {
+            "nodeId": "wideDuty",
+            "x": 40,
+            "y": 500
+          },
+          {
+            "nodeId": "wideGate",
+            "x": 40,
+            "y": 580
+          },
+          {
+            "nodeId": "wideCarrier",
+            "x": 290,
+            "y": 660
+          },
+          {
+            "nodeId": "wideVca",
+            "x": 580,
+            "y": 580
+          },
+          {
+            "nodeId": "mix",
+            "x": 830,
+            "y": 380
+          },
+          {
+            "nodeId": "out",
+            "x": 1080,
+            "y": 380
+          }
+        ]
+      }
+    ],
+    "performanceControls": [],
+    "performanceMeters": []
+  },
+  "snapshotLibrary": {
+    "version": 1,
+    "banks": []
+  },
+  "sampleMapLibrary": {
+    "version": 1,
+    "maps": []
+  },
+  "virtualControls": [],
+  "assets": [],
+  "partialTrackEdits": [],
+  "timeline": {
+    "loop": {
+      "enabled": false,
+      "startSeconds": 0,
+      "endSeconds": 3
+    },
+    "musicalTime": {
+      "ticksPerQuarter": 960,
+      "tempo": [
+        {
+          "tick": 0,
+          "microsecondsPerQuarter": 500000
+        }
+      ],
+      "meter": [
+        {
+          "tick": 0,
+          "numerator": 4,
+          "denominator": 4
+        }
+      ]
+    },
+    "score": {
+      "tracks": [
+      ],
+      "clips": [
+      ],
+      "automation": [
+      ],
+      "markers": [
+      ]
+    },
+    "eventValues": [
+      {
+        "timeSeconds": 0,
+        "eventName": "C93FixedPeriod",
+        "domain": "scalar",
+        "value": 0.5,
+        "interpolation": "step"
+      },
+      {
+        "timeSeconds": 0,
+        "eventName": "C93FixedGate",
+        "domain": "scalar",
+        "value": 1,
+        "interpolation": "step"
+      },
+      {
+        "timeSeconds": 0,
+        "eventName": "C93IgnoredDuty",
+        "domain": "scalar",
+        "value": 1.5,
+        "interpolation": "step"
+      },
+      {
+        "timeSeconds": 0,
+        "eventName": "C93WidePeriod",
+        "domain": "scalar",
+        "value": 1,
+        "interpolation": "step"
+      },
+      {
+        "timeSeconds": 0,
+        "eventName": "C93WideDuty",
+        "domain": "scalar",
+        "value": 0.5,
+        "interpolation": "step"
+      },
+      {
+        "timeSeconds": 0,
+        "eventName": "C93WideGate",
+        "domain": "scalar",
+        "value": 1,
+        "interpolation": "step"
+      },
+      {
+        "timeSeconds": 0.75,
+        "eventName": "C93FixedGate",
+        "domain": "scalar",
+        "value": 0,
+        "interpolation": "step"
+      },
+      {
+        "timeSeconds": 0.75,
+        "eventName": "C93WidePeriod",
+        "domain": "scalar",
+        "value": 0.5,
+        "interpolation": "step"
+      },
+      {
+        "timeSeconds": 1,
+        "eventName": "C93FixedGate",
+        "domain": "scalar",
+        "value": 1,
+        "interpolation": "step"
+      },
+      {
+        "timeSeconds": 1.25,
+        "eventName": "C93WideGate",
+        "domain": "scalar",
+        "value": 0,
+        "interpolation": "step"
+      },
+      {
+        "timeSeconds": 1.5,
+        "eventName": "C93WideGate",
+        "domain": "scalar",
+        "value": 1,
+        "interpolation": "step"
+      },
+      {
+        "timeSeconds": 2,
+        "eventName": "C93WideDuty",
+        "domain": "scalar",
+        "value": 0,
+        "interpolation": "step"
+      },
+      {
+        "timeSeconds": 2.25,
+        "eventName": "C93WideDuty",
+        "domain": "scalar",
+        "value": 1,
+        "interpolation": "step"
+      },
+      {
+        "timeSeconds": 2.5,
+        "eventName": "C93FixedPeriod",
+        "domain": "scalar",
+        "value": 0.25,
+        "interpolation": "step"
+      }
+    ]
+  },
+  "deviceSettings": {
+    "configured": false,
+    "audioInputDevice": "",
+    "audioOutputDevice": "",
+    "sampleRate": 0,
+    "bufferSize": 0,
+    "inputChannels": [],
+    "outputChannels": [],
+    "midiInputDevices": [],
+    "transportSync": {
+      "sourceMode": "internal",
+      "sourceIdentifier": ""
+    },
+    "oscIngress": {
+      "enabled": false,
+      "port": 9000
+    },
+    "oscEgress": {
+      "enabled": false,
+      "port": 9001
+    }
+  },
+  "soundDefinitions": [],
+  "graph": {
+    "nodes": [
+      {
+        "id": "fixedPulse",
+        "typeId": "talas.pulseTrain",
+        "parameters": [
+          {
+            "id": "period",
+            "expression": "0.5 s"
+          },
+          {
+            "id": "variableDutyCycle",
+            "boolean": false
+          },
+          {
+            "id": "dutyCycle",
+            "expression": "1.5"
+          },
+          {
+            "id": "gate",
+            "expression": "0"
+          }
+        ]
+      },
+      {
+        "id": "fixedPeriod",
+        "typeId": "talas.constant",
+        "parameters": [
+          {
+            "id": "value",
+            "expression": "!C93FixedPeriod"
+          }
+        ]
+      },
+      {
+        "id": "fixedGate",
+        "typeId": "talas.constant",
+        "parameters": [
+          {
+            "id": "value",
+            "expression": "!C93FixedGate"
+          }
+        ]
+      },
+      {
+        "id": "ignoredDuty",
+        "typeId": "talas.constant",
+        "parameters": [
+          {
+            "id": "value",
+            "expression": "!C93IgnoredDuty"
+          }
+        ]
+      },
+      {
+        "id": "fixedCarrier",
+        "typeId": "talas.oscillator",
+        "parameters": [
+          {
+            "id": "frequency",
+            "expression": "1 hz"
+          },
+          {
+            "id": "amplitude",
+            "expression": "0.2"
+          }
+        ]
+      },
+      {
+        "id": "fixedVca",
+        "typeId": "talas.vca",
+        "parameters": []
+      },
+      {
+        "id": "widePulse",
+        "typeId": "talas.pulseTrain",
+        "parameters": [
+          {
+            "id": "period",
+            "expression": "1 s"
+          },
+          {
+            "id": "variableDutyCycle",
+            "boolean": true
+          },
+          {
+            "id": "dutyCycle",
+            "expression": "0.5"
+          },
+          {
+            "id": "gate",
+            "expression": "0"
+          }
+        ]
+      },
+      {
+        "id": "widePeriod",
+        "typeId": "talas.constant",
+        "parameters": [
+          {
+            "id": "value",
+            "expression": "!C93WidePeriod"
+          }
+        ]
+      },
+      {
+        "id": "wideDuty",
+        "typeId": "talas.constant",
+        "parameters": [
+          {
+            "id": "value",
+            "expression": "!C93WideDuty"
+          }
+        ]
+      },
+      {
+        "id": "wideGate",
+        "typeId": "talas.constant",
+        "parameters": [
+          {
+            "id": "value",
+            "expression": "!C93WideGate"
+          }
+        ]
+      },
+      {
+        "id": "wideCarrier",
+        "typeId": "talas.oscillator",
+        "parameters": [
+          {
+            "id": "frequency",
+            "expression": "0.5 hz"
+          },
+          {
+            "id": "amplitude",
+            "expression": "0.2"
+          }
+        ]
+      },
+      {
+        "id": "wideVca",
+        "typeId": "talas.vca",
+        "parameters": []
+      },
+      {
+        "id": "mix",
+        "typeId": "talas.mixerV2",
+        "parameters": [
+          {
+            "id": "left",
+            "expression": "1.0"
+          },
+          {
+            "id": "right",
+            "expression": "1.0"
+          }
+        ]
+      },
+      {
+        "id": "out",
+        "typeId": "talas.audioOutput",
+        "parameters": []
+      }
+    ],
+    "connections": [
+      {
+        "fromNode": "fixedPeriod",
+        "fromPort": "value",
+        "toNode": "fixedPulse",
+        "toPort": "period"
+      },
+      {
+        "fromNode": "fixedGate",
+        "fromPort": "value",
+        "toNode": "fixedPulse",
+        "toPort": "gate"
+      },
+      {
+        "fromNode": "ignoredDuty",
+        "fromPort": "value",
+        "toNode": "fixedPulse",
+        "toPort": "dutyCycle"
+      },
+      {
+        "fromNode": "fixedCarrier",
+        "fromPort": "audioOut",
+        "toNode": "fixedVca",
+        "toPort": "audioIn"
+      },
+      {
+        "fromNode": "fixedPulse",
+        "fromPort": "value",
+        "toNode": "fixedVca",
+        "toPort": "gain"
+      },
+      {
+        "fromNode": "widePeriod",
+        "fromPort": "value",
+        "toNode": "widePulse",
+        "toPort": "period"
+      },
+      {
+        "fromNode": "wideDuty",
+        "fromPort": "value",
+        "toNode": "widePulse",
+        "toPort": "dutyCycle"
+      },
+      {
+        "fromNode": "wideGate",
+        "fromPort": "value",
+        "toNode": "widePulse",
+        "toPort": "gate"
+      },
+      {
+        "fromNode": "wideCarrier",
+        "fromPort": "audioOut",
+        "toNode": "wideVca",
+        "toPort": "audioIn"
+      },
+      {
+        "fromNode": "widePulse",
+        "fromPort": "value",
+        "toNode": "wideVca",
+        "toPort": "gain"
+      },
+      {
+        "fromNode": "fixedVca",
+        "fromPort": "audioOut",
+        "toNode": "mix",
+        "toPort": "inputs"
+      },
+      {
+        "fromNode": "wideVca",
+        "fromPort": "audioOut",
+        "toNode": "mix",
+        "toPort": "inputs"
+      },
+      {
+        "fromNode": "mix",
+        "fromPort": "leftOut",
+        "toNode": "out",
+        "toPort": "audioIn"
+      }
+    ]
+  }
+}

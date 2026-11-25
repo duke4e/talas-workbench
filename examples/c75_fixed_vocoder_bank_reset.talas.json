@@ -1,0 +1,103 @@
+{
+  "format": "talas.project",
+  "version": 35,
+  "expressionLanguage": "variablesV2",
+  "expressionDefinitions": [],
+  "variableLibrary": { "version": 2, "variables": [] },
+  "soundVariableLibrary": { "version": 1, "variables": [] },
+  "generatorLibrary": { "version": 2, "programs": [] },
+  "liveSetLibrary": { "version": 1, "liveSets": [], "tools": [] },
+  "metadata": { "title": "Fixed Vocoder Bank Reset" },
+  "presentation": {
+    "version": 2,
+    "structureLayouts": [
+      {
+        "scope": { "kind": "project" },
+        "nodes": [
+          { "nodeId": "carrier", "x": 180, "y": 140 },
+          { "nodeId": "analysis", "x": 180, "y": 360 },
+          { "nodeId": "vocoder", "x": 500, "y": 250 },
+          { "nodeId": "out", "x": 820, "y": 250 }
+        ]
+      }
+    ],
+    "performanceControls": [],
+    "performanceMeters": []
+  },
+  "snapshotLibrary": { "version": 1, "banks": [] },
+  "sampleMapLibrary": { "version": 1, "maps": [] },
+  "assets": [],
+  "partialTrackEdits": [],
+  "timeline": {
+    "loop": { "enabled": false, "startSeconds": 0, "endSeconds": 1 },
+    "musicalTime": {
+      "ticksPerQuarter": 960,
+      "tempo": [{ "tick": 0, "microsecondsPerQuarter": 500000 }],
+      "meter": [{ "tick": 0, "numerator": 4, "denominator": 4 }]
+    },
+    "score": { "tracks": [], "clips": [], "automation": [], "markers": [] },
+    "eventValues": []
+  },
+  "deviceSettings": {
+    "configured": false,
+    "audioInputDevice": "",
+    "audioOutputDevice": "",
+    "sampleRate": 0,
+    "bufferSize": 0,
+    "inputChannels": [],
+    "outputChannels": [],
+    "midiInputDevices": [],
+    "transportSync": { "sourceMode": "internal", "sourceIdentifier": "" },
+    "oscIngress": { "enabled": false, "port": 9000 },
+    "oscEgress": { "enabled": false, "port": 9001 }
+  },
+  "soundDefinitions": [],
+  "graph": {
+    "nodes": [
+      {
+        "id": "carrier",
+        "typeId": "talas.oscillator",
+        "parameters": [
+          { "id": "frequency", "expression": "1 hz" },
+          { "id": "amplitude", "expression": "1" }
+        ]
+      },
+      {
+        "id": "analysis",
+        "typeId": "talas.oscillator",
+        "parameters": [
+          { "id": "frequency", "expression": "1 hz" },
+          { "id": "amplitude", "expression": "0.75" }
+        ]
+      },
+      {
+        "id": "vocoder",
+        "typeId": "talas.vocoder",
+        "parameters": [
+          { "id": "timeConstant", "expression": "125 ms" },
+          { "id": "attackTime", "expression": "0 s" },
+          { "id": "releaseTime", "expression": "250 ms" },
+          { "id": "nbrBands", "expression": "1" },
+          { "id": "bankSize", "expression": "1" },
+          { "id": "inputLevel", "expression": "0.25" },
+          { "id": "sideLevel", "expression": "1" },
+          { "id": "lowCF", "expression": "1 hz" },
+          { "id": "highCF", "expression": "1 hz" },
+          { "id": "inFreq", "expression": "1" },
+          { "id": "sideFreq", "expression": "1" },
+          { "id": "bw", "expression": "0.75" },
+          { "id": "pitch", "boolean": false },
+          { "id": "loCutoff", "expression": "1 hz" },
+          { "id": "hiCutoff", "expression": "3 hz" },
+          { "id": "rolloff", "expression": "0" }
+        ]
+      },
+      { "id": "out", "typeId": "talas.audioOutput", "parameters": [] }
+    ],
+    "connections": [
+      { "fromNode": "carrier", "fromPort": "audioOut", "toNode": "vocoder", "toPort": "audioIn" },
+      { "fromNode": "analysis", "fromPort": "audioOut", "toNode": "vocoder", "toPort": "sideChain" },
+      { "fromNode": "vocoder", "fromPort": "audioOut", "toNode": "out", "toPort": "audioIn" }
+    ]
+  }
+}

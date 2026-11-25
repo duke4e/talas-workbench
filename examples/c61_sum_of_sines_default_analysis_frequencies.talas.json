@@ -1,0 +1,97 @@
+{
+  "format": "talas.project",
+  "version": 35,
+  "expressionLanguage": "variablesV2",
+  "expressionDefinitions": [],
+  "variableLibrary": { "version": 2, "variables": [] },
+  "soundVariableLibrary": { "version": 1, "variables": [] },
+  "generatorLibrary": { "version": 2, "programs": [] },
+  "liveSetLibrary": { "version": 1, "liveSets": [], "tools": [] },
+  "metadata": { "title": "Sum Of Sines Default Analysis Frequencies" },
+  "presentation": {
+    "version": 2,
+    "structureLayouts": [
+      {
+        "scope": { "kind": "project" },
+        "nodes": [
+          { "nodeId": "source", "x": 240, "y": 180 },
+          { "nodeId": "out", "x": 560, "y": 180 }
+        ]
+      }
+    ],
+    "performanceControls": [],
+    "performanceMeters": []
+  },
+  "snapshotLibrary": { "version": 1, "banks": [] },
+  "sampleMapLibrary": { "version": 1, "maps": [] },
+  "assets": [
+    {
+      "id": "Analysis/C61",
+      "kind": "table",
+      "path": "resources/c61-sum-of-sines-defaults.txt",
+      "disposition": "referenced",
+      "contentHash": "4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865",
+      "channelCount": 0,
+      "sampleRate": 0,
+      "frameCount": 0,
+      "encoding": "",
+      "generation": 1,
+      "provenance": "Repository-original C61 SumOfSines default analysis frequency amplitude table"
+    }
+  ],
+  "partialTrackEdits": [],
+  "timeline": {
+    "loop": { "enabled": false, "startSeconds": 0, "endSeconds": 8 },
+    "musicalTime": {
+      "ticksPerQuarter": 960,
+      "tempo": [{ "tick": 0, "microsecondsPerQuarter": 500000 }],
+      "meter": [{ "tick": 0, "numerator": 4, "denominator": 4 }]
+    },
+    "score": { "tracks": [], "clips": [], "automation": [], "markers": [] },
+    "eventValues": []
+  },
+  "deviceSettings": {
+    "configured": false,
+    "audioInputDevice": "",
+    "audioOutputDevice": "",
+    "sampleRate": 0,
+    "bufferSize": 0,
+    "inputChannels": [],
+    "outputChannels": [],
+    "midiInputDevices": [],
+    "transportSync": { "sourceMode": "internal", "sourceIdentifier": "" },
+    "oscIngress": { "enabled": false, "port": 9000 },
+    "oscEgress": { "enabled": false, "port": 9001 }
+  },
+  "soundDefinitions": [],
+  "graph": {
+    "nodes": [
+      {
+        "id": "source",
+        "typeId": "talas.sumOfSines",
+        "parameters": [
+          { "id": "onDuration", "expression": "1 s" },
+          { "id": "analysis0", "resource": "Analysis/C61" },
+          { "id": "analysisFrequency0", "expression": "1 hz" },
+          { "id": "analysis1", "resource": "Analysis/C61" },
+          { "id": "analysisFrequency1", "expression": "3 hz" },
+          { "id": "dbMorph", "expression": "0" },
+          { "id": "pchMorph", "expression": "0.5" },
+          { "id": "nbrPartials", "expression": "1" },
+          { "id": "bankSize", "expression": "1" },
+          { "id": "timeIndex", "expression": "0" },
+          { "id": "gate", "expression": "1" },
+          { "id": "loop", "boolean": false },
+          { "id": "loopStart", "expression": "0" },
+          { "id": "loopEnd", "expression": "0" },
+          { "id": "ctrlTime", "boolean": false },
+          { "id": "envelope", "expression": "1" }
+        ]
+      },
+      { "id": "out", "typeId": "talas.audioOutput", "parameters": [] }
+    ],
+    "connections": [
+      { "fromNode": "source", "fromPort": "audioOut", "toNode": "out", "toPort": "audioIn" }
+    ]
+  }
+}

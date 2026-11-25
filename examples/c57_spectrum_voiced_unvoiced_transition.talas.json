@@ -1,0 +1,97 @@
+{
+  "format": "talas.project",
+  "version": 35,
+  "expressionLanguage": "variablesV2",
+  "expressionDefinitions": [],
+  "variableLibrary": { "version": 2, "variables": [] },
+  "soundVariableLibrary": { "version": 1, "variables": [] },
+  "generatorLibrary": { "version": 2, "programs": [] },
+  "liveSetLibrary": { "version": 1, "liveSets": [], "tools": [] },
+  "metadata": { "title": "Spectrum Voiced Unvoiced Transition" },
+  "presentation": {
+    "version": 2,
+    "structureLayouts": [
+      {
+        "scope": { "kind": "project" },
+        "nodes": [
+          { "nodeId": "source", "x": 160, "y": 180 },
+          { "nodeId": "detector", "x": 430, "y": 180 },
+          { "nodeId": "out", "x": 700, "y": 180 }
+        ]
+      }
+    ],
+    "performanceControls": [],
+    "performanceMeters": []
+  },
+  "snapshotLibrary": { "version": 1, "banks": [] },
+  "sampleMapLibrary": { "version": 1, "maps": [] },
+  "assets": [
+    {
+      "id": "Analysis/C57",
+      "kind": "table",
+      "path": "resources/c57-voiced-unvoiced-frames.txt",
+      "disposition": "referenced",
+      "contentHash": "0af93d5e6d03bec92bc4b965bb48d7222ec2e5029cdbd4de2073ceca3074aa88",
+      "channelCount": 0,
+      "sampleRate": 0,
+      "frameCount": 0,
+      "encoding": "",
+      "generation": 1,
+      "provenance": "Repository-original C57 voiced/unvoiced transition Spectrum table"
+    }
+  ],
+  "partialTrackEdits": [],
+  "timeline": {
+    "loop": { "enabled": false, "startSeconds": 0, "endSeconds": 8 },
+    "musicalTime": {
+      "ticksPerQuarter": 960,
+      "tempo": [{ "tick": 0, "microsecondsPerQuarter": 500000 }],
+      "meter": [{ "tick": 0, "numerator": 4, "denominator": 4 }]
+    },
+    "score": { "tracks": [], "clips": [], "automation": [], "markers": [] },
+    "eventValues": []
+  },
+  "deviceSettings": {
+    "configured": false,
+    "audioInputDevice": "",
+    "audioOutputDevice": "",
+    "sampleRate": 0,
+    "bufferSize": 0,
+    "inputChannels": [],
+    "outputChannels": [],
+    "midiInputDevices": [],
+    "transportSync": { "sourceMode": "internal", "sourceIdentifier": "" },
+    "oscIngress": { "enabled": false, "port": 9000 },
+    "oscEgress": { "enabled": false, "port": 9001 }
+  },
+  "soundDefinitions": [],
+  "graph": {
+    "nodes": [
+      {
+        "id": "source",
+        "typeId": "talas.spectrumOnDisk",
+        "parameters": [
+          { "id": "frequency", "expression": "100 hz" },
+          { "id": "level", "expression": "1" },
+          { "id": "rateScale", "expression": "1" },
+          { "id": "trigger", "expression": "0" },
+          { "id": "fileName", "resource": "Analysis/C57" },
+          { "id": "analysisFrames", "expression": "5" },
+          { "id": "nbrPartials", "expression": "2" },
+          { "id": "firstPartial", "expression": "1" }
+        ]
+      },
+      {
+        "id": "detector",
+        "typeId": "talas.spectrumVoicedUnvoiced",
+        "parameters": []
+      },
+      { "id": "out", "typeId": "talas.audioOutput", "parameters": [] }
+    ],
+    "connections": [
+      { "fromNode": "source", "fromPort": "spectrumOut", "toNode": "detector", "toPort": "spectrumIn" },
+      { "fromNode": "detector", "fromPort": "leftOut", "toNode": "out", "toPort": "audioIn" },
+      { "fromNode": "detector", "fromPort": "rightOut", "toNode": "out", "toPort": "rightIn" }
+    ]
+  }
+}

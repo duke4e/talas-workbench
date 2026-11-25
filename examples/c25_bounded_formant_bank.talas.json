@@ -1,0 +1,61 @@
+{
+  "format": "talas.project",
+  "version": 1,
+  "metadata": {
+    "title": "C25 Bounded Formant Bank"
+  },
+  "graph": {
+    "nodes": [
+      {
+        "id": "spectrum",
+        "typeId": "talas.syntheticSpectrumFromArray",
+        "parameters": [
+          { "id": "nbrPartials", "expression": "4" },
+          { "id": "logScale", "boolean": false },
+          { "id": "sendBandwidths", "boolean": false },
+          { "id": "envelope", "expression": "1" },
+          { "id": "amplitudes", "text": "0.35 0.25 0.1 0.05" },
+          { "id": "frequencies", "text": "500 1100 2200 3300" },
+          { "id": "bandwidths", "text": "100 150 200" }
+        ]
+      },
+      {
+        "id": "bank",
+        "typeId": "talas.formantBank",
+        "parameters": [
+          { "id": "frequency", "expression": "110 hz" },
+          { "id": "nbrFormants", "expression": "3" },
+          { "id": "bankSize", "expression": "2" },
+          { "id": "impulseResponse", "resource": "" },
+          { "id": "nbrImpulses", "expression": "2" },
+          { "id": "allowDC", "boolean": false }
+        ]
+      },
+      {
+        "id": "out",
+        "typeId": "talas.audioOutput",
+        "parameters": []
+      }
+    ],
+    "connections": [
+      {
+        "fromNode": "spectrum",
+        "fromPort": "amplitudeOut",
+        "toNode": "bank",
+        "toPort": "amplitudeIn"
+      },
+      {
+        "fromNode": "spectrum",
+        "fromPort": "frequencyOut",
+        "toNode": "bank",
+        "toPort": "frequencyIn"
+      },
+      {
+        "fromNode": "bank",
+        "fromPort": "audioOut",
+        "toNode": "out",
+        "toPort": "audioIn"
+      }
+    ]
+  }
+}

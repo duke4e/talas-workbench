@@ -1,0 +1,77 @@
+{
+  "format": "talas.project",
+  "version": 13,
+  "metadata": {
+    "title": "Fuzz seed preserved component"
+  },
+  "presentation": {
+    "version": 1,
+    "structureLayouts": [
+      {
+        "scope": {
+          "kind": "project"
+        },
+        "nodes": [
+          {
+            "nodeId": "missing",
+            "x": 0,
+            "y": 0
+          }
+        ]
+      }
+    ],
+    "performanceControls": []
+  },
+  "snapshotLibrary": {
+    "version": 1,
+    "banks": []
+  },
+  "sampleMapLibrary": {
+    "version": 1,
+    "maps": []
+  },
+  "virtualControls": [],
+  "assets": [],
+  "timeline": {
+    "loop": {
+      "enabled": false,
+      "startSeconds": 0,
+      "endSeconds": 4
+    },
+    "eventValues": []
+  },
+  "deviceSettings": {
+    "configured": false,
+    "audioInputDevice": "",
+    "audioOutputDevice": "",
+    "sampleRate": 0,
+    "bufferSize": 0,
+    "inputChannels": [],
+    "outputChannels": [],
+    "midiInputDevices": []
+  },
+  "soundDefinitions": [],
+  "graph": {
+    "nodes": [
+      {
+        "id": "missing",
+        "typeId": "org.talas.fuzz.missing",
+        "parameters": [],
+        "preservedComponent": {
+          "schemaVersion": 1,
+          "typeVersion": "1.0.0",
+          "stateSchemaVersion": 1,
+          "stateEncoding": "base64",
+          "state": "AA==",
+          "displayName": "Missing fuzz component",
+          "bundleId": "org.talas.fuzz.missing",
+          "inputs": [],
+          "outputs": [],
+          "parameters": [],
+          "recoveryHint": "Install the matching component"
+        }
+      }
+    ],
+    "connections": []
+  }
+}

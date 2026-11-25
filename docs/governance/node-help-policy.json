@@ -1,0 +1,902 @@
+{
+  "schemaVersion": 1,
+  "format": "talas.node-help-policy",
+  "catalogPath": "docs/coverage/builtin-node-catalog-v2.json",
+  "markdownOutput": "docs/help/builtin-node-reference.md",
+  "jsonOutput": "docs/help/node-example-index.json",
+  "examples": [
+    {
+      "path": "examples/c100_phase_shift_by_90_allpass_transport.talas.json",
+      "title": "Phase Shift By 90 Allpass Transport",
+      "expectedOutcome": "renderable"
+    },
+    {
+      "path": "examples/c101_single_side_band_rm_quadrature_transport.talas.json",
+      "title": "Single Side Band RM Quadrature Transport",
+      "expectedOutcome": "renderable"
+    },
+    {
+      "path": "examples/c102_sos_oscillators_selected_wavetable_transport.talas.json",
+      "title": "SOS Oscillators Selected Wavetable Transport",
+      "expectedOutcome": "renderable"
+    },
+    {
+      "path": "examples/c103_low_pass_gate_control_state_transport.talas.json",
+      "title": "Low-Pass Gate Control State Transport",
+      "expectedOutcome": "renderable"
+    },
+    {
+      "path": "examples/c104_reverb_section_fractional_delay_transport.talas.json",
+      "title": "Reverb Section Fractional Delay Transport",
+      "expectedOutcome": "renderable"
+    },
+    {
+      "path": "examples/c105_monotonizer_known_pitch_transport.talas.json",
+      "title": "Monotonizer Known-Pitch Transport",
+      "expectedOutcome": "renderable"
+    },
+    {
+      "path": "examples/c106_multifile_disk_player_selection_transport.talas.json",
+      "title": "Multifile Disk Player Selection Transport",
+      "expectedOutcome": "renderable"
+    },
+    {
+      "path": "examples/c10_midi_mapper_modes.talas.json",
+      "title": "Bounded MIDI Mapper gate and velocity modes",
+      "expectedOutcome": "renderable"
+    },
+    {
+      "path": "examples/c110_sample_cloud_dynamic_controls.talas.json",
+      "title": "Sample Cloud Dynamic Controls",
+      "expectedOutcome": "renderable"
+    },
+    {
+      "path": "examples/c111_cloud_bank_checked_spectrum.talas.json",
+      "title": "Cloud Bank Checked Spectrum",
+      "expectedOutcome": "renderable"
+    },
+    {
+      "path": "examples/c112_cloud_bank_element_range_cascade_delay.talas.json",
+      "title": "Cloud Bank Element Range Cascade Delay",
+      "expectedOutcome": "renderable"
+    },
+    {
+      "path": "examples/c113_grain_cloud_dynamic_controls.talas.json",
+      "title": "Grain Cloud Dynamic Controls",
+      "expectedOutcome": "renderable"
+    },
+    {
+      "path": "examples/c114_chopper_dynamic_durations.talas.json",
+      "title": "Chopper Dynamic Durations",
+      "expectedOutcome": "renderable"
+    },
+    {
+      "path": "examples/c115_function_generator_trigger_duration.talas.json",
+      "title": "Function Generator Trigger Duration",
+      "expectedOutcome": "renderable"
+    },
+    {
+      "path": "examples/c116_multislope_connected_controls.talas.json",
+      "title": "Multislope Connected Controls",
+      "expectedOutcome": "renderable"
+    },
+    {
+      "path": "examples/c117_multisegment_loop_connected_controls.talas.json",
+      "title": "Multisegment Loop Connected Controls",
+      "expectedOutcome": "renderable"
+    },
+    {
+      "path": "examples/c118_noise_modes_connected_controls.talas.json",
+      "title": "Noise Modes Connected Controls",
+      "expectedOutcome": "renderable"
+    },
+    {
+      "path": "examples/c119_absolute_value_connected_magnitude.talas.json",
+      "title": "Absolute Value Connected Magnitude",
+      "expectedOutcome": "renderable"
+    },
+    {
+      "path": "examples/c11_disk_cache_capture.talas.json",
+      "title": "Bounded Disk Cache capture and playback",
+      "expectedOutcome": "renderable"
+    },
+    {
+      "path": "examples/c120_arctan_connected_curve.talas.json",
+      "title": "ArcTan Connected Curve",
+      "expectedOutcome": "renderable"
+    },
+    {
+      "path": "examples/c121_equality_connected_comparison.talas.json",
+      "title": "Equality Connected Comparison",
+      "expectedOutcome": "renderable"
+    },
+    {
+      "path": "examples/c122_set_range_connected_affine_mapping.talas.json",
+      "title": "Set Range Connected Affine Mapping",
+      "expectedOutcome": "renderable"
+    },
+    {
+      "path": "examples/c123_product_connected_finite_multiplication.talas.json",
+      "title": "Product Connected Finite Multiplication",
+      "expectedOutcome": "renderable"
+    },
+    {
+      "path": "examples/c124_difference_connected_finite_subtraction.talas.json",
+      "title": "Difference Connected Finite Subtraction",
+      "expectedOutcome": "renderable"
+    },
+    {
+      "path": "examples/c125_sqrt_magnitude_connected_saturated_norm.talas.json",
+      "title": "Sqrt Magnitude Connected Saturated Norm",
+      "expectedOutcome": "renderable"
+    },
+    {
+      "path": "examples/c126_vca_connected_finite_gain.talas.json",
+      "title": "VCA Connected Finite Gain",
+      "expectedOutcome": "renderable"
+    },
+    {
+      "path": "examples/c127_constant_finite_event_value_broadcast.talas.json",
+      "title": "Constant Finite Event Value Broadcast",
+      "expectedOutcome": "renderable"
+    },
+    {
+      "path": "examples/c128_add_finite_event_value_sum.talas.json",
+      "title": "Add Finite Event Value Sum",
+      "expectedOutcome": "renderable"
+    },
+    {
+      "path": "examples/c129_mixer_checked_finite_weighted_sum.talas.json",
+      "title": "Mixer Checked Finite Weighted Sum",
+      "expectedOutcome": "renderable"
+    },
+    {
+      "path": "examples/c12_portable_processor_placement.talas.json",
+      "title": "Portable Processor Placement",
+      "expectedOutcome": "renderable"
+    },
+    {
+      "path": "examples/c130_level_checked_finite_stereo_gain.talas.json",
+      "title": "Level Checked Finite Stereo Gain",
+      "expectedOutcome": "renderable"
+    },
+    {
+      "path": "examples/c131_channel_crosser_checked_finite_matrix.talas.json",
+      "title": "Channel Crosser Checked Finite Matrix",
+      "expectedOutcome": "renderable"
+    },
+    {
+      "path": "examples/c132_channel_join_checked_finite_dual_lane.talas.json",
+      "title": "Channel Join Checked Finite Dual Lane",
+      "expectedOutcome": "renderable"
+    },
+    {
+      "path": "examples/c133_channeller_checked_finite_live_selectors.talas.json",
+      "title": "Channeller Checked Finite Live Selectors",
+      "expectedOutcome": "renderable"
+    },
+    {
+      "path": "examples/c134_pan_checked_finite_live_controls.talas.json",
+      "title": "Pan Checked Finite Live Controls",
+      "expectedOutcome": "renderable"
+    },
+    {
+      "path": "examples/c135_crossfade_checked_finite_live_controls.talas.json",
+      "title": "Crossfade Checked Finite Live Controls",
+      "expectedOutcome": "renderable"
+    },
+    {
+      "path": "examples/c136_stereo_mix2_checked_live_controls.talas.json",
+      "title": "Stereo Mix 2 Checked Live Controls",
+      "expectedOutcome": "renderable"
+    },
+    {
+      "path": "examples/c137_stereo_mix4_checked_live_controls.talas.json",
+      "title": "Stereo Mix 4 Checked Live Controls",
+      "expectedOutcome": "renderable"
+    },
+    {
+      "path": "examples/c138_audio_output_exact_stereo_terminal.talas.json",
+      "title": "Audio Output Exact Stereo Terminal",
+      "expectedOutcome": "renderable"
+    },
+    {
+      "path": "examples/c139_averaging_low_pass_filter_dynamic_window.talas.json",
+      "title": "Averaging Low Pass Filter Dynamic Window",
+      "expectedOutcome": "renderable"
+    },
+    {
+      "path": "examples/c13_bounded_disk_recorder.talas.json",
+      "title": "Bounded Disk Recorder",
+      "expectedOutcome": "renderable"
+    },
+    {
+      "path": "examples/c140_delay_with_feedback_dynamic_controls.talas.json",
+      "title": "Delay With Feedback Dynamic Controls",
+      "expectedOutcome": "renderable"
+    },
+    {
+      "path": "examples/c141_set_duration_bounded_window.talas.json",
+      "title": "Set Duration Bounded Window",
+      "expectedOutcome": "renderable"
+    },
+    {
+      "path": "examples/c142_warped_time_index_scheduled_morph.talas.json",
+      "title": "Warped Time Index Scheduled Morph",
+      "expectedOutcome": "renderable"
+    },
+    {
+      "path": "examples/c143_amplitude_follower_scheduled_controls.talas.json",
+      "title": "Amplitude Follower Scheduled Controls",
+      "expectedOutcome": "renderable"
+    },
+    {
+      "path": "examples/c144_peak_detector_scheduled_controls.talas.json",
+      "title": "Peak Detector Scheduled Controls",
+      "expectedOutcome": "renderable"
+    },
+    {
+      "path": "examples/c145_rms_squared_scheduled_controls.talas.json",
+      "title": "RMS Squared Scheduled Controls",
+      "expectedOutcome": "renderable"
+    },
+    {
+      "path": "examples/c146_running_max_scheduled_reset.talas.json",
+      "title": "Running Max Scheduled Reset",
+      "expectedOutcome": "renderable"
+    },
+    {
+      "path": "examples/c147_running_min_scheduled_reset_baseline.talas.json",
+      "title": "Running Min Scheduled Reset Baseline",
+      "expectedOutcome": "renderable"
+    },
+    {
+      "path": "examples/c148_triggered_sample_and_hold_scheduled_edges.talas.json",
+      "title": "Triggered Sample And Hold Scheduled Edges",
+      "expectedOutcome": "renderable"
+    },
+    {
+      "path": "examples/c149_triggered_table_read_paired_schedules.talas.json",
+      "title": "Triggered Table Read Paired Schedules",
+      "expectedOutcome": "renderable"
+    },
+    {
+      "path": "examples/c14_bounded_analog_sequencer.talas.json",
+      "title": "Bounded Analog Sequencer",
+      "expectedOutcome": "renderable"
+    },
+    {
+      "path": "examples/c150_function_generator_scheduled_controls.talas.json",
+      "title": "Function Generator Scheduled Controls",
+      "expectedOutcome": "renderable"
+    },
+    {
+      "path": "examples/c151_multislope_scheduled_controls.talas.json",
+      "title": "Multislope Scheduled Controls",
+      "expectedOutcome": "renderable"
+    },
+    {
+      "path": "examples/c152_multisegment_scheduled_loop_controls.talas.json",
+      "title": "Multisegment Scheduled Loop Controls",
+      "expectedOutcome": "renderable"
+    },
+    {
+      "path": "examples/c153_graphical_envelope_scheduled_rate_controls.talas.json",
+      "title": "Graphical Envelope Scheduled Rate Controls",
+      "expectedOutcome": "renderable"
+    },
+    {
+      "path": "examples/c154_adsr_scheduled_typed_gate_controls.talas.json",
+      "title": "ADSR Scheduled Typed Gate Controls",
+      "expectedOutcome": "renderable"
+    },
+    {
+      "path": "examples/c155_oscillator_scheduled_phase_controls.talas.json",
+      "title": "Oscillator Scheduled Phase Controls",
+      "expectedOutcome": "renderable"
+    },
+    {
+      "path": "examples/c156_chopper_scheduled_cycle_controls.talas.json",
+      "title": "Chopper Scheduled Cycle Controls",
+      "expectedOutcome": "renderable"
+    },
+    {
+      "path": "examples/c157_analog_sequencer_scheduled_controls.talas.json",
+      "title": "Analog Sequencer Scheduled Controls",
+      "expectedOutcome": "renderable"
+    },
+    {
+      "path": "examples/c158_ar_scheduled_controls.talas.json",
+      "title": "AR Scheduled Controls",
+      "expectedOutcome": "renderable"
+    },
+    {
+      "path": "examples/c159_analysis_filter_scheduled_controls.talas.json",
+      "title": "Analysis Filter Scheduled Controls",
+      "expectedOutcome": "renderable"
+    },
+    {
+      "path": "examples/c15_stereo_routing_utilities.talas.json",
+      "title": "Stereo Routing Utilities",
+      "expectedOutcome": "renderable"
+    },
+    {
+      "path": "examples/c160_phase_shift_by_90_scheduled_frequency.talas.json",
+      "title": "Phase Shift By 90 Scheduled Frequency",
+      "expectedOutcome": "renderable"
+    },
+    {
+      "path": "examples/c161_single_side_band_rm_scheduled_quadrature.talas.json",
+      "title": "Single Side Band RM Scheduled Quadrature",
+      "expectedOutcome": "renderable"
+    },
+    {
+      "path": "examples/c162_sos_oscillators_static_spectrum_sine_bank.talas.json",
+      "title": "SOS Oscillators Static Spectrum Sine Bank",
+      "expectedOutcome": "renderable"
+    },
+    {
+      "path": "examples/c163_low_pass_gate_scheduled_control.talas.json",
+      "title": "Low-Pass Gate Scheduled Control",
+      "expectedOutcome": "renderable"
+    },
+    {
+      "path": "examples/c164_morph_filter_scheduled_controls.talas.json",
+      "title": "Morph Filter Scheduled Controls",
+      "expectedOutcome": "renderable"
+    },
+    {
+      "path": "examples/c165_quad_function_generator_scheduled_controls.talas.json",
+      "title": "Quad Function Generator Scheduled Controls",
+      "expectedOutcome": "renderable"
+    },
+    {
+      "path": "examples/c166_probability_chaos_generator_scheduled_controls.talas.json",
+      "title": "Probability Chaos Generator Scheduled Controls",
+      "expectedOutcome": "renderable"
+    },
+    {
+      "path": "examples/c167_stereo_dispersive_resonator_scheduled_controls.talas.json",
+      "title": "Stereo Dispersive Resonator Scheduled Controls",
+      "expectedOutcome": "renderable"
+    },
+    {
+      "path": "examples/c168_plucked_waveguide_scheduled_controls.talas.json",
+      "title": "Plucked Waveguide Scheduled Controls",
+      "expectedOutcome": "renderable"
+    },
+    {
+      "path": "examples/c169_dynamic_breakpoint_oscillator_scheduled_controls.talas.json",
+      "title": "Dynamic Breakpoint Oscillator Scheduled Controls",
+      "expectedOutcome": "renderable"
+    },
+    {
+      "path": "examples/c16_shelving_presence_filters.talas.json",
+      "title": "Shelving and Presence Filters",
+      "expectedOutcome": "renderable"
+    },
+    {
+      "path": "examples/c170_wave_terrain_oscillator_scheduled_controls.talas.json",
+      "title": "Wave Terrain Oscillator Scheduled Controls",
+      "expectedOutcome": "renderable"
+    },
+    {
+      "path": "examples/c171_scanned_mass_oscillator_scheduled_controls.talas.json",
+      "title": "Scanned Mass Oscillator Scheduled Controls",
+      "expectedOutcome": "renderable"
+    },
+    {
+      "path": "examples/c172_diffuse_spectral_stretch_scheduled_controls.talas.json",
+      "title": "Diffuse Spectral Stretch Scheduled Controls",
+      "expectedOutcome": "renderable"
+    },
+    {
+      "path": "examples/c173_dual_morph_oscillator_scheduled_controls.talas.json",
+      "title": "Dual Morph Oscillator Scheduled Controls",
+      "expectedOutcome": "renderable"
+    },
+    {
+      "path": "examples/c174_logic_scheduled_fallbacks.talas.json",
+      "title": "Logic Scheduled Fallbacks",
+      "expectedOutcome": "renderable"
+    },
+    {
+      "path": "examples/c175_annotation_passthrough.talas.json",
+      "title": "Annotation Pass-Through",
+      "expectedOutcome": "renderable"
+    },
+    {
+      "path": "examples/c17_checked_biquad_family.talas.json",
+      "title": "Checked Biquad Family",
+      "expectedOutcome": "renderable"
+    },
+    {
+      "path": "examples/c18_bounded_static_fir_family.talas.json",
+      "title": "Bounded Static FIR Family",
+      "expectedOutcome": "renderable"
+    },
+    {
+      "path": "examples/c191_filter_scheduled_controls.talas.json",
+      "title": "Filter Scheduled Controls",
+      "expectedOutcome": "renderable"
+    },
+    {
+      "path": "examples/c19_checked_vcf_tpt.talas.json",
+      "title": "Checked Four-Pole TPT VCF",
+      "expectedOutcome": "renderable"
+    },
+    {
+      "path": "examples/c200_polyphonic_midi_mapper_input.talas.json",
+      "title": "Polyphonic MIDI Mapper Input",
+      "expectedOutcome": "renderable"
+    },
+    {
+      "path": "examples/c201_triggered_global_controller_override.talas.json",
+      "title": "Triggered Global Controller Override",
+      "expectedOutcome": "renderable"
+    },
+    {
+      "path": "examples/c20_bounded_harmonic_resonator.talas.json",
+      "title": "Bounded Harmonic Resonator",
+      "expectedOutcome": "renderable"
+    },
+    {
+      "path": "examples/c21_bounded_dynamic_range_controller.talas.json",
+      "title": "Bounded Dynamic Range Controller",
+      "expectedOutcome": "renderable"
+    },
+    {
+      "path": "examples/c22_checked_quad_oscillator.talas.json",
+      "title": "Checked Quad Oscillator",
+      "expectedOutcome": "renderable"
+    },
+    {
+      "path": "examples/c23_bounded_overlapping_mixer.talas.json",
+      "title": "Bounded Overlapping Mixer",
+      "expectedOutcome": "renderable"
+    },
+    {
+      "path": "examples/c24_bounded_oscillator_bank.talas.json",
+      "title": "Bounded Oscillator Bank",
+      "expectedOutcome": "renderable"
+    },
+    {
+      "path": "examples/c25_bounded_formant_bank.talas.json",
+      "title": "Bounded Formant Bank",
+      "expectedOutcome": "renderable"
+    },
+    {
+      "path": "examples/c26_bounded_formant_bank_oscillator.talas.json",
+      "title": "Bounded Formant Bank Oscillator",
+      "expectedOutcome": "renderable"
+    },
+    {
+      "path": "examples/c27_bounded_spectrum_modifier.talas.json",
+      "title": "Bounded Spectrum Modifier",
+      "expectedOutcome": "renderable"
+    },
+    {
+      "path": "examples/c28_paired_stereo_output4.talas.json",
+      "title": "Paired Stereo Output 4",
+      "expectedOutcome": "renderable"
+    },
+    {
+      "path": "examples/c28_paired_stereo_output8.talas.json",
+      "title": "Paired Stereo Output 8",
+      "expectedOutcome": "renderable"
+    },
+    {
+      "path": "examples/c29_bounded_synthetic_spectrum_from_sounds.talas.json",
+      "title": "Bounded Synthetic Spectrum From Sounds",
+      "expectedOutcome": "renderable"
+    },
+    {
+      "path": "examples/c30_bounded_warped_time_index.talas.json",
+      "title": "Bounded Warped Time Index",
+      "expectedOutcome": "renderable"
+    },
+    {
+      "path": "examples/c31_bounded_spectrum_on_disk.talas.json",
+      "title": "Bounded Spectrum On Disk",
+      "expectedOutcome": "renderable"
+    },
+    {
+      "path": "examples/c32_bounded_ga_oscillators.talas.json",
+      "title": "Bounded GA Oscillators",
+      "expectedOutcome": "renderable"
+    },
+    {
+      "path": "examples/c33_bounded_generic_source_ram_sample.talas.json",
+      "title": "Bounded Generic Source RAM Sample",
+      "expectedOutcome": "renderable"
+    },
+    {
+      "path": "examples/c35_bounded_multisample.talas.json",
+      "title": "Bounded Multisample",
+      "expectedOutcome": "renderable"
+    },
+    {
+      "path": "examples/c36_bounded_key_mapped_multisample.talas.json",
+      "title": "Bounded Key-Mapped Multisample",
+      "expectedOutcome": "renderable"
+    },
+    {
+      "path": "examples/c37_bounded_multifile_disk_player.talas.json",
+      "title": "Bounded Multifile Disk Player",
+      "expectedOutcome": "renderable"
+    },
+    {
+      "path": "examples/c38_bounded_memory_writer.talas.json",
+      "title": "Bounded Memory Writer Monitor",
+      "expectedOutcome": "renderable"
+    },
+    {
+      "path": "examples/c39_bounded_raw_midi_output.talas.json",
+      "title": "Bounded Raw MIDI Output",
+      "expectedOutcome": "renderable"
+    },
+    {
+      "path": "examples/c40_bounded_midi_controller_output.talas.json",
+      "title": "Bounded MIDI Controller Output",
+      "expectedOutcome": "renderable"
+    },
+    {
+      "path": "examples/c41_bounded_midi_note_output.talas.json",
+      "title": "Bounded MIDI Note Output",
+      "expectedOutcome": "renderable"
+    },
+    {
+      "path": "examples/c42_bounded_midi_file_echo.talas.json",
+      "title": "Bounded MIDI File Echo",
+      "expectedOutcome": "renderable"
+    },
+    {
+      "path": "examples/c43_bounded_global_controller_output.talas.json",
+      "title": "Bounded Global Controller Output",
+      "expectedOutcome": "renderable"
+    },
+    {
+      "path": "examples/c44_dynamic_control_utilities.talas.json",
+      "title": "Dynamic Control Utilities",
+      "expectedOutcome": "renderable"
+    },
+    {
+      "path": "examples/c45_dynamic_slew_times.talas.json",
+      "title": "Dynamic Slew Times",
+      "expectedOutcome": "renderable"
+    },
+    {
+      "path": "examples/c46_dynamic_clock_parameters.talas.json",
+      "title": "Dynamic Clock Parameters",
+      "expectedOutcome": "renderable"
+    },
+    {
+      "path": "examples/c47_dynamic_clock_divider_parameters.talas.json",
+      "title": "Dynamic Clock Divider Parameters",
+      "expectedOutcome": "renderable"
+    },
+    {
+      "path": "examples/c48_dynamic_global_controller_fallback.talas.json",
+      "title": "Dynamic Global Controller Fallback",
+      "expectedOutcome": "renderable"
+    },
+    {
+      "path": "examples/c49_live_channeller_selectors.talas.json",
+      "title": "Live Channeller Selectors",
+      "expectedOutcome": "renderable"
+    },
+    {
+      "path": "examples/c50_live_spectrum_modifier_selectors.talas.json",
+      "title": "Live Spectrum Modifier Selectors",
+      "expectedOutcome": "renderable"
+    },
+    {
+      "path": "examples/c51_live_spectrum_modifier_seed.talas.json",
+      "title": "Live Spectrum Modifier Seed",
+      "expectedOutcome": "renderable"
+    },
+    {
+      "path": "examples/c52_live_spectrum_modifier_hysteresis.talas.json",
+      "title": "Live Spectrum Modifier Hysteresis",
+      "expectedOutcome": "renderable"
+    },
+    {
+      "path": "examples/c53_spectrum_modifier_probability_stream.talas.json",
+      "title": "Spectrum Modifier Probability Stream",
+      "expectedOutcome": "renderable"
+    },
+    {
+      "path": "examples/c54_spectrum_modifier_track_probability_profile.talas.json",
+      "title": "Spectrum Modifier Track Probability Profile",
+      "expectedOutcome": "renderable"
+    },
+    {
+      "path": "examples/c55_spectrum_modifier_remainder_probability_profile.talas.json",
+      "title": "Spectrum Modifier Remainder Probability Profile",
+      "expectedOutcome": "renderable"
+    },
+    {
+      "path": "examples/c56_spectrum_on_disk_frame_scan.talas.json",
+      "title": "Spectrum On Disk Frame Scan",
+      "expectedOutcome": "renderable"
+    },
+    {
+      "path": "examples/c57_spectrum_voiced_unvoiced_transition.talas.json",
+      "title": "Spectrum Voiced Unvoiced Transition",
+      "expectedOutcome": "renderable"
+    },
+    {
+      "path": "examples/c58_spectrum_in_ram_normalized_time_index.talas.json",
+      "title": "Spectrum In RAM Normalized TimeIndex",
+      "expectedOutcome": "renderable"
+    },
+    {
+      "path": "examples/c59_spectrum_in_ram_default_analysis_metadata.talas.json",
+      "title": "Spectrum In RAM Default Analysis Metadata",
+      "expectedOutcome": "renderable"
+    },
+    {
+      "path": "examples/c60_spectrum_on_disk_default_analysis_metadata.talas.json",
+      "title": "Spectrum On Disk Default Analysis Metadata",
+      "expectedOutcome": "renderable"
+    },
+    {
+      "path": "examples/c61_sum_of_sines_default_analysis_frequencies.talas.json",
+      "title": "Sum Of Sines Default Analysis Frequencies",
+      "expectedOutcome": "renderable"
+    },
+    {
+      "path": "examples/c62_sum_of_sines_controlled_time_frames.talas.json",
+      "title": "Sum Of Sines Controlled-Time Frames",
+      "expectedOutcome": "renderable"
+    },
+    {
+      "path": "examples/c63_sum_of_sines_automatic_gate_loop.talas.json",
+      "title": "Sum Of Sines Automatic Gate Loop",
+      "expectedOutcome": "renderable"
+    },
+    {
+      "path": "examples/c64_synthetic_spectrum_array_prefix.talas.json",
+      "title": "Synthetic Spectrum Array Prefix",
+      "expectedOutcome": "renderable"
+    },
+    {
+      "path": "examples/c65_synthetic_spectrum_static_expressions.talas.json",
+      "title": "Synthetic Spectrum Static Expressions",
+      "expectedOutcome": "renderable"
+    },
+    {
+      "path": "examples/c66_threshold_hysteresis_gate.talas.json",
+      "title": "Threshold Hysteresis Gate",
+      "expectedOutcome": "renderable"
+    },
+    {
+      "path": "examples/c67_time_control_half_speed.talas.json",
+      "title": "Time Control Half Speed",
+      "expectedOutcome": "renderable"
+    },
+    {
+      "path": "examples/c68_time_stopper_sample_hold.talas.json",
+      "title": "Time Stopper Sample Hold",
+      "expectedOutcome": "renderable"
+    },
+    {
+      "path": "examples/c69_time_offset_delay_line.talas.json",
+      "title": "Time Offset Delay Line",
+      "expectedOutcome": "renderable"
+    },
+    {
+      "path": "examples/c70_triggered_sample_and_hold_edges.talas.json",
+      "title": "Triggered Sample And Hold Edges",
+      "expectedOutcome": "renderable"
+    },
+    {
+      "path": "examples/c71_triggered_table_read_gate_reset.talas.json",
+      "title": "Triggered Table Read Gate Reset",
+      "expectedOutcome": "renderable"
+    },
+    {
+      "path": "examples/c72_tunable_vocoder_bank_reset.talas.json",
+      "title": "Tunable Vocoder Bank Reset",
+      "expectedOutcome": "renderable"
+    },
+    {
+      "path": "examples/c73_two_formant_pair_reset.talas.json",
+      "title": "Two Formant Pair Reset",
+      "expectedOutcome": "renderable"
+    },
+    {
+      "path": "examples/c74_sound_variable_selector_reset.talas.json",
+      "title": "Sound Variable Selector Reset",
+      "expectedOutcome": "renderable"
+    },
+    {
+      "path": "examples/c75_fixed_vocoder_bank_reset.talas.json",
+      "title": "Fixed Vocoder Bank Reset",
+      "expectedOutcome": "renderable"
+    },
+    {
+      "path": "examples/c76_vocoder_channel_bank_reset.talas.json",
+      "title": "Vocoder Channel Bank Reset",
+      "expectedOutcome": "renderable"
+    },
+    {
+      "path": "examples/c77_wait_until_buffered_resume.talas.json",
+      "title": "Wait Until Delayed Input",
+      "expectedOutcome": "renderable"
+    },
+    {
+      "path": "examples/c78_warped_time_index_restart.talas.json",
+      "title": "Warped Time Index Restart",
+      "expectedOutcome": "renderable"
+    },
+    {
+      "path": "examples/c79_waveshaper_polynomial_curve.talas.json",
+      "title": "Waveshaper Polynomial Curve",
+      "expectedOutcome": "renderable"
+    },
+    {
+      "path": "examples/c80_iterated_waveshaper_feedback.talas.json",
+      "title": "Iterated Waveshaper Feedback",
+      "expectedOutcome": "renderable"
+    },
+    {
+      "path": "examples/c81_multiplying_waveshaper_product.talas.json",
+      "title": "Multiplying Waveshaper Product",
+      "expectedOutcome": "renderable"
+    },
+    {
+      "path": "examples/c82_input_output_characteristic_curve.talas.json",
+      "title": "Input Output Characteristic Curve",
+      "expectedOutcome": "renderable"
+    },
+    {
+      "path": "examples/c83_scale_and_offset_affine_control.talas.json",
+      "title": "Scale and Offset Affine Control",
+      "expectedOutcome": "renderable"
+    },
+    {
+      "path": "examples/c84_interpolate_dual_lane_control.talas.json",
+      "title": "Interpolate Dual Lane Control",
+      "expectedOutcome": "renderable"
+    },
+    {
+      "path": "examples/c85_running_max_reset_control.talas.json",
+      "title": "Running Max Reset Control",
+      "expectedOutcome": "renderable"
+    },
+    {
+      "path": "examples/c86_running_min_reset_baseline.talas.json",
+      "title": "Running Min Reset Baseline",
+      "expectedOutcome": "renderable"
+    },
+    {
+      "path": "examples/c87_rms_squared_envelope.talas.json",
+      "title": "RMS Squared Envelope",
+      "expectedOutcome": "renderable"
+    },
+    {
+      "path": "examples/c88_amplitude_follower_envelope.talas.json",
+      "title": "Amplitude Follower Envelope",
+      "expectedOutcome": "renderable"
+    },
+    {
+      "path": "examples/c89_peak_detector_envelope.talas.json",
+      "title": "Peak Detector Envelope",
+      "expectedOutcome": "renderable"
+    },
+    {
+      "path": "examples/c90_frequency_tracker_history.talas.json",
+      "title": "Frequency Tracker History",
+      "expectedOutcome": "renderable"
+    },
+    {
+      "path": "examples/c91_ar_envelope_state.talas.json",
+      "title": "AR Envelope State",
+      "expectedOutcome": "renderable"
+    },
+    {
+      "path": "examples/c92_adsr_typed_gate_state.talas.json",
+      "title": "ADSR Gate State",
+      "expectedOutcome": "renderable"
+    },
+    {
+      "path": "examples/c93_pulse_train_phase_state.talas.json",
+      "title": "Pulse Train Phase State",
+      "expectedOutcome": "renderable"
+    },
+    {
+      "path": "examples/c94_pulse_generator_phase_state.talas.json",
+      "title": "Pulse Generator Phase State",
+      "expectedOutcome": "renderable"
+    },
+    {
+      "path": "examples/c95_oscillator_phase_state.talas.json",
+      "title": "Oscillator Phase State",
+      "expectedOutcome": "renderable"
+    },
+    {
+      "path": "examples/c96_lfo_phase_transport.talas.json",
+      "title": "LFO Phase and Transport",
+      "expectedOutcome": "renderable"
+    },
+    {
+      "path": "examples/c97_ramp_trigger_transport.talas.json",
+      "title": "Ramp Trigger and Transport",
+      "expectedOutcome": "renderable"
+    },
+    {
+      "path": "examples/c98_sample_and_hold_clock_transport.talas.json",
+      "title": "Sample And Hold Clock and Transport",
+      "expectedOutcome": "renderable"
+    },
+    {
+      "path": "examples/c99_samples_from_disk_single_step_transport.talas.json",
+      "title": "Samples From Disk Single Step Transport",
+      "expectedOutcome": "renderable"
+    },
+    {
+      "path": "examples/m3_live_spectral_analysis.talas.json",
+      "title": "Live spectral analysis",
+      "expectedOutcome": "renderable"
+    },
+    {
+      "path": "examples/m3_matrix4_output4.talas.json",
+      "title": "Matrix4 to Output4",
+      "expectedOutcome": "renderable"
+    },
+    {
+      "path": "examples/m3_native_fft_round_trip.talas.json",
+      "title": "Native complex STFT round-trip",
+      "expectedOutcome": "renderable"
+    },
+    {
+      "path": "examples/m3_packed_fft_round_trip.talas.json",
+      "title": "Historical packed-Audio FFT round-trip",
+      "expectedOutcome": "renderable"
+    },
+    {
+      "path": "examples/m3_streaming_health.talas.json",
+      "title": "Immutable streaming health",
+      "expectedOutcome": "renderable"
+    },
+    {
+      "path": "examples/m4_missing_component_preservation.talas.json",
+      "title": "Missing-component preservation",
+      "expectedOutcome": "preserved-unavailable"
+    },
+    {
+      "path": "examples/m4_sample_map_instrument.talas.json",
+      "title": "Sample-map instrument",
+      "expectedOutcome": "renderable"
+    },
+    {
+      "path": "examples/m4_snapshot_performance.talas.json",
+      "title": "Snapshot performance",
+      "expectedOutcome": "validation-only"
+    },
+    {
+      "path": "examples/m4_state_layers.talas.json",
+      "title": "Portable state layers",
+      "expectedOutcome": "validation-only"
+    },
+    {
+      "path": "examples/oscillator.talas.json",
+      "title": "Minimal oscillator",
+      "expectedOutcome": "renderable"
+    },
+    {
+      "path": "examples/reusable_feedback_help.talas.json",
+      "title": "Reusable Sound feedback",
+      "expectedOutcome": "validation-only"
+    },
+    {
+      "path": "examples/sample_text_table.talas.json",
+      "title": "Text-backed sample table",
+      "expectedOutcome": "renderable"
+    }
+  ],
+  "allowedUnregisteredTypeIds": [
+    "org.talas.example.spectral-colour"
+  ]
+}

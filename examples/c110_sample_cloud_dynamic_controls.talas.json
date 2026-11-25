@@ -1,0 +1,150 @@
+{
+  "format": "talas.project",
+  "version": 35,
+  "expressionLanguage": "variablesV2",
+  "expressionDefinitions": [],
+  "variableLibrary": { "version": 2, "variables": [] },
+  "soundVariableLibrary": { "version": 1, "variables": [] },
+  "generatorLibrary": { "version": 2, "programs": [] },
+  "liveSetLibrary": { "version": 1, "liveSets": [], "tools": [] },
+  "metadata": { "title": "Sample Cloud Dynamic Controls" },
+  "presentation": {
+    "version": 2,
+    "structureLayouts": [
+      {
+        "scope": { "kind": "project" },
+        "nodes": [
+          { "nodeId": "amplitude", "x": 40, "y": 40 },
+          { "nodeId": "pan", "x": 40, "y": 120 },
+          { "nodeId": "timeIndex", "x": 40, "y": 200 },
+          { "nodeId": "grainDur", "x": 40, "y": 280 },
+          { "nodeId": "density", "x": 40, "y": 360 },
+          { "nodeId": "maxGrains", "x": 40, "y": 440 },
+          { "nodeId": "panJitter", "x": 260, "y": 80 },
+          { "nodeId": "grainDurJitter", "x": 260, "y": 180 },
+          { "nodeId": "timeIndexJitter", "x": 260, "y": 280 },
+          { "nodeId": "cloud", "x": 540, "y": 240 },
+          { "nodeId": "out", "x": 860, "y": 240 }
+        ]
+      }
+    ],
+    "performanceControls": [],
+    "performanceMeters": []
+  },
+  "snapshotLibrary": { "version": 1, "banks": [] },
+  "sampleMapLibrary": { "version": 1, "maps": [] },
+  "assets": [
+    {
+      "id": "Samples/C110Cloud",
+      "kind": "table",
+      "path": "resources/c33-generic-source-sample.txt",
+      "disposition": "referenced",
+      "contentHash": "54e58fa19e33c65f013a9758f497efe8481f684876756f6ab60e79ef6865dcd3",
+      "channelCount": 0,
+      "sampleRate": 0,
+      "frameCount": 0,
+      "encoding": "",
+      "generation": 1,
+      "provenance": "Repository-original C33 waveform table reused unchanged by C110"
+    },
+    {
+      "id": "Envelopes/C110Grain",
+      "kind": "table",
+      "path": "resources/c71-triggered-table-read.txt",
+      "disposition": "referenced",
+      "contentHash": "aa95a3aba2892fae936e255f513790c6f084a2d9a6864be19c5c703ebd204274",
+      "channelCount": 0,
+      "sampleRate": 0,
+      "frameCount": 0,
+      "encoding": "",
+      "generation": 1,
+      "provenance": "Repository-original C71 finite table reused unchanged as the C110 grain envelope"
+    }
+  ],
+  "partialTrackEdits": [],
+  "timeline": {
+    "loop": { "enabled": false, "startSeconds": 0, "endSeconds": 0.125 },
+    "musicalTime": {
+      "ticksPerQuarter": 960,
+      "tempo": [{ "tick": 0, "microsecondsPerQuarter": 500000 }],
+      "meter": [{ "tick": 0, "numerator": 4, "denominator": 4 }]
+    },
+    "score": { "tracks": [], "clips": [], "automation": [], "markers": [] },
+    "eventValues": [
+      { "timeSeconds": 0, "eventName": "C110Amplitude", "domain": "scalar", "value": 0.35, "interpolation": "step" },
+      { "timeSeconds": 0, "eventName": "C110Pan", "domain": "scalar", "value": 0.2, "interpolation": "step" },
+      { "timeSeconds": 0, "eventName": "C110TimeIndex", "domain": "scalar", "value": -1, "interpolation": "step" },
+      { "timeSeconds": 0, "eventName": "C110GrainDur", "domain": "scalar", "value": 0.05, "interpolation": "step" },
+      { "timeSeconds": 0, "eventName": "C110Density", "domain": "scalar", "value": 64, "interpolation": "step" },
+      { "timeSeconds": 0, "eventName": "C110MaxGrains", "domain": "scalar", "value": 8, "interpolation": "step" },
+      { "timeSeconds": 0, "eventName": "C110PanJitter", "domain": "scalar", "value": 0.2, "interpolation": "step" },
+      { "timeSeconds": 0, "eventName": "C110GrainDurJitter", "domain": "scalar", "value": 0.1, "interpolation": "step" },
+      { "timeSeconds": 0, "eventName": "C110TimeIndexJitter", "domain": "scalar", "value": 0.1, "interpolation": "step" },
+      { "timeSeconds": 0.03125, "eventName": "C110Pan", "domain": "scalar", "value": 0.8, "interpolation": "step" },
+      { "timeSeconds": 0.03125, "eventName": "C110Density", "domain": "scalar", "value": 96, "interpolation": "step" },
+      { "timeSeconds": 0.03125, "eventName": "C110MaxGrains", "domain": "scalar", "value": 4, "interpolation": "step" },
+      { "timeSeconds": 0.0625, "eventName": "C110Pan", "domain": "scalar", "value": 0.5, "interpolation": "step" },
+      { "timeSeconds": 0.0625, "eventName": "C110MaxGrains", "domain": "scalar", "value": 12, "interpolation": "step" }
+    ]
+  },
+  "deviceSettings": {
+    "configured": false,
+    "audioInputDevice": "",
+    "audioOutputDevice": "",
+    "sampleRate": 0,
+    "bufferSize": 0,
+    "inputChannels": [],
+    "outputChannels": [],
+    "midiInputDevices": [],
+    "transportSync": { "sourceMode": "internal", "sourceIdentifier": "" },
+    "oscIngress": { "enabled": false, "port": 9000 },
+    "oscEgress": { "enabled": false, "port": 9001 }
+  },
+  "soundDefinitions": [],
+  "graph": {
+    "nodes": [
+      { "id": "amplitude", "typeId": "talas.constant", "parameters": [{ "id": "value", "expression": "!C110Amplitude" }] },
+      { "id": "pan", "typeId": "talas.constant", "parameters": [{ "id": "value", "expression": "!C110Pan" }] },
+      { "id": "timeIndex", "typeId": "talas.constant", "parameters": [{ "id": "value", "expression": "!C110TimeIndex" }] },
+      { "id": "grainDur", "typeId": "talas.constant", "parameters": [{ "id": "value", "expression": "!C110GrainDur" }] },
+      { "id": "density", "typeId": "talas.constant", "parameters": [{ "id": "value", "expression": "!C110Density" }] },
+      { "id": "maxGrains", "typeId": "talas.constant", "parameters": [{ "id": "value", "expression": "!C110MaxGrains" }] },
+      { "id": "panJitter", "typeId": "talas.constant", "parameters": [{ "id": "value", "expression": "!C110PanJitter" }] },
+      { "id": "grainDurJitter", "typeId": "talas.constant", "parameters": [{ "id": "value", "expression": "!C110GrainDurJitter" }] },
+      { "id": "timeIndexJitter", "typeId": "talas.constant", "parameters": [{ "id": "value", "expression": "!C110TimeIndexJitter" }] },
+      {
+        "id": "cloud",
+        "typeId": "talas.sampleCloud",
+        "parameters": [
+          { "id": "sample", "resource": "Samples/C110Cloud" },
+          { "id": "grainEnv", "resource": "Envelopes/C110Grain" },
+          { "id": "maxGrains", "expression": "1 / 0" },
+          { "id": "amplitude", "expression": "1 / 0" },
+          { "id": "density", "expression": "1 / 0" },
+          { "id": "grainDur", "expression": "1 / 0" },
+          { "id": "grainDurJitter", "expression": "1 / 0" },
+          { "id": "pan", "expression": "1 / 0" },
+          { "id": "panJitter", "expression": "1 / 0" },
+          { "id": "seed", "expression": "0.25" },
+          { "id": "fromMemoryWriter", "boolean": false },
+          { "id": "timeIndex", "expression": "1 / 0" },
+          { "id": "timeIndexJitter", "expression": "1 / 0" }
+        ]
+      },
+      { "id": "out", "typeId": "talas.audioOutput", "parameters": [] }
+    ],
+    "connections": [
+      { "fromNode": "amplitude", "fromPort": "value", "toNode": "cloud", "toPort": "amplitude" },
+      { "fromNode": "pan", "fromPort": "value", "toNode": "cloud", "toPort": "pan" },
+      { "fromNode": "timeIndex", "fromPort": "value", "toNode": "cloud", "toPort": "timeIndex" },
+      { "fromNode": "grainDur", "fromPort": "value", "toNode": "cloud", "toPort": "grainDur" },
+      { "fromNode": "density", "fromPort": "value", "toNode": "cloud", "toPort": "density" },
+      { "fromNode": "maxGrains", "fromPort": "value", "toNode": "cloud", "toPort": "maxGrains" },
+      { "fromNode": "panJitter", "fromPort": "value", "toNode": "cloud", "toPort": "panJitter" },
+      { "fromNode": "grainDurJitter", "fromPort": "value", "toNode": "cloud", "toPort": "grainDurJitter" },
+      { "fromNode": "timeIndexJitter", "fromPort": "value", "toNode": "cloud", "toPort": "timeIndexJitter" },
+      { "fromNode": "cloud", "fromPort": "audioOut", "toNode": "out", "toPort": "audioIn" },
+      { "fromNode": "cloud", "fromPort": "rightOut", "toNode": "out", "toPort": "rightIn" }
+    ]
+  }
+}

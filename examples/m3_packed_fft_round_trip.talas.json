@@ -1,0 +1,115 @@
+{
+  "format": "talas.project",
+  "version": 10,
+  "metadata": {
+    "title": "M3 Historical Packed-Audio FFT Round-Trip"
+  },
+  "virtualControls": [],
+  "assets": [],
+  "timeline": {
+    "loop": {
+      "enabled": false,
+      "startSeconds": 0,
+      "endSeconds": 4
+    },
+    "eventValues": []
+  },
+  "deviceSettings": {
+    "configured": false,
+    "audioInputDevice": "",
+    "audioOutputDevice": "",
+    "sampleRate": 0,
+    "bufferSize": 0,
+    "inputChannels": [],
+    "outputChannels": [],
+    "midiInputDevices": []
+  },
+  "soundDefinitions": [],
+  "graph": {
+    "nodes": [
+      {
+        "id": "osc",
+        "typeId": "talas.oscillator",
+        "position": {
+          "x": 80,
+          "y": 170
+        },
+        "parameters": [
+          {
+            "id": "frequency",
+            "expression": "256 hz"
+          },
+          {
+            "id": "amplitude",
+            "expression": "0.25"
+          }
+        ]
+      },
+      {
+        "id": "packedForward",
+        "typeId": "talas.fft",
+        "position": {
+          "x": 320,
+          "y": 170
+        },
+        "parameters": [
+          {
+            "id": "length",
+            "expression": "64"
+          },
+          {
+            "id": "inverse",
+            "boolean": false
+          }
+        ]
+      },
+      {
+        "id": "packedInverse",
+        "typeId": "talas.fft",
+        "position": {
+          "x": 580,
+          "y": 170
+        },
+        "parameters": [
+          {
+            "id": "length",
+            "expression": "64"
+          },
+          {
+            "id": "inverse",
+            "boolean": true
+          }
+        ]
+      },
+      {
+        "id": "out",
+        "typeId": "talas.audioOutput",
+        "position": {
+          "x": 840,
+          "y": 170
+        },
+        "parameters": []
+      }
+    ],
+    "connections": [
+      {
+        "fromNode": "osc",
+        "fromPort": "audioOut",
+        "toNode": "packedForward",
+        "toPort": "audioIn"
+      },
+      {
+        "fromNode": "packedForward",
+        "fromPort": "audioOut",
+        "toNode": "packedInverse",
+        "toPort": "audioIn"
+      },
+      {
+        "fromNode": "packedInverse",
+        "fromPort": "audioOut",
+        "toNode": "out",
+        "toPort": "audioIn"
+      }
+    ]
+  }
+}

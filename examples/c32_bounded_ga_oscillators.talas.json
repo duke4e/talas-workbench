@@ -1,0 +1,105 @@
+{
+  "format": "talas.project",
+  "version": 35,
+  "expressionLanguage": "legacyV1",
+  "expressionDefinitions": [],
+  "variableLibrary": { "version": 2, "variables": [] },
+  "soundVariableLibrary": { "version": 1, "variables": [] },
+  "generatorLibrary": { "version": 2, "programs": [] },
+  "liveSetLibrary": { "version": 1, "liveSets": [], "tools": [] },
+  "metadata": { "title": "Bounded GA Oscillators" },
+  "presentation": {
+    "version": 2,
+    "structureLayouts": [
+      {
+        "scope": { "kind": "project" },
+        "nodes": [
+          { "nodeId": "ga", "x": 160, "y": 170 },
+          { "nodeId": "out", "x": 500, "y": 170 }
+        ]
+      }
+    ],
+    "performanceControls": [],
+    "performanceMeters": []
+  },
+  "snapshotLibrary": { "version": 1, "banks": [] },
+  "sampleMapLibrary": { "version": 1, "maps": [] },
+  "assets": [
+    {
+      "id": "Analysis/C32A",
+      "kind": "table",
+      "path": "resources/c32-ga-analysis-a.txt",
+      "disposition": "referenced",
+      "contentHash": "2b16b0eaac7e79df0230adea1f7ccb8dc430a233ceb5b60b62b618d76dc24ae7",
+      "channelCount": 0,
+      "sampleRate": 0,
+      "frameCount": 0,
+      "encoding": "",
+      "generation": 1,
+      "provenance": "Repository-original C32 GA amplitude analysis A"
+    },
+    {
+      "id": "Analysis/C32B",
+      "kind": "table",
+      "path": "resources/c32-ga-analysis-b.txt",
+      "disposition": "referenced",
+      "contentHash": "b6e94e9f13c483a94830697f0bc48bc1cffd1f6f048cde75c0bb6d84f5900bf8",
+      "channelCount": 0,
+      "sampleRate": 0,
+      "frameCount": 0,
+      "encoding": "",
+      "generation": 1,
+      "provenance": "Repository-original C32 GA amplitude analysis B"
+    }
+  ],
+  "partialTrackEdits": [],
+  "timeline": {
+    "loop": { "enabled": false, "startSeconds": 0, "endSeconds": 4 },
+    "musicalTime": {
+      "ticksPerQuarter": 960,
+      "tempo": [{ "tick": 0, "microsecondsPerQuarter": 500000 }],
+      "meter": [{ "tick": 0, "numerator": 4, "denominator": 4 }]
+    },
+    "score": { "tracks": [], "clips": [], "automation": [], "markers": [] },
+    "eventValues": []
+  },
+  "deviceSettings": {
+    "configured": false,
+    "audioInputDevice": "",
+    "audioOutputDevice": "",
+    "sampleRate": 0,
+    "bufferSize": 0,
+    "inputChannels": [],
+    "outputChannels": [],
+    "midiInputDevices": [],
+    "transportSync": { "sourceMode": "internal", "sourceIdentifier": "" },
+    "oscIngress": { "enabled": false, "port": 9000 },
+    "oscEgress": { "enabled": false, "port": 9001 }
+  },
+  "soundDefinitions": [],
+  "graph": {
+    "nodes": [
+      {
+        "id": "ga",
+        "typeId": "talas.gaOscillators",
+        "parameters": [
+          { "id": "timeIndex", "expression": "0" },
+          { "id": "analysis0", "resource": "Analysis/C32A" },
+          { "id": "analysis1", "resource": "Analysis/C32B" },
+          { "id": "envelope", "expression": "0.35" },
+          { "id": "frequency", "expression": "110 hz" },
+          { "id": "morph", "expression": "0.25" }
+        ]
+      },
+      { "id": "out", "typeId": "talas.audioOutput", "parameters": [] }
+    ],
+    "connections": [
+      {
+        "fromNode": "ga",
+        "fromPort": "audioOut",
+        "toNode": "out",
+        "toPort": "audioIn"
+      }
+    ]
+  }
+}

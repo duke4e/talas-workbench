@@ -1,0 +1,149 @@
+{
+  "format": "talas.project",
+  "version": 35,
+  "expressionLanguage": "legacyV1",
+  "expressionDefinitions": [],
+  "variableLibrary": { "version": 2, "variables": [] },
+  "soundVariableLibrary": { "version": 1, "variables": [] },
+  "generatorLibrary": { "version": 2, "programs": [] },
+  "liveSetLibrary": { "version": 1, "liveSets": [], "tools": [] },
+  "metadata": { "title": "Sample And Hold Clock and Transport" },
+  "presentation": {
+    "version": 2,
+    "structureLayouts": [
+      {
+        "scope": { "kind": "project" },
+        "nodes": [
+          { "nodeId": "source", "x": 40, "y": 280 },
+          { "nodeId": "connectedTime", "x": 40, "y": 440 },
+          { "nodeId": "directHold", "x": 300, "y": 220 },
+          { "nodeId": "connectedHold", "x": 300, "y": 420 },
+          { "nodeId": "directScale", "x": 540, "y": 220 },
+          { "nodeId": "connectedScale", "x": 540, "y": 420 },
+          { "nodeId": "sum", "x": 760, "y": 320 },
+          { "nodeId": "carrier", "x": 760, "y": 100 },
+          { "nodeId": "vca", "x": 980, "y": 220 },
+          { "nodeId": "out", "x": 1200, "y": 220 }
+        ]
+      }
+    ],
+    "performanceControls": [],
+    "performanceMeters": []
+  },
+  "snapshotLibrary": { "version": 1, "banks": [] },
+  "sampleMapLibrary": { "version": 1, "maps": [] },
+  "assets": [],
+  "partialTrackEdits": [],
+  "timeline": {
+    "loop": { "enabled": false, "startSeconds": 0, "endSeconds": 3 },
+    "musicalTime": {
+      "ticksPerQuarter": 960,
+      "tempo": [{ "tick": 0, "microsecondsPerQuarter": 500000 }],
+      "meter": [{ "tick": 0, "numerator": 4, "denominator": 4 }]
+    },
+    "score": { "tracks": [], "clips": [], "automation": [], "markers": [] },
+    "eventValues": [
+      { "timeSeconds": 0, "eventName": "C98DirectHold", "domain": "scalar", "value": 0, "interpolation": "step" },
+      { "timeSeconds": 0, "eventName": "C98ConnectedHold", "domain": "scalar", "value": 0.25, "interpolation": "step" },
+      { "timeSeconds": 0.5, "eventName": "C98DirectHold", "domain": "scalar", "value": -0.25, "interpolation": "step" },
+      { "timeSeconds": 0.75, "eventName": "C98ConnectedHold", "domain": "scalar", "value": 0.5, "interpolation": "step" },
+      { "timeSeconds": 1, "eventName": "C98DirectHold", "domain": "scalar", "value": 0.5, "interpolation": "step" },
+      { "timeSeconds": 1.25, "eventName": "C98ConnectedHold", "domain": "scalar", "value": 0.125, "interpolation": "step" },
+      { "timeSeconds": 1.75, "eventName": "C98DirectHold", "domain": "scalar", "value": -0.125, "interpolation": "step" },
+      { "timeSeconds": 2, "eventName": "C98ConnectedHold", "domain": "scalar", "value": 0.75, "interpolation": "step" }
+    ]
+  },
+  "deviceSettings": {
+    "configured": false,
+    "audioInputDevice": "",
+    "audioOutputDevice": "",
+    "sampleRate": 0,
+    "bufferSize": 0,
+    "inputChannels": [],
+    "outputChannels": [],
+    "midiInputDevices": [],
+    "transportSync": { "sourceMode": "internal", "sourceIdentifier": "" },
+    "oscIngress": { "enabled": false, "port": 9000 },
+    "oscEgress": { "enabled": false, "port": 9001 }
+  },
+  "soundDefinitions": [],
+  "graph": {
+    "nodes": [
+      {
+        "id": "source",
+        "typeId": "talas.linearRamp",
+        "parameters": [
+          { "id": "duration", "expression": "2 s" },
+          { "id": "start", "expression": "0.1" },
+          { "id": "end", "expression": "0.9" }
+        ]
+      },
+      {
+        "id": "connectedTime",
+        "typeId": "talas.constant",
+        "parameters": [
+          { "id": "value", "expression": "!C98ConnectedHold" }
+        ]
+      },
+      {
+        "id": "directHold",
+        "typeId": "talas.sampleAndHold",
+        "parameters": [
+          { "id": "holdTime", "expression": "0.5 s + !C98DirectHold * 1 s" },
+          { "id": "offsetTime", "expression": "0.25 s" }
+        ]
+      },
+      {
+        "id": "connectedHold",
+        "typeId": "talas.sampleAndHold",
+        "parameters": [
+          { "id": "holdTime", "expression": "0 s" },
+          { "id": "offsetTime", "expression": "0.5 s" }
+        ]
+      },
+      {
+        "id": "directScale",
+        "typeId": "talas.scaleAndOffset",
+        "parameters": [
+          { "id": "scale", "expression": "0.5" },
+          { "id": "offset", "expression": "0" },
+          { "id": "rightScale", "expression": "1" },
+          { "id": "rightOffset", "expression": "0" }
+        ]
+      },
+      {
+        "id": "connectedScale",
+        "typeId": "talas.scaleAndOffset",
+        "parameters": [
+          { "id": "scale", "expression": "0.5" },
+          { "id": "offset", "expression": "0" },
+          { "id": "rightScale", "expression": "1" },
+          { "id": "rightOffset", "expression": "0" }
+        ]
+      },
+      { "id": "sum", "typeId": "talas.add", "parameters": [] },
+      {
+        "id": "carrier",
+        "typeId": "talas.oscillator",
+        "parameters": [
+          { "id": "frequency", "expression": "2 hz" },
+          { "id": "amplitude", "expression": "0.2" }
+        ]
+      },
+      { "id": "vca", "typeId": "talas.vca", "parameters": [{ "id": "gain", "expression": "1" }] },
+      { "id": "out", "typeId": "talas.audioOutput", "parameters": [] }
+    ],
+    "connections": [
+      { "fromNode": "source", "fromPort": "value", "toNode": "directHold", "toPort": "value" },
+      { "fromNode": "source", "fromPort": "value", "toNode": "connectedHold", "toPort": "value" },
+      { "fromNode": "connectedTime", "fromPort": "value", "toNode": "connectedHold", "toPort": "holdTime" },
+      { "fromNode": "directHold", "fromPort": "value", "toNode": "directScale", "toPort": "value" },
+      { "fromNode": "connectedHold", "fromPort": "value", "toNode": "connectedScale", "toPort": "value" },
+      { "fromNode": "directScale", "fromPort": "value", "toNode": "sum", "toPort": "left" },
+      { "fromNode": "connectedScale", "fromPort": "value", "toNode": "sum", "toPort": "right" },
+      { "fromNode": "carrier", "fromPort": "audioOut", "toNode": "vca", "toPort": "audioIn" },
+      { "fromNode": "sum", "fromPort": "value", "toNode": "vca", "toPort": "gain" },
+      { "fromNode": "vca", "fromPort": "audioOut", "toNode": "out", "toPort": "audioIn" }
+    ]
+  }
+}

@@ -1,0 +1,142 @@
+{
+  "format": "talas.project",
+  "version": 13,
+  "metadata": {
+    "title": "M4 State Layers"
+  },
+  "presentation": {
+    "version": 1,
+    "structureLayouts": [
+      {
+        "scope": {
+          "kind": "project"
+        },
+        "nodes": [
+          {
+            "nodeId": "stateVoice",
+            "x": 96,
+            "y": 112
+          },
+          {
+            "nodeId": "output",
+            "x": 420,
+            "y": 112
+          }
+        ]
+      },
+      {
+        "scope": {
+          "kind": "soundDefinition",
+          "definitionId": "stateVoiceDefinition"
+        },
+        "nodes": [
+          {
+            "nodeId": "oscillator",
+            "x": 160,
+            "y": 96
+          }
+        ]
+      }
+    ],
+    "performanceControls": [
+      {
+        "eventName": "StateGain",
+        "domain": "scalar",
+        "x": 88,
+        "y": 64,
+        "visible": true
+      }
+    ]
+  },
+  "snapshotLibrary": {
+    "version": 1,
+    "banks": []
+  },
+  "sampleMapLibrary": {
+    "version": 1,
+    "maps": []
+  },
+  "virtualControls": [
+    {
+      "eventName": "StateGain",
+      "domain": "scalar",
+      "kind": "fader",
+      "value": 0.75,
+      "minimum": 0,
+      "maximum": 1
+    }
+  ],
+  "assets": [],
+  "timeline": {
+    "loop": {
+      "enabled": false,
+      "startSeconds": 0,
+      "endSeconds": 4
+    },
+    "eventValues": []
+  },
+  "deviceSettings": {
+    "configured": false,
+    "audioInputDevice": "",
+    "audioOutputDevice": "",
+    "sampleRate": 0,
+    "bufferSize": 0,
+    "inputChannels": [],
+    "outputChannels": [],
+    "midiInputDevices": []
+  },
+  "soundDefinitions": [
+    {
+      "id": "stateVoiceDefinition",
+      "name": "State Voice",
+      "interfaceVersion": 1,
+      "inputs": [],
+      "outputs": [
+        {
+          "id": "audioOut",
+          "type": "audio",
+          "nodeId": "oscillator",
+          "nodePortId": "audioOut"
+        }
+      ],
+      "parameters": [],
+      "graph": {
+        "nodes": [
+          {
+            "id": "oscillator",
+            "typeId": "talas.oscillator",
+            "parameters": [
+              {
+                "id": "frequency",
+                "expression": "220 hz"
+              }
+            ]
+          }
+        ],
+        "connections": []
+      }
+    }
+  ],
+  "graph": {
+    "nodes": [
+      {
+        "id": "stateVoice",
+        "soundDefinitionId": "stateVoiceDefinition",
+        "parameters": []
+      },
+      {
+        "id": "output",
+        "typeId": "talas.audioOutput",
+        "parameters": []
+      }
+    ],
+    "connections": [
+      {
+        "fromNode": "stateVoice",
+        "fromPort": "audioOut",
+        "toNode": "output",
+        "toPort": "audioIn"
+      }
+    ]
+  }
+}

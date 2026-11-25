@@ -1,0 +1,105 @@
+{
+  "format": "talas.project",
+  "version": 35,
+  "expressionLanguage": "variablesV2",
+  "expressionDefinitions": [],
+  "variableLibrary": { "version": 2, "variables": [] },
+  "soundVariableLibrary": { "version": 1, "variables": [] },
+  "generatorLibrary": { "version": 2, "programs": [] },
+  "liveSetLibrary": { "version": 1, "liveSets": [], "tools": [] },
+  "metadata": { "title": "Pan Checked Finite Live Controls" },
+  "presentation": {
+    "version": 2,
+    "structureLayouts": [
+      {
+        "scope": { "kind": "project" },
+        "nodes": [
+          { "nodeId": "carrier", "x": 40, "y": 170 },
+          { "nodeId": "panControl", "x": 40, "y": 310 },
+          { "nodeId": "scaleControl", "x": 40, "y": 410 },
+          { "nodeId": "pan", "x": 360, "y": 250 },
+          { "nodeId": "out", "x": 680, "y": 250 }
+        ]
+      }
+    ],
+    "performanceControls": [],
+    "performanceMeters": []
+  },
+  "snapshotLibrary": { "version": 1, "banks": [] },
+  "sampleMapLibrary": { "version": 1, "maps": [] },
+  "assets": [],
+  "partialTrackEdits": [],
+  "timeline": {
+    "loop": { "enabled": false, "startSeconds": 0, "endSeconds": 0.125 },
+    "musicalTime": {
+      "ticksPerQuarter": 960,
+      "tempo": [{ "tick": 0, "microsecondsPerQuarter": 500000 }],
+      "meter": [{ "tick": 0, "numerator": 4, "denominator": 4 }]
+    },
+    "score": { "tracks": [], "clips": [], "automation": [], "markers": [] },
+    "eventValues": [
+      { "timeSeconds": 0, "eventName": "C134Pan", "domain": "scalar", "value": 0, "interpolation": "step" },
+      { "timeSeconds": 0, "eventName": "C134Scale", "domain": "scalar", "value": 0.25, "interpolation": "step" },
+      { "timeSeconds": 0.03125, "eventName": "C134Pan", "domain": "scalar", "value": 0.5, "interpolation": "step" },
+      { "timeSeconds": 0.03125, "eventName": "C134Scale", "domain": "scalar", "value": 0.5, "interpolation": "step" },
+      { "timeSeconds": 0.0625, "eventName": "C134Pan", "domain": "scalar", "value": 1, "interpolation": "step" },
+      { "timeSeconds": 0.0625, "eventName": "C134Scale", "domain": "scalar", "value": 0.75, "interpolation": "step" },
+      { "timeSeconds": 0.09375, "eventName": "C134Pan", "domain": "scalar", "value": 0.25, "interpolation": "step" },
+      { "timeSeconds": 0.09375, "eventName": "C134Scale", "domain": "scalar", "value": 1, "interpolation": "step" }
+    ]
+  },
+  "deviceSettings": {
+    "configured": false,
+    "audioInputDevice": "",
+    "audioOutputDevice": "",
+    "sampleRate": 0,
+    "bufferSize": 0,
+    "inputChannels": [],
+    "outputChannels": [],
+    "midiInputDevices": [],
+    "transportSync": { "sourceMode": "internal", "sourceIdentifier": "" },
+    "oscIngress": { "enabled": false, "port": 9000 },
+    "oscEgress": { "enabled": false, "port": 9001 }
+  },
+  "soundDefinitions": [],
+  "graph": {
+    "nodes": [
+      {
+        "id": "carrier",
+        "typeId": "talas.oscillator",
+        "parameters": [
+          { "id": "frequency", "expression": "64 hz" },
+          { "id": "amplitude", "expression": "0.4" }
+        ]
+      },
+      {
+        "id": "panControl",
+        "typeId": "talas.constant",
+        "parameters": [{ "id": "value", "expression": "!C134Pan" }]
+      },
+      {
+        "id": "scaleControl",
+        "typeId": "talas.constant",
+        "parameters": [{ "id": "value", "expression": "!C134Scale" }]
+      },
+      {
+        "id": "pan",
+        "typeId": "talas.pan",
+        "parameters": [
+          { "id": "pan", "expression": "0" },
+          { "id": "scale", "expression": "1" },
+          { "id": "type", "choice": "power" },
+          { "id": "layout", "choice": "stereo" }
+        ]
+      },
+      { "id": "out", "typeId": "talas.audioOutput", "parameters": [] }
+    ],
+    "connections": [
+      { "fromNode": "carrier", "fromPort": "audioOut", "toNode": "pan", "toPort": "audioIn" },
+      { "fromNode": "panControl", "fromPort": "value", "toNode": "pan", "toPort": "pan" },
+      { "fromNode": "scaleControl", "fromPort": "value", "toNode": "pan", "toPort": "scale" },
+      { "fromNode": "pan", "fromPort": "leftOut", "toNode": "out", "toPort": "audioIn" },
+      { "fromNode": "pan", "fromPort": "rightOut", "toNode": "out", "toPort": "rightIn" }
+    ]
+  }
+}

@@ -1,0 +1,1 @@
+accumulate(!Input, 0, 0) + previous(!Other, 0) + sampleHold(!Input, !Trigger, 0)

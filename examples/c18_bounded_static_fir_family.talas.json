@@ -1,0 +1,205 @@
+{
+  "format": "talas.project",
+  "version": 35,
+  "expressionLanguage": "legacyV1",
+  "expressionDefinitions": [],
+  "variableLibrary": {
+    "version": 2,
+    "variables": []
+  },
+  "soundVariableLibrary": {
+    "version": 1,
+    "variables": []
+  },
+  "generatorLibrary": {
+    "version": 2,
+    "programs": []
+  },
+  "liveSetLibrary": {
+    "version": 1,
+    "liveSets": [],
+    "tools": []
+  },
+  "metadata": {
+    "title": "C18 Bounded Static FIR Family"
+  },
+  "presentation": {
+    "version": 2,
+    "structureLayouts": [
+      {
+        "scope": {
+          "kind": "project"
+        },
+        "nodes": [
+          {
+            "nodeId": "source",
+            "x": 80,
+            "y": 170
+          },
+          {
+            "nodeId": "fir",
+            "x": 330,
+            "y": 170
+          },
+          {
+            "nodeId": "resonator",
+            "x": 580,
+            "y": 170
+          },
+          {
+            "nodeId": "out",
+            "x": 830,
+            "y": 170
+          }
+        ]
+      }
+    ],
+    "performanceControls": [],
+    "performanceMeters": []
+  },
+  "snapshotLibrary": {
+    "version": 1,
+    "banks": []
+  },
+  "sampleMapLibrary": {
+    "version": 1,
+    "maps": []
+  },
+  "virtualControls": [],
+  "assets": [
+    {
+      "id": "Tables/C18/RE",
+      "kind": "table",
+      "path": "resources/c18-re-kernel.txt",
+      "disposition": "referenced",
+      "contentHash": "847ba39a03669f3c6dd36ac8306596eec4c164d0ded9581ab4383ed735c1dd1c",
+      "channelCount": 0,
+      "sampleRate": 0,
+      "frameCount": 0,
+      "encoding": "",
+      "generation": 1,
+      "provenance": "Repository-original C18 static FIR coefficient kernel"
+    }
+  ],
+  "partialTrackEdits": [],
+  "timeline": {
+    "loop": {
+      "enabled": false,
+      "startSeconds": 0,
+      "endSeconds": 4
+    },
+    "musicalTime": {
+      "ticksPerQuarter": 960,
+      "tempo": [
+        {
+          "tick": 0,
+          "microsecondsPerQuarter": 500000
+        }
+      ],
+      "meter": [
+        {
+          "tick": 0,
+          "numerator": 4,
+          "denominator": 4
+        }
+      ]
+    },
+    "score": {
+      "tracks": [],
+      "clips": [],
+      "automation": [],
+      "markers": []
+    },
+    "eventValues": []
+  },
+  "deviceSettings": {
+    "configured": false,
+    "audioInputDevice": "",
+    "audioOutputDevice": "",
+    "sampleRate": 0,
+    "bufferSize": 0,
+    "inputChannels": [],
+    "outputChannels": [],
+    "midiInputDevices": [],
+    "transportSync": {
+      "sourceMode": "internal",
+      "sourceIdentifier": ""
+    },
+    "oscIngress": {
+      "enabled": false,
+      "port": 9000
+    },
+    "oscEgress": {
+      "enabled": false,
+      "port": 9001
+    }
+  },
+  "soundDefinitions": [],
+  "graph": {
+    "nodes": [
+      {
+        "id": "source",
+        "typeId": "talas.oscillator",
+        "parameters": [
+          {
+            "id": "frequency",
+            "expression": "220 hz"
+          },
+          {
+            "id": "amplitude",
+            "expression": "0.3"
+          }
+        ]
+      },
+      {
+        "id": "fir",
+        "typeId": "talas.firFilter",
+        "parameters": [
+          {
+            "id": "coefficients",
+            "text": "0.6 0.3 -0.15 0.075"
+          }
+        ]
+      },
+      {
+        "id": "resonator",
+        "typeId": "talas.reResonator",
+        "parameters": [
+          {
+            "id": "wavetable",
+            "resource": "Tables/C18/RE"
+          },
+          {
+            "id": "timeIndex",
+            "expression": "0"
+          }
+        ]
+      },
+      {
+        "id": "out",
+        "typeId": "talas.audioOutput",
+        "parameters": []
+      }
+    ],
+    "connections": [
+      {
+        "fromNode": "source",
+        "fromPort": "audioOut",
+        "toNode": "fir",
+        "toPort": "audioIn"
+      },
+      {
+        "fromNode": "fir",
+        "fromPort": "audioOut",
+        "toNode": "resonator",
+        "toPort": "audioIn"
+      },
+      {
+        "fromNode": "resonator",
+        "fromPort": "audioOut",
+        "toNode": "out",
+        "toPort": "audioIn"
+      }
+    ]
+  }
+}

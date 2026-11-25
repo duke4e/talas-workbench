@@ -1,0 +1,445 @@
+{
+  "format": "talas.project",
+  "version": 43,
+  "expressionLanguage": "legacyV1",
+  "expressionDefinitions": [],
+  "variableLibrary": {
+    "version": 2,
+    "variables": []
+  },
+  "soundVariableLibrary": {
+    "version": 1,
+    "variables": []
+  },
+  "generatorLibrary": {
+    "version": 2,
+    "programs": []
+  },
+  "liveSetLibrary": {
+    "version": 1,
+    "liveSets": [],
+    "tools": []
+  },
+  "metadata": {
+    "title": "Reusable Feedback Help"
+  },
+  "presentation": {
+    "version": 2,
+    "structureLayouts": [
+      {
+        "scope": {
+          "kind": "project"
+        },
+        "nodes": [
+          {
+            "nodeId": "voiceA",
+            "x": 90,
+            "y": 90
+          },
+          {
+            "nodeId": "voiceB",
+            "x": 90,
+            "y": 300
+          },
+          {
+            "nodeId": "sum",
+            "x": 420,
+            "y": 190
+          },
+          {
+            "nodeId": "out",
+            "x": 700,
+            "y": 190
+          },
+          {
+            "nodeId": "vca1",
+            "x": 220,
+            "y": 130
+          },
+          {
+            "nodeId": "vca2",
+            "x": 220,
+            "y": 250
+          }
+        ]
+      },
+      {
+        "scope": {
+          "kind": "soundDefinition",
+          "definitionId": "feedbackVoice"
+        },
+        "nodes": [
+          {
+            "nodeId": "osc",
+            "x": 80,
+            "y": 80
+          },
+          {
+            "nodeId": "feedbackRead",
+            "x": 80,
+            "y": 260
+          },
+          {
+            "nodeId": "mix",
+            "x": 360,
+            "y": 150
+          },
+          {
+            "nodeId": "feedbackWrite",
+            "x": 640,
+            "y": 260
+          },
+          {
+            "nodeId": "vca1",
+            "x": 160,
+            "y": 210
+          }
+        ]
+      }
+    ],
+    "performanceControls": [],
+    "performanceMeters": []
+  },
+  "snapshotLibrary": {
+    "version": 1,
+    "banks": []
+  },
+  "sampleMapLibrary": {
+    "version": 1,
+    "maps": []
+  },
+  "virtualControls": [],
+  "assets": [],
+  "partialTrackEdits": [],
+  "timeline": {
+    "loop": {
+      "enabled": false,
+      "startSeconds": 0,
+      "endSeconds": 4
+    },
+    "musicalTime": {
+      "ticksPerQuarter": 960,
+      "tempo": [
+        {
+          "tick": 0,
+          "microsecondsPerQuarter": 500000
+        }
+      ],
+      "meter": [
+        {
+          "tick": 0,
+          "numerator": 4,
+          "denominator": 4
+        }
+      ]
+    },
+    "score": {
+      "tracks": [
+      ],
+      "clips": [
+      ],
+      "automation": [
+      ],
+      "markers": [
+      ]
+    },
+    "eventValues": []
+  },
+  "deviceSettings": {
+    "configured": false,
+    "audioInputDevice": "",
+    "audioOutputDevice": "",
+    "sampleRate": 0,
+    "bufferSize": 0,
+    "inputChannels": [],
+    "outputChannels": [],
+    "midiInputDevices": [],
+    "transportSync": {
+      "sourceMode": "internal",
+      "sourceIdentifier": ""
+    },
+    "oscIngress": {
+      "enabled": false,
+      "port": 9000
+    },
+    "oscEgress": {
+      "enabled": false,
+      "port": 9001
+    }
+  },
+  "soundDefinitions": [
+    {
+      "id": "feedbackVoice",
+      "name": "Feedback Voice",
+      "interfaceVersion": 1,
+      "inputs": [],
+      "outputs": [
+        {
+          "id": "audioOut",
+          "type": "audio",
+          "nodeId": "mix",
+          "nodePortId": "leftOut"
+        }
+      ],
+      "parameters": [
+        {
+          "id": "pitch",
+          "name": "Pitch",
+          "kind": "expression",
+          "domain": "hertz",
+          "choices": [],
+          "default": {
+            "expression": "220 hz"
+          },
+          "aliases": [],
+          "bindings": [
+            {
+              "target": "nodeParameter",
+              "nodeId": "osc",
+              "parameterId": "frequency"
+            }
+          ]
+        },
+        {
+          "id": "feedbackAmount",
+          "name": "Feedback Amount",
+          "kind": "expression",
+          "domain": "scalar",
+          "choices": [],
+          "default": {
+            "expression": "0.25"
+          },
+          "aliases": [],
+          "bindings": [
+            {
+              "target": "nodeParameter",
+              "nodeId": "vca1",
+              "parameterId": "gain"
+            }
+          ]
+        },
+        {
+          "id": "delayTime",
+          "name": "Delay Time",
+          "kind": "expression",
+          "domain": "seconds",
+          "choices": [],
+          "default": {
+            "expression": "0.04 s"
+          },
+          "aliases": [],
+          "bindings": [
+            {
+              "target": "nodeParameter",
+              "nodeId": "feedbackRead",
+              "parameterId": "delay"
+            }
+          ]
+        }
+      ],
+      "graph": {
+        "nodes": [
+          {
+            "id": "osc",
+            "typeId": "talas.oscillator",
+            "parameters": [
+              {
+                "id": "frequency",
+                "expression": "220 hz"
+              },
+              {
+                "id": "amplitude",
+                "expression": "0.12"
+              }
+            ]
+          },
+          {
+            "id": "feedbackRead",
+            "typeId": "talas.feedbackLoopOutput",
+            "parameters": [
+              {
+                "id": "connection",
+                "text": "body"
+              },
+              {
+                "id": "delay",
+                "expression": "0.04 s"
+              }
+            ]
+          },
+          {
+            "id": "mix",
+            "typeId": "talas.mixerV2",
+            "parameters": [
+              {
+                "id": "left",
+                "expression": "1.0"
+              },
+              {
+                "id": "right",
+                "expression": "1.0"
+              }
+            ]
+          },
+          {
+            "id": "feedbackWrite",
+            "typeId": "talas.feedbackLoopInput",
+            "parameters": [
+              {
+                "id": "connection",
+                "text": "body"
+              }
+            ]
+          },
+          {
+            "id": "vca1",
+            "typeId": "talas.vca",
+            "parameters": [
+              {
+                "id": "gain",
+                "expression": "0.25"
+              }
+            ]
+          }
+        ],
+        "connections": [
+          {
+            "fromNode": "osc",
+            "fromPort": "audioOut",
+            "toNode": "mix",
+            "toPort": "inputs"
+          },
+          {
+            "fromNode": "feedbackRead",
+            "fromPort": "audioOut",
+            "toNode": "vca1",
+            "toPort": "audioIn"
+          },
+          {
+            "fromNode": "mix",
+            "fromPort": "leftOut",
+            "toNode": "feedbackWrite",
+            "toPort": "audioIn"
+          },
+          {
+            "fromNode": "vca1",
+            "fromPort": "audioOut",
+            "toNode": "mix",
+            "toPort": "inputs"
+          }
+        ]
+      }
+    }
+  ],
+  "graph": {
+    "nodes": [
+      {
+        "id": "voiceA",
+        "soundDefinitionId": "feedbackVoice",
+        "parameters": [
+          {
+            "id": "pitch",
+            "expression": "220 hz"
+          },
+          {
+            "id": "feedbackAmount",
+            "expression": "0.28"
+          },
+          {
+            "id": "delayTime",
+            "expression": "0.03 s"
+          }
+        ]
+      },
+      {
+        "id": "voiceB",
+        "soundDefinitionId": "feedbackVoice",
+        "parameters": [
+          {
+            "id": "pitch",
+            "expression": "330 hz"
+          },
+          {
+            "id": "feedbackAmount",
+            "expression": "0.18"
+          },
+          {
+            "id": "delayTime",
+            "expression": "0.05 s"
+          }
+        ]
+      },
+      {
+        "id": "sum",
+        "typeId": "talas.mixerV2",
+        "parameters": [
+          {
+            "id": "left",
+            "expression": "1.0"
+          },
+          {
+            "id": "right",
+            "expression": "1.0"
+          }
+        ]
+      },
+      {
+        "id": "out",
+        "typeId": "talas.audioOutput",
+        "parameters": []
+      },
+      {
+        "id": "vca1",
+        "typeId": "talas.vca",
+        "parameters": [
+          {
+            "id": "gain",
+            "expression": "0.5"
+          }
+        ]
+      },
+      {
+        "id": "vca2",
+        "typeId": "talas.vca",
+        "parameters": [
+          {
+            "id": "gain",
+            "expression": "0.5"
+          }
+        ]
+      }
+    ],
+    "connections": [
+      {
+        "fromNode": "voiceA",
+        "fromPort": "audioOut",
+        "toNode": "vca1",
+        "toPort": "audioIn"
+      },
+      {
+        "fromNode": "voiceB",
+        "fromPort": "audioOut",
+        "toNode": "vca2",
+        "toPort": "audioIn"
+      },
+      {
+        "fromNode": "sum",
+        "fromPort": "leftOut",
+        "toNode": "out",
+        "toPort": "audioIn"
+      },
+      {
+        "fromNode": "vca1",
+        "fromPort": "audioOut",
+        "toNode": "sum",
+        "toPort": "inputs"
+      },
+      {
+        "fromNode": "vca2",
+        "fromPort": "audioOut",
+        "toNode": "sum",
+        "toPort": "inputs"
+      }
+    ]
+  }
+}

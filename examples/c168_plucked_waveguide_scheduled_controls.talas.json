@@ -1,0 +1,98 @@
+{
+  "format": "talas.project",
+  "version": 35,
+  "expressionLanguage": "variablesV2",
+  "expressionDefinitions": [],
+  "variableLibrary": { "version": 2, "variables": [] },
+  "soundVariableLibrary": { "version": 1, "variables": [] },
+  "generatorLibrary": { "version": 2, "programs": [] },
+  "liveSetLibrary": { "version": 1, "liveSets": [], "tools": [] },
+  "metadata": { "title": "Plucked Waveguide Scheduled Controls" },
+  "presentation": {
+    "version": 2,
+    "structureLayouts": [
+      {
+        "scope": { "kind": "project" },
+        "nodes": [
+          { "nodeId": "string", "x": 180, "y": 220 },
+          { "nodeId": "out", "x": 580, "y": 220 }
+        ]
+      }
+    ],
+    "performanceControls": [],
+    "performanceMeters": []
+  },
+  "snapshotLibrary": { "version": 1, "banks": [] },
+  "sampleMapLibrary": { "version": 1, "maps": [] },
+  "assets": [],
+  "partialTrackEdits": [],
+  "timeline": {
+    "loop": { "enabled": false, "startSeconds": 0, "endSeconds": 2 },
+    "musicalTime": {
+      "ticksPerQuarter": 960,
+      "tempo": [{ "tick": 0, "microsecondsPerQuarter": 500000 }],
+      "meter": [{ "tick": 0, "numerator": 4, "denominator": 4 }]
+    },
+    "score": { "tracks": [], "clips": [], "automation": [], "markers": [] },
+    "eventValues": [
+      { "timeSeconds": 0, "eventName": "C173Trigger", "domain": "scalar", "value": 1, "interpolation": "step" },
+      { "timeSeconds": 0, "eventName": "C173Frequency", "domain": "hertz", "value": 2400, "interpolation": "step" },
+      { "timeSeconds": 0, "eventName": "C173DecayTime", "domain": "seconds", "value": 0.2, "interpolation": "step" },
+      { "timeSeconds": 0, "eventName": "C173Brightness", "domain": "scalar", "value": 0.8, "interpolation": "step" },
+      { "timeSeconds": 0, "eventName": "C173PickPosition", "domain": "scalar", "value": 0.23, "interpolation": "step" },
+      { "timeSeconds": 0, "eventName": "C173Stiffness", "domain": "scalar", "value": 0.2, "interpolation": "step" },
+      { "timeSeconds": 0, "eventName": "C173Level", "domain": "scalar", "value": 0.5, "interpolation": "step" },
+      { "timeSeconds": 0.000020833333333333333, "eventName": "C173Trigger", "domain": "scalar", "value": 0, "interpolation": "step" },
+      { "timeSeconds": 0.0005, "eventName": "C173Frequency", "domain": "hertz", "value": 1200, "interpolation": "step" },
+      { "timeSeconds": 0.0005, "eventName": "C173DecayTime", "domain": "seconds", "value": 0.5, "interpolation": "step" },
+      { "timeSeconds": 0.0005, "eventName": "C173Brightness", "domain": "scalar", "value": 0.35, "interpolation": "step" },
+      { "timeSeconds": 0.0005, "eventName": "C173PickPosition", "domain": "scalar", "value": 0.41, "interpolation": "step" },
+      { "timeSeconds": 0.0005, "eventName": "C173Stiffness", "domain": "scalar", "value": 0.7, "interpolation": "step" },
+      { "timeSeconds": 0.0005, "eventName": "C173Level", "domain": "scalar", "value": 1.25, "interpolation": "step" },
+      { "timeSeconds": 0.00075, "eventName": "C173Trigger", "domain": "scalar", "value": 1, "interpolation": "step" },
+      { "timeSeconds": 0.0007708333333333333, "eventName": "C173Trigger", "domain": "scalar", "value": 0, "interpolation": "step" },
+      { "timeSeconds": 0.001, "eventName": "C173Frequency", "domain": "hertz", "value": 3200, "interpolation": "step" },
+      { "timeSeconds": 0.001, "eventName": "C173DecayTime", "domain": "seconds", "value": 1, "interpolation": "step" },
+      { "timeSeconds": 0.001, "eventName": "C173Brightness", "domain": "scalar", "value": 1, "interpolation": "step" },
+      { "timeSeconds": 0.001, "eventName": "C173PickPosition", "domain": "scalar", "value": 0.5, "interpolation": "step" },
+      { "timeSeconds": 0.001, "eventName": "C173Stiffness", "domain": "scalar", "value": 0, "interpolation": "step" },
+      { "timeSeconds": 0.001, "eventName": "C173Level", "domain": "scalar", "value": 0.75, "interpolation": "step" }
+    ]
+  },
+  "deviceSettings": {
+    "configured": false,
+    "audioInputDevice": "",
+    "audioOutputDevice": "",
+    "sampleRate": 0,
+    "bufferSize": 0,
+    "inputChannels": [],
+    "outputChannels": [],
+    "midiInputDevices": [],
+    "transportSync": { "sourceMode": "internal", "sourceIdentifier": "" },
+    "oscIngress": { "enabled": false, "port": 9000 },
+    "oscEgress": { "enabled": false, "port": 9001 }
+  },
+  "soundDefinitions": [],
+  "graph": {
+    "nodes": [
+      {
+        "id": "string",
+        "typeId": "talas.pluckedWaveguide",
+        "parameters": [
+          { "id": "trigger", "expression": "!C173Trigger" },
+          { "id": "frequency", "expression": "!C173Frequency" },
+          { "id": "decayTime", "expression": "!C173DecayTime" },
+          { "id": "brightness", "expression": "!C173Brightness" },
+          { "id": "pickPosition", "expression": "!C173PickPosition" },
+          { "id": "stiffness", "expression": "!C173Stiffness" },
+          { "id": "level", "expression": "!C173Level" },
+          { "id": "seed", "expression": "197" }
+        ]
+      },
+      { "id": "out", "typeId": "talas.audioOutput", "parameters": [] }
+    ],
+    "connections": [
+      { "fromNode": "string", "fromPort": "audioOut", "toNode": "out", "toPort": "audioIn" }
+    ]
+  }
+}

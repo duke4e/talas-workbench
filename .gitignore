@@ -1,0 +1,47 @@
+# Build output
+build/
+build-*/
+cmake-build-*/
+out/
+/Release/
+/Debug/
+
+# CMake generated files
+CMakeCache.txt
+CMakeFiles/
+CTestTestfile.cmake
+Testing/
+# Authored verification notes are source documents, including on case-insensitive filesystems.
+!/docs/testing/
+!/docs/testing/**
+cmake_install.cmake
+compile_commands.json
+
+# Python caches
+__pycache__/
+*.py[cod]
+.pytest_cache/
+
+# Local tool state
+.superpowers/
+tmp/
+
+# Workbench smoke output accidentally written to the repository root
+/workbench-*
+/sample-map-*.wav
+/e10-*
+/disk-cache-*-smoke.talas.json
+/missing-node-export.wav
+/uninstantiated-audition-table.txt
+/asset-recovery-lifecycle/
+/DiskCache/
+/*.talaspkg/
+
+# Rights-restricted local research corpus
+
+# OS/editor noise
+.DS_Store
+*.swp
+*.swo
+*.user
+*.xcuserstate

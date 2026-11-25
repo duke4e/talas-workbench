@@ -1,0 +1,305 @@
+{
+  "version": 6,
+  "cmakeMinimumRequired": {
+    "major": 3,
+    "minor": 28,
+    "patch": 0
+  },
+  "configurePresets": [
+    {
+      "name": "core-debug",
+      "displayName": "Core debug (offline, JUCE-free)",
+      "binaryDir": "${sourceDir}/build/core-debug",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug",
+        "TALAS_BUILD_TESTS": true,
+        "TALAS_BUILD_WORKBENCH": false,
+        "TALAS_FETCH_JUCE": false
+      }
+    },
+    {
+      "name": "workbench-release",
+      "displayName": "Workbench release with pinned JUCE",
+      "binaryDir": "${sourceDir}/build/workbench-release",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Release",
+        "TALAS_BUILD_TESTS": false,
+        "TALAS_BUILD_WORKBENCH": true,
+        "TALAS_FETCH_JUCE": true
+      }
+    },
+    {
+      "name": "core-asan-ubsan",
+      "displayName": "Core debug with ASan and UBSan",
+      "inherits": "core-debug",
+      "binaryDir": "${sourceDir}/build/core-asan-ubsan",
+      "cacheVariables": {
+        "CMAKE_C_FLAGS": "-fsanitize=address,undefined -fno-sanitize-recover=undefined -fno-omit-frame-pointer",
+        "CMAKE_CXX_FLAGS": "-fsanitize=address,undefined -fno-sanitize-recover=undefined -fno-omit-frame-pointer",
+        "CMAKE_EXE_LINKER_FLAGS": "-fsanitize=address,undefined"
+      }
+    },
+    {
+      "name": "core-tsan",
+      "displayName": "Core debug with TSan, optimised at -O1",
+      "inherits": "core-debug",
+      "binaryDir": "${sourceDir}/build/core-tsan",
+      "cacheVariables": {
+        "CMAKE_C_FLAGS": "-fsanitize=thread -O1 -fno-omit-frame-pointer",
+        "CMAKE_CXX_FLAGS": "-fsanitize=thread -O1 -fno-omit-frame-pointer",
+        "CMAKE_EXE_LINKER_FLAGS": "-fsanitize=thread"
+      }
+    },
+    {
+      "name": "core-fuzz",
+      "displayName": "Core Project JSON and expression fuzzers",
+      "inherits": "core-debug",
+      "binaryDir": "${sourceDir}/build/core-fuzz",
+      "cacheVariables": {
+        "TALAS_BUILD_FUZZERS": true,
+        "TALAS_FUZZ_ENGINE": "REPLAY"
+      }
+    },
+    {
+      "name": "core-bench-release",
+      "displayName": "Core Release performance benchmarks",
+      "inherits": "core-debug",
+      "binaryDir": "${sourceDir}/build/core-bench-release",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Release",
+        "TALAS_BUILD_BENCHMARKS": true,
+        "TALAS_BENCHMARK_PRESET_ID": "core-bench-release"
+      }
+    },
+    {
+      "name": "product-bench-release",
+      "displayName": "Workbench Release product performance probe",
+      "inherits": "workbench-release",
+      "binaryDir": "${sourceDir}/build/product-bench-release",
+      "cacheVariables": {
+        "TALAS_BUILD_TESTS": true,
+        "TALAS_BUILD_PRODUCT_BENCHMARKS": true,
+        "TALAS_BENCHMARK_PRESET_ID": "product-bench-release"
+      }
+    }
+  ],
+  "buildPresets": [
+    {
+      "name": "core-debug",
+      "configurePreset": "core-debug",
+      "configuration": "Debug"
+    },
+    {
+      "name": "workbench-release",
+      "configurePreset": "workbench-release",
+      "configuration": "Release"
+    },
+    {
+      "name": "core-asan-ubsan",
+      "configurePreset": "core-asan-ubsan",
+      "configuration": "Debug"
+    },
+    {
+      "name": "core-tsan",
+      "configurePreset": "core-tsan",
+      "configuration": "Debug"
+    },
+    {
+      "name": "core-asan-ubsan-property",
+      "configurePreset": "core-asan-ubsan",
+      "configuration": "Debug",
+      "targets": [
+        "talas_project_json_property_tests",
+        "talas_expression_property_tests",
+        "talas_context_free_generator_property_tests",
+        "talas_graph_property_tests",
+        "talas_project_package_property_tests",
+        "talas_typed_event_tests"
+      ]
+    },
+    {
+      "name": "core-tsan-property",
+      "configurePreset": "core-tsan",
+      "configuration": "Debug",
+      "targets": [
+        "talas_project_json_property_tests",
+        "talas_expression_property_tests",
+        "talas_context_free_generator_property_tests",
+        "talas_graph_property_tests",
+        "talas_project_package_property_tests",
+        "talas_typed_event_tests"
+      ]
+    },
+    {
+      "name": "core-tsan-threaded",
+      "configurePreset": "core-tsan",
+      "configuration": "Debug",
+      "targets": [
+        "talas_realtime_render_session_tests",
+        "talas_realtime_graph_host_tests",
+        "talas_realtime_control_ingress_tests",
+        "talas_realtime_live_set_ingress_tests",
+        "talas_realtime_analysis_capture_tests",
+        "talas_mtc_realtime_ingress_tests",
+        "talas_audio_stream_tests",
+        "talas_project_runtime_bridge_tests",
+        "talas_analysis_audition_runtime_tests",
+        "talas_prepared_score_clip_source_tests",
+        "talas_virtual_control_midi_tests",
+        "talas_resource_snapshot_runtime_tests",
+        "talas_disk_cache_capture_tests"
+      ]
+    },
+    {
+      "name": "core-fuzz",
+      "configurePreset": "core-fuzz",
+      "configuration": "Debug",
+      "targets": [
+        "talas_project_json_fuzzer",
+        "talas_expression_fuzzer",
+        "talas_context_free_generator_fuzzer"
+      ]
+    },
+    {
+      "name": "core-bench-release",
+      "configurePreset": "core-bench-release",
+      "configuration": "Release",
+      "targets": [
+        "talas_core_performance_benchmarks"
+      ]
+    },
+    {
+      "name": "product-bench-release",
+      "configurePreset": "product-bench-release",
+      "configuration": "Release",
+      "targets": [
+        "talas_product_performance_probe"
+      ]
+    }
+  ],
+  "testPresets": [
+    {
+      "name": "core-debug",
+      "configurePreset": "core-debug",
+      "configuration": "Debug",
+      "output": {
+        "outputOnFailure": true
+      }
+    },
+    {
+      "name": "core-asan-ubsan",
+      "configurePreset": "core-asan-ubsan",
+      "configuration": "Debug",
+      "output": {
+        "outputOnFailure": true
+      }
+    },
+    {
+      "name": "core-tsan",
+      "configurePreset": "core-tsan",
+      "configuration": "Debug",
+      "output": {
+        "outputOnFailure": true
+      }
+    },
+    {
+      "name": "core-asan-ubsan-property",
+      "configurePreset": "core-asan-ubsan",
+      "configuration": "Debug",
+      "filter": {
+        "include": {
+          "label": "^property$"
+        }
+      },
+      "output": {
+        "outputOnFailure": true
+      },
+      "execution": {
+        "noTestsAction": "error"
+      }
+    },
+    {
+      "name": "core-tsan-property",
+      "configurePreset": "core-tsan",
+      "configuration": "Debug",
+      "filter": {
+        "include": {
+          "label": "^property$"
+        }
+      },
+      "output": {
+        "outputOnFailure": true
+      },
+      "execution": {
+        "noTestsAction": "error"
+      }
+    },
+    {
+      "name": "core-tsan-threaded",
+      "configurePreset": "core-tsan",
+      "configuration": "Debug",
+      "filter": {
+        "include": {
+          "label": "^threaded$"
+        }
+      },
+      "output": {
+        "outputOnFailure": true
+      },
+      "execution": {
+        "noTestsAction": "error"
+      }
+    },
+    {
+      "name": "core-fuzz",
+      "configurePreset": "core-fuzz",
+      "configuration": "Debug",
+      "filter": {
+        "include": {
+          "label": "fuzz-smoke"
+        }
+      },
+      "output": {
+        "outputOnFailure": true
+      }
+    },
+    {
+      "name": "core-bench-release",
+      "configurePreset": "core-bench-release",
+      "configuration": "Release",
+      "filter": {
+        "include": {
+          "label": "benchmark-smoke"
+        }
+      },
+      "output": {
+        "outputOnFailure": true
+      }
+    },
+    {
+      "name": "product-bench-release",
+      "configurePreset": "product-bench-release",
+      "configuration": "Release",
+      "filter": {
+        "include": {
+          "label": "product-benchmark-smoke"
+        }
+      },
+      "output": {
+        "outputOnFailure": true
+      }
+    }
+  ],
+  "packagePresets": [
+    {
+      "name": "workbench-release",
+      "configurePreset": "workbench-release",
+      "generators": [
+        "ZIP"
+      ],
+      "configurations": [
+        "Release"
+      ]
+    }
+  ]
+}

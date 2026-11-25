@@ -1,0 +1,65 @@
+{
+  "format": "talas.project",
+  "version": 1,
+  "metadata": {
+    "title": "C22 Checked Quad Oscillator"
+  },
+  "graph": {
+    "nodes": [
+      {
+        "id": "leftEnvelope",
+        "typeId": "talas.oscillator",
+        "parameters": [
+          { "id": "frequency", "expression": "220 hz" },
+          { "id": "amplitude", "expression": "0.6" }
+        ]
+      },
+      {
+        "id": "rightEnvelope",
+        "typeId": "talas.oscillator",
+        "parameters": [
+          { "id": "frequency", "expression": "330 hz" },
+          { "id": "amplitude", "expression": "0.45" }
+        ]
+      },
+      {
+        "id": "quadrature",
+        "typeId": "talas.quadOscillator",
+        "parameters": [
+          { "id": "frequency", "expression": "110 hz" }
+        ]
+      },
+      {
+        "id": "out",
+        "typeId": "talas.audioOutput",
+        "parameters": []
+      }
+    ],
+    "connections": [
+      {
+        "fromNode": "leftEnvelope",
+        "fromPort": "audioOut",
+        "toNode": "quadrature",
+        "toPort": "envelope"
+      },
+      {
+        "fromNode": "rightEnvelope",
+        "fromPort": "audioOut",
+        "toNode": "quadrature",
+        "toPort": "rightEnvelope"
+      },
+      {
+        "fromNode": "quadrature",
+        "fromPort": "audioOut",
+        "toNode": "out",
+        "toPort": "audioIn"
+      },
+      {
+        "fromNode": "quadrature",
+        "fromPort": "rightOut",
+        "toNode": "out",
+        "toPort": "rightIn"
+      }
+    ]
+  }
+}

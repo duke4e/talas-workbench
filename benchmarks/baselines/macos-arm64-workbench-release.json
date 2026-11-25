@@ -1,0 +1,56 @@
+{
+  "format": "talas.product-performance-budget",
+  "version": 1,
+  "environment": {
+    "platform": "macos",
+    "architecture": "arm64",
+    "compilerId": "AppleClang",
+    "compilerVersion": "21.0.0.21000101",
+    "collectorVersion": "1",
+    "buildType": "Release",
+    "preset": "workbench-release",
+    "generator": "Unix Makefiles",
+    "configurationFingerprint": "718214c2555f42d760cc464d3db30e342def0428af29e1ef328fc60cab9b3f5f",
+    "buildEnvironmentFingerprint": "97d8928aaa227f6dc21eea1c667c447dc71f2b820070274ddad0b72693456b9a"
+  },
+  "minimumReports": 3,
+  "authorities": {
+    "build": "observational",
+    "artifacts": "budgeted",
+    "package": "observational",
+    "ui": "observational",
+    "device": "observational"
+  },
+  "artifacts": [
+    {
+      "id": "app-bundle",
+      "baselineBytes": 19684220,
+      "absoluteMaxBytes": 22000000,
+      "relativeMax": 0.1
+    },
+    {
+      "id": "workbench-main",
+      "baselineBytes": 18835504,
+      "absoluteMaxBytes": 21000000,
+      "relativeMax": 0.1
+    },
+    {
+      "id": "xpc-host",
+      "baselineBytes": 82928,
+      "absoluteMaxBytes": 100000,
+      "relativeMax": 0.1
+    },
+    {
+      "id": "xpc-probe",
+      "baselineBytes": 104368,
+      "absoluteMaxBytes": 125000,
+      "relativeMax": 0.1
+    },
+    {
+      "id": "xpc-runtime",
+      "baselineBytes": 644896,
+      "absoluteMaxBytes": 750000,
+      "relativeMax": 0.1
+    }
+  ]
+}

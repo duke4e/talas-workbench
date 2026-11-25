@@ -1,0 +1,66 @@
+{
+  "format": "talas.project",
+  "version": 1,
+  "metadata": {
+    "title": "C23 Bounded Overlapping Mixer"
+  },
+  "graph": {
+    "nodes": [
+      {
+        "id": "voice1",
+        "typeId": "talas.oscillator",
+        "parameters": [
+          { "id": "frequency", "expression": "110 hz" },
+          { "id": "amplitude", "expression": "0.2" }
+        ]
+      },
+      {
+        "id": "voice2",
+        "typeId": "talas.oscillator",
+        "parameters": [
+          { "id": "frequency", "expression": "165 hz" },
+          { "id": "amplitude", "expression": "0.15" }
+        ]
+      },
+      {
+        "id": "voice3",
+        "typeId": "talas.oscillator",
+        "parameters": [
+          { "id": "frequency", "expression": "220 hz" },
+          { "id": "amplitude", "expression": "0.1" }
+        ]
+      },
+      {
+        "id": "voice4",
+        "typeId": "talas.oscillator",
+        "parameters": [
+          { "id": "frequency", "expression": "330 hz" },
+          { "id": "amplitude", "expression": "0.075" }
+        ]
+      },
+      {
+        "id": "overlap",
+        "typeId": "talas.overlappingMixer",
+        "parameters": [
+          { "id": "inputs", "kind": "text", "text": "in3, in1; in4 in2" },
+          { "id": "overlapTime", "expression": "0 s" },
+          { "id": "left", "expression": "0.7" },
+          { "id": "right", "expression": "-0.35" }
+        ]
+      },
+      {
+        "id": "out",
+        "typeId": "talas.audioOutput",
+        "parameters": []
+      }
+    ],
+    "connections": [
+      { "fromNode": "voice1", "fromPort": "audioOut", "toNode": "overlap", "toPort": "in1" },
+      { "fromNode": "voice2", "fromPort": "audioOut", "toNode": "overlap", "toPort": "in2" },
+      { "fromNode": "voice3", "fromPort": "audioOut", "toNode": "overlap", "toPort": "in3" },
+      { "fromNode": "voice4", "fromPort": "audioOut", "toNode": "overlap", "toPort": "in4" },
+      { "fromNode": "overlap", "fromPort": "leftOut", "toNode": "out", "toPort": "audioIn" },
+      { "fromNode": "overlap", "fromPort": "rightOut", "toNode": "out", "toPort": "rightIn" }
+    ]
+  }
+}

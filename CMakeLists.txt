@@ -1337,6 +1337,7 @@ if(TALAS_BUILD_WORKBENCH)
         src/app/workbench/WorkbenchAnalysisAudition.cpp
         src/app/workbench/WorkbenchAccessibilitySmoke.cpp
         src/app/workbench/WorkbenchScreenshots.cpp
+        src/app/workbench/WorkbenchScreenshotViews.cpp
         src/app/workbench/WorkbenchAnalysisPanel.cpp
         src/app/workbench/WorkbenchAnalysisRecording.cpp
         src/app/workbench/WorkbenchLiveTimelineRecording.cpp

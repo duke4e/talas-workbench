@@ -1,4 +1,6 @@
 #include "app/workbench/WorkbenchComponentInternal.h"
+#include "app/workbench/WorkbenchPluginExport.h"
+#include "app/workbench/WorkbenchScreenshotViews.h"
 
 #include "talas/audio/WavWriter.h"
 #include "talas/project/ProjectAssetInspection.h"
@@ -344,14 +346,37 @@ std::optional<std::string> WorkbenchComponent::renderScreenshots(const std::file
 {
     if (hardwareEnabled_ || persistentStateEnabled_)
         return "screenshot component was not isolated";
+    // The screenshots picture a session whose audio device runs, so the
+    // transport's commands are as they would be then; no device is opened.
+    struct DeviceStandIn
+    {
+        bool& initialised;
+        ~DeviceStandIn()
+        {
+            initialised = false;
+        }
+    } deviceStandIn{hardwareInitialised_};
+    hardwareInitialised_ = true;
     setSize(screenshotWidth, screenshotHeight);
     // The samples are written beside the run's scratch state, not into the
     // screenshot folder.
     if (auto error = installScreenshotShowcase(recoveryPath_.parent_path()))
         return error;
     const auto shoot = [&](std::string_view name) {
+        // The toolbar's commands and the transport time, as the message
+        // loop and the timer would have brought them up to date.
+        for (const auto& [button, command] : {std::pair{&playButton_, commandPlay}, std::pair{&pauseButton_, commandPause},
+                 std::pair{&stopButton_, commandStop}, std::pair{&undoButton_, commandUndo},
+                 std::pair{&redoButton_, commandRedo}, std::pair{&deleteButton_, commandDeleteSelectedNode},
+                 std::pair{&saveButton_, commandSaveProject}})
+            button->setCommandToTrigger(&commandManager_, command, true);
+        refreshTransportLabel();
+        timelinePanel_->setTransportSnapshot(projectBridge_.musicalTransportSnapshot());
         resized();
         return writeScreenshot(directory / (std::string{"talas-"} + std::string{name} + ".png"));
+    };
+    const auto shootView = [&](std::string_view name, const juce::Image& image) {
+        return screenshot_views::writePng(image, directory / (std::string{"talas-view-"} + std::string{name} + ".png"));
     };
 
     // Played offline, block by block, as the audio callback would.
@@ -398,12 +423,14 @@ std::optional<std::string> WorkbenchComponent::renderScreenshots(const std::file
         return error;
     parametersWidth_ = 600;
     performancePanel_->showLiveGridForSmoke();
-    // Two cells launched and played into, so the grid shows them lit.
+    // Two cells launched and played into, so the grid shows one lit, then
+    // a third launched to wait for the next beat.
     for (const auto* cellId : {"pad", "deep"})
     {
         (void)performancePanel_->activateLiveGridCell("showcase", cellId);
         play(200);
     }
+    (void)performancePanel_->activateLiveGridCell("showcase", "drop");
     performancePanel_->refreshRuntimeState();
     performancePanel_->refresh();
     if (auto error = shoot("live-grid"))
@@ -446,6 +473,12 @@ std::optional<std::string> WorkbenchComponent::renderScreenshots(const std::file
     auto withoutScore = projectBridge_.editor().document();
     withoutScore.timeline.score = {};
     withoutScore.liveSetLibrary = {};
+    // The tone raised, so the scope shows several cycles of it.
+    for (auto& control : withoutScore.virtualControls)
+    {
+        if (control.eventName == "Tone")
+            control.value = 660.0;
+    }
     if (const auto replaced = projectBridge_.editor().replaceDocument(std::move(withoutScore)); !replaced.ok())
         return "showcase project without its Score was rejected: " + replaced.message;
     documentChanged();
@@ -474,8 +507,9 @@ std::optional<std::string> WorkbenchComponent::renderScreenshots(const std::file
         (void)partialTrackEditorPanel_->setSource(
             manifest, std::make_shared<const talas::project::PartialTrackAsset>(partials), std::nullopt);
     }
-    // Played on in display-rate steps, the traces polled as the Workbench's
-    // timer would, so they fill their history.
+    // A history long enough to show a few cycles of each trace, played on
+    // in display-rate steps and polled as the Workbench's timer would.
+    setAnalysisHistoryFrames(600);
     for (int step = 0; step < 150; ++step)
     {
         play(6);
@@ -483,6 +517,50 @@ std::optional<std::string> WorkbenchComponent::renderScreenshots(const std::file
     }
     if (auto error = shoot("analysis"))
         return error;
+
+    // The views beyond the workspaces.
+    juce::PopupMenu file = getMenuForIndex(static_cast<int>(talas::app::TalasMenu::File), {});
+    juce::PopupMenu view = getMenuForIndex(static_cast<int>(talas::app::TalasMenu::View), {});
+    juce::PopupMenu context;
+    context.addSectionHeader("Filter");
+    context.addItem(1, "Open Parameters", true, false);
+    context.addItem(2, "Audition", true, false);
+    context.addItem(3, "Pin to Analysis", true, true);
+    context.addSeparator();
+    juce::PopupMenu replace;
+    replace.addItem(10, "Filter Bank");
+    context.addSubMenu("Replace With", replace);
+    context.addItem(4, "Duplicate", true, false);
+    context.addItem(5, "Delete", false, false);
+    if (auto error = shootView("menus", screenshot_views::popupMenus({{file, 2}, {view, 4}, {context, 2}})))
+        return error;
+    if (auto error = shootView("help-and-alerts", screenshot_views::helpAndAlerts()))
+        return error;
+    if (auto error = shootView("controls", screenshot_views::controlSheet()))
+        return error;
+    if (auto error = shootView("audio-midi-settings", screenshot_views::audioMidiSettings()))
+        return error;
+    if (auto panel = makePluginExportPanelForScreenshots(projectBridge_.editor().document(), std::nullopt))
+    {
+        if (auto error = shootView("export-plugin", screenshot_views::dialogWindow(*panel, "Export Plugin")))
+            return error;
+    }
+    if (auto error = shootView("plugin-editor", screenshot_views::pluginEditor(projectBridge_.editor().document())))
+        return error;
+
+    // Enhanced Contrast over the Performance workspace: solid panels, strong
+    // outlines, no glow.
+    activateWorkspaceMode(talas::app::WorkbenchWorkspaceMode::Performance);
+    const auto accessibility = workspaceSession_.accessibility;
+    workspaceSession_.accessibility.enhancedContrast = true;
+    applyAccessibilityPreferences();
+    performanceCanvas_->refresh();
+    performancePanel_->refresh();
+    const auto enhancedShot = shoot("view-enhanced-contrast");
+    workspaceSession_.accessibility = accessibility;
+    applyAccessibilityPreferences();
+    if (enhancedShot)
+        return enhancedShot;
     setPlaying(false);
     return std::nullopt;
 }

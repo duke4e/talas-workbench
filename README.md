@@ -68,12 +68,12 @@ MIDI devices; see the [Workbench and CLI reference](docs/workbench-and-cli-refer
 
 ## Roadmap
 
-These are the next milestones, in this order:
+These are the milestones, in this order:
 
-1. **Interface overhaul.** A modern look with strong colours, gradients and glass-like
-   panels.
-2. **Demo projects and presets.** 20–30 ready-to-play projects, from effects to
-   synthesizers.
+1. **Interface overhaul** (done). A modern look with strong colours, gradients
+   and glass-like panels.
+2. **Demo projects** (done). 24 ready-to-play projects, from effects to
+   synthesizers, in [`examples/demos`](examples/demos/README.md).
 3. **Plugin export** (done on macOS). Turn your own project into a VST3 or AU
    instrument or effect that runs in a DAW, from File > Export Plugin... or
    `talas_cli export-plugin`, with no compiler; see

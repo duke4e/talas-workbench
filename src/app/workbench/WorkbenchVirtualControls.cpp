@@ -399,10 +399,12 @@ public:
         {
             using Style = talas::project::VirtualControlWidgetStyle;
             const auto style = control_.widget.style;
+            // The default widget turns as a Talas knob, as a pot does.
             valueSlider_.setSliderStyle(style == Style::Fader ? juce::Slider::LinearVertical
                     : style == Style::SmallFader                ? juce::Slider::LinearBar
-                    : style == Style::Potentiometer             ? juce::Slider::RotaryHorizontalVerticalDrag
-                                                                : juce::Slider::LinearHorizontal);
+                    : style == Style::Potentiometer || style == Style::Default
+                    ? juce::Slider::RotaryHorizontalVerticalDrag
+                    : juce::Slider::LinearHorizontal);
             if (control_.widget.taper == talas::project::VirtualControlTaper::Log && control_.minimum > 0.0)
                 valueSlider_.setSkewFactorFromMidPoint(std::sqrt(control_.minimum * control_.maximum));
             if (control_.widget.onColour.has_value())
@@ -726,13 +728,28 @@ public:
             gateButton_.grabKeyboardFocus();
     }
 
+    // A raised tile capped with its kind's colour, as the Performance cards
+    // are: amber for a fader, pink for a gate, blue for a toggle.
     void paint(juce::Graphics& graphics) override
     {
         const auto bounds = getLocalBounds().toFloat();
-        graphics.setColour(workbenchTheme.controlTile);
-        graphics.fillRoundedRectangle(bounds, 6.0F);
-        graphics.setColour(panelBorderColour);
-        graphics.drawRoundedRectangle(bounds.reduced(0.5F), 6.0F, 1.0F);
+        const auto accent = control_.kind == talas::project::VirtualControlKind::Gate ? workbenchTheme.event
+            : control_.kind == talas::project::VirtualControlKind::Toggle             ? workbenchTheme.output
+                                                                                      : workbenchTheme.control;
+        WorkbenchStyle::paintTile(graphics, bounds, 6.0F, workbenchTheme.controlTile.interpolatedWith(accent, 0.04F));
+        juce::Graphics::ScopedSaveState clipped(graphics);
+        juce::Path shape;
+        shape.addRoundedRectangle(bounds, 6.0F);
+        graphics.reduceClipRegion(shape);
+        if (!WorkbenchStyle::enhancedContrast())
+        {
+            graphics.setGradientFill(juce::ColourGradient{accent.withAlpha(0.12F), 0.0F, bounds.getY(),
+                accent.withAlpha(0.0F), 0.0F, bounds.getY() + 30.0F, false});
+            graphics.fillRect(bounds.withHeight(30.0F));
+        }
+        graphics.setGradientFill(juce::ColourGradient{accent.brighter(0.2F), bounds.getX(), 0.0F,
+            accent.withRotatedHue(0.06F), bounds.getRight(), 0.0F, false});
+        graphics.fillRect(bounds.withHeight(2.0F));
     }
 
     void resized() override
@@ -744,33 +761,59 @@ public:
         using Style = talas::project::VirtualControlWidgetStyle;
         const auto upright = control_.kind == talas::project::VirtualControlKind::Fader
             && (control_.widget.style == Style::Fader || control_.widget.style == Style::Potentiometer);
+        // The default widget, a knob over its number, at the left of the
+        // name and the Learn button, short enough to show whole in the
+        // Patch workspace's strip.
+        const auto knob = control_.kind == talas::project::VirtualControlKind::Fader
+            && control_.widget.style == Style::Default;
         // A vertical fader or a pot stands in its own column.
-        const auto column = upright ? bounds.removeFromLeft(scaled(48)) : juce::Rectangle<int>{};
-        if (upright)
-            bounds.removeFromLeft(scaled(4));
+        const auto column = upright ? bounds.removeFromLeft(scaled(48))
+            : knob                  ? bounds.removeFromLeft(scaled(50)).removeFromTop(scaled(58))
+                                    : juce::Rectangle<int>{};
+        if (upright || knob)
+            bounds.removeFromLeft(scaled(6));
         auto topRow = bounds.removeFromTop(scaled(24));
-        removeButton_.setBounds(topRow.removeFromRight(scaled(54)));
-        topRow.removeFromRight(scaled(2));
-        widgetButton_.setBounds(topRow.removeFromRight(scaled(22)));
-        topRow.removeFromRight(scaled(2));
-        nameLabel_.setBounds(topRow);
-        bounds.removeFromTop(scaled(3));
-        auto controlRow = bounds.removeFromTop(scaled(24));
         const auto midiButtonWidth =
             scaled(control_.midiMapping.has_value() ? 90 : 46);
-        midiLearnButton_.setBounds(
-            controlRow.removeFromRight(midiButtonWidth));
-        controlRow.removeFromRight(scaled(4));
+        juce::Rectangle<int> controlRow;
+        if (knob)
+        {
+            // Beside a knob the name shares the top row with the widget's
+            // options; Learn and Remove share the row below.
+            widgetButton_.setBounds(topRow.removeFromRight(scaled(22)));
+            topRow.removeFromRight(scaled(2));
+            nameLabel_.setBounds(topRow);
+            bounds.removeFromTop(scaled(3));
+            controlRow = bounds.removeFromTop(scaled(24));
+            removeButton_.setBounds(controlRow.removeFromRight(scaled(54)));
+            controlRow.removeFromRight(scaled(2));
+            midiLearnButton_.setBounds(controlRow.removeFromLeft(
+                std::min(midiButtonWidth, controlRow.getWidth())));
+        }
+        else
+        {
+            removeButton_.setBounds(topRow.removeFromRight(scaled(54)));
+            topRow.removeFromRight(scaled(2));
+            widgetButton_.setBounds(topRow.removeFromRight(scaled(22)));
+            topRow.removeFromRight(scaled(2));
+            nameLabel_.setBounds(topRow);
+            bounds.removeFromTop(scaled(3));
+            controlRow = bounds.removeFromTop(scaled(24));
+            midiLearnButton_.setBounds(
+                controlRow.removeFromRight(midiButtonWidth));
+            controlRow.removeFromRight(scaled(4));
+        }
         // An upright fader's numeric field on top.
         const auto placement = talas::app::vcsFaderNumberPlacement(upright, control_.widget.showNumber);
         valueSlider_.setTextBoxStyle(
             placement == talas::app::VcsNumberPlacement::None    ? juce::Slider::NoTextBox
+                : knob                                            ? juce::Slider::TextBoxBelow
                 : placement == talas::app::VcsNumberPlacement::Above ? juce::Slider::TextBoxAbove
                                                                   : juce::Slider::TextBoxRight,
             false,
-            upright ? scaled(46) : scaled(64),
-            scaled(20));
-        valueSlider_.setBounds(upright ? column : controlRow);
+            upright ? scaled(46) : knob ? scaled(50) : scaled(64),
+            knob ? scaled(18) : scaled(20));
+        valueSlider_.setBounds(upright || knob ? column : controlRow);
         toggleButton_.setBounds(controlRow);
         gateButton_.setBounds(controlRow);
         bounds.removeFromTop(scaled(3));
@@ -1451,12 +1494,15 @@ public:
             return juce::Rectangle<int>{rect.left, rect.top, rect.width, rect.height}.translated(
                 (getWidth() - shown->surface.width) / 2, 0);
         };
-        // The surface as a faint glass card, the part in view lit with the
-        // signature gradient.
-        graphics.setColour(juce::Colours::white.withAlpha(0.14F));
+        // The surface as a faint glass card, the part in view outlined in
+        // the signature gradient over a light wash of it.
+        graphics.setColour(juce::Colours::white.withAlpha(0.1F));
         graphics.fillRoundedRectangle(box(shown->surface).toFloat(), 2.0F);
-        graphics.setGradientFill(WorkbenchStyle::accentGradient(box(shown->view).toFloat(), 0.85F));
-        graphics.fillRoundedRectangle(box(shown->view).toFloat(), 2.0F);
+        const auto view = box(shown->view).toFloat();
+        graphics.setGradientFill(WorkbenchStyle::accentGradient(view, 0.3F));
+        graphics.fillRoundedRectangle(view, 2.0F);
+        graphics.setGradientFill(WorkbenchStyle::accentGradient(view));
+        graphics.drawRoundedRectangle(view.reduced(0.5F), 2.0F, 1.0F);
     }
 
     void mouseDown(const juce::MouseEvent&) override { beginDrag(); }

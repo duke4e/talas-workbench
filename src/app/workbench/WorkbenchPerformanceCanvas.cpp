@@ -19,8 +19,11 @@ namespace
 {
 constexpr int toolbarHeight = 40;
 constexpr int itemWidth = 172;
-constexpr int itemHeight = 112;
-constexpr int compactItemHeight = 78;
+constexpr int itemHeight = 128;
+constexpr int compactItemHeight = 84;
+// Controls without a position of their own flow in rows as wide as the
+// canvas shows, this far apart.
+constexpr int autoFlowGap = 16;
 constexpr int canvasPadding = 18;
 constexpr int canvasGrid = 32;
 constexpr double minimumCanvasZoom = 0.6;
@@ -133,9 +136,12 @@ void paintPerformanceTile(juce::Graphics& graphics, juce::Rectangle<float> bound
         juce::Path shape;
         shape.addRoundedRectangle(bounds, radius);
         graphics.reduceClipRegion(shape);
-        graphics.setGradientFill(juce::ColourGradient{accent.withAlpha(0.16F), bounds.getX(), bounds.getY(),
-            accent.withAlpha(0.0F), bounds.getX(), bounds.getY() + 36.0F, false});
-        graphics.fillRect(bounds.withHeight(36.0F));
+        if (!WorkbenchStyle::enhancedContrast())
+        {
+            graphics.setGradientFill(juce::ColourGradient{accent.withAlpha(0.16F), bounds.getX(), bounds.getY(),
+                accent.withAlpha(0.0F), bounds.getX(), bounds.getY() + 36.0F, false});
+            graphics.fillRect(bounds.withHeight(36.0F));
+        }
         graphics.setGradientFill(juce::ColourGradient{accent.brighter(0.2F), bounds.getX(), bounds.getY(),
             accent.withRotatedHue(0.06F), bounds.getRight(), bounds.getY(), false});
         graphics.fillRect(bounds.withHeight(3.0F));
@@ -185,6 +191,145 @@ public:
         if (onVisibleAreaChanged)
             onVisibleAreaChanged(area);
     }
+};
+
+// A Performance control's slider: a knob for a continuous control, or a
+// pad for a gate (on while held) or a toggle (each press flips it). A pad
+// keeps the slider's value, keys and accessibility; only its pointer and
+// its face differ.
+class PerformanceControlSlider final : public juce::Slider
+{
+public:
+    enum class Mode
+    {
+        Knob,
+        Toggle,
+        Gate,
+    };
+
+    std::function<void()> onPadPress;
+    std::function<void()> onPadRelease;
+
+    void setMode(Mode mode)
+    {
+        mode_ = mode;
+        repaint();
+    }
+
+    [[nodiscard]] Mode mode() const noexcept
+    {
+        return mode_;
+    }
+
+    [[nodiscard]] bool on() const
+    {
+        return getValue() >= (getMinimum() + getMaximum()) * 0.5;
+    }
+
+    void paint(juce::Graphics& graphics) override
+    {
+        if (mode_ == Mode::Knob)
+        {
+            juce::Slider::paint(graphics);
+            return;
+        }
+        const auto lit = on();
+        WorkbenchStyle::paintPad(graphics, getLocalBounds().toFloat().reduced(1.0F), lit, isEnabled(),
+            mode_ == Mode::Gate ? (lit ? "Open" : "Closed") : (lit ? "On" : "Off"));
+        if (hasKeyboardFocus(false))
+        {
+            graphics.setColour(workbenchTheme.focus);
+            graphics.drawRoundedRectangle(getLocalBounds().toFloat().reduced(1.0F),
+                std::min(8.0F, static_cast<float>(getHeight()) * 0.22F), WorkbenchType::focusOutlinePixels());
+        }
+    }
+
+    void mouseDown(const juce::MouseEvent& event) override
+    {
+        if (mode_ == Mode::Knob)
+        {
+            juce::Slider::mouseDown(event);
+            return;
+        }
+        if (isEnabled() && event.mods.isLeftButtonDown())
+            press();
+    }
+
+    void mouseDrag(const juce::MouseEvent& event) override
+    {
+        if (mode_ == Mode::Knob)
+            juce::Slider::mouseDrag(event);
+    }
+
+    void mouseUp(const juce::MouseEvent& event) override
+    {
+        if (mode_ == Mode::Knob)
+        {
+            juce::Slider::mouseUp(event);
+            return;
+        }
+        release();
+    }
+
+    void mouseDoubleClick(const juce::MouseEvent& event) override
+    {
+        if (mode_ == Mode::Knob)
+            juce::Slider::mouseDoubleClick(event);
+    }
+
+    void mouseWheelMove(const juce::MouseEvent& event, const juce::MouseWheelDetails& wheel) override
+    {
+        if (mode_ == Mode::Knob)
+            juce::Slider::mouseWheelMove(event, wheel);
+    }
+
+    // Space or Return presses a pad; a gate opens until the key is let go.
+    bool keyPressed(const juce::KeyPress& key) override
+    {
+        if (mode_ != Mode::Knob && isEnabled()
+            && (key == juce::KeyPress::spaceKey || key == juce::KeyPress::returnKey))
+        {
+            if (!pressed_)
+                press();
+            if (mode_ == Mode::Toggle)
+                release();
+            return true;
+        }
+        return juce::Slider::keyPressed(key);
+    }
+
+    bool keyStateChanged(bool isKeyDown) override
+    {
+        if (mode_ == Mode::Gate && pressed_ && !isKeyDown
+            && !juce::KeyPress::isKeyCurrentlyDown(juce::KeyPress::spaceKey)
+            && !juce::KeyPress::isKeyCurrentlyDown(juce::KeyPress::returnKey)
+            && !juce::ModifierKeys::currentModifiers.isLeftButtonDown())
+        {
+            release();
+            return true;
+        }
+        return juce::Slider::keyStateChanged(isKeyDown);
+    }
+
+private:
+    void press()
+    {
+        pressed_ = true;
+        if (onPadPress)
+            onPadPress();
+    }
+
+    void release()
+    {
+        if (!pressed_)
+            return;
+        pressed_ = false;
+        if (onPadRelease)
+            onPadRelease();
+    }
+
+    Mode mode_ = Mode::Knob;
+    bool pressed_ = false;
 };
 
 class PerformanceControlItem final : public juce::Component,
@@ -266,10 +411,14 @@ private:
     void configureSlider();
     juce::String mappingSummary() const;
 
+    [[nodiscard]] juce::String valueText(double value) const;
+    [[nodiscard]] juce::String unitText() const;
+
     PerformanceCanvasImpl& owner_;
     talas::app::PerformanceControlViewModel model_;
-    juce::Slider slider_;
+    PerformanceControlSlider slider_;
     juce::Label valueLabel_;
+    juce::Rectangle<int> unitArea_;
     juce::Point<int> dragOrigin_;
     talas::project::CanvasPosition originalPosition_;
     talas::app::PerformanceActivitySource activity_ =
@@ -350,8 +499,9 @@ public:
             "Output " + juce::String(meter_.outputChannel),
             body.removeFromTop(scaled(20)),
             juce::Justification::centredLeft);
-        auto meter = body.reduced(
-            0, scaled(compact_ ? 12 : 20));
+        auto readout = body.removeFromBottom(scaled(18));
+        auto meter = body.withSizeKeepingCentre(body.getWidth(),
+            std::min(body.getHeight(), scaled(compact_ ? 12 : 16)));
         paintLevelMeter(graphics, meter.toFloat(), normalized);
         graphics.setColour(workbenchTheme.secondaryText);
         graphics.setFont(WorkbenchType::data());
@@ -362,7 +512,7 @@ public:
                 : juce::String(
                     20.0 * std::log10(static_cast<double>(peak)), 1)
                     + " dB";
-        graphics.drawText(text, body, juce::Justification::centredRight);
+        graphics.drawText(text, readout, juce::Justification::centredRight);
     }
 
 private:
@@ -543,6 +693,62 @@ public:
         toolbar.removeFromRight(6);
         editButton_.setBounds(toolbar.removeFromRight(54));
         viewport_.setBounds(bounds);
+        if (autoFlowColumns() != autoColumns_)
+        {
+            const auto restoring = restoringViewport_;
+            restoringViewport_ = true;
+            layoutItems();
+            restoringViewport_ = restoring;
+        }
+    }
+
+    // Each item at its portable position, or flowed in rows when it has
+    // none, and the content sized to hold them.
+    void layoutItems()
+    {
+        const auto visualScale = canvasZoom()
+            * static_cast<double>(WorkbenchType::interfaceScale());
+        const auto scaled = [visualScale](int value) {
+            return juce::roundToInt(
+                static_cast<double>(value) * visualScale);
+        };
+        autoColumns_ = autoFlowColumns();
+        const auto minimumWidth = std::max(viewport_.getWidth(), 520);
+        const auto minimumHeight = std::max(viewport_.getHeight(), 320);
+        auto width = minimumWidth;
+        auto height = minimumHeight;
+        const auto place = [&](juce::Component& item, talas::project::CanvasPosition position, int index) {
+            const auto itemPosition = effectivePosition(position, index);
+            item.setBounds(
+                scaled(itemPosition.x),
+                scaled(itemPosition.y),
+                scaled(itemWidth),
+                scaled(session_.compact ? compactItemHeight : itemHeight));
+            width = std::max(width, item.getRight() + canvasPadding);
+            height = std::max(height, item.getBottom() + canvasPadding);
+        };
+        for (auto index = 0; index < controls_.size(); ++index)
+            place(*controls_[index], controls_[index]->canvasPosition(), index);
+        for (auto index = 0; index < meters_.size(); ++index)
+            place(*meters_[index], meters_[index]->canvasPosition(), controls_.size() + index);
+        content_.setSize(width, height);
+        emptyState_.setBounds(
+            32,
+            32,
+            std::max(0, minimumWidth - 64),
+            std::max(0, minimumHeight - 64));
+    }
+
+    // As many columns as the canvas shows whole at its zoom, at least one.
+    [[nodiscard]] int autoFlowColumns() const
+    {
+        const auto visualScale = canvasZoom()
+            * static_cast<double>(WorkbenchType::interfaceScale());
+        const auto visible = static_cast<double>(std::max(0,
+            viewport_.getWidth() - viewport_.getScrollBarThickness()));
+        const auto available = visible / visualScale - 2.0 * canvasPadding;
+        return std::max(1, static_cast<int>(
+            (available + autoFlowGap) / static_cast<double>(itemWidth + autoFlowGap)));
     }
 
     void refresh() override
@@ -582,19 +788,10 @@ public:
         controls_.clear(true);
         meters_.clear(true);
         projection_ = buildProjection();
-        const auto zoom = std::clamp(
+        session_.zoom = std::clamp(
             session_.zoom, minimumCanvasZoom, maximumCanvasZoom);
-        session_.zoom = zoom;
-        const auto visualScale = zoom
-            * static_cast<double>(WorkbenchType::interfaceScale());
-        const auto scaled = [visualScale](int value) {
-            return juce::roundToInt(
-                static_cast<double>(value) * visualScale);
-        };
         const auto& document = bridge_.editor().document();
         const auto& runtime = bridge_.performanceState();
-        auto width = std::max(viewport_.getWidth(), 520);
-        auto height = std::max(viewport_.getHeight(), 320);
         for (auto model : projection_.controls)
         {
             if (!model.visible)
@@ -616,18 +813,9 @@ public:
                 maximum,
                 session_.compact));
             content_.addAndMakeVisible(item);
-            const auto itemPosition = effectivePosition(
-                model.position, controls_.size() - 1);
-            item->setBounds(
-                scaled(itemPosition.x),
-                scaled(itemPosition.y),
-                scaled(itemWidth),
-                scaled(session_.compact ? compactItemHeight : itemHeight));
             item->setSelected(
                 session_.selectedControlId
                     == std::optional<std::string>{model.controlId});
-            width = std::max(width, item->getRight() + canvasPadding);
-            height = std::max(height, item->getBottom() + canvasPadding);
         }
         for (const auto& meter : projection_.meters)
         {
@@ -636,18 +824,9 @@ public:
             auto* item = meters_.add(new PerformanceMeterItem(
                 *this, meter, outputPeaks_, session_.compact));
             content_.addAndMakeVisible(item);
-            const auto itemPosition = effectivePosition(
-                meter.position, controls_.size() + meters_.size() - 1);
-            item->setBounds(
-                scaled(itemPosition.x),
-                scaled(itemPosition.y),
-                scaled(itemWidth),
-                scaled(session_.compact ? compactItemHeight : itemHeight));
             item->setSelected(
                 session_.selectedMeterId
                     == std::optional<std::string>{meter.meterId});
-            width = std::max(width, item->getRight() + canvasPadding);
-            height = std::max(height, item->getBottom() + canvasPadding);
         }
         const auto hasVisibleItems = controls_.size() + meters_.size() > 0;
         emptyState_.setVisible(!hasVisibleItems || !projection_.ok());
@@ -697,17 +876,8 @@ public:
                 true,
             });
         }
-        const auto minimumWidth = std::max(viewport_.getWidth(), 520);
-        const auto minimumHeight = std::max(viewport_.getHeight(), 320);
-        width = std::max(width, minimumWidth);
-        height = std::max(height, minimumHeight);
         restoringViewport_ = true;
-        content_.setSize(width, height);
-        emptyState_.setBounds(
-            32,
-            32,
-            std::max(0, minimumWidth - 64),
-            std::max(0, minimumHeight - 64));
+        layoutItems();
         viewport_.setViewPosition(
             juce::roundToInt(session_.panX),
             juce::roundToInt(session_.panY));
@@ -854,12 +1024,7 @@ public:
         const auto expectedPosition = [&](
                                           talas::project::CanvasPosition position,
                                           int index) {
-            if (position.x == 0 && position.y == 0 && index != 0)
-            {
-                position.x = (index % 4) * (itemWidth + 14);
-                position.y = (index / 4) * (itemHeight + 14);
-            }
-            return visualPosition(position);
+            return visualPosition(autoFlowPosition(position, index, autoColumns_));
         };
         std::vector<juce::Rectangle<int>> bounds;
         bounds.reserve(static_cast<std::size_t>(
@@ -1289,15 +1454,27 @@ private:
             bridge_.editor().document(), context);
     }
 
-    static juce::Point<int> effectivePosition(
+    // A position of its own, or the item's place in the flow: the first at
+    // the origin, the rest after it, row by row.
+    [[nodiscard]] static talas::project::CanvasPosition autoFlowPosition(
         talas::project::CanvasPosition position,
-        int index)
+        int index,
+        int columns) noexcept
     {
         if (position.x == 0 && position.y == 0 && index != 0)
         {
-            position.x = (index % 4) * (itemWidth + 14);
-            position.y = (index / 4) * (itemHeight + 14);
+            const auto across = std::max(1, columns);
+            position.x = (index % across) * (itemWidth + autoFlowGap);
+            position.y = (index / across) * (itemHeight + autoFlowGap);
         }
+        return position;
+    }
+
+    [[nodiscard]] juce::Point<int> effectivePosition(
+        talas::project::CanvasPosition position,
+        int index) const noexcept
+    {
+        position = autoFlowPosition(position, index, autoColumns_);
         return {
             canvasPadding + position.x,
             canvasPadding + position.y};
@@ -1327,6 +1504,7 @@ private:
     talas::app::PerformancePanelProjection projection_;
     std::unordered_map<std::string, double> observedValues_;
     bool restoringViewport_ = false;
+    int autoColumns_ = 4;
     std::optional<talas::project::ProjectEditor::HistoryTransactionToken>
         valueGestureToken_;
     std::optional<talas::project::ProjectEditor::HistoryTransactionToken>
@@ -1370,9 +1548,29 @@ PerformanceControlItem::PerformanceControlItem(
     slider_.setValue(value, juce::dontSendNotification);
     slider_.addListener(this);
     configureSlider();
-    valueLabel_.setFont(WorkbenchType::data());
-    valueLabel_.setColour(juce::Label::textColourId, workbenchTheme.secondaryText);
-    valueLabel_.setJustificationType(juce::Justification::centredRight);
+    // The value as a readout beside the knob: large, bright, tabular.
+    valueLabel_.setFont(WorkbenchType::data().boldened().withHeight(
+        WorkbenchType::data().getHeight() + 5.0F));
+    valueLabel_.setColour(juce::Label::textColourId, workbenchTheme.primaryText);
+    valueLabel_.setJustificationType(juce::Justification::bottomLeft);
+    valueLabel_.setBorderSize({});
+    valueLabel_.setMinimumHorizontalScale(0.7F);
+    valueLabel_.setInterceptsMouseClicks(false, false);
+    valueLabel_.setVisible(slider_.mode() == PerformanceControlSlider::Mode::Knob);
+    // A pad's press and release are a value gesture of their own, as a
+    // knob's drag is.
+    slider_.onPadPress = [this] {
+        sliderDragStarted(&slider_);
+        const auto opened = slider_.mode() == PerformanceControlSlider::Mode::Gate || !slider_.on();
+        slider_.setValue(opened ? slider_.getMaximum() : slider_.getMinimum(), juce::sendNotificationSync);
+        slider_.repaint();
+    };
+    slider_.onPadRelease = [this] {
+        if (slider_.mode() == PerformanceControlSlider::Mode::Gate)
+            slider_.setValue(slider_.getMinimum(), juce::sendNotificationSync);
+        slider_.repaint();
+        sliderDragEnded(&slider_);
+    };
     setExternalValue(value);
 }
 
@@ -1380,18 +1578,22 @@ void PerformanceControlItem::configureSlider()
 {
     switch (model_.kind)
     {
-    case talas::project::ProjectPerformanceControlKind::Knob:
-    case talas::project::ProjectPerformanceControlKind::Macro:
-        slider_.setSliderStyle(juce::Slider::RotaryHorizontalVerticalDrag);
-        break;
+    // Every continuous control turns as a knob; a gate or a toggle is a pad.
     case talas::project::ProjectPerformanceControlKind::Gate:
+        slider_.setSliderStyle(juce::Slider::LinearHorizontal);
+        slider_.setMode(PerformanceControlSlider::Mode::Gate);
+        break;
     case talas::project::ProjectPerformanceControlKind::Toggle:
         slider_.setSliderStyle(juce::Slider::LinearHorizontal);
-        slider_.setMouseDragSensitivity(80);
+        slider_.setMode(PerformanceControlSlider::Mode::Toggle);
         break;
+    case talas::project::ProjectPerformanceControlKind::Knob:
+    case talas::project::ProjectPerformanceControlKind::Macro:
     case talas::project::ProjectPerformanceControlKind::Fader:
     default:
-        slider_.setSliderStyle(juce::Slider::LinearHorizontal);
+        slider_.setSliderStyle(juce::Slider::RotaryHorizontalVerticalDrag);
+        slider_.setMode(PerformanceControlSlider::Mode::Knob);
+        slider_.setMouseDragSensitivity(180);
         break;
     }
     slider_.setTextBoxStyle(juce::Slider::NoTextBox, false, 0, 0);
@@ -1403,33 +1605,39 @@ void PerformanceControlItem::paint(juce::Graphics& graphics)
     const auto scaled = [](int pixels) {
         return workbenchScaledUiPixels(pixels);
     };
+    const auto accent = controlAccent(model_.kind);
     auto bounds = getLocalBounds().toFloat();
-    paintPerformanceTile(graphics, bounds, controlAccent(model_.kind), selected_);
+    paintPerformanceTile(graphics, bounds, accent, selected_);
 
+    // The name, and the kind in a pill of the control's colour.
     auto body = getLocalBounds().reduced(scaled(10))
-                    .withTrimmedTop(scaled(6));
+                    .withTrimmedTop(scaled(2));
     auto title = body.removeFromTop(scaled(20));
+    const auto kind = kindName(model_.kind).toUpperCase();
+    const auto kindFont = WorkbenchType::microStrong();
+    const auto kindWidth = juce::roundToInt(juce::GlyphArrangement::getStringWidth(kindFont, kind)) + scaled(12);
+    const auto kindArea = title.removeFromRight(kindWidth).withSizeKeepingCentre(kindWidth, scaled(15));
+    WorkbenchStyle::paintPill(graphics, kindArea.toFloat(), accent, workbenchTheme.controlTile, kind, kindFont);
+    title.removeFromRight(scaled(6));
     graphics.setColour(workbenchTheme.primaryText);
     graphics.setFont(WorkbenchType::bodyStrong());
-    graphics.drawText(
+    graphics.drawFittedText(
         juce::String::fromUTF8(model_.displayName.c_str()),
         title,
-        juce::Justification::centredLeft);
-    graphics.setColour(workbenchTheme.secondaryText);
-    graphics.setFont(WorkbenchType::microStrong());
-    graphics.drawText(
-        kindName(model_.kind).toUpperCase(),
-        title.removeFromRight(scaled(46)),
-        juce::Justification::centredRight);
+        juce::Justification::centredLeft,
+        1,
+        0.8F);
+    if (slider_.mode() == PerformanceControlSlider::Mode::Knob && !unitArea_.isEmpty())
+    {
+        graphics.setColour(workbenchTheme.secondaryText);
+        graphics.setFont(WorkbenchType::label());
+        graphics.drawFittedText(unitText(), unitArea_, juce::Justification::topLeft, 1);
+    }
     if (!compact_)
     {
-        auto status = body.removeFromBottom(scaled(18));
+        auto status = body.removeFromBottom(scaled(16));
+        graphics.setColour(workbenchTheme.secondaryText);
         graphics.setFont(WorkbenchType::micro());
-        graphics.drawFittedText(
-            mappingSummary(),
-            status,
-            juce::Justification::centredLeft,
-            1);
         if (model_.locked)
         {
             graphics.setColour(workbenchTheme.control);
@@ -1438,36 +1646,59 @@ void PerformanceControlItem::paint(juce::Graphics& graphics)
                 "LOCK",
                 status.removeFromRight(scaled(34)),
                 juce::Justification::centredRight);
+            graphics.setColour(workbenchTheme.secondaryText);
+            graphics.setFont(WorkbenchType::micro());
         }
+        graphics.drawFittedText(
+            mappingSummary(),
+            status,
+            juce::Justification::centredLeft,
+            1);
     }
     const auto now = juce::Time::getMillisecondCounter();
     if (activity_ != talas::app::PerformanceActivitySource::None
         && now - activityAtMilliseconds_ <= activityLifetimeMilliseconds)
     {
-        graphics.setColour(controlAccent(model_.kind));
+        graphics.setColour(accent);
         graphics.drawRoundedRectangle(
-            bounds.reduced(3.0F), 4.0F, 2.0F);
+            bounds.reduced(3.0F), 5.0F, 2.0F);
         graphics.setColour(workbenchTheme.primaryText);
         graphics.setFont(WorkbenchType::microStrong());
         graphics.drawText(
             activityName(activity_),
-            getLocalBounds().reduced(scaled(8))
+            getLocalBounds().reduced(scaled(10))
                 .removeFromBottom(scaled(16)),
             juce::Justification::centredRight);
     }
 }
 
+// A knob as tall as the card allows beside its readout, the value over its
+// unit; a pad across the card.
 void PerformanceControlItem::resized()
 {
     const auto scaled = [](int pixels) {
         return workbenchScaledUiPixels(pixels);
     };
     auto body = getLocalBounds().reduced(scaled(10))
-                    .withTrimmedTop(scaled(24));
-    valueLabel_.setBounds(body.removeFromRight(scaled(64)));
-    body.removeFromRight(scaled(6));
-    slider_.setBounds(body.withTrimmedBottom(
-        scaled(compact_ ? 2 : 18)));
+                    .withTrimmedTop(scaled(26));
+    if (!compact_)
+        body.removeFromBottom(scaled(18));
+    unitArea_ = {};
+    if (slider_.mode() != PerformanceControlSlider::Mode::Knob)
+    {
+        valueLabel_.setBounds({});
+        slider_.setBounds(body.withSizeKeepingCentre(body.getWidth(),
+            std::min(body.getHeight(), scaled(compact_ ? 34 : 46))));
+        return;
+    }
+    const auto knobSize = std::min(body.getHeight() + scaled(4), body.getWidth() / 2);
+    slider_.setBounds(body.removeFromLeft(knobSize)
+                          .withSizeKeepingCentre(knobSize, knobSize));
+    body.removeFromLeft(scaled(10));
+    auto readout = body.withSizeKeepingCentre(body.getWidth(),
+        std::min(body.getHeight(), scaled(compact_ ? 34 : 40)));
+    valueLabel_.setBounds(readout.removeFromTop(readout.getHeight() * 11 / 20));
+    unitArea_ = readout.withTrimmedTop(scaled(1));
 }
 
 void PerformanceControlItem::mouseDown(const juce::MouseEvent& event)
@@ -1564,7 +1795,8 @@ void PerformanceControlItem::setExternalValue(double value)
 {
     externalUpdate_ = true;
     slider_.setValue(value, juce::dontSendNotification);
-    valueLabel_.setText(juce::String(value, 3), juce::dontSendNotification);
+    valueLabel_.setText(valueText(value), juce::dontSendNotification);
+    slider_.repaint();
     externalUpdate_ = false;
 }
 
@@ -1667,7 +1899,7 @@ void PerformanceControlItem::sliderValueChanged(juce::Slider*)
             talas::app::PerformanceActivitySource::UserInterface))
     {
         valueLabel_.setText(
-            juce::String(value, 3), juce::dontSendNotification);
+            valueText(value), juce::dontSendNotification);
     }
 }
 
@@ -1680,6 +1912,28 @@ void PerformanceControlItem::sliderDragStarted(juce::Slider*)
 void PerformanceControlItem::sliderDragEnded(juce::Slider*)
 {
     owner_.finishValueGesture();
+}
+
+// As many decimals as the range needs to show a step of about a
+// thousandth of it.
+juce::String PerformanceControlItem::valueText(double value) const
+{
+    const auto span = std::abs(slider_.getMaximum() - slider_.getMinimum());
+    const auto decimals = span >= 100.0 ? 1 : span >= 10.0 ? 2 : 3;
+    return juce::String(value, decimals);
+}
+
+juce::String PerformanceControlItem::unitText() const
+{
+    switch (model_.target.domain)
+    {
+    case talas::expr::ValueDomain::Hertz: return "Hz";
+    case talas::expr::ValueDomain::Seconds: return "seconds";
+    case talas::expr::ValueDomain::NoteNumber: return "note";
+    case talas::expr::ValueDomain::Samples: return "samples";
+    case talas::expr::ValueDomain::Scalar: break;
+    }
+    return "scalar";
 }
 
 juce::String PerformanceControlItem::mappingSummary() const

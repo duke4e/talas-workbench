@@ -8,6 +8,7 @@
 #include "talas/app/SoundBrowserModel.h"
 #include "talas/app/SoundFileWindowModel.h"
 #include "talas/app/TimelineInfo.h"
+#include "talas/core/FromChars.h"
 #include "talas/project/ProjectGlobalMap.h"
 #include "talas/app/TimelineGrid.h"
 #include "talas/app/TimelineMarks.h"
@@ -7347,7 +7348,7 @@ public:
     {
         const auto* lane = selectedPointLane();
         double value = 0.0;
-        const auto parsed = std::from_chars(text.data(), text.data() + text.size(), value);
+        const auto parsed = talas::fromChars(text.data(), text.data() + text.size(), value);
         if (lane == nullptr || parsed.ec != std::errc{} || parsed.ptr != text.data() + text.size())
         {
             onStatus_("Type a number for the selected points");

@@ -1,5 +1,7 @@
 #include "talas/expr/Expression.h"
 
+#include "talas/core/FromChars.h"
+
 #include <algorithm>
 #include <array>
 #include <bit>
@@ -1151,7 +1153,7 @@ struct ValTimedMessage
     double value = 0.0;
     const auto* const begin = text.data();
     const auto* const end = begin + text.size();
-    const auto [parsedEnd, error] = std::from_chars(
+    const auto [parsedEnd, error] = talas::fromChars(
         begin,
         end,
         value,
@@ -9537,7 +9539,7 @@ std::optional<SoundReference> parseSoundReference(std::string_view identifier)
         return std::nullopt;
     double period = 0.0;
     const auto digits = rest.substr(2);
-    const auto [end, error] = std::from_chars(digits.data(), digits.data() + digits.size(), period);
+    const auto [end, error] = talas::fromChars(digits.data(), digits.data() + digits.size(), period);
     if (error != std::errc{} || end != digits.data() + digits.size()
         || !std::isfinite(period) || period <= 0.0)
     {

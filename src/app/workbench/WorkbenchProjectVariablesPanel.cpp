@@ -3,6 +3,7 @@
 #include "app/workbench/WorkbenchSoundStatePanel.h"
 #include "app/workbench/WorkbenchTheme.h"
 #include "app/workbench/WorkbenchUiHelpers.h"
+#include "talas/core/FromChars.h"
 #include "talas/project/ProjectExpressionAudit.h"
 #include "talas/project/ProjectVariables.h"
 
@@ -60,7 +61,7 @@ namespace
     if (token.empty())
         return std::nullopt;
     double value = 0.0;
-    const auto parsed = std::from_chars(
+    const auto parsed = talas::fromChars(
         token.data(), token.data() + token.size(), value);
     if (parsed.ec != std::errc{}
         || parsed.ptr != token.data() + token.size()

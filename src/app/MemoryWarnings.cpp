@@ -1,5 +1,7 @@
 #include "talas/app/MemoryWarnings.h"
 
+#include "talas/core/FromChars.h"
+
 #include <algorithm>
 #include <charconv>
 #include <functional>
@@ -49,7 +51,7 @@ std::optional<double> constantOf(std::string_view expression)
         expression.remove_suffix(1);
     double value = 0.0;
     const auto* end = expression.data() + expression.size();
-    const auto [parsed, error] = std::from_chars(expression.data(), end, value);
+    const auto [parsed, error] = talas::fromChars(expression.data(), end, value);
     if (error != std::errc{} || parsed != end)
         return std::nullopt;
     return value;

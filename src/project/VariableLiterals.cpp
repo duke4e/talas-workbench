@@ -1,5 +1,6 @@
 #include "talas/project/VariableLiterals.h"
 
+#include "talas/core/FromChars.h"
 #include "talas/project/ProjectDocument.h"
 
 #include <algorithm>
@@ -47,7 +48,7 @@ namespace
     if (digitsAt >= text.size() || std::isdigit(static_cast<unsigned char>(text[digitsAt])) == 0)
         return std::nullopt;
     auto value = 0.0;
-    const auto [end, failed] = std::from_chars(text.data(), text.data() + text.size(), value);
+    const auto [end, failed] = talas::fromChars(text.data(), text.data() + text.size(), value);
     if (failed != std::errc{} || end != text.data() + text.size() || !std::isfinite(value))
         return std::nullopt;
     return value;

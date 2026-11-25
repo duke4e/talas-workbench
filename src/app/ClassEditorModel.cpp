@@ -1,6 +1,7 @@
 #include "talas/app/ClassEditorModel.h"
 #include "talas/app/PrototypeBrowserModel.h"
 #include "talas/app/SoundFileWindowModel.h"
+#include "talas/core/FromChars.h"
 #include "talas/project/ProjectClassFromExample.h"
 
 #include "talas/expr/Expression.h"
@@ -32,7 +33,7 @@ namespace
     if (text.empty())
         return std::nullopt;
     auto value = 0.0;
-    const auto [end, failed] = std::from_chars(text.data(), text.data() + text.size(), value);
+    const auto [end, failed] = talas::fromChars(text.data(), text.data() + text.size(), value);
     if (failed != std::errc{} || end != text.data() + text.size() || !std::isfinite(value))
         return std::nullopt;
     return value;

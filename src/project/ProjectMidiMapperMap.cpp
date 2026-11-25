@@ -1,5 +1,7 @@
 #include "talas/project/ProjectMidiMapperMap.h"
 
+#include "talas/core/FromChars.h"
+
 #include <charconv>
 #include <cmath>
 
@@ -103,7 +105,7 @@ bool parseProjectMidiMapperMapBound(
 {
     if (text.empty())
         return false;
-    const auto parsed = std::from_chars(
+    const auto parsed = talas::fromChars(
         text.data(), text.data() + text.size(), value,
         std::chars_format::general);
     return parsed.ec == std::errc{}

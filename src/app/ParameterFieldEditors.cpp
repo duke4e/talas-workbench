@@ -1,5 +1,7 @@
 #include "talas/app/ParameterFieldEditors.h"
 
+#include "talas/core/FromChars.h"
+
 #include <algorithm>
 #include <array>
 #include <cctype>
@@ -29,7 +31,7 @@ namespace
     const auto* begin = text.data();
     if (*begin == '+')
         ++begin;
-    const auto [end, failed] = std::from_chars(begin, text.data() + text.size(), value);
+    const auto [end, failed] = talas::fromChars(begin, text.data() + text.size(), value);
     if (failed != std::errc{} || end != text.data() + text.size() || !std::isfinite(value))
         return std::nullopt;
     return value;

@@ -1,5 +1,6 @@
 #include "talas/project/ProjectParameterTransformer.h"
 
+#include "talas/core/FromChars.h"
 #include "talas/project/ProjectMidiVoiceIslands.h"
 #include "talas/project/ProjectSoundExpansion.h"
 #include "talas/project/ProjectValidation.h"
@@ -525,7 +526,7 @@ parseProjectParameterTransformation(std::string_view source)
                         const auto scalarText =
                             trimAscii(body.substr(separator + 4));
                         double scalar = 0.0;
-                        const auto parsed = std::from_chars(
+                        const auto parsed = talas::fromChars(
                             scalarText.data(),
                             scalarText.data() + scalarText.size(),
                             scalar,

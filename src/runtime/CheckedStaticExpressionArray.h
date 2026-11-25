@@ -1,5 +1,6 @@
 #pragma once
 
+#include "talas/core/FromChars.h"
 #include "talas/expr/Expression.h"
 
 #include <charconv>
@@ -107,7 +108,7 @@ struct Result
     double magnitude = 0.0;
     const auto* begin = text.data();
     const auto* end = begin + text.size();
-    const auto parsed = std::from_chars(begin, end, magnitude, format);
+    const auto parsed = talas::fromChars(begin, end, magnitude, format);
     if (parsed.ec != std::errc{} || parsed.ptr != end
         || !std::isfinite(magnitude))
     {

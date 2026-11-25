@@ -1,6 +1,7 @@
 #include "talas/app/TimelineInfo.h"
 
 #include "talas/app/AutomationLaneEditing.h"
+#include "talas/core/FromChars.h"
 #include "talas/project/ProjectEditor.h"
 #include "talas/project/ProjectGlobalMap.h"
 #include "talas/project/SoundDefinitionImport.h"
@@ -100,7 +101,7 @@ using talas::project::ScoreTimeDomain;
     if (text.empty())
         return std::nullopt;
     double value = 0.0;
-    const auto [end, error] = std::from_chars(text.data(), text.data() + text.size(), value);
+    const auto [end, error] = talas::fromChars(text.data(), text.data() + text.size(), value);
     if (error != std::errc{} || end != text.data() + text.size() || !std::isfinite(value) || value < 0.0)
         return std::nullopt;
     return value;

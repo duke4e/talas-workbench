@@ -11,6 +11,7 @@
 #include "talas/audio/WavWriter.h"
 #include "talas/audio/WavReader.h"
 #include "talas/core/BuiltinNodes.h"
+#include "talas/core/FromChars.h"
 #include "talas/core/NodeCatalogJson.h"
 #include "talas/dsp/ReAnalysis.h"
 #include "talas/project/ProjectJson.h"
@@ -355,7 +356,7 @@ bool parseFiniteDouble(std::string_view text, double& value)
         return false;
 
     const auto* last = text.data() + text.size();
-    const auto parsed = std::from_chars(
+    const auto parsed = talas::fromChars(
         text.data(), last, value, std::chars_format::general);
     return parsed.ec == std::errc{} && parsed.ptr == last
         && std::isfinite(value);

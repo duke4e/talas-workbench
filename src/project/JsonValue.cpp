@@ -1,5 +1,7 @@
 #include "JsonValue.h"
 
+#include "talas/core/FromChars.h"
+
 #include <charconv>
 #include <cstddef>
 #include <optional>
@@ -940,7 +942,7 @@ private:
         double number = 0.0;
         const auto* numberEnd = numberText.data() + numberText.size();
         const auto parsed =
-            std::from_chars(numberText.data(), numberEnd, number);
+            talas::fromChars(numberText.data(), numberEnd, number);
         if (parsed.ec != std::errc{} || parsed.ptr != numberEnd)
             return fail("Invalid number");
 

@@ -1,5 +1,7 @@
 #include "talas/project/AlternateTunings.h"
 
+#include "talas/core/FromChars.h"
+
 #include <algorithm>
 #include <charconv>
 #include <cmath>
@@ -33,7 +35,7 @@ namespace
 [[nodiscard]] std::optional<double> number(std::string_view text)
 {
     double value = 0.0;
-    const auto [end, failed] = std::from_chars(text.data(), text.data() + text.size(), value);
+    const auto [end, failed] = talas::fromChars(text.data(), text.data() + text.size(), value);
     if (failed != std::errc{} || end != text.data() + text.size() || !std::isfinite(value))
         return std::nullopt;
     return value;

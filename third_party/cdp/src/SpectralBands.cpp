@@ -12,6 +12,8 @@
  */
 #include "talas/cdp/SpectralBands.h"
 
+#include "talas/core/FromChars.h"
+
 #include <algorithm>
 #include <charconv>
 #include <cmath>
@@ -123,7 +125,7 @@ template <class Visit> void forEachPiece(std::string_view text, Visit&& visit)
     double val = 0.0;
     const auto* first = str.data() + valstart;
     const auto* last = str.data() + p;
-    if (const auto [end, error] = std::from_chars(first, last, val); error != std::errc{} || end != last)
+    if (const auto [end, error] = talas::fromChars(first, last, val); error != std::errc{} || end != last)
         return std::nullopt;
     at = p;
     return val;

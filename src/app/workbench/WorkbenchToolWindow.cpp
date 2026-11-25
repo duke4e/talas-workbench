@@ -2,6 +2,7 @@
 
 #include "app/workbench/WorkbenchTheme.h"
 #include "app/workbench/WorkbenchUiHelpers.h"
+#include "talas/core/FromChars.h"
 
 #include <algorithm>
 #include <charconv>
@@ -50,7 +51,7 @@ namespace st = talas::project::smalltalk;
 {
     const auto trimmed = text.trim().toStdString();
     double number = 0.0;
-    const auto [end, failed] = std::from_chars(trimmed.data(), trimmed.data() + trimmed.size(), number);
+    const auto [end, failed] = talas::fromChars(trimmed.data(), trimmed.data() + trimmed.size(), number);
     if (!trimmed.empty() && failed == std::errc{} && end == trimmed.data() + trimmed.size())
         return st::Value::of(number);
     return st::Value::string(text.toStdString());

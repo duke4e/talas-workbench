@@ -4,6 +4,7 @@
 #include "AnalogSequencerMath.h"
 #include "ScopedEventValueResolution.h"
 #include "StandardMidiFile.h"
+#include "talas/core/FromChars.h"
 #include "talas/project/MidiDefaultMap.h"
 #include "talas/project/SmalltalkSubset.h"
 #include "talas/runtime/PreparedMidiMapper.h"
@@ -88,7 +89,7 @@ namespace
         double value = 0;
         if (array->numericLiteral)
         {
-            std::from_chars(member.source.data(), member.source.data() + member.source.size(), value);
+            talas::fromChars(member.source.data(), member.source.data() + member.source.size(), value);
             result.values.push_back(value);
             continue;
         }
@@ -233,7 +234,7 @@ struct ScriptCursor
         space();
         const auto* begin = source.data() + offset;
         const auto* end = source.data() + source.size();
-        const auto parsed = std::from_chars(begin, end, value, std::chars_format::general);
+        const auto parsed = talas::fromChars(begin, end, value, std::chars_format::general);
         if (parsed.ec != std::errc{} || parsed.ptr == begin || !std::isfinite(value))
             return false;
         offset = static_cast<std::size_t>(parsed.ptr - source.data());

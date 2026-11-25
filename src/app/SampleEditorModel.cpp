@@ -1,5 +1,6 @@
 #include "talas/app/SampleEditorModel.h"
 
+#include "talas/core/FromChars.h"
 #include "talas/expr/Expression.h"
 
 #include <algorithm>
@@ -33,7 +34,7 @@ constexpr std::size_t undoLimit = 32;
     if (text.front() == '+')
         text.remove_prefix(1);
     auto value = 0.0;
-    const auto [end, failed] = std::from_chars(text.data(), text.data() + text.size(), value);
+    const auto [end, failed] = talas::fromChars(text.data(), text.data() + text.size(), value);
     if (failed != std::errc{} || end != text.data() + text.size() || !std::isfinite(value))
         return std::nullopt;
     return value;

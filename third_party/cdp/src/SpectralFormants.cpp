@@ -14,6 +14,8 @@
  */
 #include "talas/cdp/SpectralFormants.h"
 
+#include "talas/core/FromChars.h"
+
 #include <algorithm>
 #include <array>
 #include <charconv>
@@ -401,7 +403,7 @@ template <class Visit> void forEachPiece(std::string_view text, Visit&& visit)
     if (rest.size() >= 2 && rest[0] == '0' && (rest[1] == 'x' || rest[1] == 'X'))
     {
         // "0x" with no hex digit after it reads as its 0.
-        const auto [end, error] = std::from_chars(rest.data() + 2, rest.data() + rest.size(), value, std::chars_format::hex);
+        const auto [end, error] = talas::fromChars(rest.data() + 2, rest.data() + rest.size(), value, std::chars_format::hex);
         if (error == std::errc::invalid_argument)
             value = 0.0;
         else if (error != std::errc{})
@@ -409,7 +411,7 @@ template <class Visit> void forEachPiece(std::string_view text, Visit&& visit)
     }
     else
     {
-        const auto [end, error] = std::from_chars(rest.data(), rest.data() + rest.size(), value, std::chars_format::general);
+        const auto [end, error] = talas::fromChars(rest.data(), rest.data() + rest.size(), value, std::chars_format::general);
         if (error != std::errc{})
             return std::nullopt;
     }

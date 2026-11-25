@@ -1,5 +1,7 @@
 #pragma once
 
+#include "talas/core/FromChars.h"
+
 #include <array>
 #include <charconv>
 #include <cmath>
@@ -114,7 +116,7 @@ public:
         if (end < text_.size() && isIdentifierCharacter(text_[end]))
             return std::nullopt;
         double value = 0.0;
-        const auto [parsedEnd, error] = std::from_chars(
+        const auto [parsedEnd, error] = talas::fromChars(
             text_.data() + start, text_.data() + end, value);
         if (error != std::errc{} || parsedEnd != text_.data() + end)
             return std::nullopt;

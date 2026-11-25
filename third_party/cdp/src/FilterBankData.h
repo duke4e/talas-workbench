@@ -15,6 +15,8 @@
 // What CDP's user and time-varying filter banks share: reading filter data
 // and running two-pole resonators over it.
 
+#include "talas/core/FromChars.h"
+
 #include <algorithm>
 #include <charconv>
 #include <cmath>
@@ -61,7 +63,7 @@ inline constexpr double minimumFilterAmplitude = 0.001;
     double value = 0.0;
     const auto* first = word.data() + position;
     const auto* last = word.data() + word.size();
-    const auto [end, error] = std::from_chars(first, last, value);
+    const auto [end, error] = talas::fromChars(first, last, value);
     if (error != std::errc{} || end == first)
         return std::nullopt;
     return value;

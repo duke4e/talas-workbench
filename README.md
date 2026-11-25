@@ -94,7 +94,10 @@ You need:
 - CMake 3.28 or newer;
 - a C++20 compiler (recent Clang, GCC or MSVC);
 - Python 3, for the generated-documentation checks in the test suite;
-- JUCE 8.0.15, for the Workbench only. The Workbench preset downloads it for you.
+- JUCE 8.0.15, for the Workbench only. The Workbench preset downloads it for you;
+- on macOS, an SDK for macOS 13.3 or newer. Builds target macOS 13.3, the oldest
+  macOS the app, the CLI and the plugins run on: `CMAKE_OSX_DEPLOYMENT_TARGET`
+  defaults to 13.3, and a lower value is refused.
 
 Development currently happens on macOS. The core is portable C++20; Windows and
 Linux builds will be checked before the first release.

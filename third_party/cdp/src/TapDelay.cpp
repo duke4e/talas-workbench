@@ -12,6 +12,8 @@
  */
 #include "talas/cdp/TapDelay.h"
 
+#include "talas/core/FromChars.h"
+
 #include <algorithm>
 #include <charconv>
 #include <cmath>
@@ -69,7 +71,7 @@ int scanNumbers(std::string_view line, double (&values)[3]) noexcept
         double value = 0.0;
         const auto* first = line.data() + position;
         const auto* last = line.data() + line.size();
-        const auto [end, error] = std::from_chars(first, last, value);
+        const auto [end, error] = talas::fromChars(first, last, value);
         if (error != std::errc{} || end == first)
             break;
         values[count++] = value;

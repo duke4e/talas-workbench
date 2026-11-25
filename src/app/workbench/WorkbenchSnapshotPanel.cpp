@@ -4,6 +4,7 @@
 #include "app/workbench/WorkbenchUiHelpers.h"
 #include "talas/app/LiveGridWorkbenchModel.h"
 #include "talas/app/SoundWorkbenchModel.h"
+#include "talas/core/FromChars.h"
 #include "talas/project/ProjectJson.h"
 #include "talas/project/ProjectSnapshots.h"
 #include "talas/runtime/SnapshotPerformance.h"
@@ -1797,7 +1798,7 @@ private:
     {
         const auto source = text.trim().toStdString();
         double value = 0.0;
-        const auto parsed = std::from_chars(
+        const auto parsed = talas::fromChars(
             source.data(),
             source.data() + source.size(),
             value,
@@ -3836,7 +3837,7 @@ private:
         const auto depthText =
             modulationDepth_.getText().trim().toStdString();
         double depth = 0.0;
-        const auto parsed = std::from_chars(
+        const auto parsed = talas::fromChars(
             depthText.data(),
             depthText.data() + depthText.size(),
             depth,
@@ -4605,7 +4606,7 @@ private:
         else
         {
             const auto text = liveToolVariableValue_.getText().toStdString();
-            const auto parsed = std::from_chars(
+            const auto parsed = talas::fromChars(
                 text.data(), text.data() + text.size(), number,
                 std::chars_format::general);
             if (parsed.ec != std::errc{}

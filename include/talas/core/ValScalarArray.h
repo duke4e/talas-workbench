@@ -1,5 +1,7 @@
 #pragma once
 
+#include "talas/core/FromChars.h"
+
 #include <algorithm>
 #include <charconv>
 #include <cmath>
@@ -94,7 +96,7 @@ struct Member
         {
             const auto* begin = token.data();
             const auto* tokenEnd = begin + token.size();
-            const auto [parsed, error] = std::from_chars(
+            const auto [parsed, error] = talas::fromChars(
                 begin, tokenEnd, member.literal,
                 std::chars_format::general);
             if (error != std::errc{} || parsed != tokenEnd

@@ -3,6 +3,7 @@
 #include "app/workbench/WorkbenchTheme.h"
 #include "app/workbench/WorkbenchUiHelpers.h"
 #include "talas/app/SoundWorkbenchModel.h"
+#include "talas/core/FromChars.h"
 
 #include <algorithm>
 #include <charconv>
@@ -125,7 +126,7 @@ namespace
     std::string_view text) noexcept
 {
     double value = 0.0;
-    const auto parsed = std::from_chars(
+    const auto parsed = talas::fromChars(
         text.data(), text.data() + text.size(), value);
     if (parsed.ec != std::errc{}
         || parsed.ptr != text.data() + text.size()

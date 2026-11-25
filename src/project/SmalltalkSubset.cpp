@@ -1,5 +1,7 @@
 #include "talas/project/SmalltalkSubset.h"
 
+#include "talas/core/FromChars.h"
+
 #include <algorithm>
 #include <array>
 #include <bit>
@@ -261,11 +263,11 @@ struct LexResult
                         ++offset;
                     text += 'e';
                     text.append(source.substr(exponent, offset - exponent));
-                    std::from_chars(text.data(), text.data() + text.size(), value);
+                    talas::fromChars(text.data(), text.data() + text.size(), value);
                 }
                 else
                 {
-                    std::from_chars(source.data() + digits, source.data() + offset, value);
+                    talas::fromChars(source.data() + digits, source.data() + offset, value);
                     if (integral)
                     {
                         token.integerDigits = std::string{source.substr(digits, offset - digits)};
@@ -4703,7 +4705,7 @@ private:
                 (void)send(arguments[0], "next", {}, range);
             }
             double number = 0.0;
-            const auto [end, error] = std::from_chars(text.data(), text.data() + text.size(), number);
+            const auto [end, error] = talas::fromChars(text.data(), text.data() + text.size(), number);
             if (text.empty() || error != std::errc{} || end != text.data() + text.size())
                 throw Failure{"readFrom: finds no number in the stream", range};
             return Value::of(number);

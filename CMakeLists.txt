@@ -10,7 +10,29 @@ foreach(policy CMP0156 CMP0179)
     endif()
 endforeach()
 
+# macOS 13.3 is the oldest macOS Talas runs on: floating-point std::to_chars
+# and <format> need it. Floating-point std::from_chars needs macOS 26, so
+# talas::fromChars (include/talas/core/FromChars.h) stands in for it. Builds
+# that name no deployment target get 13.3, so every build, the local gate's
+# too, is refused an API newer than the floor.
+if(CMAKE_HOST_APPLE
+        AND (NOT DEFINED CMAKE_SYSTEM_NAME OR CMAKE_SYSTEM_NAME STREQUAL "Darwin")
+        AND "${CMAKE_OSX_DEPLOYMENT_TARGET}" STREQUAL ""
+        AND "$ENV{MACOSX_DEPLOYMENT_TARGET}" STREQUAL "")
+    set(CMAKE_OSX_DEPLOYMENT_TARGET "13.3" CACHE STRING
+        "Minimum macOS version to target" FORCE)
+endif()
+
 project(Talas VERSION 0.1.0 LANGUAGES C CXX)
+
+set(TALAS_MINIMUM_MACOS_VERSION "13.3")
+if(APPLE AND NOT "${CMAKE_OSX_DEPLOYMENT_TARGET}" STREQUAL ""
+        AND CMAKE_OSX_DEPLOYMENT_TARGET VERSION_LESS TALAS_MINIMUM_MACOS_VERSION)
+    message(FATAL_ERROR
+        "Talas needs macOS ${TALAS_MINIMUM_MACOS_VERSION} or later "
+        "(floating-point std::to_chars and <format>); "
+        "CMAKE_OSX_DEPLOYMENT_TARGET is ${CMAKE_OSX_DEPLOYMENT_TARGET}")
+endif()
 
 option(TALAS_BUILD_TESTS "Build Talas tests" ON)
 option(TALAS_BUILD_WORKBENCH "Build the JUCE standalone workbench" OFF)
@@ -202,6 +224,19 @@ if(MSVC)
         "MultiThreaded$<$<CONFIG:Debug>:Debug>")
 endif()
 
+# Floating-point std::from_chars for macOS before 26 (see FromChars.h). Its
+# own library, so the LGPL CDP ports can use it without the rest of the core.
+add_library(talas_from_chars STATIC
+    src/core/FromChars.cpp
+)
+
+target_include_directories(talas_from_chars
+    PUBLIC
+        ${CMAKE_CURRENT_SOURCE_DIR}/include
+)
+
+target_compile_features(talas_from_chars PUBLIC cxx_std_20)
+
 add_library(talas_core
     src/core/BuiltinNodeBindings.cpp
     src/core/BuiltinNodes.cpp
@@ -218,6 +253,7 @@ target_include_directories(talas_core
 )
 
 target_compile_features(talas_core PUBLIC cxx_std_20)
+target_link_libraries(talas_core PUBLIC talas_from_chars)
 
 add_library(talas_generative
     src/generative/ContextFreeGenerator.cpp
@@ -230,6 +266,7 @@ target_include_directories(talas_generative
 )
 
 target_compile_features(talas_generative PUBLIC cxx_std_20)
+target_link_libraries(talas_generative PRIVATE talas_from_chars)
 
 add_library(talas_dsp
     src/dsp/DiffuseSpectralStretch.cpp
@@ -265,6 +302,7 @@ target_include_directories(talas_dsp
 )
 
 target_compile_features(talas_dsp PUBLIC cxx_std_20)
+target_link_libraries(talas_dsp PRIVATE talas_from_chars)
 
 # Large source-analysis transforms also run on the audio thread in Debug.
 # Preserve symbols without enabling fast-math while optimizing these two source
@@ -376,6 +414,7 @@ target_include_directories(talas_cdp
 )
 
 target_compile_features(talas_cdp PUBLIC cxx_std_20)
+target_link_libraries(talas_cdp PRIVATE talas_from_chars)
 
 add_library(talas_project
     src/project/PartialTrackAsset.cpp
@@ -1545,6 +1584,13 @@ if(TALAS_BUILD_WORKBENCH)
         target_compile_definitions(talas_workbench_ui PRIVATE TALAS_WORKBENCH_PLUGIN_TEMPLATES=1)
     endif()
 
+    # On a Mac older than the floor, Finder then says which macOS the app
+    # needs instead of the app failing to start.
+    set(talas_workbench_plist_arguments)
+    if(APPLE AND NOT "${CMAKE_OSX_DEPLOYMENT_TARGET}" STREQUAL "")
+        set(talas_workbench_plist_arguments PLIST_TO_MERGE
+            "<plist><dict><key>LSMinimumSystemVersion</key><string>${CMAKE_OSX_DEPLOYMENT_TARGET}</string></dict></plist>")
+    endif()
     juce_add_gui_app(talas_workbench
         COMPANY_NAME "Talas"
         BUNDLE_ID "com.talas.workbench"
@@ -1553,6 +1599,7 @@ if(TALAS_BUILD_WORKBENCH)
         MICROPHONE_PERMISSION_ENABLED TRUE
         MICROPHONE_PERMISSION_TEXT "Talas Workbench uses audio input for live Sound processing."
         DOCUMENT_EXTENSIONS pre
+        ${talas_workbench_plist_arguments}
     )
     juce_generate_juce_header(talas_workbench)
     target_sources(talas_workbench PRIVATE src/app/WorkbenchMain.cpp)
@@ -2334,6 +2381,58 @@ if(TALAS_BUILD_TESTS)
     )
     target_link_libraries(talas_val_tests PRIVATE talas_core)
     add_test(NAME talas_val_tests COMMAND talas_val_tests)
+
+    add_executable(talas_from_chars_tests
+        tests/core/FromCharsTests.cpp
+    )
+    target_link_libraries(talas_from_chars_tests PRIVATE talas_from_chars)
+    add_test(NAME talas_from_chars_tests COMMAND talas_from_chars_tests)
+    if(APPLE)
+        # Again with the realtime probe: parsing neither allocates nor locks.
+        add_dependencies(talas_from_chars_tests talas_realtime_probe)
+        add_test(
+            NAME talas_from_chars_realtime_tests
+            COMMAND talas_from_chars_tests --require-realtime-probe)
+        set_tests_properties(talas_from_chars_realtime_tests PROPERTIES
+            ENVIRONMENT "DYLD_INSERT_LIBRARIES=$<TARGET_FILE:talas_realtime_probe>"
+            LABELS "realtime-safety")
+
+        # talas::fromChars against libc++'s floating-point std::from_chars,
+        # which needs macOS 26. Only this test targets macOS 26, so it builds
+        # with an SDK that has it and runs on a Mac new enough.
+        execute_process(
+            COMMAND sw_vers -productVersion
+            OUTPUT_VARIABLE TALAS_HOST_MACOS_VERSION
+            OUTPUT_STRIP_TRAILING_WHITESPACE
+            ERROR_QUIET)
+        include(CheckCXXSourceCompiles)
+        set(CMAKE_OSX_DEPLOYMENT_TARGET "26.0")
+        set(CMAKE_REQUIRED_FLAGS "-std=c++20")
+        check_cxx_source_compiles([[
+            #include <charconv>
+            int main()
+            {
+                const char text[] = "1.5";
+                double value = 0.0;
+                return std::from_chars(text, text + 3, value).ec == std::errc{} ? 0 : 1;
+            }
+        ]] TALAS_HAS_FLOATING_POINT_FROM_CHARS)
+        unset(CMAKE_REQUIRED_FLAGS)
+        unset(CMAKE_OSX_DEPLOYMENT_TARGET)
+        if(TALAS_HAS_FLOATING_POINT_FROM_CHARS
+                AND TALAS_HOST_MACOS_VERSION VERSION_GREATER_EQUAL 26.0)
+            add_executable(talas_from_chars_parity_tests
+                tests/core/FromCharsParityTests.cpp
+            )
+            target_link_libraries(talas_from_chars_parity_tests PRIVATE talas_from_chars)
+            target_compile_options(talas_from_chars_parity_tests PRIVATE -mmacosx-version-min=26.0)
+            target_link_options(talas_from_chars_parity_tests PRIVATE -mmacosx-version-min=26.0)
+            add_test(NAME talas_from_chars_parity_tests COMMAND talas_from_chars_parity_tests)
+        else()
+            message(STATUS
+                "talas_from_chars_parity_tests needs macOS 26 and its SDK; not built")
+        endif()
+    endif()
 
     add_executable(talas_context_free_generator_tests
         tests/generative/ContextFreeGeneratorTests.cpp

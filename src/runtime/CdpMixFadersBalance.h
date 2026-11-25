@@ -1,6 +1,7 @@
 #pragma once
 
 #include "talas/cdp/SubmixPairs.h"
+#include "talas/core/FromChars.h"
 
 #include <charconv>
 #include <cstddef>
@@ -57,7 +58,7 @@ namespace talas::runtime::cdp_mix_faders
             while (stop < line.size() && !space(line[stop]))
                 ++stop;
             double value = 0.0;
-            const auto [last, error] = std::from_chars(
+            const auto [last, error] = talas::fromChars(
                 line.data() + position, line.data() + stop, value, std::chars_format::fixed);
             if (error != std::errc{} || last != line.data() + stop)
                 return std::nullopt;

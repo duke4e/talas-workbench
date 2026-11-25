@@ -1,5 +1,7 @@
 #include "talas/generative/TalasGrammar.h"
 
+#include "talas/core/FromChars.h"
+
 #include <algorithm>
 #include <cctype>
 #include <charconv>
@@ -123,7 +125,7 @@ public:
             number.remove_suffix(1);
         ++position_;
         double weight = 0.0;
-        const auto [last, error] = std::from_chars(number.data(), number.data() + number.size(), weight);
+        const auto [last, error] = talas::fromChars(number.data(), number.data() + number.size(), weight);
         if (number.empty() || error != std::errc{} || last != number.data() + number.size()
             || !std::isfinite(weight) || weight < 0.0)
         {

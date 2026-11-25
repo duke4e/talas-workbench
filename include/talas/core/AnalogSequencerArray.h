@@ -1,5 +1,7 @@
 #pragma once
 
+#include "talas/core/FromChars.h"
+
 #include <charconv>
 #include <cmath>
 #include <cstddef>
@@ -88,7 +90,7 @@ parseAnalogSequencerArray(std::string_view text)
             auto number = atom;
             if (!result.numericLiteral && number.starts_with('+')) number.remove_prefix(1);
             double value = 0;
-            const auto parsed = std::from_chars(number.data(), number.data() + number.size(), value);
+            const auto parsed = talas::fromChars(number.data(), number.data() + number.size(), value);
             if (parsed.ec != std::errc{} || parsed.ptr == number.data() || !std::isfinite(value)) return {};
             const auto suffix = number.substr(static_cast<std::size_t>(parsed.ptr - number.data()));
             if (!suffix.empty() && (result.numericLiteral || !word(suffix))) return {};

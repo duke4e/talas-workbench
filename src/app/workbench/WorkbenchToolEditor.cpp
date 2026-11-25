@@ -2,6 +2,7 @@
 
 #include "app/workbench/WorkbenchTheme.h"
 #include "app/workbench/WorkbenchUiHelpers.h"
+#include "talas/core/FromChars.h"
 
 #include <algorithm>
 #include <array>
@@ -83,7 +84,7 @@ template <typename Enum, std::size_t Count>
     if (trimmed.empty())
         return std::nullopt;
     double value = 0.0;
-    const auto [end, failed] = std::from_chars(trimmed.data(), trimmed.data() + trimmed.size(), value);
+    const auto [end, failed] = talas::fromChars(trimmed.data(), trimmed.data() + trimmed.size(), value);
     if (failed != std::errc{} || end != trimmed.data() + trimmed.size() || !std::isfinite(value))
         return std::nullopt;
     return value;

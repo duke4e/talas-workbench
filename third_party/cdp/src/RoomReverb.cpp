@@ -12,6 +12,8 @@
  */
 #include "talas/cdp/RoomReverb.h"
 
+#include "talas/core/FromChars.h"
+
 #include <algorithm>
 #include <charconv>
 #include <climits>
@@ -149,7 +151,7 @@ int scanNumbers(std::string_view line, double (&values)[2]) noexcept
         double value = 0.0;
         const auto* first = line.data() + position;
         const auto* last = line.data() + line.size();
-        const auto [end, error] = std::from_chars(first, last, value, format);
+        const auto [end, error] = talas::fromChars(first, last, value, format);
         if (error != std::errc{} || end == first)
         {
             // strtod reads "0x" without hex digits as the zero before it.

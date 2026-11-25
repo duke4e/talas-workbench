@@ -1,5 +1,7 @@
 #include "talas/dsp/ScaleVocoderIntervals.h"
 
+#include "talas/core/FromChars.h"
+
 #include <algorithm>
 #include <charconv>
 #include <cmath>
@@ -152,7 +154,7 @@ ScaleVocoderIntervalLayout deriveScaleVocoderIntervalLayout(
             }
         }
         double interval = 0.0;
-        const auto parsed = std::from_chars(
+        const auto parsed = talas::fromChars(
             first,
             text.data() + endPosition,
             interval,

@@ -1136,7 +1136,15 @@ void PhaseVocoder::synthesise() noexcept
     for (i = 0; i <= no2; i++, i0 += 2, i1 += 2)
     {
         mag = *i0;
-        oldOutPhase_[static_cast<std::size_t>(i)] += *i1 - ((float)i * f_);
+        // A sample beyond float's range (finite as a double, infinite once
+        // consumed) makes the frequencies of the frames it reaches NaN. CDP
+        // adds them to the running phase, where they stay, and every later
+        // frame of the channel is NaN; keep the phase instead, so only the
+        // frames that sample reaches are lost.
+        auto advanced = oldOutPhase_[static_cast<std::size_t>(i)];
+        advanced += *i1 - ((float)i * f_);
+        if (std::isfinite(advanced))
+            oldOutPhase_[static_cast<std::size_t>(i)] = advanced;
         phase = oldOutPhase_[static_cast<std::size_t>(i)] * twoPioverR_;
         *i0 = (float)((double)mag * std::cos((double)phase));
         *i1 = (float)((double)mag * std::sin((double)phase));

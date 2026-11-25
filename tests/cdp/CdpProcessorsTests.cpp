@@ -76,6 +76,7 @@
 #include <functional>
 #include <iostream>
 #include <limits>
+#include <numbers>
 #include <optional>
 #include <span>
 #include <sstream>
@@ -2015,6 +2016,61 @@ void testPhaseVocoderMatchesCdp()
             && !refused.prepare(48000.0, 1024, 5) && !refused.prepare(0.0, 1024, 3)
             && !talas::cdp::PhaseVocoder::latencyFor(8194, 3).has_value(),
         "the phase vocoder should refuse points outside 2 to 8192, overlaps outside 1 to 4 and no sample rate");
+}
+
+// A sample beyond float's range (1e300 is finite as a double) makes CDP's
+// float frames non-finite. The frames it overlaps are lost, but no running
+// phase may keep it: before, every later frame was NaN, so a vocoder in a
+// realtime Sound, fed one bad sample, failed every callback after its
+// latency.
+void testPhaseVocoderRecoversFromAnOverflowingSample()
+{
+    constexpr std::size_t frames = 64 * 128;
+    std::vector<double> input(frames);
+    std::vector<double> side(frames);
+    double phase = 0.0;
+    for (std::size_t frame = 0; frame < frames; ++frame)
+    {
+        input[frame] = 0.3 * (2.0 * phase - 1.0);
+        phase += 130.81 / 48000.0;
+        phase -= std::floor(phase);
+        side[frame] = 0.25 * std::sin(2.0 * std::numbers::pi * 441.0 * static_cast<double>(frame) / 48000.0);
+    }
+    input[0] = 1.0e300;
+    const auto recovered = [](const std::vector<double>& output, const std::string& name) {
+        // Two windows of 1024 points after the bad sample's frames leave the
+        // output, and still sounding.
+        const auto tail = std::span<const double>{output}.subspan(4096);
+        require(std::ranges::all_of(tail, [](double sample) { return std::isfinite(sample); }),
+            name + " should be finite again once the frames the overflowing sample reaches are out");
+        require(std::ranges::any_of(tail, [](double sample) { return std::abs(sample) > 0.01; }),
+            name + " should still sound after the overflowing sample");
+    };
+    for (std::size_t block : {std::size_t{128}, frames})
+    {
+        talas::cdp::PhaseVocoder vocoder;
+        require(vocoder.prepare(48000.0, 1024, 3), "the phase vocoder should prepare");
+        std::vector<double> output(frames);
+        for (std::size_t start = 0; start < frames; start += block)
+        {
+            require(vocoder.process(std::span<const double>{input}.subspan(start, block),
+                        std::span<double>{output}.subspan(start, block)),
+                "the phase vocoder should take a finite double");
+        }
+        recovered(output, "the phase vocoder in blocks of " + std::to_string(block));
+
+        // The demo vocoder's fields.
+        talas::cdp::FormantsVocode vocode;
+        require(vocode.prepare(48000.0, 1024, 3, false, 6, false, 5.0, 24000.0, 0.4), "formants vocode should prepare");
+        for (std::size_t start = 0; start < frames; start += block)
+        {
+            require(vocode.process(std::span<const double>{input}.subspan(start, block),
+                        std::span<const double>{side}.subspan(start, block),
+                        std::span<double>{output}.subspan(start, block)),
+                "formants vocode should take a finite double");
+        }
+        recovered(output, "formants vocode in blocks of " + std::to_string(block));
+    }
 }
 
 // CDP8's focus exag, fold and accu, blur avrg and suppress, and hilite
@@ -6542,6 +6598,7 @@ int main()
         testPhasingFollowsCdpBreakpoints();
         testDistortionsFollowCdpBreakpoints();
         testPhaseVocoderMatchesCdp();
+        testPhaseVocoderRecoversFromAnOverflowingSample();
         testSpectralProcessesMatchCdp();
         testHiliteFilterPluckAndStepMatchCdp();
         testStrangeShiftAndRepitchTransposeMatchCdp();

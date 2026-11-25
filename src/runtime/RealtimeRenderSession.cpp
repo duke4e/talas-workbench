@@ -4659,6 +4659,10 @@ struct RealtimeOperation : RealtimeOperationValueState
     // WaveTerrainOscillator borrows this preparation-only storage. Keep its
     // allocation identity stable while the value checkpoint restores phase.
     std::vector<double> waveTerrainSamples;
+    // A KernelOscillator's wavetable, which oscillatorKernelConfiguration
+    // and oscillatorKernel borrow. The graph's tables are not the session's:
+    // the bridge (and so a plugin) frees the graph once the engine is staged.
+    std::vector<double> oscillatorWavetableSamples;
     // Source callbacks retain pointers to these contexts. Restore only their
     // mutable flags; never swap the backing vector into an offline journal.
     std::vector<RealtimeSampleMapStreamContext> sampleMapStreamContexts;
@@ -48741,12 +48745,16 @@ private:
                     operation.oscillatorEnvelope = *liveEnvelope;
                     operation.oscillatorPitchBend = *livePitchBend;
                     operation.oscillatorReset = *liveReset;
+                    // The kernel reads its own copy: wavetableSamples views
+                    // the graph's table, which outlives only construction.
+                    operation.oscillatorWavetableSamples.assign(
+                        wavetableSamples.begin(), wavetableSamples.end());
                     operation.oscillatorKernelConfiguration = {
                         .sampleRate = sampleRate,
                         .frequencyModulation =
                             frequencyModulation && hasModulatorInput,
                         .maxModulationIndex = maxMI->value,
-                        .wavetable = wavetableSamples,
+                        .wavetable = operation.oscillatorWavetableSamples,
                         .interpolation = *interpolation->choice == "none"
                             ? OscillatorWavetableInterpolation::Nearest
                             : OscillatorWavetableInterpolation::Linear,

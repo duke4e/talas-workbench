@@ -9,6 +9,7 @@
 #include <cmath>
 #include <cstddef>
 #include <cstdlib>
+#include <memory>
 #include <new>
 #include <span>
 #include <stdexcept>
@@ -190,6 +191,24 @@ talas::runtime::PreparedRuntimeGraph compileOscillatorVcaGraph()
 
     auto compiled = talas::runtime::compileProject(document, talas::core::makeBuiltinNodeRegistry(), {4.0, 2});
     require(compiled.ok(), "audio engine fixture should compile");
+    return std::move(*compiled.graph);
+}
+
+talas::runtime::PreparedRuntimeGraph compileWavetableOscillatorGraph()
+{
+    talas::project::ProjectDocument document;
+    document.graph.nodes.push_back(node("out", "talas.audioOutput"));
+    document.graph.nodes.push_back(node("osc", "talas.oscillator", {
+        {"frequency", "1 hz"}, {"amplitude", "1"}, resourceParameter("wavetable", "Tables/Ramp"),
+    }));
+    document.graph.connections.push_back(connection("osc", "audioOut", "out", "audioIn"));
+
+    // A quarter cycle a frame: each frame plays the next entry.
+    talas::runtime::RenderSettings settings{4.0, 4};
+    settings.tableResources = {{"Tables/Ramp", {0.0, 0.25, 0.5, 0.75}}};
+    auto compiled = talas::runtime::compileProject(
+        document, talas::core::makeBuiltinNodeRegistry(), std::move(settings));
+    require(compiled.ok(), "wavetable Oscillator engine fixture should compile");
     return std::move(*compiled.graph);
 }
 
@@ -467,6 +486,41 @@ void testAudioEngineRendersStereoGraphWithoutAllocations()
     requireNear(left[1], 1.0F, 1.0e-6F, "stereo left frame 1");
     requireNear(right[0], 0.0F, 1.0e-6F, "stereo right frame 0");
     requireNear(right[1], 0.5F, 1.0e-6F, "stereo right frame 1");
+}
+
+// ProjectRuntimeBridge, and so an exported plugin, frees the compiled graph
+// once its engine is staged. An Oscillator's kernel read its wavetable from
+// the graph, so it played whatever reused that memory: in the vocoder demo
+// one such sample overflowed the vocoder and silenced it.
+void testAudioEngineKeepsItsOscillatorWavetable()
+{
+    auto graph = std::make_unique<talas::runtime::PreparedRuntimeGraph>(
+        compileWavetableOscillatorGraph());
+    talas::runtime::RealtimeAudioEngine engine(*graph);
+    require(engine.ready(), std::string(engine.error()));
+    engine.setPlaying(true);
+    const auto requireTable = [&](const std::string& when) {
+        std::array<float, 4> left{};
+        std::array<float, 4> right{};
+        std::array<float*, 2> channels{left.data(), right.data()};
+        std::size_t allocations = 0;
+        require(renderAndCount(engine, channels.data(), channels.size(), left.size(), allocations),
+            "the wavetable Oscillator should render " + when);
+        require(allocations == 0, "the wavetable Oscillator should not allocate " + when);
+        for (std::size_t frame = 0; frame < left.size(); ++frame)
+        {
+            requireNear(left[frame], 0.25F * static_cast<float>(frame), 1.0e-6F,
+                "the wavetable Oscillator should play its own table " + when + ", frame "
+                    + std::to_string(frame));
+        }
+    };
+    requireTable("while its graph lives");
+    // What memory reused after the graph leaves there; the graph is not const.
+    for (auto& table : const_cast<talas::runtime::RenderSettings&>(graph->renderSettings()).tableResources)
+        std::ranges::fill(table.samples, 1.0e6);
+    requireTable("once its graph's table changes");
+    graph.reset();
+    requireTable("once its graph is gone");
 }
 
 void testAudioEngineRendersBoundedDiskRecorderPreviewAndResetWithoutAllocations()
@@ -963,6 +1017,7 @@ int main()
 {
     testAudioEngineRendersMonoToStereoWithoutAllocations();
     testAudioEngineRendersStereoGraphWithoutAllocations();
+    testAudioEngineKeepsItsOscillatorWavetable();
     testAudioEngineRendersBoundedDiskRecorderPreviewAndResetWithoutAllocations();
     testAudioEngineRendersRepeatedMaximumDiskRecorderCallbacksWithoutAllocations();
     testAudioEngineStopsAndRejectsOversizedBlocksWithoutAdvancingState();

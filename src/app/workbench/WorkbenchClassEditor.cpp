@@ -757,7 +757,10 @@ private:
         if (definition == nullptr || row < 0 || row >= static_cast<int>(definition->exposedParameters.size()))
             return;
         if (selected)
-            graphics.fillAll(workbenchTheme.selectedRow);
+        {
+            graphics.setColour(workbenchTheme.selectedRow);
+            graphics.fillRoundedRectangle(juce::Rectangle<float>{2.0F, 1.0F, static_cast<float>(width) - 4.0F, static_cast<float>(height) - 2.0F}, 5.0F);
+        }
         graphics.setColour(textColour);
         graphics.setFont(WorkbenchType::body());
         graphics.drawText(juce::String{definition->exposedParameters[static_cast<std::size_t>(row)].displayName}, 6, 0,

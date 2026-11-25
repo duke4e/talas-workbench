@@ -68,10 +68,14 @@ void SoundEditorTabs::paint(juce::Graphics& graphics)
         const auto bounds = tabBounds(index);
         if (bounds.getX() >= getWidth())
             break;
-        graphics.setColour(tab.front ? panelColour.brighter(0.12F) : panelColour.withAlpha(0.94F));
-        graphics.fillRoundedRectangle(bounds.toFloat(), 4.0F);
-        graphics.setColour(tab.front ? workbenchTheme.focus : panelBorderColour);
-        graphics.drawRoundedRectangle(bounds.toFloat().reduced(0.5F), 4.0F, 1.0F);
+        WorkbenchStyle::paintTile(graphics, bounds.toFloat(), 5.0F,
+            tab.front ? workbenchTheme.surfaceRaised.brighter(0.1F) : panelColour.withAlpha(0.94F), tab.front);
+        if (tab.front)
+        {
+            // The front tab outlined in the signature gradient.
+            graphics.setGradientFill(WorkbenchStyle::accentGradient(bounds.toFloat()));
+            graphics.drawRoundedRectangle(bounds.toFloat().reduced(0.75F), 5.0F, 1.5F);
+        }
         graphics.setColour(tab.front ? textColour : secondaryTextColour);
         graphics.setFont(tab.front ? WorkbenchType::microStrong() : WorkbenchType::micro());
         graphics.drawFittedText(tab.title, bounds.withTrimmedLeft(8).withTrimmedRight(closeBoxSize + 8),

@@ -1591,12 +1591,8 @@ public:
 
     void paint(juce::Graphics& graphics) override
     {
-        graphics.fillAll(panelColour);
-        graphics.setColour(panelBorderColour);
-        graphics.drawRect(getLocalBounds(), 1);
-        graphics.setColour(textColour);
-        graphics.setFont(WorkbenchType::panelTitle());
-        graphics.drawText("Inspector", getLocalBounds().reduced(14).removeFromTop(24), juce::Justification::centredLeft);
+        WorkbenchStyle::paintPanel(graphics, getLocalBounds().toFloat(), WorkbenchStyle::panelRadius());
+        WorkbenchStyle::paintPanelTitle(graphics, getLocalBounds().reduced(14).removeFromTop(24), "Inspector");
     }
 
     void resized() override

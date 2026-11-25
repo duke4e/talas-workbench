@@ -122,7 +122,10 @@ private:
         const auto& shown = rows_[static_cast<std::size_t>(row)];
         const auto category = shown.definitionId.empty();
         if (selected && !category)
-            graphics.fillAll(workbenchTheme.selectedRow);
+        {
+            graphics.setColour(workbenchTheme.selectedRow);
+            graphics.fillRoundedRectangle(juce::Rectangle<float>{2.0F, 1.0F, static_cast<float>(width) - 4.0F, static_cast<float>(height) - 2.0F}, 5.0F);
+        }
         graphics.setColour(category ? secondaryTextColour : textColour);
         graphics.setFont(category ? WorkbenchType::labelStrong() : WorkbenchType::body());
         graphics.drawText(juceString(shown.name), category ? 6 : 20, 0, width - 26, height, juce::Justification::centredLeft);

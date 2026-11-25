@@ -88,7 +88,10 @@ private:
         if (row < 0 || row >= static_cast<int>(entries_.size()))
             return;
         if (selected)
-            graphics.fillAll(workbenchTheme.selectedRow);
+        {
+            graphics.setColour(workbenchTheme.selectedRow);
+            graphics.fillRoundedRectangle(juce::Rectangle<float>{2.0F, 1.0F, static_cast<float>(width) - 4.0F, static_cast<float>(height) - 2.0F}, 5.0F);
+        }
         const auto& entry = entries_[static_cast<std::size_t>(row)];
         graphics.setColour(secondaryTextColour);
         graphics.setFont(WorkbenchType::micro());

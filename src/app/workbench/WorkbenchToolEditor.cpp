@@ -112,7 +112,10 @@ public:
         if (row < 0 || row >= getNumRows())
             return;
         if (isSelected)
-            graphics.fillAll(workbenchTheme.selectedRow);
+        {
+            graphics.setColour(workbenchTheme.selectedRow);
+            graphics.fillRoundedRectangle(juce::Rectangle<float>{2.0F, 1.0F, static_cast<float>(width) - 4.0F, static_cast<float>(height) - 2.0F}, 5.0F);
+        }
         graphics.setColour(textColour);
         graphics.setFont(WorkbenchType::body());
         graphics.drawText(juceString(names[static_cast<std::size_t>(row)]), 6, 0, width - 12, height,

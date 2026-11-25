@@ -202,9 +202,7 @@ public:
 
     void paint(juce::Graphics& graphics) override
     {
-        graphics.fillAll(panelColour);
-        graphics.setColour(panelBorderColour);
-        graphics.drawRect(getLocalBounds(), 1);
+        WorkbenchStyle::paintPanel(graphics, getLocalBounds().toFloat(), WorkbenchStyle::panelRadius());
     }
 
     void resized() override

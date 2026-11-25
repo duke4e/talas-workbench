@@ -76,7 +76,10 @@ private:
             if (item == nullptr)
                 return;
             if (selected)
-                graphics.fillAll(workbenchTheme.selectedRow);
+            {
+                graphics.setColour(workbenchTheme.selectedRow);
+                graphics.fillRoundedRectangle(juce::Rectangle<float>{2.0F, 1.0F, static_cast<float>(width) - 4.0F, static_cast<float>(height) - 2.0F}, 5.0F);
+            }
             auto bounds = juce::Rectangle<int>{0, 0, width, height}
                 .reduced(7, 3);
             auto state = bounds.removeFromRight(76);
@@ -188,7 +191,10 @@ private:
             if (item == nullptr)
                 return;
             if (selected)
-                graphics.fillAll(workbenchTheme.selectedRow);
+            {
+                graphics.setColour(workbenchTheme.selectedRow);
+                graphics.fillRoundedRectangle(juce::Rectangle<float>{2.0F, 1.0F, static_cast<float>(width) - 4.0F, static_cast<float>(height) - 2.0F}, 5.0F);
+            }
             auto bounds = juce::Rectangle<int>{0, 0, width, height}
                 .reduced(7, 3);
             auto lock = bounds.removeFromRight(58);
@@ -2623,6 +2629,48 @@ private:
             mouseUp(up);
         }
 
+        // A glass tile coloured by what the cell launches (a Sound violet, a
+        // snapshot aqua, a Score region pink, a stop or mute red), lit while
+        // active or queued; its name and state written out, never colour alone.
+        void paintButton(juce::Graphics& graphics, bool highlighted, bool down) override
+        {
+            const auto& summary = action_.targetSummary;
+            const auto kind = summary.starts_with("Sound") ? workbenchTheme.accentStart
+                : summary.starts_with("Snapshot")         ? workbenchTheme.accentEnd
+                : summary.starts_with("Score")            ? workbenchTheme.event
+                                                          : workbenchTheme.error;
+            const auto lit = getToggleState();
+            const auto alpha = isEnabled() ? 1.0F : 0.55F;
+            const auto bounds = getLocalBounds().toFloat().reduced(1.5F);
+            auto base = workbenchTheme.controlTile.interpolatedWith(kind, lit ? 0.42F : 0.12F);
+            if (down)
+                base = base.darker(0.2F);
+            else if (highlighted)
+                base = base.brighter(0.15F);
+            if (lit && !WorkbenchStyle::enhancedContrast())
+            {
+                graphics.setColour(kind.withAlpha(0.3F));
+                graphics.fillRoundedRectangle(bounds.expanded(1.0F), 7.0F);
+            }
+            WorkbenchStyle::paintTile(graphics, bounds, 6.0F, base.withMultipliedAlpha(alpha));
+            graphics.setColour(kind.withMultipliedAlpha(alpha));
+            graphics.fillRoundedRectangle(bounds.withWidth(3.0F).reduced(0.0F, 5.0F), 1.5F);
+            auto text = bounds.reduced(10.0F, 6.0F).toNearestInt();
+            graphics.setColour(workbenchTheme.primaryText.withMultipliedAlpha(alpha));
+            graphics.setFont(WorkbenchType::labelStrong());
+            graphics.drawFittedText(juceString(action_.displayName), text.removeFromTop(text.getHeight() / 2),
+                juce::Justification::centredLeft, 1);
+            graphics.setColour((lit ? workbenchTheme.primaryText : workbenchTheme.secondaryText).withMultipliedAlpha(alpha));
+            graphics.setFont(WorkbenchType::micro());
+            graphics.drawFittedText(juceString(talas::app::liveGridCellStateLabel(action_.state)), text,
+                juce::Justification::centredLeft, 1);
+            if (hasKeyboardFocus(true))
+            {
+                graphics.setColour(workbenchTheme.focus);
+                graphics.drawRoundedRectangle(bounds, 6.0F, WorkbenchType::focusOutlinePixels());
+            }
+        }
+
       private:
         void refreshPresentation()
         {
@@ -3301,9 +3349,7 @@ public:
 
     void paint(juce::Graphics& graphics) override
     {
-        graphics.fillAll(panelColour);
-        graphics.setColour(panelBorderColour);
-        graphics.drawRect(getLocalBounds(), 1);
+        WorkbenchStyle::paintPanel(graphics, getLocalBounds().toFloat(), WorkbenchStyle::panelRadius());
     }
 
     void resized() override

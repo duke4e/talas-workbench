@@ -207,7 +207,9 @@ int main()
             std::chrono::duration_cast<std::chrono::nanoseconds>(
                 finished - started).count()));
     }
-    require(image.getPixelAt(0, 0).getARGB() != 0U,
+    // The canvas is a rounded card whose corners stay clear for the
+    // Workbench's backdrop, so the fresh frame is probed inside it.
+    require(image.getPixelAt(720, 450).getARGB() != 0U,
         "large fixture did not paint a fresh frame");
     require(canvas->structuralGraphRebuildCountForSmoke()
                 == structuralBefore

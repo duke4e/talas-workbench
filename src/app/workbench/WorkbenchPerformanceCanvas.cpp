@@ -122,6 +122,57 @@ juce::Colour controlAccent(
         : workbenchTheme.control;
 }
 
+// A control or meter tile: raised glass, a gradient cap in its kind's
+// colour, and the focus outline with a soft glow when selected.
+void paintPerformanceTile(juce::Graphics& graphics, juce::Rectangle<float> bounds, juce::Colour accent, bool selected)
+{
+    const auto radius = 7.0F;
+    WorkbenchStyle::paintTile(graphics, bounds, radius, workbenchTheme.controlTile.interpolatedWith(accent, 0.05F));
+    {
+        juce::Graphics::ScopedSaveState clipped(graphics);
+        juce::Path shape;
+        shape.addRoundedRectangle(bounds, radius);
+        graphics.reduceClipRegion(shape);
+        graphics.setGradientFill(juce::ColourGradient{accent.withAlpha(0.16F), bounds.getX(), bounds.getY(),
+            accent.withAlpha(0.0F), bounds.getX(), bounds.getY() + 36.0F, false});
+        graphics.fillRect(bounds.withHeight(36.0F));
+        graphics.setGradientFill(juce::ColourGradient{accent.brighter(0.2F), bounds.getX(), bounds.getY(),
+            accent.withRotatedHue(0.06F), bounds.getRight(), bounds.getY(), false});
+        graphics.fillRect(bounds.withHeight(3.0F));
+    }
+    if (selected)
+    {
+        if (!WorkbenchStyle::enhancedContrast())
+        {
+            graphics.setColour(workbenchTheme.focus.withAlpha(0.25F));
+            graphics.drawRoundedRectangle(bounds.reduced(1.0F), radius, 5.0F);
+        }
+        graphics.setColour(workbenchTheme.focus);
+        graphics.drawRoundedRectangle(bounds.reduced(1.0F), radius, 2.0F);
+    }
+}
+
+// A recessed meter lit from mint through amber to red, with a soft glow.
+void paintLevelMeter(juce::Graphics& graphics, juce::Rectangle<float> meter, float normalized)
+{
+    WorkbenchStyle::paintWell(graphics, meter, 3.0F);
+    const auto lit = meter.reduced(1.5F).withWidth(std::max(0.0F, (meter.getWidth() - 3.0F) * normalized));
+    if (lit.isEmpty())
+        return;
+    juce::ColourGradient gradient{workbenchTheme.audio, meter.getX(), 0.0F, workbenchTheme.error, meter.getRight(),
+        0.0F, false};
+    gradient.addColour(0.72, workbenchTheme.control);
+    if (!WorkbenchStyle::enhancedContrast())
+    {
+        graphics.setGradientFill(gradient);
+        graphics.setOpacity(0.25F);
+        graphics.fillRoundedRectangle(lit.expanded(2.0F), 4.0F);
+        graphics.setOpacity(1.0F);
+    }
+    graphics.setGradientFill(gradient);
+    graphics.fillRoundedRectangle(lit, 2.0F);
+}
+
 class PerformanceCanvasImpl;
 
 class PerformanceViewport final : public juce::Viewport
@@ -281,16 +332,7 @@ public:
             return workbenchScaledUiPixels(pixels);
         };
         auto bounds = getLocalBounds().toFloat();
-        graphics.setColour(workbenchTheme.controlTile);
-        graphics.fillRoundedRectangle(bounds, 6.0F);
-        graphics.setColour(
-            selected_ ? workbenchTheme.focus : panelBorderColour);
-        graphics.drawRoundedRectangle(
-            bounds.reduced(selected_ ? 1.0F : 0.5F),
-            6.0F,
-            selected_ ? 2.0F : 1.0F);
-        graphics.setColour(workbenchTheme.output);
-        graphics.fillRect(bounds.removeFromTop(4.0F));
+        paintPerformanceTile(graphics, bounds, workbenchTheme.output, selected_);
         const auto index = meter_.outputChannel == 0
             ? std::numeric_limits<std::size_t>::max()
             : static_cast<std::size_t>(meter_.outputChannel - 1);
@@ -310,14 +352,7 @@ public:
             juce::Justification::centredLeft);
         auto meter = body.reduced(
             0, scaled(compact_ ? 12 : 20));
-        graphics.setColour(workbenchTheme.widgetHighlight);
-        graphics.fillRoundedRectangle(meter.toFloat(), 3.0F);
-        graphics.setColour(workbenchTheme.output);
-        graphics.fillRoundedRectangle(
-            meter.withWidth(juce::roundToInt(
-                static_cast<float>(meter.getWidth()) * normalized))
-                .toFloat(),
-            3.0F);
+        paintLevelMeter(graphics, meter.toFloat(), normalized);
         graphics.setColour(workbenchTheme.secondaryText);
         graphics.setFont(WorkbenchType::data());
         const auto text = peak < 0.0F
@@ -475,24 +510,10 @@ public:
 
     void paint(juce::Graphics& graphics) override
     {
-        graphics.fillAll(workbenchTheme.canvas);
-        auto bounds = getLocalBounds();
-        graphics.setColour(workbenchTheme.surface);
-        graphics.fillRect(bounds.removeFromTop(toolbarHeight));
-        graphics.setColour(panelBorderColour);
-        graphics.drawHorizontalLine(
-            toolbarHeight - 1,
-            0.0F,
-            static_cast<float>(getWidth()));
-        graphics.setColour(workbenchTheme.primaryText);
-        graphics.setFont(WorkbenchType::panelTitle());
-        graphics.drawText(
-            "Performance",
-            14,
-            0,
-            120,
-            toolbarHeight,
-            juce::Justification::centredLeft);
+        WorkbenchStyle::paintPanel(graphics, getLocalBounds().toFloat(), WorkbenchStyle::panelRadius());
+        graphics.setColour(juce::Colours::white.withAlpha(0.06F));
+        graphics.fillRect(juce::Rectangle<int>{1, toolbarHeight - 1, std::max(0, getWidth() - 2), 1});
+        WorkbenchStyle::paintPanelTitle(graphics, {14, 0, 120, toolbarHeight}, "Performance");
         graphics.setColour(workbenchTheme.secondaryText);
         graphics.setFont(WorkbenchType::label());
         graphics.drawText(
@@ -1383,15 +1404,7 @@ void PerformanceControlItem::paint(juce::Graphics& graphics)
         return workbenchScaledUiPixels(pixels);
     };
     auto bounds = getLocalBounds().toFloat();
-    graphics.setColour(workbenchTheme.controlTile);
-    graphics.fillRoundedRectangle(bounds, 6.0F);
-    graphics.setColour(selected_ ? workbenchTheme.focus : panelBorderColour);
-    graphics.drawRoundedRectangle(
-        bounds.reduced(selected_ ? 1.0F : 0.5F),
-        6.0F,
-        selected_ ? 2.0F : 1.0F);
-    graphics.setColour(controlAccent(model_.kind));
-    graphics.fillRect(bounds.removeFromTop(4.0F));
+    paintPerformanceTile(graphics, bounds, controlAccent(model_.kind), selected_);
 
     auto body = getLocalBounds().reduced(scaled(10))
                     .withTrimmedTop(scaled(6));

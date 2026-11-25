@@ -38,7 +38,7 @@ public:
             panelColour);
         list_.setColour(
             juce::ListBox::outlineColourId,
-            panelBorderColour);
+            juce::Colours::transparentBlack);
         describeControl(
             list_,
             "Compile and runtime diagnostics",
@@ -172,9 +172,7 @@ public:
 
     void paint(juce::Graphics& graphics) override
     {
-        graphics.fillAll(panelColour);
-        graphics.setColour(panelBorderColour);
-        graphics.drawRect(getLocalBounds(), 1);
+        WorkbenchStyle::paintPanel(graphics, getLocalBounds().toFloat(), WorkbenchStyle::panelRadius());
     }
 
     void resized() override
@@ -225,21 +223,29 @@ private:
         if (selected)
         {
             graphics.setColour(workbenchTheme.selectedRow);
-            graphics.fillRect(0, 0, width, height);
+            graphics.fillRoundedRectangle(juce::Rectangle<float>{2.0F, 1.0F, static_cast<float>(width) - 4.0F,
+                                              static_cast<float>(height) - 2.0F},
+                5.0F);
         }
         auto bounds = juce::Rectangle<int>{0, 0, width, height}
                           .reduced(8, 3);
-        const auto severityBounds = bounds.removeFromLeft(42);
-        graphics.setColour(
-            diagnostic->severity
-                    == WorkbenchStatusDiagnosticSeverity::Error
-                ? errorColour
-                : secondaryTextColour);
+        const auto severityBounds = bounds.removeFromLeft(50);
+        // The severity as a tinted pill, its word always written.
+        const auto severityColour = diagnostic->severity == WorkbenchStatusDiagnosticSeverity::Error ? errorColour
+            : diagnostic->severity == WorkbenchStatusDiagnosticSeverity::Warning                    ? workbenchTheme.warning
+                                                                                                    : dataColour;
+        const auto pill = severityBounds.withSizeKeepingCentre(severityBounds.getWidth() - 8, 16).toFloat()
+                              .withX(static_cast<float>(severityBounds.getX()));
+        graphics.setColour(severityColour.withAlpha(0.16F));
+        graphics.fillRoundedRectangle(pill, 8.0F);
+        graphics.setColour(severityColour.withAlpha(0.45F));
+        graphics.drawRoundedRectangle(pill.reduced(0.5F), 8.0F, 1.0F);
+        graphics.setColour(severityColour);
         graphics.setFont(WorkbenchType::microStrong());
         graphics.drawText(
             severityText(diagnostic->severity),
-            severityBounds,
-            juce::Justification::centredLeft);
+            pill.toNearestInt(),
+            juce::Justification::centred);
         graphics.setColour(textColour);
         graphics.setFont(WorkbenchType::labelStrong());
         graphics.drawText(

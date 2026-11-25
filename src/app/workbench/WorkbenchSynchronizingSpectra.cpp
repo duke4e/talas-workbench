@@ -71,7 +71,7 @@ using talas::app::SpectrumMarker;
     case talas::app::SpectrumMarkerColour::Green:
         return juce::Colours::limegreen;
     case talas::app::SpectrumMarkerColour::Blue:
-        return juce::Colour{0xff4f8cff};
+        return workbenchTheme.output;
     }
     return juce::Colours::red;
 }

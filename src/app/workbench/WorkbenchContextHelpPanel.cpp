@@ -166,12 +166,15 @@ public:
 
     void paint(juce::Graphics& graphics) override
     {
-        graphics.fillAll(panelColour);
+        const auto radius = WorkbenchStyle::panelRadius();
+        WorkbenchStyle::paintPanel(graphics, getLocalBounds().toFloat(), radius);
+        // The surface state's colour as a bar down the left edge.
         graphics.setColour(stateColour(content_.surfaceState));
-        graphics.fillRect(getLocalBounds().removeFromLeft(
-            workbenchScaledUiPixels(4)));
-        graphics.setColour(panelBorderColour);
-        graphics.drawRect(getLocalBounds(), 1);
+        graphics.fillRoundedRectangle(getLocalBounds().toFloat()
+                                          .removeFromLeft(static_cast<float>(workbenchScaledUiPixels(4)))
+                                          .reduced(0.0F, radius * 0.6F)
+                                          .translated(2.0F, 0.0F),
+            2.0F);
     }
 
     void resized() override

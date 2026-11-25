@@ -959,16 +959,8 @@ class SoundDefinitionsPanelImpl final : public SoundDefinitionsPanel,
 
     void paint(juce::Graphics& graphics) override
     {
-        graphics.fillAll(panelColour);
-        graphics.setColour(panelBorderColour);
-        graphics.drawRect(getLocalBounds(), 1);
-        graphics.setColour(textColour);
-        graphics.setFont(
-            WorkbenchType::panelTitle());
-        graphics.drawText(
-            "Sound Library",
-            getLocalBounds().reduced(10).removeFromTop(20),
-            juce::Justification::centredLeft);
+        WorkbenchStyle::paintPanel(graphics, getLocalBounds().toFloat(), WorkbenchStyle::panelRadius());
+        WorkbenchStyle::paintPanelTitle(graphics, getLocalBounds().reduced(10).removeFromTop(20), "Sound Library");
     }
 
     void resized() override
@@ -1130,7 +1122,7 @@ class SoundDefinitionsPanelImpl final : public SoundDefinitionsPanel,
         if (selected)
         {
             graphics.setColour(workbenchTheme.selectedRow);
-            graphics.fillRect(0, 0, width, height);
+            graphics.fillRoundedRectangle(juce::Rectangle<float>{2.0F, 1.0F, static_cast<float>(width) - 4.0F, static_cast<float>(height) - 2.0F}, 5.0F);
         }
         const auto& entry = visibleEntries_[static_cast<std::size_t>(row)];
         graphics.setColour(textColour);

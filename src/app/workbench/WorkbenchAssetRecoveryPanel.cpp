@@ -325,9 +325,7 @@ public:
 
     void paint(juce::Graphics& graphics) override
     {
-        graphics.fillAll(panelColour);
-        graphics.setColour(panelBorderColour);
-        graphics.drawRect(getLocalBounds(), 1);
+        WorkbenchStyle::paintPanel(graphics, getLocalBounds().toFloat(), WorkbenchStyle::panelRadius());
     }
 
     void resized() override
@@ -443,7 +441,7 @@ private:
         if (selected)
         {
             graphics.setColour(workbenchTheme.selectedRow);
-            graphics.fillRect(0, 0, width, height);
+            graphics.fillRoundedRectangle(juce::Rectangle<float>{2.0F, 1.0F, static_cast<float>(width) - 4.0F, static_cast<float>(height) - 2.0F}, 5.0F);
         }
         auto bounds = juce::Rectangle<int>{0, 0, width, height}
                           .reduced(8, 3);

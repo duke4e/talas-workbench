@@ -1451,10 +1451,12 @@ public:
             return juce::Rectangle<int>{rect.left, rect.top, rect.width, rect.height}.translated(
                 (getWidth() - shown->surface.width) / 2, 0);
         };
-        graphics.setColour(juce::Colours::grey.withAlpha(0.7F));
-        graphics.fillRect(box(shown->surface));
-        graphics.setColour(juce::Colour{0xff4f8cff}.withAlpha(0.8F));
-        graphics.fillRect(box(shown->view));
+        // The surface as a faint glass card, the part in view lit with the
+        // signature gradient.
+        graphics.setColour(juce::Colours::white.withAlpha(0.14F));
+        graphics.fillRoundedRectangle(box(shown->surface).toFloat(), 2.0F);
+        graphics.setGradientFill(WorkbenchStyle::accentGradient(box(shown->view).toFloat(), 0.85F));
+        graphics.fillRoundedRectangle(box(shown->view).toFloat(), 2.0F);
     }
 
     void mouseDown(const juce::MouseEvent&) override { beginDrag(); }
@@ -2736,12 +2738,8 @@ public:
 
     void paint(juce::Graphics& graphics) override
     {
-        graphics.fillAll(panelColour);
-        graphics.setColour(panelBorderColour);
-        graphics.drawRect(getLocalBounds(), 1);
-        graphics.setColour(textColour);
-        graphics.setFont(WorkbenchType::panelTitle());
-        graphics.drawText("Event Values", getLocalBounds().reduced(14).removeFromTop(24), juce::Justification::centredLeft);
+        WorkbenchStyle::paintPanel(graphics, getLocalBounds().toFloat(), WorkbenchStyle::panelRadius());
+        WorkbenchStyle::paintPanelTitle(graphics, getLocalBounds().reduced(14).removeFromTop(24), "Event Values");
     }
 
     void resized() override

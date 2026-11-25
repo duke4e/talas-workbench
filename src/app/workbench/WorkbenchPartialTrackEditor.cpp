@@ -243,12 +243,11 @@ class PartialTrackEditorPanelImpl final
 
         void paint(juce::Graphics& graphics) override
         {
-            graphics.fillAll(backgroundColour);
+            WorkbenchStyle::paintWell(graphics, getLocalBounds().toFloat(), 6.0F);
             graphics.setColour(panelBorderColour);
-            graphics.drawRect(
-                getLocalBounds(),
-                static_cast<int>(std::ceil(
-                    WorkbenchType::focusOutlinePixels())));
+            graphics.drawRoundedRectangle(
+                getLocalBounds().toFloat().reduced(0.5F), 6.0F,
+                std::ceil(WorkbenchType::focusOutlinePixels()) * 0.5F);
             const auto plot = owner_.plotBounds();
             if (owner_.projection_.state
                 != talas::app::PartialTrackEditorState::Ready)
@@ -1285,6 +1284,11 @@ public:
             && renderAudio_.isEnabled() == audioDerivativeEnabled
             && renderPartial_.isEnabled() == partialDerivativeEnabled
             && !cancelOperation_.isEnabled();
+    }
+
+    void paint(juce::Graphics& graphics) override
+    {
+        WorkbenchStyle::paintPanel(graphics, getLocalBounds().toFloat(), WorkbenchStyle::panelRadius());
     }
 
     void resized() override

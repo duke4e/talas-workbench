@@ -187,10 +187,17 @@ void drawSemanticPath(
     const juce::Path& path,
     juce::Point<float> start,
     juce::Point<float> end,
-    const talas::app::DescriptorWirePresentation& presentation)
+    const talas::app::DescriptorWirePresentation& presentation,
+    bool glow = true)
 {
     const auto colour = colourForWireRole(presentation.colour)
                             .withAlpha(presentation.opacity);
+    // A soft glow under the line; large views skip it to keep painting fast.
+    if (glow && !WorkbenchStyle::enhancedContrast())
+    {
+        graphics.setColour(colour.withMultipliedAlpha(0.13F));
+        graphics.strokePath(path, juce::PathStrokeType{presentation.width + 6.0F});
+    }
     if (presentation.outlineWidth > 0.0F)
     {
         graphics.setColour(selectionColour.withAlpha(presentation.opacity));
@@ -731,7 +738,8 @@ public:
         , onViewChange_(std::move(onViewChange))
         , onKeyboardCommand_(std::move(onKeyboardCommand))
     {
-        setOpaque(true);
+        // A rounded card over the Workbench's backdrop, its corners clear.
+        setOpaque(false);
         setFocusContainerType(
             juce::Component::FocusContainerType::focusContainer);
         setWantsKeyboardFocus(true);
@@ -1340,9 +1348,20 @@ public:
 
     void paint(juce::Graphics& graphics) override
     {
-        graphics.fillAll(backgroundColour);
-        drawGrid(graphics);
         refreshViewportSelection(graphics.getClipBounds());
+        // Gradients, shadows and glows are for views of a readable size; a
+        // crowded view paints plainly so panning stays fast.
+        decorated_ = visibleLayoutIndices_.size() <= 24 && visibleConnectionIndices_.size() <= 40;
+        const auto card = getLocalBounds().toFloat();
+        const auto radius = WorkbenchStyle::panelRadius();
+        // A deep well, lit a little from above.
+        if (decorated_)
+            graphics.setGradientFill(juce::ColourGradient{workbenchTheme.well.interpolatedWith(workbenchTheme.surface, 0.6F),
+                0.0F, card.getY(), workbenchTheme.well, 0.0F, card.getBottom(), false});
+        else
+            graphics.setColour(workbenchTheme.well.interpolatedWith(workbenchTheme.surface, 0.25F));
+        graphics.fillRoundedRectangle(card, radius);
+        drawGrid(graphics);
         {
             juce::Graphics::ScopedSaveState saveState(graphics);
             graphics.addTransform(viewTransform());
@@ -1373,6 +1392,8 @@ public:
         }
         drawViewStatus(graphics);
         drawContextBadge(graphics);
+        graphics.setColour(WorkbenchStyle::enhancedContrast() ? panelBorderColour : workbenchTheme.glassEdge);
+        graphics.drawRoundedRectangle(card.reduced(0.5F), radius, WorkbenchStyle::enhancedContrast() ? 1.5F : 1.0F);
     }
 
     void resized() override
@@ -3895,28 +3916,47 @@ private:
         });
     }
 
+    // Faint grid lines, with a brighter dot where every fourth meets.
     void drawGrid(juce::Graphics& graphics) const
     {
-        graphics.setColour(workbenchTheme.graphGrid);
         const auto spacing = 32.0F * viewScale_;
         if (spacing < 6.0F)
             return;
-        auto firstX = std::fmod(viewOffset_.x, spacing);
-        auto firstY = std::fmod(viewOffset_.y, spacing);
-        if (firstX < 0.0F)
-            firstX += spacing;
-        if (firstY < 0.0F)
-            firstY += spacing;
-        for (auto x = firstX; x < static_cast<float>(getWidth()); x += spacing)
-            graphics.drawVerticalLine(
-                static_cast<int>(std::round(x)),
-                0.0F,
-                static_cast<float>(getHeight()));
-        for (auto y = firstY; y < static_cast<float>(getHeight()); y += spacing)
-            graphics.drawHorizontalLine(
-                static_cast<int>(std::round(y)),
-                0.0F,
-                static_cast<float>(getWidth()));
+        const auto first = [](float offset, float pitch) {
+            return static_cast<long>(std::floor(-offset / pitch)) + 1;
+        };
+        const auto width = static_cast<float>(getWidth());
+        const auto height = static_cast<float>(getHeight());
+        graphics.setColour(workbenchTheme.graphGrid.withAlpha(0.55F));
+        for (auto column = first(viewOffset_.x, spacing);; ++column)
+        {
+            const auto x = viewOffset_.x + static_cast<float>(column) * spacing;
+            if (x > width)
+                break;
+            graphics.drawVerticalLine(juce::roundToInt(x), 0.0F, height);
+        }
+        for (auto row = first(viewOffset_.y, spacing);; ++row)
+        {
+            const auto y = viewOffset_.y + static_cast<float>(row) * spacing;
+            if (y > height)
+                break;
+            graphics.drawHorizontalLine(juce::roundToInt(y), 0.0F, width);
+        }
+        const auto major = spacing * 4.0F;
+        graphics.setColour(workbenchTheme.graphGrid.brighter(1.2F));
+        for (auto row = first(viewOffset_.y, major);; ++row)
+        {
+            const auto y = juce::roundToInt(viewOffset_.y + static_cast<float>(row) * major);
+            if (static_cast<float>(y) > height)
+                break;
+            for (auto column = first(viewOffset_.x, major);; ++column)
+            {
+                const auto x = juce::roundToInt(viewOffset_.x + static_cast<float>(column) * major);
+                if (static_cast<float>(x) > width)
+                    break;
+                graphics.fillRect(x - 1, y - 1, 3, 3);
+            }
+        }
     }
 
     void drawViewStatus(juce::Graphics& graphics) const
@@ -3934,10 +3974,8 @@ private:
             .removeFromBottom(24)
             .removeFromRight(284)
             .reduced(8, 3);
-        graphics.setColour(panelColour.withAlpha(0.94F));
-        graphics.fillRoundedRectangle(bounds.toFloat(), 4.0F);
-        graphics.setColour(panelBorderColour);
-        graphics.drawRoundedRectangle(bounds.toFloat(), 4.0F, 1.0F);
+        WorkbenchStyle::paintTile(graphics, bounds.toFloat(), bounds.toFloat().getHeight() * 0.5F,
+            workbenchTheme.surfaceRaised.withAlpha(0.94F));
         graphics.setColour(secondaryTextColour);
         graphics.setFont(WorkbenchType::micro());
         graphics.drawText(
@@ -3957,11 +3995,13 @@ private:
             .removeFromTop(32)
             .removeFromLeft(std::min(getWidth(), badgeWidth))
             .reduced(8, 5);
-        graphics.setColour(panelColour.withAlpha(0.96F));
-        graphics.fillRoundedRectangle(bounds.toFloat(), 4.0F);
-        graphics.setColour(
-            activeContext_ ? workbenchTheme.focus : panelBorderColour);
-        graphics.drawRoundedRectangle(bounds.toFloat(), 4.0F, 1.0F);
+        WorkbenchStyle::paintTile(graphics, bounds.toFloat(), bounds.toFloat().getHeight() * 0.5F,
+            workbenchTheme.surfaceRaised.withAlpha(0.96F));
+        if (activeContext_)
+        {
+            graphics.setGradientFill(WorkbenchStyle::accentGradient(bounds.toFloat()));
+            graphics.drawRoundedRectangle(bounds.toFloat().reduced(0.5F), bounds.toFloat().getHeight() * 0.5F, 1.5F);
+        }
         graphics.setColour(
             activeContext_ ? textColour : secondaryTextColour);
         graphics.setFont(WorkbenchType::microStrong());
@@ -4055,7 +4095,7 @@ private:
                     auto shifted = path;
                     shifted.applyTransform(juce::AffineTransform::translation(0.0F, offset));
                     drawSemanticPath(graphics, shifted, connection.start.translated(0.0F, offset),
-                        connection.end.translated(0.0F, offset), presentation);
+                        connection.end.translated(0.0F, offset), presentation, decorated_);
                 }
             }
             else
@@ -4064,7 +4104,8 @@ private:
                     path,
                     connection.start,
                     connection.end,
-                    presentation);
+                    presentation,
+                    decorated_);
             if (connection.labelled)
                 drawUseCount(graphics, connection, presentation.opacity);
         }
@@ -4079,7 +4120,7 @@ private:
         const auto width = 8.0F + 7.0F * static_cast<float>(text.length());
         const auto box = juce::Rectangle<float>{width, 15.0F}.withCentre(
             connectionPoint(connection, 0.5F));
-        graphics.setColour(juce::Colour{0xff20242a}.withAlpha(opacity));
+        graphics.setColour(workbenchTheme.well.withAlpha(opacity));
         graphics.fillRoundedRectangle(box, 4.0F);
         graphics.setColour(juce::Colours::white.withAlpha(opacity));
         graphics.setFont(WorkbenchType::labelStrong());
@@ -4206,11 +4247,8 @@ private:
         const auto hasDiagnostic = std::ranges::find(
             diagnosticNodeIds_, layout.node.instanceId) != diagnosticNodeIds_.end();
         const auto bounds = layout.bounds;
-        const auto accent = layout.descriptor.outputs.empty()
-            ? controlColour
-            : colourForWireRole(
-                talas::app::descriptorWirePresentation(
-                    layout.descriptor.outputs.front()).colour);
+        // The Sound's category colours its card; its ports keep their kinds'.
+        const auto accent = WorkbenchStyle::categoryColour(layout.descriptor.category);
         const auto preservedUnavailable = layout.preserved.has_value()
             && !layout.preserved->parameterEditingEnabled;
         const auto cardAccent = layout.preserved.has_value()
@@ -4224,7 +4262,29 @@ private:
         const auto shape = classIcon == nullptr ? talas::app::soundIconShape(layout.descriptor)
                                                 : talas::app::soundClassIconShape(talas::app::soundIconShape(layout.descriptor), *classIcon);
         const auto outline = soundIconOutline(bounds.toFloat(), shape);
-        graphics.setColour(panelColour);
+        const auto card = bounds.toFloat();
+        if (decorated_)
+        {
+            graphics.setColour(juce::Colours::black.withAlpha(0.38F));
+            graphics.fillPath(outline, juce::AffineTransform::translation(0.0F, 4.0F));
+        }
+        // One gradient: the header lit with the category's colour, the body
+        // falling to a darker glass.
+        if (decorated_)
+        {
+            juce::ColourGradient body{panelColour.interpolatedWith(cardAccent, 0.24F).brighter(0.06F), card.getX(),
+                card.getY(), panelColour.interpolatedWith(juce::Colours::black, 0.18F), card.getX(), card.getBottom(),
+                false};
+            body.addColour(std::clamp((static_cast<double>(layout.headerHeight) + 6.0)
+                                   / std::max(1.0, static_cast<double>(card.getHeight())),
+                               0.05, 0.95),
+                panelColour.brighter(0.04F));
+            graphics.setGradientFill(body);
+        }
+        else
+        {
+            graphics.setColour(panelColour.interpolatedWith(cardAccent, 0.08F));
+        }
         graphics.fillPath(outline);
         // The Sound whose parameters are open
         // below has its icon patterned gray.
@@ -4232,17 +4292,23 @@ private:
         {
             juce::Graphics::ScopedSaveState clipped(graphics);
             graphics.reduceClipRegion(outline);
-            graphics.setColour(juce::Colours::grey.withAlpha(0.22F));
+            graphics.setColour(juce::Colours::grey.withAlpha(0.17F));
             for (auto x = bounds.getX() - bounds.getHeight(); x < bounds.getRight(); x += 6)
                 graphics.drawLine(static_cast<float>(x), static_cast<float>(bounds.getBottom()),
                     static_cast<float>(x + bounds.getHeight()), static_cast<float>(bounds.getY()), 1.5F);
+        }
+        if ((selected || hasDiagnostic) && decorated_ && !WorkbenchStyle::enhancedContrast())
+        {
+            graphics.setColour((hasDiagnostic ? errorColour : selectionColour).withAlpha(0.22F));
+            graphics.strokePath(outline, juce::PathStrokeType{6.0F});
         }
         graphics.setColour(
             hasDiagnostic
                 ? errorColour
                 : (selected
                        ? selectionColour
-                       : workbenchTheme.interactiveOutline));
+                       : (WorkbenchStyle::enhancedContrast() ? workbenchTheme.interactiveOutline
+                                                             : juce::Colours::white.withAlpha(0.13F))));
         graphics.strokePath(outline, juce::PathStrokeType{hasDiagnostic || selected ? 2.0F : 1.0F});
         if (hasDiagnostic && selected)
         {
@@ -4252,8 +4318,13 @@ private:
         {
             juce::Graphics::ScopedSaveState clipped(graphics);
             graphics.reduceClipRegion(outline);
-            graphics.setColour(cardAccent);
-            graphics.fillRect(bounds.withHeight(shape.pointedTop ? 10 : 4));
+            const auto strip = card.withHeight(shape.pointedTop ? 10.0F : 3.0F);
+            if (decorated_)
+                graphics.setGradientFill(juce::ColourGradient{cardAccent.brighter(0.25F), strip.getX(), strip.getY(),
+                    cardAccent.withRotatedHue(0.06F), strip.getRight(), strip.getY(), false});
+            else
+                graphics.setColour(cardAccent);
+            graphics.fillRect(strip);
         }
         if (layout.hasInputs)
         {
@@ -4349,13 +4420,13 @@ private:
                     layout.descriptor.inputs, index))
             {
                 drawPort(
-                    graphics, *input, {bounds.getX(), y}, false, bounds);
+                    graphics, *input, {bounds.getX(), y}, false, bounds, decorated_);
             }
             if (const auto* output = presentedPortAt(
                     layout.descriptor.outputs, index))
             {
                 drawPort(
-                    graphics, *output, {bounds.getRight(), y}, true, bounds);
+                    graphics, *output, {bounds.getRight(), y}, true, bounds, decorated_);
             }
         }
     }
@@ -4364,11 +4435,23 @@ private:
                          const talas::core::PortDescriptor& port,
                          juce::Point<int> anchor,
                          bool output,
-                         const juce::Rectangle<int>& nodeBounds)
+                         const juce::Rectangle<int>& nodeBounds,
+                         bool ringed)
     {
         const auto presentation =
             talas::app::descriptorPortPresentation(port);
         const auto colour = colourForWireRole(presentation.colour);
+        if (ringed)
+        {
+            // A dark ring parts the port from its card and its line.
+            graphics.setColour(workbenchTheme.well);
+            drawPortShape(
+                graphics,
+                anchor.toFloat(),
+                presentation.shape,
+                11.0F,
+                true);
+        }
         graphics.setColour(colour);
         drawPortShape(
             graphics,
@@ -4489,6 +4572,8 @@ private:
     talas::project::WorkspaceGraphViewMode graphViewMode_ =
         talas::project::WorkspaceGraphViewMode::PortsAndWires;
     talas::app::WorkbenchGraphViewProjection graphViewProjection_{};
+    // Card shadows and wire glows, painted while the view is uncrowded.
+    mutable bool decorated_ = true;
     std::uint64_t structuralGraphRebuildCount_ = 0;
     std::uint64_t accessibilityGraphRebuildCount_ = 0;
 };

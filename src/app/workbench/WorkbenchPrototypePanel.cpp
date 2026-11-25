@@ -229,15 +229,8 @@ public:
 
     void paint(juce::Graphics& graphics) override
     {
-        graphics.fillAll(panelColour);
-        graphics.setColour(panelBorderColour);
-        graphics.drawRect(getLocalBounds(), 1);
-        graphics.setColour(textColour);
-        graphics.setFont(WorkbenchType::panelTitle());
-        graphics.drawText(
-            "Prototypes",
-            getLocalBounds().reduced(14).removeFromTop(24),
-            juce::Justification::centredLeft);
+        WorkbenchStyle::paintPanel(graphics, getLocalBounds().toFloat(), WorkbenchStyle::panelRadius());
+        WorkbenchStyle::paintPanelTitle(graphics, getLocalBounds().reduced(14).removeFromTop(24), "Prototypes");
     }
 
     void resized() override
@@ -323,17 +316,24 @@ private:
             return;
         if (!visible->nodeIndex.has_value())
         {
-            graphics.setColour(backgroundColour.withAlpha(0.32F));
-            graphics.fillRect(0, 0, width, height);
+            graphics.setColour(juce::Colours::white.withAlpha(0.035F));
+            graphics.fillRoundedRectangle(juce::Rectangle<float>{1.0F, 2.0F, static_cast<float>(width) - 2.0F,
+                                              static_cast<float>(height) - 4.0F},
+                4.0F);
+            // The category's colour code, as its Sounds carry it in the
+            // signal flow.
+            graphics.setColour(WorkbenchStyle::categoryColour(visible->category));
+            graphics.fillEllipse(juce::Rectangle<float>{7.0F, 7.0F}.withCentre(
+                {12.0F, static_cast<float>(height) * 0.5F}));
             graphics.setColour(textColour);
             graphics.setFont(WorkbenchType::labelStrong());
             const auto collapsed = collapsedCategories_.contains(
                 visible->category);
             graphics.drawText(
                 juceString(visible->category),
-                8,
+                22,
                 0,
-                width - 50,
+                width - 64,
                 height,
                 juce::Justification::centredLeft);
             graphics.setColour(secondaryTextColour);
@@ -351,8 +351,12 @@ private:
         if (selected)
         {
             graphics.setColour(workbenchTheme.selectedRow);
-            graphics.fillRect(0, 0, width, height);
+            graphics.fillRoundedRectangle(juce::Rectangle<float>{1.0F, 1.0F, static_cast<float>(width) - 2.0F,
+                                              static_cast<float>(height) - 2.0F},
+                4.0F);
         }
+        graphics.setColour(WorkbenchStyle::categoryColour(descriptor.category).withAlpha(selected ? 1.0F : 0.7F));
+        graphics.fillRoundedRectangle(juce::Rectangle<float>{2.0F, 6.0F, 2.5F, static_cast<float>(height) - 12.0F}, 1.2F);
         const auto badgeWidth = juce::jlimit(
             22,
             72,

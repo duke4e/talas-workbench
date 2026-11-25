@@ -164,7 +164,10 @@ private:
             return;
         const auto& entry = rows_[static_cast<std::size_t>(row)];
         if (selected)
-            graphics.fillAll(workbenchTheme.selectedRow);
+        {
+            graphics.setColour(workbenchTheme.selectedRow);
+            graphics.fillRoundedRectangle(juce::Rectangle<float>{2.0F, 1.0F, static_cast<float>(width) - 4.0F, static_cast<float>(height) - 2.0F}, 5.0F);
+        }
         // Open folders underlined, closed ones gray; files by their kind
         //. On the dark theme an open folder's black is
         // the theme's text.

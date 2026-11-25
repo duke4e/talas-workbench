@@ -384,14 +384,26 @@ public:
 
     void paint(juce::Graphics& graphics) override
     {
-        graphics.fillAll(backgroundColour);
         const auto bounds = getLocalBounds().toFloat();
-        graphics.setColour(panelBorderColour);
-        graphics.drawRect(getLocalBounds(), 1);
+        WorkbenchStyle::paintWell(graphics, bounds, 6.0F);
 
         if (state_.projection.activeMapId.has_value())
         {
-            graphics.setColour(workbenchTheme.graphGrid);
+            // The black keys as faint columns behind the octave lines.
+            graphics.setColour(juce::Colours::white.withAlpha(0.022F));
+            for (int note = 0; note < 128; ++note)
+            {
+                const auto pitchClass = note % 12;
+                if (pitchClass != 1 && pitchClass != 3 && pitchClass != 6 && pitchClass != 8 && pitchClass != 10)
+                    continue;
+                const auto left = static_cast<float>(talas::app::sampleMapNoteBoundaryToPixel(
+                    static_cast<double>(note), state_.viewport, {bounds.getWidth(), bounds.getHeight()}));
+                const auto right = static_cast<float>(talas::app::sampleMapNoteBoundaryToPixel(
+                    static_cast<double>(note + 1), state_.viewport, {bounds.getWidth(), bounds.getHeight()}));
+                if (right > left)
+                    graphics.fillRect(juce::Rectangle<float>{left, 1.0F, right - left, bounds.getHeight() - 2.0F});
+            }
+            graphics.setColour(workbenchTheme.graphGrid.brighter(0.3F));
             for (int note = 0; note <= 128; note += 12)
             {
                 const auto x = static_cast<float>(
@@ -418,17 +430,22 @@ public:
             }
         }
 
+        // Each region a tinted glass tile, the colours cycling so
+        // neighbours stand apart; a selected one lit, the primary outlined.
+        const std::array<juce::Colour, 5> regionColours{workbenchTheme.accentStart, workbenchTheme.accentEnd,
+            workbenchTheme.event, workbenchTheme.control, workbenchTheme.audio};
+        std::size_t regionIndex = 0;
         for (const auto& region : state_.projection.regions)
         {
             auto rect = scaledBounds(region.bounds).reduced(1.0F);
-            const auto fill = region.selected
-                ? workbenchTheme.selectedRow
-                : workbenchTheme.data.withAlpha(0.28F);
-            graphics.setColour(fill);
-            graphics.fillRect(rect);
-            graphics.setColour(
-                region.primary ? workbenchTheme.focus : workbenchTheme.data);
-            graphics.drawRect(rect, region.primary ? 2.0F : 1.0F);
+            const auto tint = regionColours[regionIndex++ % regionColours.size()];
+            graphics.setGradientFill(juce::ColourGradient{tint.withAlpha(region.selected ? 0.62F : 0.38F), 0.0F,
+                rect.getY(), tint.withAlpha(region.selected ? 0.32F : 0.16F), 0.0F, rect.getBottom(), false});
+            graphics.fillRoundedRectangle(rect, 4.0F);
+            graphics.setColour(tint.withAlpha(0.95F));
+            graphics.fillRoundedRectangle(rect.withHeight(std::min(3.0F, rect.getHeight())), 1.5F);
+            graphics.setColour(region.primary ? workbenchTheme.focus : tint.brighter(0.2F));
+            graphics.drawRoundedRectangle(rect, 4.0F, region.primary ? 2.0F : 1.0F);
             if (rect.getWidth() >= 52.0F && rect.getHeight() >= 18.0F)
             {
                 graphics.setColour(textColour);
@@ -1040,9 +1057,7 @@ public:
 
     void paint(juce::Graphics& graphics) override
     {
-        graphics.fillAll(panelColour);
-        graphics.setColour(panelBorderColour);
-        graphics.drawRect(getLocalBounds(), 1);
+        WorkbenchStyle::paintPanel(graphics, getLocalBounds().toFloat(), WorkbenchStyle::panelRadius());
     }
 
     void resized() override
@@ -1193,7 +1208,10 @@ private:
         if (row < 0 || row >= static_cast<int>(state_.projection.maps.size()))
             return;
         if (selected)
-            graphics.fillAll(workbenchTheme.selectedRow);
+        {
+            graphics.setColour(workbenchTheme.selectedRow);
+            graphics.fillRoundedRectangle(juce::Rectangle<float>{2.0F, 1.0F, static_cast<float>(width) - 4.0F, static_cast<float>(height) - 2.0F}, 5.0F);
+        }
         const auto& map = state_.projection.maps[static_cast<std::size_t>(row)];
         graphics.setColour(textColour);
         graphics.setFont(WorkbenchType::labelStrong());

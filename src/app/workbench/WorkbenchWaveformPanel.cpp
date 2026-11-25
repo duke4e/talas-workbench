@@ -6,6 +6,7 @@
 #include <algorithm>
 #include <cmath>
 #include <utility>
+#include <vector>
 
 namespace talas::app::workbench
 {
@@ -161,9 +162,9 @@ public:
 
     void paint(juce::Graphics& graphics) override
     {
-        graphics.fillAll(backgroundColour);
-        graphics.setColour(panelBorderColour);
-        graphics.drawRect(getLocalBounds(), 1);
+        WorkbenchStyle::paintWell(graphics, getLocalBounds().toFloat(), 6.0F);
+        if (state_.overview != nullptr)
+            WorkbenchStyle::paintDisplayGrid(graphics, getLocalBounds().toFloat().reduced(1.0F), 16, 4);
         if (state_.overview == nullptr)
         {
             graphics.setColour(secondaryTextColour);
@@ -182,7 +183,9 @@ public:
         const auto& overview = *state_.overview;
         const auto centreY = static_cast<float>(getHeight()) * 0.5F;
         const auto amplitude = std::max(1.0F, centreY - 7.0F);
-        graphics.setColour(workbenchTheme.audio);
+        // The envelope as one filled shape, lit aqua to violet, its edge glowing.
+        std::vector<juce::Point<float>> tops;
+        std::vector<juce::Point<float>> bottoms;
         for (const auto& bucket : overview.buckets)
         {
             if (bucket.channels.empty())
@@ -212,10 +215,34 @@ public:
                 - static_cast<float>(maximum) * amplitude;
             const auto bottom = centreY
                 - static_cast<float>(minimum) * amplitude;
-            graphics.drawVerticalLine(
-                static_cast<int>(std::lround(x)),
-                std::min(top, bottom),
-                std::max(top, bottom));
+            tops.push_back({x, std::min(top, bottom)});
+            bottoms.push_back({x, std::max(top, bottom)});
+        }
+        if (!tops.empty())
+        {
+            juce::Path envelope;
+            juce::Path edge;
+            envelope.startNewSubPath(tops.front());
+            edge.startNewSubPath(tops.front());
+            for (std::size_t index = 1; index < tops.size(); ++index)
+            {
+                envelope.lineTo(tops[index]);
+                edge.lineTo(tops[index]);
+            }
+            for (auto index = bottoms.size(); index-- > 0;)
+                envelope.lineTo(bottoms[index]);
+            envelope.closeSubPath();
+            edge.startNewSubPath(bottoms.front());
+            for (std::size_t index = 1; index < bottoms.size(); ++index)
+                edge.lineTo(bottoms[index]);
+            juce::ColourGradient fill{workbenchTheme.accentStart.withAlpha(0.55F), 0.0F, centreY - amplitude,
+                workbenchTheme.accentStart.withAlpha(0.55F), 0.0F, centreY + amplitude, false};
+            fill.addColour(0.5, workbenchTheme.audio.withAlpha(0.8F));
+            graphics.setGradientFill(fill);
+            graphics.fillPath(envelope);
+            WorkbenchStyle::strokeWithGlow(graphics, edge, workbenchTheme.audio.brighter(0.2F), 1.0F, 4.0F);
+            graphics.setColour(juce::Colours::white.withAlpha(0.12F));
+            graphics.drawHorizontalLine(juce::roundToInt(centreY), 0.0F, static_cast<float>(getWidth()));
         }
 
         if (state_.region.has_value())
@@ -405,9 +432,7 @@ public:
 
     void paint(juce::Graphics& graphics) override
     {
-        graphics.fillAll(panelColour);
-        graphics.setColour(panelBorderColour);
-        graphics.drawRect(getLocalBounds(), 1);
+        WorkbenchStyle::paintPanel(graphics, getLocalBounds().toFloat(), WorkbenchStyle::panelRadius());
     }
 
     void resized() override

@@ -793,9 +793,10 @@ public:
         const auto timeDisplay = area(layout.timeDisplay);
         auto rulerTrack = area(layout.ruler);
         auto ruler = body.removeFromTop(scoreRulerHeight());
-        graphics.setColour(panelColour);
+        graphics.setGradientFill(juce::ColourGradient{panelColour.brighter(0.08F), 0.0F, static_cast<float>(ruler.getY()),
+            panelColour.darker(0.1F), 0.0F, static_cast<float>(ruler.getBottom()), false});
         graphics.fillRect(ruler);
-        graphics.setColour(panelColour.darker(0.12F));
+        graphics.setColour(workbenchTheme.well.withAlpha(0.7F));
         graphics.fillRect(markerStrip);
         graphics.setColour(panelBorderColour);
         graphics.drawHorizontalLine(markerStrip.getBottom(),
@@ -869,12 +870,12 @@ public:
             graphics.setColour(row.selected
                     ? workbenchTheme.selectedRow
                     : (visibleIndex % 2U) == 0U
-                    ? panelColour
-                    : panelColour.darker(0.08F));
+                    ? panelColour.brighter(0.04F)
+                    : panelColour.darker(0.05F));
             graphics.fillRect(header);
             graphics.setColour((visibleIndex % 2U) == 0U
-                    ? backgroundColour
-                    : backgroundColour.brighter(0.025F));
+                    ? workbenchTheme.well
+                    : workbenchTheme.well.interpolatedWith(panelColour, 0.3F));
             graphics.fillRect(rowBounds);
             // A control's editor is darker where
             // there is a Sound it could affect.
@@ -904,8 +905,12 @@ public:
                 : row.kind == TimelineScoreRowKind::Master
                 ? outputColour
                 : audioColour;
-            graphics.setColour(kindColour);
-            graphics.fillRect(header.removeFromLeft(3));
+            {
+                const auto stripe = header.removeFromLeft(3).toFloat().reduced(0.0F, 3.0F);
+                graphics.setGradientFill(juce::ColourGradient{kindColour.brighter(0.2F), stripe.getX(), stripe.getY(),
+                    kindColour.darker(0.2F), stripe.getX(), stripe.getBottom(), false});
+                graphics.fillRoundedRectangle(stripe, 1.5F);
+            }
             header.reduce(6, 3);
             auto nameArea = header.removeFromTop(rowHeight / 2);
             if (row.automationState != talas::project::ScoreAutomationState::Automated)
@@ -1083,8 +1088,8 @@ public:
                 // A slaved lane's graph is a pale
                 // version of its master's.
                 const auto slavedRow = localRow < viewport_.rows.size() && viewport_.rows[localRow].slaved;
-                graphics.setColour((item.selected ? selectionColour : controlColour)
-                    .withAlpha(slavedRow ? 0.3F : 0.75F));
+                const auto lineColour = (item.selected ? selectionColour : controlColour)
+                    .withAlpha(slavedRow ? 0.3F : 0.9F);
                 const auto startY = itemBounds.getBottom()
                     - static_cast<float>(item.displayValue)
                         * itemBounds.getHeight();
@@ -1095,8 +1100,20 @@ public:
                 const auto endY = itemBounds.getBottom()
                     - static_cast<float>(endValue)
                         * itemBounds.getHeight();
-                graphics.drawLine(itemBounds.getX(), startY,
-                                  itemBounds.getRight(), endY, 1.5F);
+                // The area under the line, faintly filled.
+                juce::Path under;
+                under.startNewSubPath(itemBounds.getX(), itemBounds.getBottom());
+                under.lineTo(itemBounds.getX(), startY);
+                under.lineTo(itemBounds.getRight(), endY);
+                under.lineTo(itemBounds.getRight(), itemBounds.getBottom());
+                under.closeSubPath();
+                graphics.setGradientFill(juce::ColourGradient{lineColour.withMultipliedAlpha(0.22F), 0.0F,
+                    std::min(startY, endY), lineColour.withAlpha(0.0F), 0.0F, itemBounds.getBottom(), false});
+                graphics.fillPath(under);
+                juce::Path line;
+                line.startNewSubPath(itemBounds.getX(), startY);
+                line.lineTo(itemBounds.getRight(), endY);
+                WorkbenchStyle::strokeWithGlow(graphics, line, lineColour, 1.5F, 5.0F);
                 continue;
             }
             if (item.kind == TimelineScoreItemKind::AutomationPoint)
@@ -1109,6 +1126,8 @@ public:
                         * itemBounds.getHeight();
                 graphics.fillEllipse(itemBounds.getCentreX() - 3.5F, valueY - 3.5F,
                                      7.0F, 7.0F);
+                graphics.setColour(workbenchTheme.well);
+                graphics.fillEllipse(itemBounds.getCentreX() - 1.5F, valueY - 1.5F, 3.0F, 3.0F);
                 continue;
             }
             // A Sound selected with others shows as
@@ -1127,12 +1146,25 @@ public:
             const auto ownColour = clip != clips.end() && clip->colour.has_value()
                 ? std::optional<juce::Colour>{juce::Colour{0xFF000000U | *clip->colour}}
                 : std::nullopt;
-            graphics.setColour(selected
-                    ? selectionColour.withAlpha(0.28F)
-                    : cachedColour.has_value() ? juce::Colour{*cachedColour}.withAlpha(0.45F)
-                    : ownColour.has_value() ? ownColour->withAlpha(0.55F)
-                    : audioColour.withAlpha(item.overlaps ? 0.40F : 0.22F));
-            graphics.fillRoundedRectangle(itemBounds, 3.0F);
+            const auto clipColour = selected
+                    ? selectionColour
+                    : cachedColour.has_value() ? juce::Colour{*cachedColour}
+                    : ownColour.has_value() ? *ownColour
+                    : audioColour;
+            const auto clipAlpha = selected ? 0.34F : cachedColour.has_value() ? 0.5F : ownColour.has_value() ? 0.42F
+                    : (item.overlaps ? 0.44F : 0.3F);
+            // A tinted glass body under a lit top band in the clip's colour.
+            graphics.setGradientFill(juce::ColourGradient{clipColour.withAlpha(clipAlpha), 0.0F, itemBounds.getY(),
+                clipColour.withAlpha(clipAlpha * 0.55F), 0.0F, itemBounds.getBottom(), false});
+            graphics.fillRoundedRectangle(itemBounds, 4.0F);
+            {
+                juce::Graphics::ScopedSaveState clipped(graphics);
+                juce::Path body;
+                body.addRoundedRectangle(itemBounds, 4.0F);
+                graphics.reduceClipRegion(body);
+                graphics.setColour(clipColour.withAlpha(0.95F));
+                graphics.fillRect(itemBounds.withHeight(3.0F));
+            }
             // A marked Sound's outline and text
             // turn light grey.
             const auto marked = item.kind == TimelineScoreItemKind::Clip && marks_.marked(item.stableId);
@@ -1140,12 +1172,12 @@ public:
             graphics.setColour(outline == talas::app::TimelineClipLook::Overlapping ? errorColour
                     : outline == talas::app::TimelineClipLook::Selected            ? selectionColour
                     : outline == talas::app::TimelineClipLook::Marked              ? juce::Colours::lightgrey
-                                                                                : audioColour);
+                                                                                : clipColour.brighter(0.15F));
             graphics.drawRoundedRectangle(
                 itemBounds,
-                3.0F,
+                4.0F,
                 item.selected ? WorkbenchType::focusOutlinePixels() : 1.0F);
-            graphics.setColour(audioColour.withAlpha(0.72F));
+            graphics.setColour(clipColour.brighter(0.3F).withAlpha(0.8F));
             if (item.fadeInFraction > 0.0)
             {
                 graphics.drawLine(
@@ -1213,8 +1245,15 @@ public:
         {
             const auto x = timelineArea.getX()
                 + static_cast<float>(*viewport_.playheadX);
-            // The yellow time cursor.
-            graphics.setColour(juce::Colour{talas::app::timelineTimeCursorColour()});
+            // The yellow time cursor, softly lit.
+            const auto cursor = juce::Colour{talas::app::timelineTimeCursorColour()};
+            if (!WorkbenchStyle::enhancedContrast())
+            {
+                graphics.setColour(cursor.withAlpha(0.18F));
+                graphics.fillRect(juce::Rectangle<float>{x - 2.0F, static_cast<float>(timelineArea.getY()), 5.0F,
+                    static_cast<float>(timelineArea.getHeight())});
+            }
+            graphics.setColour(cursor);
             graphics.drawVerticalLine(
                 static_cast<int>(std::lround(x)),
                 static_cast<float>(timelineArea.getY()),
@@ -7723,8 +7762,17 @@ public:
     void paint(juce::Graphics& graphics) override
     {
         graphics.fillAll(panelColour);
-        graphics.setColour(panelBorderColour);
-        graphics.fillRect(getLocalBounds().removeFromTop(lineHeight).reduced(0, 2));
+        // The dragged dividing line, a short grip in its middle.
+        const auto divider = getLocalBounds().removeFromTop(lineHeight).reduced(0, 2).toFloat();
+        graphics.setColour(juce::Colours::white.withAlpha(0.06F));
+        graphics.fillRect(divider);
+        graphics.setColour(juce::Colours::white.withAlpha(0.22F));
+        graphics.fillRoundedRectangle(divider.withSizeKeepingCentre(36.0F, std::min(3.0F, divider.getHeight())), 1.5F);
+        if (!graph_.isEmpty())
+        {
+            WorkbenchStyle::paintWell(graphics, graph_.toFloat().expanded(2.0F), 5.0F);
+            WorkbenchStyle::paintDisplayGrid(graphics, graph_.toFloat(), 8, 4);
+        }
         if (selected_ < 0 || selected_ >= static_cast<int>(score_.automation.size()) || graph_.isEmpty())
             return;
         const auto& lane = score_.automation[static_cast<std::size_t>(selected_)];
@@ -7736,11 +7784,22 @@ public:
             const auto y = static_cast<float>(graph_.getBottom()) - static_cast<float>(curve[column].height) * static_cast<float>(graph_.getHeight());
             column == 0 ? path.startNewSubPath(x, y) : path.lineTo(x, y);
         }
-        graphics.setColour(controlColour);
-        graphics.strokePath(path, juce::PathStrokeType{1.5F});
+        if (!path.isEmpty())
+        {
+            auto under = path;
+            under.lineTo(static_cast<float>(graph_.getX() + static_cast<int>(curve.size()) - 1),
+                static_cast<float>(graph_.getBottom()));
+            under.lineTo(static_cast<float>(graph_.getX()), static_cast<float>(graph_.getBottom()));
+            under.closeSubPath();
+            graphics.setGradientFill(juce::ColourGradient{controlColour.withAlpha(0.24F), 0.0F,
+                static_cast<float>(graph_.getY()), controlColour.withAlpha(0.0F), 0.0F,
+                static_cast<float>(graph_.getBottom()), false});
+            graphics.fillPath(under);
+        }
+        WorkbenchStyle::strokeWithGlow(graphics, path, controlColour, 1.5F, 6.0F);
         graphics.setColour(secondaryTextColour);
         graphics.setFont(WorkbenchType::micro());
-        graphics.drawText(juceString(lane.eventName), graph_.withHeight(14), juce::Justification::topLeft);
+        graphics.drawText(juceString(lane.eventName), graph_.reduced(6, 4).withHeight(14), juce::Justification::topLeft);
     }
 
     void mouseMove(const juce::MouseEvent& event) override
@@ -8667,14 +8726,9 @@ public:
 
     void paint(juce::Graphics& graphics) override
     {
-        graphics.fillAll(panelColour);
-        graphics.setColour(panelBorderColour);
-        graphics.drawRect(getLocalBounds(), 1);
-        graphics.setColour(textColour);
-        graphics.setFont(WorkbenchType::panelTitle());
+        WorkbenchStyle::paintPanel(graphics, getLocalBounds().toFloat(), WorkbenchStyle::panelRadius());
         auto header = getLocalBounds().reduced(12).removeFromTop(22);
-        graphics.drawText("Timeline", header.removeFromLeft(74),
-                          juce::Justification::centredLeft);
+        WorkbenchStyle::paintPanelTitle(graphics, header.removeFromLeft(74), "Timeline");
         header.removeFromRight(std::min(136, header.getWidth()));
         graphics.setColour(secondaryTextColour);
         graphics.setFont(WorkbenchType::micro());
@@ -9187,7 +9241,7 @@ private:
         if (selected)
         {
             graphics.setColour(workbenchTheme.selectedRow);
-            graphics.fillRect(0, 0, width, height);
+            graphics.fillRoundedRectangle(juce::Rectangle<float>{2.0F, 1.0F, static_cast<float>(width) - 4.0F, static_cast<float>(height) - 2.0F}, 5.0F);
         }
         const auto& source = musicalRows_[static_cast<std::size_t>(row)];
         const auto& musical =
@@ -9479,7 +9533,7 @@ private:
         if (selected)
         {
             graphics.setColour(workbenchTheme.selectedRow);
-            graphics.fillRect(0, 0, width, height);
+            graphics.fillRoundedRectangle(juce::Rectangle<float>{2.0F, 1.0F, static_cast<float>(width) - 4.0F, static_cast<float>(height) - 2.0F}, 5.0F);
         }
 
         auto bounds = juce::Rectangle<int>{0, 0, width, height}.reduced(6, 2);

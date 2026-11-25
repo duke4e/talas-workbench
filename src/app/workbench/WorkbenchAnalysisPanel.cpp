@@ -1651,14 +1651,10 @@ public:
 
     void paint(juce::Graphics& graphics) override
     {
-        graphics.fillAll(panelColour);
-        graphics.setColour(panelBorderColour);
-        graphics.drawRect(getLocalBounds(), 1);
+        WorkbenchStyle::paintPanel(graphics, getLocalBounds().toFloat(), WorkbenchStyle::panelRadius());
 
         auto bounds = getLocalBounds().reduced(10);
-        graphics.setColour(textColour);
-        graphics.setFont(WorkbenchType::panelTitle());
-        graphics.drawText(
+        WorkbenchStyle::paintPanelTitle(graphics, bounds.removeFromTop(analysisPanelHeaderHeight),
             !traceLanes_.empty()
                 ? juceString("Analysis · ")
                     + juce::String(
@@ -1669,9 +1665,7 @@ public:
                 : (mode_ == Mode::None
                     ? juce::String{"Analysis"}
                     : juceString("Analysis · ")
-                        + juceString(selectedNodeId_)),
-            bounds.removeFromTop(analysisPanelHeaderHeight),
-            juce::Justification::centredLeft);
+                        + juceString(selectedNodeId_)));
         bounds.removeFromTop(controlRowsHeight());
         graphics.setColour(secondaryTextColour);
         graphics.setFont(WorkbenchType::micro());
@@ -1683,10 +1677,16 @@ public:
         bounds.removeFromTop(analysisPanelCaptureStatusGap);
 
         const auto plot = analysisPlotBounds();
-        graphics.setColour(backgroundColour);
-        graphics.fillRoundedRectangle(plot, 4.0F);
-        graphics.setColour(panelBorderColour);
-        graphics.drawRoundedRectangle(plot, 4.0F, 1.0F);
+        // An LCD-like display: a deep blue well, a faint grid, glowing traces.
+        WorkbenchStyle::paintWell(graphics, plot, 6.0F);
+        if (!WorkbenchStyle::enhancedContrast())
+        {
+            graphics.setGradientFill(juce::ColourGradient{workbenchTheme.accentEnd.withAlpha(0.05F), plot.getCentreX(),
+                plot.getCentreY(), workbenchTheme.accentEnd.withAlpha(0.0F), plot.getX(), plot.getY(), true});
+            graphics.fillRoundedRectangle(plot, 6.0F);
+        }
+        if (traceLanes_.empty())
+            WorkbenchStyle::paintDisplayGrid(graphics, plot.reduced(1.0F), 8, 4);
         if (!traceLanes_.empty())
         {
             drawTraceLanes(graphics, plot);
@@ -2884,19 +2884,11 @@ private:
                     else
                         spectralPath.lineTo(x, y);
                 }
-                graphics.setColour(traceColour(
-                    lane.view.trace.kind,
-                    lane.view.trace.colourSlot));
-                graphics.strokePath(
-                    spectralPath,
-                    juce::PathStrokeType{1.25F});
+                WorkbenchStyle::strokeWithGlow(graphics, spectralPath,
+                    traceColour(lane.view.trace.kind, lane.view.trace.colourSlot), 1.25F, 6.0F);
                 continue;
             }
-            graphics.setColour(panelBorderColour.withAlpha(0.45F));
-            graphics.drawHorizontalLine(
-                static_cast<int>(std::round(wave.getCentreY())),
-                wave.getX(),
-                wave.getRight());
+            WorkbenchStyle::paintDisplayGrid(graphics, wave, 8, 2);
             if (lane.valueCount == 1)
             {
                 const auto sample = std::clamp(
@@ -2949,14 +2941,9 @@ private:
                 else
                     path.lineTo(x, y);
             }
-            graphics.setColour(traceColour(
-                lane.view.trace.kind,
-                lane.view.trace.colourSlot));
-            graphics.strokePath(
-                path,
-                juce::PathStrokeType{
-                    1.0F + 0.25F * static_cast<float>(
-                        lane.view.trace.colourSlot % 3)});
+            WorkbenchStyle::strokeWithGlow(graphics, path,
+                traceColour(lane.view.trace.kind, lane.view.trace.colourSlot),
+                1.0F + 0.25F * static_cast<float>(lane.view.trace.colourSlot % 3), 6.0F);
         }
     }
 
@@ -3873,8 +3860,7 @@ private:
             else
                 path.lineTo(x, y);
         }
-        graphics.setColour(audioColour);
-        graphics.strokePath(path, juce::PathStrokeType{1.5F});
+        WorkbenchStyle::strokeWithGlow(graphics, path, audioColour, 1.5F, 7.0F);
     }
 
     void drawSpectrum(juce::Graphics& graphics, juce::Rectangle<float> plot) const
@@ -3898,8 +3884,17 @@ private:
         }
         const auto path =
             spectrumPath(spectrumMagnitudes_, view, plot);
-        graphics.setColour(controlColour);
-        graphics.strokePath(path, juce::PathStrokeType{1.5F});
+        {
+            // The area under the spectrum, lit from the line downward.
+            auto filled = path;
+            filled.lineTo(plot.getRight(), plot.getBottom());
+            filled.lineTo(plot.getX(), plot.getBottom());
+            filled.closeSubPath();
+            graphics.setGradientFill(juce::ColourGradient{controlColour.withAlpha(0.28F), 0.0F, plot.getY(),
+                controlColour.withAlpha(0.02F), 0.0F, plot.getBottom(), false});
+            graphics.fillPath(filled);
+        }
+        WorkbenchStyle::strokeWithGlow(graphics, path, controlColour, 1.5F, 7.0F);
         if (sampleRate_ > 0.0)
         {
             graphics.setColour(secondaryTextColour.withAlpha(0.8F));

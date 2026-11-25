@@ -516,7 +516,10 @@ private:
             return;
         const auto& entry = rows_[static_cast<std::size_t>(row)];
         if (isSelected)
-            graphics.fillAll(workbenchTheme.selectedRow);
+        {
+            graphics.setColour(workbenchTheme.selectedRow);
+            graphics.fillRoundedRectangle(juce::Rectangle<float>{2.0F, 1.0F, static_cast<float>(width) - 4.0F, static_cast<float>(height) - 2.0F}, 5.0F);
+        }
         auto indent = 6 + static_cast<int>(entry.depth) * 16;
         // A sideways triangle and faded colour for a closed folder or
         // Sound file, a downward one and saturated colour for an open one.
@@ -575,7 +578,7 @@ private:
         const auto information = talas::app::soundBrowserInformation(rows_[static_cast<std::size_t>(row)]);
         for (std::size_t index = 0; index < information.size(); ++index)
         {
-            info_.setColour(juce::TextEditor::textColourId, information[index] == "MIDI" ? juce::Colour{0xff5fd068} : textColour);
+            info_.setColour(juce::TextEditor::textColourId, information[index] == "MIDI" ? workbenchTheme.success : textColour);
             info_.insertTextAtCaret(text(information[index]) + (index + 1 < information.size() ? "\n" : ""));
         }
         info_.setColour(juce::TextEditor::textColourId, textColour);

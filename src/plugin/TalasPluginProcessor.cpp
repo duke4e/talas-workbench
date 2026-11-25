@@ -142,11 +142,10 @@ void TalasPluginProcessor::prepareToPlay(double sampleRate, int maximumExpectedS
         const auto value = parameterValue(*parameters_[index], specs_[index]);
         settings.eventValues.push_back({specs_[index].eventName, value, specs_[index].domain});
     }
-    // The Sound starts from the parameters' values (those it fixes when it
-    // starts take them too), and the first block sends every value again.
-    auto document = *project_.document;
-    applyPluginParameterValues(document, settings.eventValues);
-    auto bridge = std::make_unique<talas::runtime::ProjectRuntimeBridge>(std::move(document), registry_);
+    // The Sound starts from the parameters' values, which win over the
+    // values its controls saved (those it fixes when it starts take them
+    // too), and the first block sends every value again.
+    auto bridge = std::make_unique<talas::runtime::ProjectRuntimeBridge>(*project_.document, registry_);
     const auto staged = stagePluginProject(*bridge, registry_, project_.projectFile, settings);
     if (!staged.ok())
     {

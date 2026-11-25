@@ -236,18 +236,20 @@ void testState()
     return first;
 }
 
-// A Sound starts from its persisted controls' values, so the plugin writes
-// its parameters into the document: the demo phrase off from the start.
+// A Sound starts from the parameters' values, which win over the values its
+// persisted controls saved: the demo phrase off from the start, with the
+// document left as it is.
 void testParameterValuesStartTheSound(const talas::core::NodeRegistry& registry)
 {
-    auto document = loadDemo(registry, "sub_bass");
+    const auto document = loadDemo(registry, "sub_bass");
     const auto mapping = mapProjectParameters(document, registry, PluginKind::Instrument);
     PluginStageSettings settings;
     settings.maxBlockFrames = 512;
-    for (const auto& spec : mapping.parameters)
-        settings.eventValues.push_back({spec.eventName, spec.eventName == "Demo" ? 0.0 : spec.defaultValue, spec.domain});
-    const auto render = [&](talas::project::ProjectDocument staged) {
-        talas::runtime::ProjectRuntimeBridge bridge(std::move(staged), registry);
+    const auto render = [&](double demo) {
+        settings.eventValues.clear();
+        for (const auto& spec : mapping.parameters)
+            settings.eventValues.push_back({spec.eventName, spec.eventName == "Demo" ? demo : spec.defaultValue, spec.domain});
+        talas::runtime::ProjectRuntimeBridge bridge(document, registry);
         const auto outcome = stagePluginProject(bridge, registry, std::nullopt, settings);
         require(outcome.ok(), "the demo stages: " + outcome.error);
         bridge.setPlaying(true);
@@ -265,12 +267,11 @@ void testParameterValuesStartTheSound(const talas::core::NodeRegistry& registry)
         bridge.clearAfterAudioStopped();
         return loudest;
     };
-    require(render(document) > 0.01F, "the demo phrase plays when its control is on");
-    applyPluginParameterValues(document, settings.eventValues);
+    require(render(1.0) > 0.01F, "the demo phrase plays when its parameter is on");
     require(find(mapping, "Demo").defaultValue == 1.0
-            && std::ranges::find(document.virtualControls, "Demo", &talas::project::VirtualControl::eventName)->value == 0.0,
-        "the parameter's value is written into the control");
-    require(render(document) == 0.0F, "and the Sound starts from it");
+            && std::ranges::find(document.virtualControls, "Demo", &talas::project::VirtualControl::eventName)->value == 1.0,
+        "the project saved the control on");
+    require(render(0.0) == 0.0F, "and the Sound starts from the parameter's value, not the saved one");
 }
 
 void testStagingAndMidiTiming(const talas::core::NodeRegistry& registry)

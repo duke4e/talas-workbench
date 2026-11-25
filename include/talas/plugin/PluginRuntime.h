@@ -72,13 +72,6 @@ struct PluginStageOutcome
     [[nodiscard]] bool ok() const noexcept { return error.empty(); }
 };
 
-// Gives the project's Virtual Controls the values: a Sound starts from its
-// persisted controls' values (an EventValueBinding does not override them),
-// so the plugin writes its parameters into the document it stages.
-void applyPluginParameterValues(
-    talas::project::ProjectDocument& document,
-    const std::vector<talas::runtime::EventValueBinding>& values);
-
 // Loads the project's assets (resolved against projectFile), compiles it
 // and stages it on the bridge, which must hold the same document and not be
 // rendering. Control thread only.

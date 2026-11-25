@@ -925,6 +925,8 @@ void testHelpPrintsUsage()
     requireContains(output.str(), "--audio-input", "help should mention audio input option");
     requireContains(output.str(), "--status", "help should mention prepared graph status validation");
     requireContains(output.str(), "prepared graph", "help should explain prepared graph status output");
+    requireContains(output.str(), "in place of the value the project saved for its control",
+        "help should say that --event wins over a saved control value");
     require(error.str().empty(), "help should not write errors");
 }
 
@@ -1657,6 +1659,83 @@ void testRenderAppliesPersistedEventValueInsideSoundDefinition()
     require(
         lines.size() == 3 && lines[2] == "1,0.5",
         "persisted nested Event Value should control the rendered amplitude");
+}
+
+// --event gives a render its starting value, in place of the value the
+// project saved for the control of that name, for render and validate alike.
+void testCliEventOverridesPersistedVirtualControl()
+{
+    talas::project::ProjectDocument document;
+    document.metadata.title = "Saved control under --event";
+    talas::project::VirtualControl gain;
+    gain.eventName = "Gain";
+    gain.value = 0.5;
+    document.virtualControls.push_back(std::move(gain));
+    document.graph.nodes.push_back({
+        "osc",
+        "talas.oscillator",
+        {
+            {"frequency", std::string{"1 hz"}},
+            {"amplitude", std::string{"!Gain"}},
+        },
+        {},
+    });
+    document.graph.nodes.push_back({"out", "talas.audioOutput", {}, {}});
+    document.graph.connections.push_back({"osc", "audioOut", "out", "audioIn"});
+    const auto projectPath = writeProject(
+        talas::project::serializeProjectDocument(document));
+    const auto project = projectPath.string();
+    const auto renderFrameOne = [&](std::vector<std::string_view> events) {
+        std::vector<std::string_view> args{
+            "render", "--project", project, "--frames", "2", "--sample-rate", "4"};
+        args.insert(args.end(), events.begin(), events.end());
+        std::ostringstream output;
+        std::ostringstream error;
+        const auto exitCode = talas::cli::runCli(args, output, error);
+        require(exitCode == 0 && error.str().empty(),
+            "render with a saved control should succeed: " + error.str());
+        const auto lines = nonEmptyLines(output.str());
+        require(lines.size() == 3, "render with a saved control should write two samples");
+        return lines[2];
+    };
+
+    require(renderFrameOne({}) == "1,0.5", "without --event the saved control value plays");
+    require(renderFrameOne({"--event", "Gain=0.25"}) == "1,0.25",
+        "--event should win over the saved control value");
+    require(renderFrameOne({"--event-change", "0:Gain=0.25"}) == "1,0.25",
+        "--event-change at frame 0 should match --event");
+
+    {
+        std::ostringstream output;
+        std::ostringstream error;
+        const auto exitCode = run(
+            {"validate", "--project", project, "--event", "Gain=0.25"}, output, error);
+        require(exitCode == 0 && output.str() == "OK\n" && error.str().empty(),
+            "validate should accept --event for a saved control: " + error.str());
+    }
+    for (const auto command : {std::string_view{"validate"}, std::string_view{"render"}})
+    {
+        std::vector<std::string_view> args{command, "--project", project, "--event", "Gain:hz=1"};
+        if (command == "render")
+            args.insert(args.end(), {"--frames", "2"});
+        std::ostringstream output;
+        std::ostringstream error;
+        const auto exitCode = talas::cli::runCli(args, output, error);
+        require(exitCode == 1, std::string{command} + " should reject --event in another domain than its saved control");
+        requireContains(error.str(), "wrong domain for its Virtual Control (Gain)",
+            std::string{command} + " should name the saved control whose domain --event contradicts");
+    }
+    {
+        std::ostringstream output;
+        std::ostringstream error;
+        const auto exitCode = run(
+            {"render", "--project", project, "--frames", "2", "--event", "Gain=0.25", "--event", "Gain=0.75"},
+            output, error);
+        require(exitCode == 1, "a saved control should not hide a duplicate --event");
+        requireContains(error.str(), "Gain is bound more than once",
+            "a duplicate --event for a saved control should be named");
+    }
+    std::filesystem::remove(projectPath);
 }
 
 void testCliEventValueValidationAndSyntaxErrors()
@@ -2569,6 +2648,7 @@ int main()
     testRenderWritesMonoJsonRows();
     testRenderAppliesEventValueChangesFromCli();
     testRenderAppliesPersistedEventValueInsideSoundDefinition();
+    testCliEventOverridesPersistedVirtualControl();
     testCliEventValueValidationAndSyntaxErrors();
     testRenderWritesStereoCsvRows();
     testRenderWritesStereoJsonRows();

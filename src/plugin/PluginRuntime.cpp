@@ -57,20 +57,6 @@ PluginProjectLoad loadPluginProject(
     return parsePluginProject(text, registry, projectFile);
 }
 
-void applyPluginParameterValues(
-    talas::project::ProjectDocument& document,
-    const std::vector<talas::runtime::EventValueBinding>& values)
-{
-    for (const auto& value : values)
-    {
-        for (auto& control : document.virtualControls)
-        {
-            if (control.eventName == value.name && control.domain == value.domain)
-                control.value = value.value;
-        }
-    }
-}
-
 PluginStageOutcome stagePluginProject(
     talas::runtime::ProjectRuntimeBridge& bridge,
     const talas::core::NodeRegistry& registry,

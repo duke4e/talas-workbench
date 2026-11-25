@@ -6366,18 +6366,28 @@ void testBridgeStagesPersistedVirtualControlValues()
     gain.value = 0.25;
     document.virtualControls.push_back(gain);
 
-    talas::runtime::ProjectRuntimeBridge bridge(std::move(document), registry());
+    talas::runtime::ProjectRuntimeBridge bridge(document, registry());
     bridge.setPlaying(true);
-    auto stagedSettings = settings();
-    stagedSettings.eventValues.push_back({"Gain", 0.75, talas::expr::ValueDomain::Scalar});
-    stagedSettings.eventValues.push_back({"Gain", 0.5, talas::expr::ValueDomain::Scalar});
-    require(bridge.compileAndStage(std::move(stagedSettings)).ok(),
+    require(bridge.compileAndStage(settings()).ok(),
             "persisted Virtual Control should provide the initial realtime Event Value");
 
     std::array<float, 4> output{};
     require(render(bridge, output), "Virtual Control graph should activate and render");
     require(std::abs(output[1] - 0.25F) < 1.0e-6F,
-            "persisted Virtual Control value should override an external duplicate binding");
+            "persisted Virtual Control value should start the Event Value without a caller binding");
+
+    // A value the caller gives for this stage, as a plugin's parameter or
+    // the CLI's --event, wins over the saved one.
+    talas::runtime::ProjectRuntimeBridge given(std::move(document), registry());
+    given.setPlaying(true);
+    auto givenSettings = settings();
+    givenSettings.eventValues.push_back({"Gain", 0.75, talas::expr::ValueDomain::Scalar});
+    require(given.compileAndStage(std::move(givenSettings)).ok(),
+            "a caller binding for a persisted Virtual Control should stage");
+    output.fill(0.0F);
+    require(render(given, output), "caller-bound Virtual Control graph should activate and render");
+    require(std::abs(output[1] - 0.75F) < 1.0e-6F,
+            "caller binding should override the persisted Virtual Control value");
 }
 
 void testProjectRenderSettingsPreparePersistedControlsTimelineAndMidiDefaults()
@@ -6395,26 +6405,51 @@ void testProjectRenderSettingsPreparePersistedControlsTimelineAndMidiDefaults()
 
     auto renderSettings = settings();
     renderSettings.sampleRate = 8.0;
-    renderSettings.eventValues = {
-        {"Gain", 0.5, talas::expr::ValueDomain::Scalar},
-        {"Gain", 1.0, talas::expr::ValueDomain::Scalar},
-    };
     const auto prepared = talas::runtime::prepareProjectRenderSettings(
         document,
         registry(),
-        std::move(renderSettings));
+        renderSettings);
 
     require(prepared.ok(), "shared project render settings should prepare");
     const auto gainBindings = std::ranges::count_if(
         prepared.settings->eventValues,
         [](const auto& binding) { return binding.name == "Gain"; });
-    require(gainBindings == 1, "persisted Virtual Control should replace duplicate external bindings");
+    require(gainBindings == 1, "persisted Virtual Control should add one binding");
     const auto preparedGain = std::ranges::find_if(
         prepared.settings->eventValues,
         [](const auto& binding) { return binding.name == "Gain"; });
     require(preparedGain != prepared.settings->eventValues.end()
                 && std::abs(preparedGain->value - 0.25) < 1.0e-12,
-            "persisted Virtual Control value should be authoritative");
+            "persisted Virtual Control value should start the Event Value");
+
+    auto givenSettings = renderSettings;
+    givenSettings.eventValues = {{"Gain", 0.5, talas::expr::ValueDomain::Scalar}};
+    const auto given = talas::runtime::prepareProjectRenderSettings(
+        document,
+        registry(),
+        std::move(givenSettings));
+    require(given.ok(), "a caller binding for a persisted Virtual Control should prepare");
+    require(std::ranges::count_if(
+                given.settings->eventValues,
+                [](const auto& binding) { return binding.name == "Gain"; })
+                == 1,
+            "a caller binding should not gain a second binding from its Virtual Control");
+    const auto givenGain = std::ranges::find_if(
+        given.settings->eventValues,
+        [](const auto& binding) { return binding.name == "Gain"; });
+    require(givenGain != given.settings->eventValues.end()
+                && std::abs(givenGain->value - 0.5) < 1.0e-12,
+            "a caller binding should win over the persisted Virtual Control value");
+
+    auto wrongDomainSettings = renderSettings;
+    wrongDomainSettings.eventValues = {{"Gain", 440.0, talas::expr::ValueDomain::Hertz}};
+    const auto wrongDomain = talas::runtime::prepareProjectRenderSettings(
+        document,
+        registry(),
+        std::move(wrongDomainSettings));
+    require(!wrongDomain.ok()
+                && wrongDomain.error.find("Virtual Control (Gain)") != std::string::npos,
+            "a caller binding in another domain than its Virtual Control should fail clearly");
     require(prepared.settings->eventValueChanges.size() == 1
                 && prepared.settings->eventValueChanges.front().frame == 3
                 && prepared.settings->eventValueChanges.front().interpolation

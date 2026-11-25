@@ -133,9 +133,8 @@ PY
 )
 ```
 
-Instruments need no input: the `demo` voice plays the phrase. Use `--event-change 0:Name=value`
-to start from another control setting (a persisted control keeps its saved value under
-`--event`), for example `--event-change 0:Demo=0` to silence the phrase.
+Instruments need no input: the `demo` voice plays the phrase. Use `--event Name=value`
+to start from another control setting, for example `--event Demo=0` to silence the phrase.
 
 ```bash
 T=./build/talas-release/talas_cli

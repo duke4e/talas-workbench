@@ -538,6 +538,20 @@ discovered Event Values, built-in MIDI controls, and Timeline settings as the
 Workbench runtime bridge, including references inside reusable Sound
 definitions.
 
+`--event name[:domain]=value` sets the value an Event Value starts from. It
+wins over the value the project saved for a Virtual Control of the same name,
+just as it does for an Event Value without one, so the same project can render
+from other control settings without editing the file. The domain defaults to
+scalar and must match the control's; a mismatch, or a name given twice, fails
+validation and rendering instead of being ignored.
+`--event-change frame:name[:domain]=value` changes a value at a frame of the
+render:
+
+```bash
+./build/talas-release/talas_cli render --project examples/demos/sub_bass.talas.json --duration 2 --sample-rate 48000 --event Cutoff=200 --output /tmp/talas-sub-bass-dark.wav
+./build/talas-release/talas_cli render --project examples/demos/granular_freeze.talas.json --duration 8 --sample-rate 48000 --audio-input 1=path/to/melody.wav --event-change 168000:Freeze=1 --output /tmp/talas-freeze.wav
+```
+
 Render with a binary resource such as a MIDI file referenced by a `talas.midiFileEcho` `fileName` parameter:
 
 ```bash

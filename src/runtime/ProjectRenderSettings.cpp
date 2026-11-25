@@ -13,16 +13,34 @@ namespace talas::runtime
 {
 namespace
 {
-void applyPersistedVirtualControls(RenderSettings& settings, const talas::project::ProjectDocument& document)
+// A Virtual Control starts its Event Value from the value the project saved,
+// unless the caller binds that Event Value itself: a value given for this
+// render (the CLI's --event, a plugin's parameter) is the one the Sound
+// starts from, as it is for an Event Value without a control. The caller's
+// binding must be in the control's domain.
+[[nodiscard]] std::string applyPersistedVirtualControls(
+    RenderSettings& settings,
+    const talas::project::ProjectDocument& document)
 {
     settings.eventValues.reserve(settings.eventValues.size() + document.virtualControls.size());
     for (const auto& control : document.virtualControls)
     {
-        std::erase_if(settings.eventValues, [&](const EventValueBinding& binding) {
-            return binding.name == control.eventName;
-        });
-        settings.eventValues.push_back({control.eventName, control.value, control.domain});
+        const auto given = std::ranges::find_if(
+            settings.eventValues,
+            [&](const EventValueBinding& binding) {
+                return binding.name == control.eventName;
+            });
+        if (given == settings.eventValues.end())
+        {
+            settings.eventValues.push_back({control.eventName, control.value, control.domain});
+        }
+        else if (given->domain != control.domain)
+        {
+            return "Event Value binding has the wrong domain for its Virtual Control ("
+                + control.eventName + ")";
+        }
     }
+    return {};
 }
 
 [[nodiscard]] std::string applyDiscoveredEventValues(
@@ -219,7 +237,11 @@ ProjectRenderSettingsResult prepareProjectRenderSettings(
                 settings.musicalTime.tempo.front()
                     .microsecondsPerQuarter);
     }
-    applyPersistedVirtualControls(settings, document);
+    if (auto error = applyPersistedVirtualControls(settings, document);
+        !error.empty())
+    {
+        return {std::nullopt, std::move(error)};
+    }
     if (auto error =
             applyDiscoveredEventValues(settings, document, registry);
         !error.empty())

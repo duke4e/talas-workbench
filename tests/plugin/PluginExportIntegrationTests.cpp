@@ -1,11 +1,15 @@
 // ADR-0029: plugin export end to end. Exports a demo instrument and a demo
 // effect with the real templates into a temporary folder, loads each VST3
 // with JUCE's VST3 host and, on macOS, each AU registered in this process
-// (nothing is installed), and plays them.
+// (nothing is installed), and plays them. ADR-0030: a fake playhead on the
+// hosted instance checks that a plugin follows its host's tempo and
+// transport.
 
+#include "talas/core/BuiltinNodes.h"
 #include "talas/plugin/PluginExport.h"
 #include "talas/plugin/PluginPlatform.h"
 #include "talas/plugin/PluginPlist.h"
+#include "talas/project/ProjectJson.h"
 
 #include <juce_audio_processors/juce_audio_processors.h>
 
@@ -23,6 +27,7 @@
 #include <iterator>
 #include <stdexcept>
 #include <string>
+#include <thread>
 #include <vector>
 
 namespace
@@ -135,14 +140,14 @@ void requireParameterNames(juce::AudioPluginInstance& instance, const PluginExpo
     require(names == expected, what + " shows the project's controls as parameters, got" + shown);
 }
 
-[[nodiscard]] PluginExportResult exportDemo(
+[[nodiscard]] PluginExportResult exportProject(
     const fs::path& output,
-    std::string_view demo,
+    const fs::path& project,
     std::string name,
     PluginKind kind)
 {
     PluginExportRequest request;
-    request.projectPath = fs::path{TALAS_SOURCE_DIR} / "examples" / "demos" / (std::string{demo} + ".talas.json");
+    request.projectPath = project;
     request.name = std::move(name);
     request.manufacturer = "Talas Tests";
     request.kind = kind;
@@ -152,8 +157,18 @@ void requireParameterNames(juce::AudioPluginInstance& instance, const PluginExpo
     request.outputDirectory = output;
     request.templateDirectories = {fs::path{TALAS_PLUGIN_TEMPLATE_DIR}};
     auto result = exportPlugin(request);
-    require(result.ok(), "exporting " + std::string{demo} + " succeeds: " + result.error);
+    require(result.ok(), "exporting " + project.filename().string() + " succeeds: " + result.error);
     return result;
+}
+
+[[nodiscard]] PluginExportResult exportDemo(
+    const fs::path& output,
+    std::string_view demo,
+    std::string name,
+    PluginKind kind)
+{
+    return exportProject(output,
+        fs::path{TALAS_SOURCE_DIR} / "examples" / "demos" / (std::string{demo} + ".talas.json"), std::move(name), kind);
 }
 
 [[nodiscard]] fs::path bundleOf(const PluginExportResult& result, PluginFormat format)
@@ -436,6 +451,343 @@ void checkRawTemplate()
     instance->releaseResources();
 }
 
+// ADR-0030: the host's playhead, as a DAW's transport moves it.
+class FakePlayHead final : public juce::AudioPlayHead
+{
+public:
+    juce::Optional<PositionInfo> getPosition() const override
+    {
+        PositionInfo info;
+        info.setBpm(bpm);
+        info.setPpqPosition(ppq);
+        info.setTimeInSamples(samples);
+        info.setTimeInSeconds(static_cast<double>(samples) / sampleRate);
+        info.setIsPlaying(playing);
+        info.setTimeSignature(juce::AudioPlayHead::TimeSignature{4, 4});
+        info.setPpqPositionOfLastBarStart(std::floor(ppq / 4.0) * 4.0);
+        return info;
+    }
+
+    // One block later: a playing transport moves on at its tempo.
+    void advance(int frames)
+    {
+        if (!playing)
+            return;
+        ppq += static_cast<double>(frames) / sampleRate * bpm / 60.0;
+        samples += frames;
+    }
+
+    double bpm = 120.0;
+    double ppq = 0.0;
+    std::int64_t samples = 0;
+    bool playing = true;
+};
+
+struct Frame
+{
+    float left = 0.0F;
+    float right = 0.0F;
+};
+
+// One block with the playhead where it is, then the playhead one block on;
+// the block's last frame.
+Frame hostBlock(juce::AudioPluginInstance& instance, FakePlayHead& head, juce::AudioBuffer<float>* kept = nullptr)
+{
+    juce::AudioBuffer<float> buffer(2, blockSize);
+    buffer.clear();
+    juce::MidiBuffer midi;
+    instance.processBlock(buffer, midi);
+    head.advance(blockSize);
+    if (kept != nullptr)
+        *kept = buffer;
+    return {buffer.getSample(0, blockSize - 1), buffer.getSample(1, blockSize - 1)};
+}
+
+[[nodiscard]] bool near(float value, double expected, double tolerance = 1.0e-4)
+{
+    return std::abs(static_cast<double>(value) - expected) <= tolerance;
+}
+
+[[nodiscard]] talas::project::ProjectParameterExpression parameter(std::string id, std::string expression)
+{
+    talas::project::ProjectParameterExpression result;
+    result.parameterId = std::move(id);
+    result.expression = std::move(expression);
+    return result;
+}
+
+// A constant 1, as the runtime tests make one: a noise generator that does
+// not move.
+[[nodiscard]] talas::project::ProjectNode constantOne(std::string id)
+{
+    talas::project::ProjectParameterExpression type;
+    type.parameterId = "type";
+    type.choice = "hotPink";
+    return {std::move(id), "talas.noise", {
+        parameter("initialState", "1"),
+        parameter("frequency", "0 hz"),
+        parameter("centerValue", "0"),
+        parameter("scale", "1"),
+        std::move(type),
+    }};
+}
+
+[[nodiscard]] fs::path writeProject(const fs::path& path, const talas::project::ProjectDocument& document)
+{
+    const auto registry = talas::core::makeBuiltinNodeRegistry();
+    std::ofstream stream(path, std::ios::binary);
+    stream << talas::project::serializeProjectDocument(document, registry);
+    require(stream.good(), "the test project is written to " + path.string());
+    return path;
+}
+
+// Left is !Tempo / 1000, right half of !TransportPlaying, in a project of
+// 100 BPM.
+[[nodiscard]] fs::path transportProbe(const fs::path& folder)
+{
+    talas::project::ProjectDocument document;
+    document.metadata.title = "Transport Probe";
+    document.graph.nodes = {
+        constantOne("one"),
+        {"mix", "talas.stereoMix4", {
+            parameter("left", "1"), parameter("right", "1"),
+            parameter("pan1", "0"), parameter("scale1", "!Tempo / 1000"),
+            parameter("pan2", "0"), parameter("scale2", "0"),
+            parameter("pan3", "1"), parameter("scale3", "0.5 * !TransportPlaying"),
+            parameter("pan4", "1"), parameter("scale4", "0"),
+        }},
+        {"out", "talas.audioOutput", {}},
+    };
+    document.graph.connections = {
+        {"one", "audioOut", "mix", "in1"},
+        {"one", "audioOut", "mix", "in2"},
+        {"one", "audioOut", "mix", "in3"},
+        {"one", "audioOut", "mix", "in4"},
+        {"mix", "leftOut", "out", "audioIn"},
+        {"mix", "rightOut", "out", "rightIn"},
+    };
+    document.timeline.musicalTime.tempo = {{0, 600000}};
+    return writeProject(folder / "transport_probe.talas.json", document);
+}
+
+// A Timeline: a Score clip of a constant 1 from bar 2 (quarter 4) for a
+// bar, placed in musical ticks, in a project of 100 BPM.
+[[nodiscard]] fs::path timelineProbe(const fs::path& folder)
+{
+    talas::project::ProjectDocument document;
+    document.metadata.title = "Timeline Probe";
+    talas::project::ProjectSoundDefinition level;
+    level.definitionId = "level";
+    level.displayName = "Level";
+    level.graph.nodes = {constantOne("one")};
+    level.outputs = {{"audioOut", talas::core::PortType::Audio, "one", "audioOut"}};
+    document.soundDefinitions.push_back(std::move(level));
+    const auto ticks = [](std::uint64_t tick) {
+        return talas::project::ScoreTime{talas::project::ScoreTimeDomain::MusicalTicks, 0.0, tick};
+    };
+    document.timeline.score.tracks = {
+        {"track", "Track", talas::project::ScoreTrackKind::Track, talas::project::ScoreTimeDomain::MusicalTicks,
+            "master", 1, talas::project::ScoreOverlapMode::Layer},
+        {"master", "Master", talas::project::ScoreTrackKind::Master, talas::project::ScoreTimeDomain::MusicalTicks,
+            {}, 1, talas::project::ScoreOverlapMode::Layer},
+    };
+    document.timeline.score.clips = {
+        {"clip", "track", "level", ticks(4 * 960), ticks(4 * 960), ticks(0), ticks(0), ticks(0), 1},
+    };
+    document.timeline.musicalTime.tempo = {{0, 600000}};
+    return writeProject(folder / "timeline_probe.talas.json", document);
+}
+
+void checkHostTempoAndTransport(
+    juce::AudioPluginFormat& format,
+    const juce::PluginDescription& description,
+    const std::string& what,
+    bool vst3)
+{
+    auto instance = instantiate(format, description);
+    FakePlayHead head;
+    instance->setPlayHead(&head);
+    instance->setPlayConfigDetails(2, 2, sampleRate, blockSize);
+    instance->prepareToPlay(sampleRate, blockSize);
+    auto frame = hostBlock(*instance, head);
+    require(near(frame.left, 0.12) && near(frame.right, 0.5),
+        what + ": !Tempo is the host's 120 BPM and !TransportPlaying 1: " + std::to_string(frame.left) + ", "
+            + std::to_string(frame.right));
+    head.bpm = 90.0;
+    frame = hostBlock(*instance, head);
+    require(near(frame.left, 0.09), what + ": !Tempo follows a host tempo change at its block: "
+            + std::to_string(frame.left));
+    head.playing = false;
+    frame = hostBlock(*instance, head);
+    require(near(frame.right, 0.0) && near(frame.left, 0.09),
+        what + ": Stop makes !TransportPlaying 0 and the Sound runs on: " + std::to_string(frame.right));
+    head.playing = true;
+    frame = hostBlock(*instance, head);
+    require(near(frame.right, 0.5), what + ": Play makes it 1 again");
+    instance->releaseResources();
+
+    if (vst3)
+    {
+        // Through JUCE's AU host a plugin always reads a tempo, 120 BPM
+        // without a playhead; through VST3 it reads none.
+        instance->setPlayHead(nullptr);
+        instance->prepareToPlay(sampleRate, blockSize);
+        frame = hostBlock(*instance, head);
+        require(near(frame.left, 0.1) && near(frame.right, 0.5),
+            what + ": without a playhead the project's 100 BPM plays: " + std::to_string(frame.left));
+        instance->releaseResources();
+    }
+}
+
+// The echo of an impulse fed in after `settle` silent blocks, in frames
+// after the impulse.
+[[nodiscard]] int echoFrames(juce::AudioPluginInstance& instance, FakePlayHead& head)
+{
+    for (int block = 0; block < 40; ++block)
+        (void)hostBlock(instance, head);
+    juce::AudioBuffer<float> buffer(2, blockSize);
+    double peak = 0.0;
+    int peakFrame = -1;
+    for (int block = 0; block < 60; ++block)
+    {
+        buffer.clear();
+        if (block == 0)
+        {
+            buffer.setSample(0, 0, 1.0F);
+            buffer.setSample(1, 0, 1.0F);
+        }
+        juce::MidiBuffer midi;
+        instance.processBlock(buffer, midi);
+        head.advance(blockSize);
+        for (int index = 0; index < blockSize; ++index)
+        {
+            const auto sample = std::abs(static_cast<double>(buffer.getSample(0, index)));
+            if (sample > peak)
+            {
+                peak = sample;
+                peakFrame = block * blockSize + index;
+            }
+        }
+    }
+    require(peak > 0.1, "the delay echoes the impulse: peak " + std::to_string(peak));
+    return peakFrame;
+}
+
+void checkSyncedDelay(
+    juce::AudioPluginFormat& format,
+    const juce::PluginDescription& description,
+    const PluginExportResult& result,
+    const std::string& what)
+{
+    auto instance = instantiate(format, description);
+    FakePlayHead head;
+    instance->setPlayHead(&head);
+    setParameter(*instance, specNamed(result, "Sync"), 1.0);
+    setParameter(*instance, specNamed(result, "Feedback"), 0.0);
+    setParameter(*instance, specNamed(result, "Mix"), 1.0);
+    setParameter(*instance, specNamed(result, "Spread"), 1.0);
+    setParameter(*instance, specNamed(result, "Tone"), 16000.0);
+    instance->setPlayConfigDetails(2, 2, sampleRate, blockSize);
+    instance->prepareToPlay(sampleRate, blockSize);
+    // Time 0.375 s at 120 BPM is a dotted eighth, three sixteenths.
+    const auto at120 = echoFrames(*instance, head);
+    require(std::abs(at120 - 18000) < 64, what + ": synced at 120 BPM the echo comes three sixteenths later: "
+            + std::to_string(at120) + " frames");
+    head.bpm = 90.0;
+    const auto at90 = echoFrames(*instance, head);
+    require(std::abs(at90 - 24000) < 64, what + ": at the host's 90 BPM three sixteenths are 0.5 s: "
+            + std::to_string(at90) + " frames");
+    instance->releaseResources();
+}
+
+// The onset of the Timeline's clip in frames after Play, or -1.
+[[nodiscard]] int clipOnset(juce::AudioPluginInstance& instance, FakePlayHead& head, int blocks)
+{
+    juce::AudioBuffer<float> buffer;
+    for (int block = 0; block < blocks; ++block)
+    {
+        (void)hostBlock(instance, head, &buffer);
+        for (int index = 0; index < blockSize; ++index)
+        {
+            if (std::abs(buffer.getSample(0, index)) > 0.5F)
+                return block * blockSize + index;
+        }
+    }
+    return -1;
+}
+
+void checkHostDrivesTimeline(
+    juce::AudioPluginFormat& format,
+    const juce::PluginDescription& description,
+    const std::string& what)
+{
+    auto instance = instantiate(format, description);
+    FakePlayHead head;
+    head.playing = false;
+    head.bpm = 90.0;
+    head.ppq = 3.0;
+    instance->setPlayHead(&head);
+    instance->setPlayConfigDetails(2, 2, sampleRate, blockSize);
+    instance->prepareToPlay(sampleRate, blockSize);
+    // While the host is stopped the plugin stages the project again at the
+    // host's 90 BPM; the Sound waits, silent.
+    juce::AudioBuffer<float> buffer;
+    const auto waitUntil = std::chrono::steady_clock::now() + std::chrono::seconds(3);
+    while (std::chrono::steady_clock::now() < waitUntil)
+    {
+        (void)hostBlock(*instance, head, &buffer);
+        require(measure(buffer, 2).peak == 0.0, what + ": a Timeline is silent while the host is stopped");
+        std::this_thread::sleep_for(std::chrono::milliseconds(10));
+    }
+    // Play from quarter 3: the clip at quarter 4 sounds one beat later, at
+    // the host's tempo.
+    head.playing = true;
+    const auto onset = clipOnset(*instance, head, 100);
+    require(std::abs(onset - 32000) <= 16, what + ": Play starts the Timeline at the host's position, the clip one "
+            "90 BPM beat later: " + std::to_string(onset) + " frames");
+    // Stop in the clip, then Play: it sounds on at once.
+    for (int block = 0; block < 10; ++block)
+        (void)hostBlock(*instance, head);
+    head.playing = false;
+    (void)hostBlock(*instance, head, &buffer);
+    require(measure(buffer, 2).peak == 0.0, what + ": Stop stops the Timeline");
+    head.playing = true;
+    (void)hostBlock(*instance, head, &buffer);
+    require(near(buffer.getSample(0, 0), 1.0, 1.0e-3), what + ": Play from where it stopped sounds the clip at once");
+    // A locate into the clip while stopped: the plugin moves the Timeline
+    // there, the clip rebuilt, and Play sounds it at once.
+    head.playing = false;
+    head.ppq = 6.5;
+    const auto locateUntil = std::chrono::steady_clock::now() + std::chrono::milliseconds(1500);
+    while (std::chrono::steady_clock::now() < locateUntil)
+    {
+        (void)hostBlock(*instance, head, &buffer);
+        std::this_thread::sleep_for(std::chrono::milliseconds(10));
+    }
+    head.playing = true;
+    (void)hostBlock(*instance, head, &buffer);
+    require(near(buffer.getSample(0, 0), 1.0, 1.0e-3), what + ": Play after a locate into the clip sounds it at once");
+    // A loop's return to before the clip silences it again.
+    head.ppq = 2.0;
+    (void)hostBlock(*instance, head, &buffer);
+    require(measure(buffer, 2).peak < 1.0e-3, what + ": a jump back before the clip silences it");
+    instance->releaseResources();
+}
+
+void checkHostSync(
+    juce::AudioPluginFormat& format,
+    const std::function<juce::PluginDescription(const PluginExportResult&)>& describe,
+    const PluginExportResult& transport,
+    const PluginExportResult& delay,
+    const PluginExportResult& timeline,
+    const std::string& what,
+    bool vst3)
+{
+    checkHostTempoAndTransport(format, describe(transport), what + " Transport Probe", vst3);
+    checkSyncedDelay(format, describe(delay), delay, what + " Stereo Delay");
+    checkHostDrivesTimeline(format, describe(timeline), what + " Timeline Probe");
+}
+
 #if JUCE_MAC
 // Registers the AU in this process alone: AudioComponentRegister with the
 // factory from the bundle's binary, so no Components folder is touched.
@@ -469,7 +821,7 @@ void checkRawTemplate()
     return identifier;
 }
 
-void checkAudioUnit(const PluginExportResult& result, bool instrument)
+[[nodiscard]] juce::PluginDescription describeAudioUnit(const PluginExportResult& result)
 {
     void* handle = nullptr;
     const auto identifier = registerAudioUnitInProcess(result, handle);
@@ -477,7 +829,14 @@ void checkAudioUnit(const PluginExportResult& result, bool instrument)
     juce::OwnedArray<juce::PluginDescription> found;
     format.findAllTypesForFile(found, identifier);
     require(found.size() == 1, "JUCE's AU host finds the registered AU " + identifier.toStdString());
-    const auto description = *found[0];
+    // The binary stays loaded: the AU's registration names its factory.
+    return *found[0];
+}
+
+void checkAudioUnit(const PluginExportResult& result, bool instrument)
+{
+    juce::AudioUnitPluginFormat format;
+    const auto description = describeAudioUnit(result);
     require(description.name.toStdString() == result.identity->name, "the AU's name is the plugin's, got "
             + description.name.toStdString());
     require(description.manufacturerName.toStdString() == result.identity->manufacturer, "and its manufacturer");
@@ -488,7 +847,6 @@ void checkAudioUnit(const PluginExportResult& result, bool instrument)
         checkEffect(*instance, result, "AU");
     instance.reset();
     checkStateRoundTrip(format, description, result, "the AU");
-    // The binary stays loaded: the AU's registration names its factory.
 }
 #endif
 }
@@ -511,11 +869,30 @@ int main()
         checkVst3(instrument, scratch, true);
         checkVst3(effect, scratch, false);
         checkRawTemplate();
+
+        // ADR-0030: following the host's tempo and transport.
+        fs::create_directories(scratch / "projects");
+        const auto transport = exportProject(
+            scratch / "out", transportProbe(scratch / "projects"), "Talas Test Transport", PluginKind::Effect);
+        const auto delay = exportDemo(scratch / "out", "stereo_delay", "Talas Test Delay", PluginKind::Effect);
+        const auto timeline = exportProject(
+            scratch / "out", timelineProbe(scratch / "projects"), "Talas Test Timeline", PluginKind::Effect);
+        {
+            juce::VST3PluginFormat format;
+            checkHostSync(format, [](const PluginExportResult& result) {
+                return describeVst3(bundleOf(result, PluginFormat::Vst3));
+            }, transport, delay, timeline, "VST3", true);
+        }
 #if JUCE_MAC
         checkAudioUnit(instrument, true);
         checkAudioUnit(effect, false);
         std::cout << "AU: loaded in process with AudioComponentRegister and played\n";
+        {
+            juce::AudioUnitPluginFormat format;
+            checkHostSync(format, describeAudioUnit, transport, delay, timeline, "AU", false);
+        }
 #endif
+        std::cout << "host sync: tempo, transport, a synced delay and a Timeline follow a fake playhead\n";
     }
     catch (const std::exception& error)
     {

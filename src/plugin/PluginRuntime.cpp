@@ -2,10 +2,13 @@
 
 #include "talas/audio/ProjectAssetLoader.h"
 #include "talas/core/NodeRegistry.h"
+#include "talas/project/ProjectEventValueDiscovery.h"
 #include "talas/project/ProjectJson.h"
 #include "talas/runtime/ProjectRuntimeBridge.h"
 
 #include <algorithm>
+#include <cctype>
+#include <cmath>
 #include <fstream>
 #include <iterator>
 #include <sstream>
@@ -75,15 +78,23 @@ PluginStageOutcome stagePluginProject(
     render.sampleRate = settings.sampleRate;
     render.maxBlockFrames = settings.maxBlockFrames;
     render.eventValues = settings.eventValues;
-    auto loaded = talas::audio::loadReferencedProjectResourceSnapshots(document, registry, projectFile);
-    if (!loaded.ok())
+    if (settings.resources.has_value())
     {
-        outcome.error = loaded.failure.has_value()
-            ? "An asset could not be loaded: " + talas::audio::describeProjectAssetLoadFailure(*loaded.failure)
-            : std::string{"Loading the project's assets was cancelled"};
-        return outcome;
+        render.resourceSnapshots = *settings.resources;
     }
-    render.resourceSnapshots = std::move(loaded.snapshots);
+    else
+    {
+        auto loaded = talas::audio::loadReferencedProjectResourceSnapshots(document, registry, projectFile);
+        if (!loaded.ok())
+        {
+            outcome.error = loaded.failure.has_value()
+                ? "An asset could not be loaded: " + talas::audio::describeProjectAssetLoadFailure(*loaded.failure)
+                : std::string{"Loading the project's assets was cancelled"};
+            return outcome;
+        }
+        render.resourceSnapshots = std::move(loaded.snapshots);
+    }
+    outcome.resources = render.resourceSnapshots;
     const auto staged = bridge.compileAndStage(std::move(render));
     if (!staged.ok())
     {
@@ -119,5 +130,101 @@ std::size_t pluginPreparedBlockFrames(int hostMaximumBlockFrames) noexcept
     constexpr int smallest = 32;
     constexpr int largest = 2048;
     return static_cast<std::size_t>(std::clamp(hostMaximumBlockFrames, smallest, largest));
+}
+
+bool projectPlaysATimeline(const talas::project::ProjectDocument& document) noexcept
+{
+    return !document.timeline.score.clips.empty() || !document.timeline.score.automation.empty()
+        || !document.timeline.eventValues.empty();
+}
+
+namespace
+{
+// Whether an expression has a field in beats: `beat` or `beats` as a word,
+// not part of a longer name or an Event Value's.
+[[nodiscard]] bool hasBeatsUnit(std::string_view expression) noexcept
+{
+    const auto word = [](char character) {
+        return std::isalnum(static_cast<unsigned char>(character)) != 0 || character == '_';
+    };
+    for (std::size_t start = 0; start < expression.size();)
+    {
+        if (!word(expression[start]))
+        {
+            ++start;
+            continue;
+        }
+        auto end = start;
+        while (end < expression.size() && word(expression[end]))
+            ++end;
+        const auto token = expression.substr(start, end - start);
+        const auto named = start > 0 && (expression[start - 1] == '!' || expression[start - 1] == '?');
+        if (!named && (token == "beat" || token == "beats"))
+            return true;
+        start = end;
+    }
+    return false;
+}
+
+[[nodiscard]] bool graphHasBeatsUnit(const talas::project::ProjectGraph& graph) noexcept
+{
+    return std::ranges::any_of(graph.nodes, [](const talas::project::ProjectNode& node) {
+        return std::ranges::any_of(node.parameters, [](const talas::project::ProjectParameterExpression& parameter) {
+            return parameter.expression.has_value() && hasBeatsUnit(*parameter.expression);
+        });
+    });
+}
+}
+
+bool projectReadsTheMusicalMap(
+    const talas::project::ProjectDocument& document,
+    const talas::core::NodeRegistry& registry)
+{
+    if (projectPlaysATimeline(document) || !document.liveSetLibrary.liveSets.empty())
+        return true;
+    if (graphHasBeatsUnit(document.graph)
+        || std::ranges::any_of(document.soundDefinitions, [](const talas::project::ProjectSoundDefinition& definition) {
+               return graphHasBeatsUnit(definition.graph);
+           }))
+    {
+        return true;
+    }
+    return talas::project::projectReferencesEventValue(document, registry, "TimingClock")
+        || talas::project::projectReferencesEventValue(document, registry, "TimingClockDuration");
+}
+
+talas::project::ProjectMusicalTime hostMusicalTime(double tempoBpm, HostMeter meter) noexcept
+{
+    talas::project::ProjectMusicalTime musicalTime;
+    const auto microseconds = usableHostTempo(tempoBpm) ? std::llround(60000000.0 / tempoBpm)
+                                                        : std::int64_t{talas::project::defaultMicrosecondsPerQuarter};
+    musicalTime.tempo = {{0, static_cast<std::uint32_t>(std::clamp<std::int64_t>(microseconds,
+                                 talas::project::minimumMicrosecondsPerQuarter,
+                                 talas::project::maximumMicrosecondsPerQuarter))}};
+    const auto checked = hostMeter(meter.numerator, meter.denominator).value_or(HostMeter{});
+    musicalTime.meter = {{0, checked.numerator, checked.denominator}};
+    return musicalTime;
+}
+
+double musicalTimeStartTempo(const talas::project::ProjectMusicalTime& musicalTime) noexcept
+{
+    const auto microseconds = musicalTime.tempo.empty() ? talas::project::defaultMicrosecondsPerQuarter
+                                                        : musicalTime.tempo.front().microsecondsPerQuarter;
+    return 60000000.0 / static_cast<double>(std::max<std::uint32_t>(microseconds, 1));
+}
+
+HostMeter musicalTimeStartMeter(const talas::project::ProjectMusicalTime& musicalTime) noexcept
+{
+    if (musicalTime.meter.empty())
+        return {};
+    return {musicalTime.meter.front().numerator, musicalTime.meter.front().denominator};
+}
+
+bool sameMusicalMap(double tempoBpm, HostMeter meter, double otherTempoBpm, HostMeter otherMeter) noexcept
+{
+    const auto first = hostMusicalTime(tempoBpm, meter);
+    const auto second = hostMusicalTime(otherTempoBpm, otherMeter);
+    return first.tempo.front().microsecondsPerQuarter == second.tempo.front().microsecondsPerQuarter
+        && first.meter.front() == second.meter.front();
 }
 }

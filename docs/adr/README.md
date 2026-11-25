@@ -209,6 +209,7 @@ with ReverbSections, giving them Prezero too, and with HarmonicResonators.
 27. [ADR-0027: GA analyses are tables of our own layout](0027-ga-analysis-tables.md)
 28. [ADR-0028: A Tool is a state machine the project runs](0028-tools-as-state-machines.md)
 29. [ADR-0029: Plugins are exported by copying prebuilt template bundles](0029-plugin-export-from-template-bundles.md)
+30. [ADR-0030: Plugins follow their host's tempo and transport](0030-plugins-follow-the-host-transport.md)
 
 ADR-0027 keeps a GA analysis's parts (complex waveforms of 4096 samples, an
 amplitude envelope each, one frequency deviation envelope) in a table with a small header, read by GAOscillators with
@@ -226,3 +227,10 @@ copies one, embeds the project and a `talas-plugin.json` identity, and rewrites
 `Info.plist` and `moduleinfo.json`. The templates point JUCE's identity macros
 at that identity through JUCE's `JUCE_APP_CONFIG_HEADER` hook, so JUCE is not
 patched.
+
+ADR-0030 makes a plugin follow its host: `!Tempo`, `!SongPosition`,
+`!BeatPhase` and `!TransportPlaying` are built-in Event Values that the host's
+playhead sets at every block (the project's own transport in the Workbench),
+the host's Play, Stop and locates start, stop and place a project's Timeline,
+and a project that depends on its musical map is staged again at the host's
+tempo while the host is stopped.

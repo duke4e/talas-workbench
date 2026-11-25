@@ -127,6 +127,70 @@ plugin restores every parameter whose name still exists.
 The plugin's window shows its name and a knob or switch for each parameter, in
 the Workbench's look.
 
+## Tempo and transport
+
+A plugin follows its host's tempo and transport. The design is in
+[ADR-0030](adr/0030-plugins-follow-the-host-transport.md).
+
+### Event Values for tempo and position
+
+Four built-in Event Values give a project the tempo and the song position.
+Read them in any field, as you read `!KeyPitch`:
+
+| Event Value | Value | In a DAW | In the Workbench | Rendered with `talas_cli` |
+| --- | --- | --- | --- | --- |
+| `!Tempo` | Beats (quarter notes) a minute. | The host's tempo. | The project's tempo, from the Timeline's tempo map. | The tempo the project starts with. |
+| `!SongPosition` | Beats since the start of the song. Negative during a count-in. | The host's position. | The Timeline's position. | 0 |
+| `!BeatPhase` | How far the song is through the current beat, from 0 up to 1. | From the host's position. | From the Timeline's position. | 0 |
+| `!TransportPlaying` | 1 while the transport plays, 0 while it is stopped. | The host's play state. | 1, since a Sound plays only after Play. | 1 |
+
+A beat is always a quarter note, whatever the time signature. So a delay of
+one beat is `(60 / !Tempo) * 1 s`, and a dotted eighth is
+`(45 / !Tempo) * 1 s`. To render at another tempo with `talas_cli`, give it
+with `--event Tempo=140`.
+
+The values change at the start of each audio block, at the block where the
+host's tempo or position changes. A field that the Sound fixes when it
+starts keeps the value it started with, as for any Event Value.
+
+A project can still have its own control with one of these names. A Virtual
+Control or Timeline Event Value named `Tempo`, for example, stays the
+project's: the host does not change it. Rename it to let the host's tempo in.
+These names never become plugin parameters.
+
+### What follows the host
+
+- **Every project** gets the host's tempo and position in the four Event
+  Values above.
+- **A project with a Timeline** (Score clips, Score automation or Timeline
+  Event Values) plays only while the host plays, as it plays only between
+  Play and Stop in the Workbench. When the host starts, the Timeline starts
+  at the host's position. A locate or the host's loop moves it there too. A
+  count-in waits at the start of the song. Starting in the middle of a Score
+  clip sounds it from that point, after Stop and after a locate made while
+  the host is stopped.
+- **Any other project**, such as an effect or an instrument, keeps playing
+  while the host is stopped, so you can play and monitor through it. The
+  host's locates and loops do not restart it, so reverb and delay tails ring
+  on.
+- **The tempo map.** Score clips placed in bars and beats, Live Grid launches,
+  `!TimingClock` and fields in `beats` use the project's tempo map. While the
+  host is stopped, a plugin whose project uses one of these takes the host's
+  tempo and time signature as its tempo map, and starts again with it. This
+  takes a moment and happens only while the host is stopped. A tempo change
+  during playback reaches the four Event Values at once, but the Timeline
+  keeps its tempo until the host stops.
+- **Without a host tempo.** When the host has no playhead, or gives no tempo,
+  the project's own tempo and Timeline run from when the plugin starts, as
+  before.
+
+The plugin's window shows the host's tempo while the plugin follows it, for
+example "Playing at 48.0 kHz · host at 128.0 BPM".
+
+The demos use this: the [Arpeggiator](../examples/demos/README.md#instruments)
+steps at `!Tempo`, and the Stereo Delay's **Sync to tempo** switch keeps its
+echoes on the beat.
+
 ## What gets embedded
 
 The bundle's `Contents/Resources` holds:
@@ -151,8 +215,18 @@ export instead of producing a plugin that does not play.
   such as some reverb or detector settings (the demos' README lists them). A
   change to such a parameter takes effect only after the host restarts the
   plugin, for example when you change the sample rate or reload the plugin.
-- **Host transport.** The plugin does not follow the host's transport or
-  tempo. The project's own tempo and Timeline run from when the plugin starts.
+- **Tempo changes during playback.** The four tempo and position Event
+  Values follow at once, but a Timeline, Live Grid launches, `!TimingClock`
+  and fields in `beats` take a new host tempo only after the host stops (see
+  Tempo and transport). The Event Values change once per audio block.
+- **Jumps into a clip.** A locate or the host's loop during playback that
+  lands in the middle of a Score clip leaves that clip silent until the next
+  clip starts. Locate while the host is stopped to start inside a clip.
+- **Timeline loop.** A project's own Timeline loop still loops inside the
+  plugin. Turn it off to let the host's loop rule.
+- **AU tempo.** An AU always asks its host for a tempo. A host that has none
+  may answer 120 BPM (hosts built with JUCE do), and the plugin then follows
+  120 BPM rather than the project's tempo.
 - **Demo phrases.** The demo instruments play their phrase when the Sound
   starts, while their `Demo phrase` switch is on. Turn the switch off in the
   host, or set the control to off in the project before exporting.

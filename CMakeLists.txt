@@ -1164,6 +1164,7 @@ endif()
 add_library(talas_plugin_support
     src/plugin/PluginDefaultProjects.cpp
     src/plugin/PluginExport.cpp
+    src/plugin/PluginHostTransport.cpp
     src/plugin/PluginIdentity.cpp
     src/plugin/PluginParameters.cpp
     src/plugin/PluginPlatform.cpp
@@ -6492,6 +6493,16 @@ if(TALAS_BUILD_TESTS)
         TALAS_SOURCE_DIR="${CMAKE_CURRENT_SOURCE_DIR}")
     add_test(NAME talas_plugin_parameter_tests COMMAND talas_plugin_parameter_tests)
     set_tests_properties(talas_plugin_parameter_tests PROPERTIES TIMEOUT 120)
+
+    # ADR-0030: a plugin's reading of its host's tempo and transport.
+    add_executable(talas_plugin_host_transport_tests
+        tests/plugin/PluginHostTransportTests.cpp
+    )
+    target_link_libraries(talas_plugin_host_transport_tests PRIVATE talas_plugin_support)
+    target_compile_definitions(talas_plugin_host_transport_tests PRIVATE
+        TALAS_SOURCE_DIR="${CMAKE_CURRENT_SOURCE_DIR}")
+    add_test(NAME talas_plugin_host_transport_tests COMMAND talas_plugin_host_transport_tests)
+    set_tests_properties(talas_plugin_host_transport_tests PROPERTIES TIMEOUT 120)
 
     add_executable(talas_m3_examples_tests
         tests/cli/M3ExamplesTests.cpp

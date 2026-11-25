@@ -220,7 +220,9 @@ part of the tests.
 - Parameter changes are block-accurate. Event Values that a Sound fixes when
   it starts (the README of the demos lists some) take a new value only when
   the host prepares the plugin again.
-- The host's transport and tempo are not followed; the project's own tempo
-  and Timeline run from the plugin's start.
+- The host's tempo and transport are followed as
+  [ADR-0030](0030-plugins-follow-the-host-transport.md) decides: the
+  `!Tempo`, `!SongPosition`, `!BeatPhase` and `!TransportPlaying` Event Values
+  at every block, and a Timeline started, stopped and placed by the host.
 - AU export, signing and plist rewriting exist only on macOS; the Windows and
   Linux branches compile in principle but are unverified.

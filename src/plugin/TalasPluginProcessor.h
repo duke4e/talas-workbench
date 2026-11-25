@@ -2,6 +2,7 @@
 
 #include "plugin/TalasPluginRuntimeIdentity.h"
 #include "talas/core/NodeRegistry.h"
+#include "talas/plugin/PluginHostTransport.h"
 #include "talas/plugin/PluginParameters.h"
 #include "talas/plugin/PluginRuntime.h"
 
@@ -67,9 +68,22 @@ public:
     [[nodiscard]] bool engineReady() const noexcept { return engineReady_.load(std::memory_order_acquire); }
 
 private:
+    class HostTempoWorker;
+
     [[nodiscard]] static BusesProperties busesFor(PluginKind kind);
     void setStatus(juce::String status);
     void stopEngine();
+    // ADR-0030: reads the host's playhead for a block of `frames` frames.
+    void followHost(int frames) noexcept;
+    // On the host-tempo worker, while the host is stopped: stages the
+    // project again at the host's tempo and meter when they differ from the
+    // musical map it plays and its sound depends on it, and puts a Timeline
+    // where the host stands, its clips under way rebuilt, ready for Play.
+    void followHostTempo();
+    void followHostPosition();
+    void startHostTempoWorker();
+    void stopHostTempoWorker();
+    [[nodiscard]] PluginStageSettings stageSettings() const;
     void sendParameterChanges() noexcept;
     void sendMidi(const juce::MidiMessage& message, int frameOffset) noexcept;
     void releaseHeldNotes(int channel) noexcept;
@@ -97,6 +111,24 @@ private:
     std::vector<std::optional<std::uint32_t>> eventIds_;
     std::vector<double> sentValues_;
     std::array<std::bitset<128>, 16> heldNotes_{};
+
+    // ADR-0030: the host's transport. The audio thread reads the playhead;
+    // the host-tempo worker reads what it publishes.
+    HostTransportFollower follower_;
+    bool playsATimeline_ = false;
+    bool readsTheMusicalMap_ = false;
+    std::uint64_t lastActiveStageId_ = 0;
+    std::atomic<double> hostTempoBpm_{0.0};
+    std::atomic<double> hostQuarterPosition_{0.0};
+    std::atomic<std::uint32_t> hostMeter_{0};
+    std::atomic<bool> hostPlaying_{false};
+    // Under stageMutex_, which the audio thread never takes.
+    std::mutex stageMutex_;
+    double stagedTempoBpm_ = 120.0;
+    HostMeter stagedMeter_;
+    std::optional<std::pair<double, HostMeter>> refusedMap_;
+    std::vector<talas::core::ResourceSnapshotPtr> resources_;
+    std::unique_ptr<HostTempoWorker> hostTempoWorker_;
 
     mutable std::mutex statusMutex_;
     juce::String status_;

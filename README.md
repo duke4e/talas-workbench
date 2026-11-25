@@ -82,8 +82,9 @@ These are the milestones, in this order:
    synthesizers, in [`examples/demos`](examples/demos/README.md).
 3. **Plugin export** (done on macOS). Turn your own project into a VST3 or AU
    instrument or effect that runs in a DAW, from File > Export Plugin... or
-   `talas_cli export-plugin`, with no compiler; see
-   [Plugin export](docs/plugin-export.md). Windows and Linux are not verified yet.
+   `talas_cli export-plugin`, with no compiler. Plugins follow the host's
+   tempo and transport; see [Plugin export](docs/plugin-export.md). Windows
+   and Linux are not verified yet.
 4. **Releases.** macOS, Windows and Linux builds, made and checked by hand.
 
 ## Building from source

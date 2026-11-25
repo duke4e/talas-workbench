@@ -9087,7 +9087,7 @@ Subset: stateless zero-latency shaping from immutable in-memory finite tables wi
 <code>talas.saturator</code> · maturity <code>functionalSubset</code>
 Vendor Talas · origin <code>builtIn</code>
 
-Subset: up to four independent finite audio lanes through a bounded smoothstep threshold crossing half maximum at threshold, with static, direct EventValue or connected per-...
+Subset: a smooth threshold, not a clipper. Each of up to four audio lanes reads 0 below Threshold - TransitionWidth and rises along a smoothstep through 0.5 at Threshold to 1 at Threshold + TransitionWidth; Repressor gives 1 minus that. The output runs from 0 to 1, so a negative input gives 0 &#40;1 with Repressor&#41;. For symmetric soft clipping use a Waveshaper with the ATAN20 table.
 
 | capability | declared value |
 | --- | --- |

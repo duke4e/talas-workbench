@@ -280,6 +280,11 @@ std::string prototypeParameterHelp(std::string_view typeId, std::string_view par
         return "frequency (or fm): the Modulator input scales Frequency by 1 + Modulator x MaxMI, sample by sample; "
                "blank, none or off ignores the Modulator. A modulated frequency past half the sample rate folds back "
                "(aliases), as an unmodulated one does: the phase wraps and the render goes on";
+    if (typeId == "talas.saturator" && (parameterId == "threshold" || parameterId == "mode"))
+        return "a smooth threshold, not a clipper: the output is 0 below Threshold - TransitionWidth, 0.5 at "
+               "Threshold and 1 above Threshold + TransitionWidth, and Repressor turns that over; so it runs "
+               "from 0 to 1 and a negative input gives 0 (1 with Repressor). For symmetric soft clipping use a "
+               "Waveshaper with the ATAN20 table";
     return {};
 }
 

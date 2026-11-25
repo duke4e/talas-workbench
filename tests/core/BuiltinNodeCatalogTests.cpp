@@ -7544,6 +7544,18 @@ void testBuiltinParametersDeclareExpectedExpressionDomains()
                 "saturator", {"saturator", "repressor"}},
         },
         "talas.saturator");
+    // Its name and category suggest a soft clipper, which it is not: its
+    // output runs from 0 to 1 and a negative input reads 0 (2026-11-25).
+    const auto& saturatorSummary =
+        requireNodeType(registry, "talas.saturator").supportSummary;
+    require(saturatorSummary.find("a smooth threshold, not a clipper")
+                != std::string::npos
+            && saturatorSummary.find("a negative input gives 0 (1 with Repressor)")
+                != std::string::npos
+            && saturatorSummary.find("Waveshaper with the ATAN20 table")
+                != std::string::npos,
+        "the Saturator's summary should say that it is a one-sided smooth "
+        "threshold and point to a symmetric clipper");
     requirePorts(
         requireNodeType(registry, "talas.oscillator").inputs,
         {

@@ -7291,6 +7291,36 @@ void testOscillatorFrequencyModulationFoldsBackPastHalfTheRate()
         + std::to_string(worst) + " from it");
 }
 
+// A Saturator is a smooth threshold, not a soft clipper: its output is 0
+// below Threshold - TransitionWidth, rises along a smoothstep through 0.5
+// at Threshold to 1 at Threshold + TransitionWidth, and Repressor gives 1
+// minus that. So its output runs from 0 to 1 and a negative input reads 0,
+// as the node's summary and help say (2026-11-25).
+void testSaturatorIsAOneSidedSmoothThreshold()
+{
+    // Values exact in float, the realtime input format.
+    const std::vector<double> input{-1.0, -0.5, 0.0, 0.125, 0.1875, 0.25, 0.3125, 0.375, 0.5, 1.0};
+    const std::vector<double> rises{0.0, 0.0, 0.0, 0.0, 0.15625, 0.5, 0.84375, 1.0, 1.0, 1.0};
+    for (const auto repressor : {false, true})
+    {
+        const auto shaped = render(graph({node("in", "talas.audioInput"),
+                                           node("shape", "talas.saturator",
+                                               {expression("threshold", "0.25"), expression("transitionWidth", "0.125"),
+                                                   choice("mode", repressor ? "repressor" : "saturator")})},
+                                       {connection("in", "audioOut", "shape", "audioIn"),
+                                           connection("shape", "audioOut", "out", "audioIn")}),
+            input.size(), {sampleRate, 64}, {input})
+                                .left;
+        for (std::size_t frame = 0; frame < input.size(); ++frame)
+        {
+            const auto expected = repressor ? 1.0 - rises[frame] : rises[frame];
+            require(std::abs(shaped[frame] - expected) < 1.0e-12,
+                std::string{repressor ? "Repressor" : "Saturator"} + " of " + std::to_string(input[frame])
+                    + " should be " + std::to_string(expected) + ", not " + std::to_string(shaped[frame]));
+        }
+    }
+}
+
 // A MultisegmentEnvelope is triggered when its Gate goes from zero
 // to nonzero, and the Gate must return to zero before it retriggers.
 void testMultisegmentEnvelopeRetriggersFromZero()
@@ -25121,6 +25151,7 @@ int main()
     run(testPulseGeneratorMaxMIFollowsItsEventValue, "testPulseGeneratorMaxMIFollowsItsEventValue");
     run(testOscillatorFrequencyModulation, "testOscillatorFrequencyModulation");
     run(testOscillatorFrequencyModulationFoldsBackPastHalfTheRate, "testOscillatorFrequencyModulationFoldsBackPastHalfTheRate");
+    run(testSaturatorIsAOneSidedSmoothThreshold, "testSaturatorIsAOneSidedSmoothThreshold");
     run(testMultisegmentEnvelopeRetriggersFromZero, "testMultisegmentEnvelopeRetriggersFromZero");
     run(testScriptLevelsFollowEventValues, "testScriptLevelsFollowEventValues");
     run(testChanneller, "testChanneller");

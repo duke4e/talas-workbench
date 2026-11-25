@@ -309,6 +309,13 @@ void testInfoHintsExposeCompleteDescriptorFacts()
             && modulation.find("folds back") != std::string::npos
             && modulation == talas::app::prototypeParameterHelp("talas.oscillator", "maxMI"),
         "the fly-by help over an Oscillator's Modulation should say how it modulates and that it folds back past Nyquist");
+    // A Saturator is a smooth threshold from 0 to 1, not a clipper
+    // (2026-11-25).
+    const auto saturator = talas::app::prototypeParameterHelp("talas.saturator", "threshold");
+    require(saturator.find("not a clipper") != std::string::npos
+            && saturator.find("a negative input gives 0") != std::string::npos
+            && saturator == talas::app::prototypeParameterHelp("talas.saturator", "mode"),
+        "the fly-by help over a Saturator should say that it is a smooth threshold whose negative input reads 0");
 }
 
 void testCompatibilityAndAdaptersUseRegisteredDescriptors()

@@ -9288,7 +9288,7 @@ Full runtime coverage; no tracked subset restriction.
 <code>talas.stereoDispersiveResonator</code> · maturity <code>utility</code>
 Vendor Talas · origin <code>builtIn</code>
 
-Talas utility.
+Talas utility: two comb loops a Detune apart ring at Frequency for Decay time, whatever Damping and Dispersion. Damping places the loop low-pass, it is not an amount: 1 leaves the loop open and 0 sets a 20 Hz cut-off that mutes the ring. The input is DC-blocked at 20 Hz.
 
 | capability | declared value |
 | --- | --- |

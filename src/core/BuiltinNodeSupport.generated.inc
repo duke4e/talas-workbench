@@ -327,7 +327,7 @@ TALAS_NODE_SUPPORT("talas.splitSurroundAntialiasedOscillator", FunctionalSubset,
 TALAS_NODE_SUPPORT("talas.splitSurroundOscillator", FunctionalSubset, "Subset: one immutable mono or stereo cycle table, or two through eight equal-length immutable mono split tables, is sampled with one shared periodic OscillatorTimeIndex phase.")
 TALAS_NODE_SUPPORT("talas.splitSurroundSampleWithTimeIndex", FunctionalSubset, "Subset: compiler-expanded two through eight ordered static mono file channels share one audio-rate bipolar TimeIndex, with equal-length immutable table validation, per-channel...")
 TALAS_NODE_SUPPORT("talas.sqrtMagnitude", FullRuntime, "Full runtime coverage; no tracked subset restriction.")
-TALAS_NODE_SUPPORT("talas.stereoDispersiveResonator", Utility, "Talas utility.")
+TALAS_NODE_SUPPORT("talas.stereoDispersiveResonator", Utility, "Talas utility: two comb loops a Detune apart ring at Frequency for Decay time, whatever Damping and Dispersion. Damping places the loop low-pass, it is not an amount: 1 leaves the loop open and 0 sets a 20 Hz cut-off that mutes the ring. The input is DC-blocked at 20 Hz.")
 TALAS_NODE_SUPPORT("talas.stereoInOutput4", FunctionalSubset, "Subset: terminal offline and prepared-realtime pair routing where mono out12/out34 inputs are mirrored to channel pairs 1/2 and 3/4 with exact zero-latency prepared ancestry.")
 TALAS_NODE_SUPPORT("talas.stereoInOutput8", FunctionalSubset, "Subset: terminal offline and prepared-realtime pair routing where mono out12/out34/out56/out78 inputs are mirrored to channel pairs 1/2, 3/4, 5/6, and 7/8 with exact zero-...")
 TALAS_NODE_SUPPORT("talas.stereoMix2", FullRuntime, "Full runtime coverage; no tracked subset restriction.")

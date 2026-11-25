@@ -201,12 +201,40 @@ void testKernelDelayDecayWidthMixAndReset()
         requireNear(output.left, output.right, 0.0,
             "zero detune should keep both branches identical");
     }
-    requireNear(decayResponse[8], 1.0, 1.0e-12,
+    // The excitation is the input through the 20 Hz DC blocker; each wet
+    // sample is the excitation one exact period earlier plus the decayed
+    // wet sample before it, so the tail falls 60 dB in the decay time.
+    const auto blockerPole = std::exp(-2.0 * 3.14159265358979323846 * 20.0 / 8000.0);
+    const auto blockerGain = 0.5 * (1.0 + blockerPole);
+    const auto feedback = std::pow(0.001, 1.0 / (0.1 * 1000.0));
+    std::array<double, 809> excitation{};
+    std::array<double, 809> expectedDecay{};
+    for (std::size_t frame = 0; frame < excitation.size(); ++frame)
+    {
+        excitation[frame] = blockerGain * ((frame == 0 ? 1.0 : 0.0)
+                                - (frame == 1 ? 1.0 : 0.0))
+            + (frame == 0 ? 0.0 : blockerPole * excitation[frame - 1]);
+        if (frame >= 8)
+        {
+            expectedDecay[frame] =
+                excitation[frame - 8] + feedback * expectedDecay[frame - 8];
+        }
+    }
+    for (std::size_t frame = 0; frame < 8; ++frame)
+        requireNear(decayResponse[frame], 0.0, 0.0,
+            "no wet signal should arrive before one period");
+    requireNear(decayResponse[8], blockerGain, 1.0e-12,
         "first wet impulse should arrive after one exact period");
     require(std::abs(decayResponse[16]) < std::abs(decayResponse[8]),
         "feedback tail should decay each loop");
-    requireNear(std::abs(decayResponse[808]), 0.001, 1.0e-10,
-        "60 dB decay time should reach one-thousandth amplitude");
+    for (std::size_t frame = 0; frame < decayResponse.size(); ++frame)
+    {
+        requireNear(decayResponse[frame], expectedDecay[frame], 1.0e-12,
+            "the comb should repeat its DC-blocked excitation every period, "
+            "60 dB down after the decay time");
+    }
+    requireNear(std::pow(feedback, 100.0), 0.001, 1.0e-12,
+        "100 periods of 1 ms should make the 0.1 s decay time");
 
     talas::dsp::StereoDispersiveResonator dry;
     require(dry.prepare(8000.0), "dry endpoint resonator should prepare");
@@ -396,22 +424,25 @@ void testKernelDampingDispersionBoundsAndAllocationFailure()
             && actual.right == expected.right,
         "C172 failed sample should retain both branch states exactly");
 
+    // A 20 s decay keeps the shorter branch's feedback near one, so its
+    // first echo of a DC-blocked 0.9 * max still overflows at frame 77
+    // while the longer branch, not yet echoing, succeeds; 0.9 * max keeps
+    // the step to the blocker's negative tail within range afterwards.
+    const auto lateInput = 0.9 * std::numeric_limits<double>::max();
     talas::dsp::StereoDispersiveResonator lateCandidate;
     talas::dsp::StereoDispersiveResonator lateReference;
     require(lateCandidate.prepare(8000.0) && lateReference.prepare(8000.0),
         "two-branch late-failure fixtures should prepare");
     for (std::size_t frame = 0; frame < 77; ++frame)
     {
-        const auto input = frame == 0
-            ? std::numeric_limits<double>::max()
-            : 0.0;
+        const auto input = frame == 0 ? lateInput : 0.0;
         talas::dsp::StereoDispersiveResonatorFrame lateActual;
         talas::dsp::StereoDispersiveResonatorFrame lateExpected;
         require(lateCandidate.processSample(
-                    input, 100.0, 0.01, 100.0, 1.0, 0.0, 1.0, 1.0,
+                    input, 100.0, 20.0, 100.0, 1.0, 0.0, 1.0, 1.0,
                     1.0, lateActual)
                 && lateReference.processSample(
-                    input, 100.0, 0.01, 100.0, 1.0, 0.0, 1.0, 1.0,
+                    input, 100.0, 20.0, 100.0, 1.0, 0.0, 1.0, 1.0,
                     1.0, lateExpected)
                 && lateActual.left == lateExpected.left
                 && lateActual.right == lateExpected.right,
@@ -420,8 +451,8 @@ void testKernelDampingDispersionBoundsAndAllocationFailure()
     }
     talas::dsp::StereoDispersiveResonatorFrame lateRejected{172.0, -172.0};
     require(!lateCandidate.processSample(
-                std::numeric_limits<double>::max(),
-                100.0, 0.01, 100.0, 1.0, 0.0, 1.0, 1.0, 1.0,
+                lateInput,
+                100.0, 20.0, 100.0, 1.0, 0.0, 1.0, 1.0, 1.0,
                 lateRejected)
             && lateRejected.left == 172.0
             && lateRejected.right == -172.0,
@@ -432,15 +463,159 @@ void testKernelDampingDispersionBoundsAndAllocationFailure()
         talas::dsp::StereoDispersiveResonatorFrame lateActual;
         talas::dsp::StereoDispersiveResonatorFrame lateExpected;
         require(lateCandidate.processSample(
-                    0.0, 100.0, 0.01, 100.0, 1.0, 0.0, 1.0, 1.0,
+                    0.0, 100.0, 20.0, 100.0, 1.0, 0.0, 1.0, 1.0,
                     1.0, lateActual)
                 && lateReference.processSample(
-                    0.0, 100.0, 0.01, 100.0, 1.0, 0.0, 1.0, 1.0,
+                    0.0, 100.0, 20.0, 100.0, 1.0, 0.0, 1.0, 1.0,
                     1.0, lateExpected)
                 && lateActual.left == lateExpected.left
                 && lateActual.right == lateExpected.right,
             "second-branch failure must retain both branch continuations exactly");
     }
+}
+
+// The frequency of the strongest component within 3 percent of a guess,
+// from a Hann-windowed DFT searched by golden section.
+double strongestFrequencyNear(
+    const std::vector<double>& signal,
+    std::size_t start,
+    std::size_t count,
+    double sampleRate,
+    double guess)
+{
+    constexpr double pi = 3.14159265358979323846;
+    const auto magnitude = [&](double frequency) {
+        double real = 0.0;
+        double imaginary = 0.0;
+        for (std::size_t index = 0; index < count; ++index)
+        {
+            const auto window = 0.5
+                - 0.5 * std::cos(2.0 * pi * static_cast<double>(index)
+                    / static_cast<double>(count - 1));
+            const auto phase = 2.0 * pi * frequency
+                * static_cast<double>(start + index) / sampleRate;
+            real += signal[start + index] * window * std::cos(phase);
+            imaginary += signal[start + index] * window * std::sin(phase);
+        }
+        return std::hypot(real, imaginary);
+    };
+    auto low = guess * 0.97;
+    auto high = guess * 1.03;
+    for (int iteration = 0; iteration < 80; ++iteration)
+    {
+        const auto lower = low + (high - low) / 3.0;
+        const auto upper = high - (high - low) / 3.0;
+        if (magnitude(lower) < magnitude(upper))
+            low = lower;
+        else
+            high = upper;
+    }
+    return 0.5 * (low + high);
+}
+
+// Damping's loop low-pass and Dispersion's all-passes delay the loop, and
+// the resonator rang flat of its Frequency: 440 Hz at the default Damping
+// 0.7 rang 37 cents low, and with Dispersion 1 56 cents low (2026-11-25).
+// Its comb also rang at 0 Hz, so a burst's DC built up into an offset that
+// outlasted the ring: at Damping 0, a 20 Hz loop low-pass, the output was
+// little more than that offset. Each loop now gives back its filters'
+// delay at its own frequency, and the excitation is DC-blocked.
+void testKernelTuningHoldsAcrossDampingAndDispersionWithoutDc()
+{
+    constexpr double sampleRate = 48000.0;
+    constexpr double pi = 3.14159265358979323846;
+    const auto ring = [&](double frequency, double detune, double damping,
+                          double dispersion, double width,
+                          std::size_t frames, bool constantInput) {
+        talas::dsp::StereoDispersiveResonator resonator;
+        require(resonator.prepare(sampleRate),
+            "tuning resonator should prepare");
+        std::array<std::vector<double>, 2> output{
+            std::vector<double>(frames), std::vector<double>(frames)};
+        for (std::size_t frame = 0; frame < frames; ++frame)
+        {
+            // A one-millisecond raised-cosine burst, all positive.
+            const auto input = constantInput ? 0.1
+                : frame < 48
+                ? 0.5 - 0.5 * std::cos(2.0 * pi * static_cast<double>(frame) / 47.0)
+                : 0.0;
+            talas::dsp::StereoDispersiveResonatorFrame rendered;
+            require(resonator.processSample(input, frequency, 1.5, detune,
+                        damping, dispersion, width, 1.0, 1.0, rendered),
+                "tuning resonator should process");
+            output[0][frame] = rendered.left;
+            output[1][frame] = rendered.right;
+        }
+        return output;
+    };
+    const auto cents = [](double actual, double expected) {
+        return 1200.0 * std::log2(actual / expected);
+    };
+
+    struct Setting
+    {
+        double frequency;
+        double damping;
+        double dispersion;
+    };
+    for (const auto setting : {
+             Setting{440.0, 0.7, 0.0}, Setting{440.0, 1.0, 0.5},
+             Setting{440.0, 0.7, 1.0}, Setting{110.0, 0.7, 0.0},
+             Setting{110.0, 0.7, 1.0}, Setting{1760.0, 1.0, 0.5}})
+    {
+        const auto rendered = ring(setting.frequency, 0.0, setting.damping,
+            setting.dispersion, 1.0, 24480, false);
+        const auto measured = strongestFrequencyNear(
+            rendered[0], 480, 24000, sampleRate, setting.frequency);
+        require(std::abs(cents(measured, setting.frequency)) < 1.0,
+            "the fundamental should ring at Frequency with Damping "
+                + std::to_string(setting.damping) + " and Dispersion "
+                + std::to_string(setting.dispersion) + " at "
+                + std::to_string(setting.frequency) + " Hz, not "
+                + std::to_string(cents(measured, setting.frequency))
+                + " cents off");
+    }
+
+    // Detune splits the two loops symmetrically about Frequency, each in
+    // tune whatever its filters; at full Width the left channel is the
+    // lower loop and the right the upper.
+    const auto detuned = ring(440.0, 100.0, 0.7, 1.0, 1.0, 24480, false);
+    const std::array branchFrequencies{
+        440.0 / std::exp2(100.0 / 2400.0), 440.0 * std::exp2(100.0 / 2400.0)};
+    for (std::size_t channel = 0; channel < detuned.size(); ++channel)
+    {
+        const auto expected = branchFrequencies[channel];
+        const auto measured = strongestFrequencyNear(
+            detuned[channel], 480, 24000, sampleRate, expected);
+        require(std::abs(cents(measured, expected)) < 1.0,
+            "each detuned loop should ring at its own frequency, not "
+                + std::to_string(cents(measured, expected)) + " cents off");
+    }
+
+    // The reported setting: Damping, Dispersion and Detune at 0.
+    for (const auto damping : {0.0, 0.7, 1.0})
+    {
+        const auto burst = ring(440.0, 0.0, damping, 0.0, 1.0, 48000, false);
+        double mean = 0.0;
+        double peak = 0.0;
+        for (std::size_t frame = 480; frame < burst[0].size(); ++frame)
+        {
+            mean += burst[0][frame];
+            peak = std::max(peak, std::abs(burst[0][frame]));
+        }
+        mean /= static_cast<double>(burst[0].size() - 480);
+        require(peak > 0.0 && std::abs(mean) < 0.01 * peak,
+            "a positive burst should ring without a DC offset at Damping "
+                + std::to_string(damping) + ": mean "
+                + std::to_string(mean) + ", peak " + std::to_string(peak));
+    }
+    const auto offset = ring(440.0, 0.0, 1.0, 0.0, 1.0, 96000, true);
+    double settled = 0.0;
+    for (std::size_t frame = 72000; frame < offset[0].size(); ++frame)
+        settled = std::max(settled, std::abs(offset[0][frame]));
+    require(settled < 0.01,
+        "a constant input of 0.1 should not build up an offset; the tail "
+        "still reaches " + std::to_string(settled));
 }
 
 void testOfflinePreparedParityDynamicControlAndTransportReset()
@@ -1392,6 +1567,7 @@ int main()
     {
         testKernelDelayDecayWidthMixAndReset();
         testKernelDampingDispersionBoundsAndAllocationFailure();
+        testKernelTuningHoldsAcrossDampingAndDispersionWithoutDc();
         testOfflinePreparedParityDynamicControlAndTransportReset();
         testAllEightDirectSchedulesAreBitExactAcrossPartitionsAndReset();
         testFrameZeroSchedulesSeedAllEightLiveExpressions();

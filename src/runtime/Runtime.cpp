@@ -66643,7 +66643,7 @@ void PreparedRuntimeGraph::sealSamplingAuthorityForCompiler(
             && descriptor->category == "Effects"
             && descriptor->supportLevel == talas::core::NodeSupportLevel::Utility
             && descriptor->supportSummary
-                == "Talas utility."
+                == "Talas utility: two comb loops a Detune apart ring at Frequency for Decay time, whatever Damping and Dispersion. Damping places the loop low-pass, it is not an amount: 1 leaves the loop open and 0 sets a 20 Hz cut-off that mutes the ring. The input is DC-blocked at 20 Hz."
             && descriptor->inputs.size() == 9
             && exactPort(descriptor->inputs[0], "audioIn", talas::core::PortType::Audio, true)
             && exactPort(descriptor->inputs[1], "frequency", talas::core::PortType::Control, false)

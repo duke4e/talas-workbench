@@ -295,6 +295,13 @@ void testInfoHintsExposeCompleteDescriptorFacts()
     require(noise.find("white:") != std::string::npos && noise.find("pink: the same energy in every octave") != std::string::npos
             && noise.find("hotPink:") != std::string::npos && talas::app::prototypeParameterHelp("talas.noise", "scale").empty(),
         "the fly-by help should explain the differences between white, pink and hot pink noise");
+    // A resonator's Damping of 1 is the open loop, which its name does not
+    // say (2026-11-25).
+    const auto damping = talas::app::prototypeParameterHelp("talas.stereoDispersiveResonator", "damping");
+    require(damping.find("not an amount of damping") != std::string::npos
+            && damping.find("1 leaves the loop open") != std::string::npos
+            && damping.find("0, a 20 Hz cut-off") != std::string::npos,
+        "the fly-by help over a resonator's Damping should say that 1 is the open loop and 0 the darkest");
 }
 
 void testCompatibilityAndAdaptersUseRegisteredDescriptors()

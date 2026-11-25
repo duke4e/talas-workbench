@@ -271,6 +271,11 @@ std::string prototypeParameterHelp(std::string_view typeId, std::string_view par
         return "white: every value equally likely, the same energy in every band of frequencies of the same width; "
                "pink: the same energy in every octave, so it sounds darker than white; "
                "hotPink: each value most likely a small step from the one before, a large step less likely";
+    if (typeId == "talas.stereoDispersiveResonator" && parameterId == "damping")
+        return "where the loop's low-pass sits, not an amount of damping: 1 leaves the loop open, the brightest "
+               "and longest ring; lower values pull the cut-off down to 20 Hz x (0.45 x sample rate / 20 Hz) ^ "
+               "Damping, darker and shorter; 0, a 20 Hz cut-off, mutes the ring within a few periods. "
+               "The pitch stays at Frequency";
     return {};
 }
 

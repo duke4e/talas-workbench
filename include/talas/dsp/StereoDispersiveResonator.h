@@ -16,12 +16,34 @@ struct StereoDispersiveResonatorFrame
     double right = 0.0;
 };
 
+// Two detuned comb loops, each a fractional delay, an optional one-pole
+// low-pass (Damping) and two optional first-order all-passes (Dispersion).
+//
+// Damping is the loop low-pass's position, not an amount of damping: 1
+// leaves the loop open (brightest, longest ring) and lower values pull its
+// cut-off down to 20 Hz * (0.45 * sampleRate / 20 Hz) ^ damping, so 0, a
+// 20 Hz cut-off, mutes the ring within a few periods.
+//
+// Each loop's delay is shortened by the phase delay its low-pass and
+// all-passes add at that loop's frequency, so the fundamental rings at
+// Frequency (Detune apart) whatever Damping and Dispersion are; Dispersion
+// still moves the upper partials. The delay keeps at least one sample, so
+// near the top of the range with strong Dispersion (above about 0.36 times
+// the sample rate) the fundamental falls flat.
+//
+// A comb loop also resonates at 0 Hz, and the loop low-pass passes 0 Hz
+// unchanged, so any DC or sub-audio content in the input built up into a
+// slowly decaying offset. The excitation is therefore DC-blocked first: a
+// one-pole high-pass at 20 Hz, the lowest Frequency, with unity gain at
+// Nyquist. The dry signal is not filtered.
 class StereoDispersiveResonator
 {
 public:
     static constexpr double minimumSampleRate = 8000.0;
     static constexpr double maximumSampleRate = 384000.0;
     static constexpr double minimumFrequency = 20.0;
+    static constexpr double dcBlockerFrequency = 20.0;
+    static constexpr double minimumTunedDelay = 1.0;
 
     [[nodiscard]] bool prepare(double sampleRate) noexcept
     {
@@ -52,6 +74,9 @@ public:
 
         branches_ = std::move(candidates);
         sampleRate_ = sampleRate;
+        dcBlockerPole_ = std::exp(
+            -2.0 * std::numbers::pi * dcBlockerFrequency / sampleRate);
+        dcBlockerGain_ = 0.5 * (1.0 + dcBlockerPole_);
         prepared_ = true;
         reset();
         return true;
@@ -66,6 +91,8 @@ public:
             branch.dampingState = 0.0;
             branch.allpassState = {};
         }
+        dcBlockerInput_ = 0.0;
+        dcBlockerOutput_ = 0.0;
     }
 
     [[nodiscard]] bool copyProcessingStateFrom(
@@ -96,6 +123,8 @@ public:
             destination.dampingState = sourceBranch.dampingState;
             destination.allpassState = sourceBranch.allpassState;
         }
+        dcBlockerInput_ = source.dcBlockerInput_;
+        dcBlockerOutput_ = source.dcBlockerOutput_;
         return true;
     }
 
@@ -136,11 +165,16 @@ public:
             return false;
         }
 
+        const auto excitation = dcBlockerGain_ * (input - dcBlockerInput_)
+            + dcBlockerPole_ * dcBlockerOutput_;
+        if (!std::isfinite(excitation))
+            return false;
+
         std::array<BranchResult, 2> results;
         for (std::size_t index = 0; index < branches_.size(); ++index)
         {
             if (!processBranch(
-                    branches_[index], input, branchFrequencies[index],
+                    branches_[index], excitation, branchFrequencies[index],
                     decayTime, damping, dispersion, inputGain, results[index]))
             {
                 return false;
@@ -170,6 +204,8 @@ public:
             branch.dampingState = result.dampingState;
             branch.allpassState = result.allpassState;
         }
+        dcBlockerInput_ = input;
+        dcBlockerOutput_ = excitation;
         output = candidate;
         return true;
     }
@@ -225,6 +261,25 @@ private:
             + (branch.delayLine[right] - branch.delayLine[left]) * fraction;
     }
 
+    // The phase lag, in radians at angular frequency omega, of the one-pole
+    // low-pass y += alpha * (x - y), whose pole is 1 - alpha.
+    [[nodiscard]] static double lowPassLag(double alpha, double omega) noexcept
+    {
+        const auto pole = 1.0 - alpha;
+        return std::atan2(pole * std::sin(omega), 1.0 - pole * std::cos(omega));
+    }
+
+    // The phase lag of the all-pass (c + z^-1) / (1 + c z^-1).
+    [[nodiscard]] static double allpassLag(
+        double coefficient,
+        double omega) noexcept
+    {
+        const auto sine = std::sin(omega);
+        const auto cosine = std::cos(omega);
+        return std::atan2(sine, coefficient + cosine)
+            - std::atan2(coefficient * sine, 1.0 + coefficient * cosine);
+    }
+
     [[nodiscard]] bool processBranch(
         const Branch& branch,
         double input,
@@ -235,48 +290,69 @@ private:
         double inputGain,
         BranchResult& result) const noexcept
     {
-        const auto delaySamples = sampleRate_ / frequency;
-        if (!std::isfinite(delaySamples) || delaySamples < 2.0
-            || delaySamples > static_cast<double>(branch.delayLine.size() - 4))
+        const auto period = sampleRate_ / frequency;
+        if (!std::isfinite(period) || period < 2.0
+            || period > static_cast<double>(branch.delayLine.size() - 4))
         {
             return false;
         }
-        const auto delayed = readDelay(branch, delaySamples);
 
-        auto dampingState = delayed;
-        if (damping < 1.0)
+        const auto damped = damping < 1.0;
+        auto alpha = 1.0;
+        if (damped)
         {
             const auto maximumCutoff = sampleRate_ * 0.45;
             const auto cutoff = minimumFrequency
                 * std::pow(maximumCutoff / minimumFrequency, damping);
-            const auto alpha = 1.0
+            alpha = 1.0
                 - std::exp(-2.0 * std::numbers::pi * cutoff / sampleRate_);
+        }
+        const auto dispersed = dispersion != 0.0;
+        const auto coefficient = 1.0 - 0.75 * dispersion;
+
+        // The loop's filters delay the fundamental too; the delay line
+        // gives that time back so the loop's period stays 1 / frequency.
+        auto delaySamples = period;
+        if (damped || dispersed)
+        {
+            const auto omega = 2.0 * std::numbers::pi / period;
+            auto lag = damped ? lowPassLag(alpha, omega) : 0.0;
+            if (dispersed)
+                lag += 2.0 * allpassLag(coefficient, omega);
+            delaySamples = std::max(period - lag / omega, minimumTunedDelay);
+            if (!std::isfinite(lag) || !std::isfinite(delaySamples))
+                return false;
+        }
+        const auto delayed = readDelay(branch, delaySamples);
+
+        auto dampingState = delayed;
+        if (damped)
+        {
             dampingState = branch.dampingState
                 + alpha * (delayed - branch.dampingState);
         }
 
-        auto dispersed = dampingState;
+        auto dispersedValue = dampingState;
         auto allpassState = branch.allpassState;
-        if (dispersion == 0.0)
+        if (!dispersed)
         {
             allpassState = {};
         }
         else
         {
-            const auto coefficient = 1.0 - 0.75 * dispersion;
             for (auto& state : allpassState)
             {
-                const auto next = coefficient * dispersed + state;
-                state = dispersed - coefficient * next;
-                dispersed = next;
+                const auto next = coefficient * dispersedValue + state;
+                state = dispersedValue - coefficient * next;
+                dispersedValue = next;
             }
         }
 
         const auto feedback = std::pow(
             0.001, 1.0 / (decayTime * frequency));
-        const auto writeValue = input * inputGain + feedback * dispersed;
+        const auto writeValue = input * inputGain + feedback * dispersedValue;
         if (!std::isfinite(delayed) || !std::isfinite(dampingState)
-            || !std::isfinite(dispersed) || !std::isfinite(feedback)
+            || !std::isfinite(dispersedValue) || !std::isfinite(feedback)
             || feedback < 0.0 || feedback >= 1.0
             || !std::isfinite(writeValue)
             || !std::ranges::all_of(allpassState, [](double value) {
@@ -287,7 +363,7 @@ private:
         }
 
         result = {
-            .wet = dispersed,
+            .wet = dispersedValue,
             .writeValue = writeValue,
             .dampingState = dampingState,
             .allpassState = allpassState,
@@ -297,6 +373,10 @@ private:
 
     std::array<Branch, 2> branches_;
     double sampleRate_ = 0.0;
+    double dcBlockerPole_ = 0.0;
+    double dcBlockerGain_ = 0.0;
+    double dcBlockerInput_ = 0.0;
+    double dcBlockerOutput_ = 0.0;
     bool prepared_ = false;
 };
 }

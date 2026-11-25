@@ -371,6 +371,8 @@ enum WorkbenchCommandId
     commandShowSynchronizingSpectra,
     commandConfigureMidi,
     commandInitializeDsp,
+    // ADR-0029: File > Export Plugin...
+    commandExportPlugin,
 };
 
 enum class CompactDock
@@ -506,6 +508,7 @@ private:
     [[nodiscard]] std::optional<std::string> runStructureAsTextSmoke();
     [[nodiscard]] std::optional<std::string> runVariableEnvironmentSmoke();
     [[nodiscard]] std::optional<std::string> runDspStatusSmoke();
+    [[nodiscard]] std::optional<std::string> runPluginExportSmoke(const std::filesystem::path& smokeDirectory);
     [[nodiscard]] std::optional<std::string> runFileArchivistSmoke(const std::filesystem::path& smokeDirectory);
     [[nodiscard]] std::optional<std::string> runInfoDisplaySmoke();
     [[nodiscard]] std::optional<std::string> runFindReplaceSmoke();
@@ -2102,6 +2105,10 @@ private:
     static std::optional<double> parsePositiveFiniteDouble(const juce::String& text);
 
     void showExportAudioDialog();
+
+    // ADR-0029: the open project as a VST3/AU plugin
+    // (WorkbenchPluginExport.cpp).
+    void showExportPluginDialog();
 
     void chooseExportDestination(double durationSeconds, double sampleRate);
 

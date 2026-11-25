@@ -78,6 +78,8 @@ std::optional<std::string> WorkbenchComponent::runAuthoringToolSmokes(
         return error;
     if (auto error = runDspStatusSmoke())
         return error;
+    if (auto error = runPluginExportSmoke(smokeDirectory))
+        return error;
     if (auto error = runFileArchivistSmoke(smokeDirectory))
         return error;
     if (auto error = runInfoDisplaySmoke())

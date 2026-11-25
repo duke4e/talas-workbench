@@ -20,6 +20,7 @@ void WorkbenchComponent::getAllCommands(juce::Array<juce::CommandID>& commands)
              commandSaveProject,
              commandSaveProjectAs,
              commandExportAudio,
+             commandExportPlugin,
              commandPackageProject,
              commandAudioDeviceSettings,
              commandUndo,
@@ -196,6 +197,10 @@ void WorkbenchComponent::getCommandInfo(
             !packageRunning_ && !fileChooserActive_
             && (!fileOperation.active() || exportRunning_)
             && (!exportRunning_ || fileOperationCancellable));
+        break;
+    case commandExportPlugin:
+        setInfo("Export Plugin...", "Export the project as a VST3 or AU instrument or effect", "File");
+        info.setActive(!packageRunning_ && !exportRunning_ && !fileChooserActive_);
         break;
     case commandPackageProject:
         setInfo(
@@ -744,6 +749,9 @@ bool WorkbenchComponent::perform(const juce::ApplicationCommandTarget::Invocatio
         return true;
     case commandExportAudio:
         exportRunning_ ? cancelAudioExport() : showExportAudioDialog();
+        return true;
+    case commandExportPlugin:
+        showExportPluginDialog();
         return true;
     case commandPackageProject:
         packageRunning_ ? cancelProjectPackage() : choosePackageDestination();

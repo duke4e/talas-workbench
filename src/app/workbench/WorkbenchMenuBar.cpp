@@ -49,6 +49,7 @@ juce::PopupMenu WorkbenchComponent::getMenuForIndex(
         add(commandSaveProjectAs);
         menu.addSeparator();
         add(commandExportAudio);
+        add(commandExportPlugin);
         add(commandPackageProject);
         break;
     }

@@ -1409,6 +1409,7 @@ if(TALAS_BUILD_WORKBENCH)
         src/app/workbench/WorkbenchGraphEditingSmoke.cpp
         src/app/workbench/WorkbenchFakeKeyboard.cpp
         src/app/workbench/WorkbenchFakeKeyboardSmoke.cpp
+        src/app/workbench/WorkbenchPluginExport.cpp
         src/app/workbench/WorkbenchTapeRecorder.cpp
         src/app/workbench/WorkbenchTapeRecorderSmoke.cpp
         src/app/workbench/WorkbenchLiveGridEditor.cpp
@@ -1519,6 +1520,7 @@ if(TALAS_BUILD_WORKBENCH)
             talas_app_support
             talas_audio_export
             talas_performance_runtime_dispatcher
+            talas_plugin_support
             juce::juce_audio_utils
             juce::juce_gui_extra
     )
@@ -1533,6 +1535,10 @@ if(TALAS_BUILD_WORKBENCH)
             JUCE_WEB_BROWSER=0
             JUCE_USE_CURL=0
     )
+    if(TALAS_BUILD_PLUGINS)
+        # ADR-0029: the Workbench smoke exports a plugin with the templates.
+        target_compile_definitions(talas_workbench_ui PRIVATE TALAS_WORKBENCH_PLUGIN_TEMPLATES=1)
+    endif()
 
     juce_add_gui_app(talas_workbench
         COMPANY_NAME "Talas"
@@ -1835,6 +1841,26 @@ if(TALAS_BUILD_WORKBENCH)
     if(TALAS_BUILD_TESTS)
         target_compile_definitions(talas_workbench PRIVATE
             TALAS_SOUND_LIBRARY_SOURCE_ROOT="${CMAKE_CURRENT_SOURCE_DIR}")
+    endif()
+
+    if(TALAS_BUILD_PLUGINS)
+        # ADR-0029: Export Plugin copies these templates, so they travel in
+        # the Workbench (before the bundle is signed below).
+        if(APPLE)
+            set(TALAS_WORKBENCH_PLUGIN_TEMPLATE_ROOT
+                "$<TARGET_BUNDLE_DIR:talas_workbench>/Contents/Resources/PluginTemplates")
+        else()
+            set(TALAS_WORKBENCH_PLUGIN_TEMPLATE_ROOT
+                "$<TARGET_FILE_DIR:talas_workbench>/PluginTemplates")
+        endif()
+        add_custom_command(
+            TARGET talas_workbench
+            POST_BUILD
+            COMMAND ${CMAKE_COMMAND} -E rm -rf "${TALAS_WORKBENCH_PLUGIN_TEMPLATE_ROOT}"
+            COMMAND ${CMAKE_COMMAND} -E copy_directory
+                "${TALAS_PLUGIN_TEMPLATE_DIR}"
+                "${TALAS_WORKBENCH_PLUGIN_TEMPLATE_ROOT}"
+            VERBATIM)
     endif()
 
     if(APPLE)

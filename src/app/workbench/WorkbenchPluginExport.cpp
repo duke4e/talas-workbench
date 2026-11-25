@@ -1,4 +1,5 @@
 #include "app/workbench/WorkbenchComponentInternal.h"
+#include "app/workbench/WorkbenchPluginExport.h"
 #include "app/workbench/WorkbenchUiHelpers.h"
 
 #include "talas/core/BuiltinNodes.h"
@@ -183,6 +184,15 @@ public:
         return request;
     }
 
+    // The settings on a glass card over the window's backdrop, the licence
+    // and the actions below it.
+    void paint(juce::Graphics& graphics) override
+    {
+        const auto card = getLocalBounds().reduced(8).withBottom(licence_.getY() - 6).toFloat();
+        WorkbenchStyle::paintPanelShadow(graphics, card, WorkbenchStyle::panelRadius());
+        WorkbenchStyle::paintPanel(graphics, card, WorkbenchStyle::panelRadius());
+    }
+
     void resized() override
     {
         auto area = getLocalBounds().reduced(16);
@@ -280,6 +290,13 @@ private:
     std::unique_ptr<juce::FileChooser> chooser_;
     std::thread worker_;
 };
+}
+
+std::unique_ptr<juce::Component> makePluginExportPanelForScreenshots(
+    const talas::project::ProjectDocument& document,
+    const std::optional<std::filesystem::path>& projectFile)
+{
+    return std::make_unique<PluginExportPanel>(document, projectFile, PluginExportPanel::Finished{});
 }
 
 void WorkbenchComponent::showExportPluginDialog()

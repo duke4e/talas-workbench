@@ -5,6 +5,7 @@
 #include "talas/project/VirtualControlOsc.h"
 
 #include <algorithm>
+#include <array>
 
 namespace talas::app::workbench
 {
@@ -157,8 +158,29 @@ public:
         };
         addAndMakeVisible(oscDisableBoth_);
 
+        // Section titles bold, explanations muted, in the theme's sizes.
+        syncSourceLabel_.setFont(WorkbenchType::bodyStrong());
+        for (auto* help : {&syncHelp_, &oscHelp_, &oscState_})
+        {
+            help->setFont(WorkbenchType::label());
+            help->setColour(juce::Label::textColourId, secondaryTextColour);
+        }
+        for (auto* label : {&oscPortLabel_, &oscEgressPortLabel_})
+            label->setFont(WorkbenchType::body());
+
         deviceManager_.addChangeListener(this);
-        setSize(520, 755);
+        setSize(540, 820);
+    }
+
+    // Each section on a glass card over the window's backdrop: the devices,
+    // the transport sync, and OSC.
+    void paint(juce::Graphics& graphics) override
+    {
+        for (const auto& card : cards())
+        {
+            WorkbenchStyle::paintPanelShadow(graphics, card.toFloat(), WorkbenchStyle::panelRadius());
+            WorkbenchStyle::paintPanel(graphics, card.toFloat(), WorkbenchStyle::panelRadius());
+        }
     }
 
     ~AudioMidiSettingsComponent() override
@@ -168,14 +190,18 @@ public:
 
     void resized() override
     {
-        auto bounds = getLocalBounds();
-        selector_.setBounds(bounds.removeFromTop(480));
-        bounds.removeFromTop(8);
+        auto bounds = getLocalBounds().reduced(cardMargin);
+        // The devices' card keeps its whole area, however tall the selector
+        // makes itself for the device open.
+        deviceCard_ = bounds.removeFromTop(480 + 2 * cardInset);
+        selector_.setBounds(deviceCard_.reduced(cardInset));
+        bounds.removeFromTop(cardMargin + cardInset);
+        bounds.reduce(cardInset, 0);
         syncSourceLabel_.setBounds(bounds.removeFromTop(24));
         syncSourceBox_.setBounds(bounds.removeFromTop(30));
         bounds.removeFromTop(4);
         syncHelp_.setBounds(bounds.removeFromTop(24));
-        bounds.removeFromTop(10);
+        bounds.removeFromTop(2 * cardInset + cardMargin);
         oscEnabled_.setBounds(bounds.removeFromTop(24));
         bounds.removeFromTop(3);
         auto portRow = bounds.removeFromTop(28);
@@ -200,6 +226,22 @@ public:
     }
 
 private:
+    static constexpr int cardMargin = 10;
+    static constexpr int cardInset = 8;
+    juce::Rectangle<int> deviceCard_;
+
+    [[nodiscard]] std::array<juce::Rectangle<int>, 3> cards() const
+    {
+        const auto around = [](juce::Rectangle<int> first, juce::Rectangle<int> last) {
+            return first.getUnion(last).expanded(cardInset);
+        };
+        return {
+            deviceCard_,
+            around(syncSourceLabel_.getBounds(), syncHelp_.getBounds()),
+            around(oscEnabled_.getBounds(), oscState_.getBounds()),
+        };
+    }
+
     void commitOscProfile()
     {
         auto nextIngress = oscSettings_;

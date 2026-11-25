@@ -2941,8 +2941,19 @@ private:
                 else
                     path.lineTo(x, y);
             }
-            WorkbenchStyle::strokeWithGlow(graphics, path,
-                traceColour(lane.view.trace.kind, lane.view.trace.colourSlot),
+            const auto colour = traceColour(lane.view.trace.kind, lane.view.trace.colourSlot);
+            if (!WorkbenchStyle::enhancedContrast()
+                && lane.view.trace.kind == talas::project::WorkspaceAnalysisTraceKind::Audio)
+            {
+                // A faint fill between the wave and its zero line.
+                auto area = path;
+                area.lineTo(wave.getRight(), wave.getCentreY());
+                area.lineTo(wave.getX(), wave.getCentreY());
+                area.closeSubPath();
+                graphics.setColour(colour.withAlpha(0.08F));
+                graphics.fillPath(area);
+            }
+            WorkbenchStyle::strokeWithGlow(graphics, path, colour,
                 1.0F + 0.25F * static_cast<float>(lane.view.trace.colourSlot % 3), 6.0F);
         }
     }

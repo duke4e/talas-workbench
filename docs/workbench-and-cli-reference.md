@@ -95,6 +95,9 @@ virtual controls and MIDI mapping, Timeline events, analyzers, and external
 project assets. `Export Audio...` renders an immutable project snapshot to
 PCM16 WAV in the background, with configurable duration and sample rate,
 streaming progress, and cancellation-safe destination replacement.
+`Export Plugin...` turns the open project into a VST3 and, on macOS, AU
+instrument or effect with the same exporter as `talas_cli export-plugin`
+([Plugin export](plugin-export.md)).
 `Package...` similarly creates a self-contained `.talaspkg` directory containing
 the project and byte-for-byte copies of every registered asset. Package
 publication is cancellable and failure-atomic; opening one keeps later browsed
@@ -547,3 +550,35 @@ resource health, and static stream contracts.
 ```bash
 ./build/core-debug/talas_cli render --project path/to/input-project.talas.json --frames 48000 --sample-rate 48000 --audio-input 1=path/to/input.wav --output /tmp/render.wav
 ```
+
+### Plugin export
+
+`export-plugin` turns a project into a VST3 (and, on macOS, AU) plugin by
+copying a prebuilt template; no compiler is involved
+([Plugin export](plugin-export.md), ADR-0029):
+
+```bash
+./build/talas-release/talas_cli export-plugin --project examples/demos/stereo_delay.talas.json --name "Stereo Delay" --kind effect --output /tmp/talas-plugins
+```
+
+| Option | Meaning |
+| --- | --- |
+| `--project <path>` | `.talas.json` file or `.talaspkg` package |
+| `--name <name>` | plugin name (at most 63 bytes) |
+| `--kind instrument\|effect` | an instrument takes MIDI and plays stereo; an effect takes and plays stereo |
+| `--output <dir>` | folder for `<Name>.vst3` and `<Name>.component` |
+| `--format vst3,au` | formats; both on macOS by default, VST3 elsewhere |
+| `--manufacturer <name>` | manufacturer, `Talas` by default |
+| `--manufacturer-code <code>` | four characters with an upper-case letter; derived from the manufacturer by default |
+| `--plugin-code <code>` | `[A-Z][a-z0-9]{3}`; a stable hash of manufacturer and name by default |
+| `--version <x.y.z>` | plugin version, each part 0 to 255 |
+| `--template-dir <dir>` | template folder searched first (repeatable); then `TALAS_PLUGIN_TEMPLATES`, then `PluginTemplates` beside the program |
+| `--no-sign` | skip the macOS ad-hoc signature |
+
+It prints the bundles, the codes, the latency and each parameter (the
+project's Virtual Controls, then the Event Values it reads without one), with
+warnings on stderr. Exit status 0 is success, 1 a failed export (no bundle is
+left in the output folder) and 2 a usage error. The export stages the
+embedded project from inside the new bundle before writing anything, so a
+project that does not compile or whose assets are missing fails here rather
+than in a DAW. Nothing is installed; copy the bundles into a plug-in folder.

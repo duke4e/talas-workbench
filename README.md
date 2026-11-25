@@ -74,8 +74,10 @@ These are the next milestones, in this order:
    panels.
 2. **Demo projects and presets.** 20–30 ready-to-play projects, from effects to
    synthesizers.
-3. **Plugin export.** Turn your own project into a VST3 or AU instrument or effect
-   that runs in any DAW.
+3. **Plugin export** (done on macOS). Turn your own project into a VST3 or AU
+   instrument or effect that runs in a DAW, from File > Export Plugin... or
+   `talas_cli export-plugin`, with no compiler; see
+   [Plugin export](docs/plugin-export.md). Windows and Linux are not verified yet.
 4. **Releases.** macOS, Windows and Linux builds, made and checked by hand.
 
 ## Building from source
@@ -184,6 +186,8 @@ live controls with `--event`, analysis tools and CDP processing.
   run offline and in realtime, and their known limits.
 - [Workbench and CLI reference](docs/workbench-and-cli-reference.md): detailed
   notes on the app and the command-line tool.
+- [Plugin export](docs/plugin-export.md): turning a project into a VST3 or AU
+  instrument or effect, its parameters, limits and licensing.
 - [Product](PRODUCT.md) and [design](DESIGN.md) notes.
 - [Architecture decision records](docs/adr/README.md).
 

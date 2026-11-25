@@ -948,6 +948,54 @@ class ReleaseConfigurationTests(unittest.TestCase):
              "Sample And Hold Clock and Transport", "renderable"),
             ("examples/c99_samples_from_disk_single_step_transport.talas.json",
              "Samples From Disk Single Step Transport", "renderable"),
+            ("examples/demos/arpeggiator.talas.json",
+             "Arpeggiator", "renderable"),
+            ("examples/demos/auto_filter.talas.json",
+             "Auto-Filter", "renderable"),
+            ("examples/demos/bus_compressor.talas.json",
+             "Bus Compressor", "renderable"),
+            ("examples/demos/chorus.talas.json",
+             "Stereo Chorus", "renderable"),
+            ("examples/demos/drawbar_organ.talas.json",
+             "Drawbar Organ", "renderable"),
+            ("examples/demos/drum_kit.talas.json",
+             "Drum Kit", "renderable"),
+            ("examples/demos/flanger.talas.json",
+             "Flanger", "renderable"),
+            ("examples/demos/fm_electric_piano.talas.json",
+             "FM Electric Piano", "renderable"),
+            ("examples/demos/frequency_shifter.talas.json",
+             "Frequency Shifter", "renderable"),
+            ("examples/demos/granular_freeze.talas.json",
+             "Granular Freeze", "renderable"),
+            ("examples/demos/granular_synth.talas.json",
+             "Granular Synth", "renderable"),
+            ("examples/demos/hall_reverb.talas.json",
+             "Hall Reverb", "renderable"),
+            ("examples/demos/modal_mallets.talas.json",
+             "Modal Mallets", "renderable"),
+            ("examples/demos/morph_lead.talas.json",
+             "Morph Lead", "renderable"),
+            ("examples/demos/phaser.talas.json",
+             "Phaser", "renderable"),
+            ("examples/demos/plucked_string.talas.json",
+             "Plucked String", "renderable"),
+            ("examples/demos/poly_pad.talas.json",
+             "Poly Pad", "renderable"),
+            ("examples/demos/ring_modulator.talas.json",
+             "Ring Modulator", "renderable"),
+            ("examples/demos/spectral_blur.talas.json",
+             "Spectral Blur", "renderable"),
+            ("examples/demos/stereo_delay.talas.json",
+             "Stereo Delay", "renderable"),
+            ("examples/demos/sub_bass.talas.json",
+             "Sub Bass", "renderable"),
+            ("examples/demos/tape_saturator.talas.json",
+             "Tape Saturator", "renderable"),
+            ("examples/demos/terrain_drone.talas.json",
+             "Terrain Drone", "renderable"),
+            ("examples/demos/vocoder.talas.json",
+             "Vocoder", "renderable"),
             ("examples/m3_live_spectral_analysis.talas.json",
              "Live spectral analysis", "renderable"),
             ("examples/m3_matrix4_output4.talas.json",
@@ -1096,7 +1144,7 @@ class ReleaseConfigurationTests(unittest.TestCase):
         })
         self.assertEqual(manifest["schemaVersion"], 1)
         self.assertIn("repository-original", manifest["authority"])
-        self.assertEqual(len(manifest["entries"]), 178)
+        self.assertEqual(len(manifest["entries"]), 202)
         expected_entry_keys = {
             "id", "projectPath", "title", "summary", "category", "tags",
             "author", "origin", "helpAnchor", "expectedOutcome",
@@ -1122,7 +1170,27 @@ class ReleaseConfigurationTests(unittest.TestCase):
                 self.assertIsNone(entry["definitionId"])
             paths.append(entry["projectPath"])
             ids.append(entry["id"])
+            demo = entry["projectPath"].startswith("examples/demos/")
+            self.assertEqual(entry["category"] == "Demos", demo)
+            self.assertEqual("demo" in entry["tags"], demo)
+            if demo:
+                kinds = {"effect", "instrument"} & set(entry["tags"])
+                self.assertEqual(len(kinds), 1)
+                self.assertEqual(
+                    "audition" in entry["actions"], kinds == {"instrument"}
+                )
         self.assertEqual(len(paths), len(set(paths)))
+        demo_paths = {
+            path for path in paths if path.startswith("examples/demos/")
+        }
+        self.assertEqual(
+            demo_paths,
+            {
+                path.relative_to(ROOT).as_posix()
+                for path in (ROOT / "examples" / "demos").glob("*.talas.json")
+            },
+        )
+        self.assertEqual(len(demo_paths), 24)
         self.assertEqual(len(ids), len(set(ids)))
         self.assertEqual(
             set(paths),
@@ -1189,10 +1257,21 @@ class ReleaseConfigurationTests(unittest.TestCase):
             "examples/resources/hit.txt",
             "examples/resources/m3-stream-source.wav",
             "examples/README.md",
+            "examples/demos/README.md",
             "docs/help/node-example-index.json",
             "docs/help/builtin-node-reference.md",
         }
         self.assertEqual(bundled_paths, expected_bundled_paths)
+        self.assertTrue(demo_paths <= bundled_paths)
+        self.assertIn(
+            '"${TALAS_SOUND_LIBRARY_BUNDLE_ROOT}/examples/demos"', cmake
+        )
+        self.assertRegex(
+            cmake,
+            r"NAME talas_sound_library_bundle_tests\s+"
+            r"COMMAND talas_sound_library_model_tests\s+"
+            r'--bundle-root "\$\{TALAS_SOUND_LIBRARY_BUNDLE_ROOT\}"',
+        )
         self.assertIn("loadSoundLibraryManifest", header)
         self.assertIn("node-example-index.json", model)
         self.assertIn("parseProjectDocument", model)

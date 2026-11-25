@@ -58,11 +58,6 @@
             "y": 120
           },
           {
-            "nodeId": "stereo",
-            "x": 0,
-            "y": 360
-          },
-          {
             "nodeId": "output",
             "x": 440,
             "y": 0
@@ -360,24 +355,6 @@
           {
             "id": "interpolation",
             "choice": "linear"
-          }
-        ]
-      },
-      {
-        "id": "stereo",
-        "typeId": "talas.level",
-        "parameters": [
-          {
-            "id": "left",
-            "expression": "0.75"
-          },
-          {
-            "id": "right",
-            "expression": "0.75"
-          },
-          {
-            "id": "noGain",
-            "boolean": false
           }
         ]
       },

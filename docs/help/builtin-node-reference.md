@@ -10,7 +10,7 @@ promoted by appearing in this reference.
 This is a descriptor reference, not a parity claim, semantic tutorial,
 hosted help service, or guarantee that every node has an example.
 
-Nodes: **364** · Examples: **178**
+Nodes: **364** · Examples: **202**
 
 ## Categories
 
@@ -3442,7 +3442,7 @@ Talas utility.
 
 **Original examples**
 
-No checked-in example currently references this node.
+- [Vocoder](../../examples/demos/vocoder.talas.json) — <code>renderable</code>
 
 <a id="node-talas-cdpframeremap"></a>
 ### CDP Frame Remap
@@ -3763,7 +3763,7 @@ Talas utility.
 
 **Original examples**
 
-No checked-in example currently references this node.
+- [Spectral Blur](../../examples/demos/spectral_blur.talas.json) — <code>renderable</code>
 
 <a id="node-talas-cdphilitefilter"></a>
 ### CDP Hilite Filter
@@ -6050,7 +6050,7 @@ Talas utility.
 
 **Original examples**
 
-No checked-in example currently references this node.
+- [Terrain Drone](../../examples/demos/terrain_drone.talas.json) — <code>renderable</code>
 
 <a id="node-talas-cdpringmodulate"></a>
 ### CDP Ring Modulate
@@ -8203,6 +8203,16 @@ Talas utility.
 - [Running Max Reset Control](../../examples/c85_running_max_reset_control.talas.json) — <code>renderable</code>
 - [Running Min Reset Baseline](../../examples/c86_running_min_reset_baseline.talas.json) — <code>renderable</code>
 - [LFO Phase and Transport](../../examples/c96_lfo_phase_transport.talas.json) — <code>renderable</code>
+- [Auto-Filter](../../examples/demos/auto_filter.talas.json) — <code>renderable</code>
+- [Stereo Chorus](../../examples/demos/chorus.talas.json) — <code>renderable</code>
+- [Drawbar Organ](../../examples/demos/drawbar_organ.talas.json) — <code>renderable</code>
+- [Flanger](../../examples/demos/flanger.talas.json) — <code>renderable</code>
+- [FM Electric Piano](../../examples/demos/fm_electric_piano.talas.json) — <code>renderable</code>
+- [Phaser](../../examples/demos/phaser.talas.json) — <code>renderable</code>
+- [Poly Pad](../../examples/demos/poly_pad.talas.json) — <code>renderable</code>
+- [Ring Modulator](../../examples/demos/ring_modulator.talas.json) — <code>renderable</code>
+- [Tape Saturator](../../examples/demos/tape_saturator.talas.json) — <code>renderable</code>
+- [Terrain Drone](../../examples/demos/terrain_drone.talas.json) — <code>renderable</code>
 
 <a id="node-talas-linearramp"></a>
 ### Linear Ramp
@@ -8598,6 +8608,7 @@ Talas utility.
 **Original examples**
 
 - [Dynamic Slew Times](../../examples/c45_dynamic_slew_times.talas.json) — <code>renderable</code>
+- [Drawbar Organ](../../examples/demos/drawbar_organ.talas.json) — <code>renderable</code>
 
 <a id="node-talas-quantizer"></a>
 ### Step Quantizer
@@ -9187,6 +9198,7 @@ Subset: stateless zero-latency polynomial shaping with finite scalar coefficient
 **Original examples**
 
 - [Waveshaper Polynomial Curve](../../examples/c79_waveshaper_polynomial_curve.talas.json) — <code>renderable</code>
+- [Tape Saturator](../../examples/demos/tape_saturator.talas.json) — <code>renderable</code>
 
 <a id="node-category-effects"></a>
 ## Effects
@@ -9259,6 +9271,16 @@ Full runtime coverage; no tracked subset restriction.
 **Original examples**
 
 - [Delay With Feedback Dynamic Controls](../../examples/c140_delay_with_feedback_dynamic_controls.talas.json) — <code>renderable</code>
+- [Arpeggiator](../../examples/demos/arpeggiator.talas.json) — <code>renderable</code>
+- [Stereo Chorus](../../examples/demos/chorus.talas.json) — <code>renderable</code>
+- [Drawbar Organ](../../examples/demos/drawbar_organ.talas.json) — <code>renderable</code>
+- [Flanger](../../examples/demos/flanger.talas.json) — <code>renderable</code>
+- [Hall Reverb](../../examples/demos/hall_reverb.talas.json) — <code>renderable</code>
+- [Modal Mallets](../../examples/demos/modal_mallets.talas.json) — <code>renderable</code>
+- [Morph Lead](../../examples/demos/morph_lead.talas.json) — <code>renderable</code>
+- [Poly Pad](../../examples/demos/poly_pad.talas.json) — <code>renderable</code>
+- [Stereo Delay](../../examples/demos/stereo_delay.talas.json) — <code>renderable</code>
+- [Tape Saturator](../../examples/demos/tape_saturator.talas.json) — <code>renderable</code>
 
 <a id="node-talas-stereodispersiveresonator"></a>
 ### Stereo Dispersive Resonator
@@ -9390,6 +9412,15 @@ Full runtime coverage; no tracked subset restriction.
 
 - [ADSR Scheduled Typed Gate Controls](../../examples/c154_adsr_scheduled_typed_gate_controls.talas.json) — <code>renderable</code>
 - [ADSR Gate State](../../examples/c92_adsr_typed_gate_state.talas.json) — <code>renderable</code>
+- [Drawbar Organ](../../examples/demos/drawbar_organ.talas.json) — <code>renderable</code>
+- [Drum Kit](../../examples/demos/drum_kit.talas.json) — <code>renderable</code>
+- [FM Electric Piano](../../examples/demos/fm_electric_piano.talas.json) — <code>renderable</code>
+- [Granular Synth](../../examples/demos/granular_synth.talas.json) — <code>renderable</code>
+- [Modal Mallets](../../examples/demos/modal_mallets.talas.json) — <code>renderable</code>
+- [Morph Lead](../../examples/demos/morph_lead.talas.json) — <code>renderable</code>
+- [Poly Pad](../../examples/demos/poly_pad.talas.json) — <code>renderable</code>
+- [Sub Bass](../../examples/demos/sub_bass.talas.json) — <code>renderable</code>
+- [Terrain Drone](../../examples/demos/terrain_drone.talas.json) — <code>renderable</code>
 
 <a id="node-talas-ar"></a>
 ### AR
@@ -9622,6 +9653,7 @@ Full runtime coverage; no tracked subset restriction.
 **Original examples**
 
 - [Graphical Envelope Scheduled Rate Controls](../../examples/c153_graphical_envelope_scheduled_rate_controls.talas.json) — <code>renderable</code>
+- [Arpeggiator](../../examples/demos/arpeggiator.talas.json) — <code>renderable</code>
 
 <a id="node-talas-multisegmentenvelope"></a>
 ### Multisegment Envelope
@@ -9919,6 +9951,14 @@ Full runtime coverage; no tracked subset restriction.
 **Original examples**
 
 - [Filter Scheduled Controls](../../examples/c191_filter_scheduled_controls.talas.json) — <code>renderable</code>
+- [Drum Kit](../../examples/demos/drum_kit.talas.json) — <code>renderable</code>
+- [Hall Reverb](../../examples/demos/hall_reverb.talas.json) — <code>renderable</code>
+- [Modal Mallets](../../examples/demos/modal_mallets.talas.json) — <code>renderable</code>
+- [Phaser](../../examples/demos/phaser.talas.json) — <code>renderable</code>
+- [Stereo Delay](../../examples/demos/stereo_delay.talas.json) — <code>renderable</code>
+- [Tape Saturator](../../examples/demos/tape_saturator.talas.json) — <code>renderable</code>
+- [Terrain Drone](../../examples/demos/terrain_drone.talas.json) — <code>renderable</code>
+- [Vocoder](../../examples/demos/vocoder.talas.json) — <code>renderable</code>
 
 <a id="node-talas-firfilter"></a>
 ### FIR Filter
@@ -10210,6 +10250,7 @@ Full runtime coverage; no tracked subset restriction.
 **Original examples**
 
 - [Shelving and Presence Filters](../../examples/c16_shelving_presence_filters.talas.json) — <code>renderable</code>
+- [Tape Saturator](../../examples/demos/tape_saturator.talas.json) — <code>renderable</code>
 
 <a id="node-talas-lowpassgate"></a>
 ### Low-Pass Gate
@@ -10386,6 +10427,11 @@ Talas utility.
 **Original examples**
 
 - [Morph Filter Scheduled Controls](../../examples/c164_morph_filter_scheduled_controls.talas.json) — <code>renderable</code>
+- [Arpeggiator](../../examples/demos/arpeggiator.talas.json) — <code>renderable</code>
+- [Auto-Filter](../../examples/demos/auto_filter.talas.json) — <code>renderable</code>
+- [Morph Lead](../../examples/demos/morph_lead.talas.json) — <code>renderable</code>
+- [Poly Pad](../../examples/demos/poly_pad.talas.json) — <code>renderable</code>
+- [Sub Bass](../../examples/demos/sub_bass.talas.json) — <code>renderable</code>
 
 <a id="node-talas-presencefilter"></a>
 ### Presence Filter
@@ -11152,6 +11198,7 @@ Full runtime coverage; no tracked subset restriction.
 
 - [Single Side Band RM Quadrature Transport](../../examples/c101_single_side_band_rm_quadrature_transport.talas.json) — <code>renderable</code>
 - [Single Side Band RM Scheduled Quadrature](../../examples/c161_single_side_band_rm_scheduled_quadrature.talas.json) — <code>renderable</code>
+- [Frequency Shifter](../../examples/demos/frequency_shifter.talas.json) — <code>renderable</code>
 
 <a id="node-talas-timefrequencyscale"></a>
 ### Time Frequency Scale
@@ -11347,6 +11394,7 @@ Talas utility.
 **Original examples**
 
 - [Plucked Waveguide Scheduled Controls](../../examples/c168_plucked_waveguide_scheduled_controls.talas.json) — <code>renderable</code>
+- [Plucked String](../../examples/demos/plucked_string.talas.json) — <code>renderable</code>
 
 <a id="node-talas-scannedmassoscillator"></a>
 ### Scanned Mass Oscillator
@@ -11488,6 +11536,7 @@ Talas utility.
 **Original examples**
 
 - [Wave Terrain Oscillator Scheduled Controls](../../examples/c170_wave_terrain_oscillator_scheduled_controls.talas.json) — <code>renderable</code>
+- [Terrain Drone](../../examples/demos/terrain_drone.talas.json) — <code>renderable</code>
 
 <a id="node-category-io"></a>
 ## IO
@@ -11692,6 +11741,30 @@ None.
 - [Ramp Trigger and Transport](../../examples/c97_ramp_trigger_transport.talas.json) — <code>renderable</code>
 - [Sample And Hold Clock and Transport](../../examples/c98_sample_and_hold_clock_transport.talas.json) — <code>renderable</code>
 - [Samples From Disk Single Step Transport](../../examples/c99_samples_from_disk_single_step_transport.talas.json) — <code>renderable</code>
+- [Arpeggiator](../../examples/demos/arpeggiator.talas.json) — <code>renderable</code>
+- [Auto-Filter](../../examples/demos/auto_filter.talas.json) — <code>renderable</code>
+- [Bus Compressor](../../examples/demos/bus_compressor.talas.json) — <code>renderable</code>
+- [Stereo Chorus](../../examples/demos/chorus.talas.json) — <code>renderable</code>
+- [Drawbar Organ](../../examples/demos/drawbar_organ.talas.json) — <code>renderable</code>
+- [Drum Kit](../../examples/demos/drum_kit.talas.json) — <code>renderable</code>
+- [Flanger](../../examples/demos/flanger.talas.json) — <code>renderable</code>
+- [FM Electric Piano](../../examples/demos/fm_electric_piano.talas.json) — <code>renderable</code>
+- [Frequency Shifter](../../examples/demos/frequency_shifter.talas.json) — <code>renderable</code>
+- [Granular Freeze](../../examples/demos/granular_freeze.talas.json) — <code>renderable</code>
+- [Granular Synth](../../examples/demos/granular_synth.talas.json) — <code>renderable</code>
+- [Hall Reverb](../../examples/demos/hall_reverb.talas.json) — <code>renderable</code>
+- [Modal Mallets](../../examples/demos/modal_mallets.talas.json) — <code>renderable</code>
+- [Morph Lead](../../examples/demos/morph_lead.talas.json) — <code>renderable</code>
+- [Phaser](../../examples/demos/phaser.talas.json) — <code>renderable</code>
+- [Plucked String](../../examples/demos/plucked_string.talas.json) — <code>renderable</code>
+- [Poly Pad](../../examples/demos/poly_pad.talas.json) — <code>renderable</code>
+- [Ring Modulator](../../examples/demos/ring_modulator.talas.json) — <code>renderable</code>
+- [Spectral Blur](../../examples/demos/spectral_blur.talas.json) — <code>renderable</code>
+- [Stereo Delay](../../examples/demos/stereo_delay.talas.json) — <code>renderable</code>
+- [Sub Bass](../../examples/demos/sub_bass.talas.json) — <code>renderable</code>
+- [Tape Saturator](../../examples/demos/tape_saturator.talas.json) — <code>renderable</code>
+- [Terrain Drone](../../examples/demos/terrain_drone.talas.json) — <code>renderable</code>
+- [Vocoder](../../examples/demos/vocoder.talas.json) — <code>renderable</code>
 - [Live spectral analysis](../../examples/m3_live_spectral_analysis.talas.json) — <code>renderable</code>
 - [Native complex STFT round-trip](../../examples/m3_native_fft_round_trip.talas.json) — <code>renderable</code>
 - [Historical packed-Audio FFT round-trip](../../examples/m3_packed_fft_round_trip.talas.json) — <code>renderable</code>
@@ -11816,6 +11889,8 @@ Full runtime coverage; no tracked subset restriction.
 **Original examples**
 
 - [Crossfade Checked Finite Live Controls](../../examples/c135_crossfade_checked_finite_live_controls.talas.json) — <code>renderable</code>
+- [Spectral Blur](../../examples/demos/spectral_blur.talas.json) — <code>renderable</code>
+- [Vocoder](../../examples/demos/vocoder.talas.json) — <code>renderable</code>
 
 <a id="node-talas-dynamicrangecontroller"></a>
 ### Dynamic Range Controller
@@ -11882,6 +11957,7 @@ Subset: offline and bounded allocation-free prepared-realtime compressor and dow
 **Original examples**
 
 - [Bounded Dynamic Range Controller](../../examples/c21_bounded_dynamic_range_controller.talas.json) — <code>renderable</code>
+- [Bus Compressor](../../examples/demos/bus_compressor.talas.json) — <code>renderable</code>
 
 <a id="node-talas-gain"></a>
 ### Gain
@@ -11994,6 +12070,7 @@ Full runtime coverage; no tracked subset restriction.
 - [Level Checked Finite Stereo Gain](../../examples/c130_level_checked_finite_stereo_gain.talas.json) — <code>renderable</code>
 - [Stereo Routing Utilities](../../examples/c15_stereo_routing_utilities.talas.json) — <code>renderable</code>
 - [Bounded Warped Time Index](../../examples/c30_bounded_warped_time_index.talas.json) — <code>renderable</code>
+- [Tape Saturator](../../examples/demos/tape_saturator.talas.json) — <code>renderable</code>
 
 <a id="node-talas-multiplyingwaveshaper"></a>
 ### Multiplying Waveshaper
@@ -12151,6 +12228,7 @@ None.
 - [Interpolate Dual Lane Control](../../examples/c84_interpolate_dual_lane_control.talas.json) — <code>renderable</code>
 - [Ramp Trigger and Transport](../../examples/c97_ramp_trigger_transport.talas.json) — <code>renderable</code>
 - [Sample And Hold Clock and Transport](../../examples/c98_sample_and_hold_clock_transport.talas.json) — <code>renderable</code>
+- [Tape Saturator](../../examples/demos/tape_saturator.talas.json) — <code>renderable</code>
 
 <a id="node-talas-arctan"></a>
 ### ArcTan
@@ -13007,6 +13085,9 @@ Full runtime coverage; no tracked subset restriction.
 **Original examples**
 
 - [Set Range Connected Affine Mapping](../../examples/c122_set_range_connected_affine_mapping.talas.json) — <code>renderable</code>
+- [Arpeggiator](../../examples/demos/arpeggiator.talas.json) — <code>renderable</code>
+- [Drum Kit](../../examples/demos/drum_kit.talas.json) — <code>renderable</code>
+- [Sub Bass](../../examples/demos/sub_bass.talas.json) — <code>renderable</code>
 
 <a id="node-talas-sqrtmagnitude"></a>
 ### Sqrt Magnitude
@@ -13188,7 +13269,17 @@ Subset: live MIDI, MIDI File or literal Script notes/controller jumps with isola
 
 **Original examples**
 
-No checked-in example currently references this node.
+- [Arpeggiator](../../examples/demos/arpeggiator.talas.json) — <code>renderable</code>
+- [Drawbar Organ](../../examples/demos/drawbar_organ.talas.json) — <code>renderable</code>
+- [Drum Kit](../../examples/demos/drum_kit.talas.json) — <code>renderable</code>
+- [FM Electric Piano](../../examples/demos/fm_electric_piano.talas.json) — <code>renderable</code>
+- [Granular Synth](../../examples/demos/granular_synth.talas.json) — <code>renderable</code>
+- [Modal Mallets](../../examples/demos/modal_mallets.talas.json) — <code>renderable</code>
+- [Morph Lead](../../examples/demos/morph_lead.talas.json) — <code>renderable</code>
+- [Plucked String](../../examples/demos/plucked_string.talas.json) — <code>renderable</code>
+- [Poly Pad](../../examples/demos/poly_pad.talas.json) — <code>renderable</code>
+- [Sub Bass](../../examples/demos/sub_bass.talas.json) — <code>renderable</code>
+- [Terrain Drone](../../examples/demos/terrain_drone.talas.json) — <code>renderable</code>
 
 <a id="node-talas-preset"></a>
 ### Preset
@@ -13787,6 +13878,8 @@ Full runtime coverage; no tracked subset restriction.
 **Original examples**
 
 - [Pan Checked Finite Live Controls](../../examples/c134_pan_checked_finite_live_controls.talas.json) — <code>renderable</code>
+- [Drawbar Organ](../../examples/demos/drawbar_organ.talas.json) — <code>renderable</code>
+- [FM Electric Piano](../../examples/demos/fm_electric_piano.talas.json) — <code>renderable</code>
 
 <a id="node-talas-stereomix2"></a>
 ### Stereo Mix 2
@@ -14014,6 +14107,15 @@ Full runtime coverage; no tracked subset restriction.
 - [LFO Phase and Transport](../../examples/c96_lfo_phase_transport.talas.json) — <code>renderable</code>
 - [Ramp Trigger and Transport](../../examples/c97_ramp_trigger_transport.talas.json) — <code>renderable</code>
 - [Sample And Hold Clock and Transport](../../examples/c98_sample_and_hold_clock_transport.talas.json) — <code>renderable</code>
+- [Arpeggiator](../../examples/demos/arpeggiator.talas.json) — <code>renderable</code>
+- [Drawbar Organ](../../examples/demos/drawbar_organ.talas.json) — <code>renderable</code>
+- [Drum Kit](../../examples/demos/drum_kit.talas.json) — <code>renderable</code>
+- [Modal Mallets](../../examples/demos/modal_mallets.talas.json) — <code>renderable</code>
+- [Morph Lead](../../examples/demos/morph_lead.talas.json) — <code>renderable</code>
+- [Poly Pad](../../examples/demos/poly_pad.talas.json) — <code>renderable</code>
+- [Ring Modulator](../../examples/demos/ring_modulator.talas.json) — <code>renderable</code>
+- [Sub Bass](../../examples/demos/sub_bass.talas.json) — <code>renderable</code>
+- [Terrain Drone](../../examples/demos/terrain_drone.talas.json) — <code>renderable</code>
 - [Live spectral analysis](../../examples/m3_live_spectral_analysis.talas.json) — <code>renderable</code>
 - [Reusable Sound feedback](../../examples/reusable_feedback_help.talas.json) — <code>validation-only</code>
 
@@ -14362,6 +14464,20 @@ Full runtime coverage; no tracked subset restriction.
 - [Pulse Train Phase State](../../examples/c93_pulse_train_phase_state.talas.json) — <code>renderable</code>
 - [Pulse Generator Phase State](../../examples/c94_pulse_generator_phase_state.talas.json) — <code>renderable</code>
 - [Oscillator Phase State](../../examples/c95_oscillator_phase_state.talas.json) — <code>renderable</code>
+- [Arpeggiator](../../examples/demos/arpeggiator.talas.json) — <code>renderable</code>
+- [Drawbar Organ](../../examples/demos/drawbar_organ.talas.json) — <code>renderable</code>
+- [Drum Kit](../../examples/demos/drum_kit.talas.json) — <code>renderable</code>
+- [FM Electric Piano](../../examples/demos/fm_electric_piano.talas.json) — <code>renderable</code>
+- [Granular Freeze](../../examples/demos/granular_freeze.talas.json) — <code>renderable</code>
+- [Granular Synth](../../examples/demos/granular_synth.talas.json) — <code>renderable</code>
+- [Hall Reverb](../../examples/demos/hall_reverb.talas.json) — <code>renderable</code>
+- [Modal Mallets](../../examples/demos/modal_mallets.talas.json) — <code>renderable</code>
+- [Morph Lead](../../examples/demos/morph_lead.talas.json) — <code>renderable</code>
+- [Plucked String](../../examples/demos/plucked_string.talas.json) — <code>renderable</code>
+- [Poly Pad](../../examples/demos/poly_pad.talas.json) — <code>renderable</code>
+- [Sub Bass](../../examples/demos/sub_bass.talas.json) — <code>renderable</code>
+- [Terrain Drone](../../examples/demos/terrain_drone.talas.json) — <code>renderable</code>
+- [Vocoder](../../examples/demos/vocoder.talas.json) — <code>renderable</code>
 - [Live spectral analysis](../../examples/m3_live_spectral_analysis.talas.json) — <code>renderable</code>
 - [Reusable Sound feedback](../../examples/reusable_feedback_help.talas.json) — <code>validation-only</code>
 
@@ -14497,6 +14613,17 @@ Full runtime coverage; no tracked subset restriction.
 **Original examples**
 
 - [Stereo Mix 4 Checked Live Controls](../../examples/c137_stereo_mix4_checked_live_controls.talas.json) — <code>renderable</code>
+- [Arpeggiator](../../examples/demos/arpeggiator.talas.json) — <code>renderable</code>
+- [Stereo Chorus](../../examples/demos/chorus.talas.json) — <code>renderable</code>
+- [Frequency Shifter](../../examples/demos/frequency_shifter.talas.json) — <code>renderable</code>
+- [Granular Freeze](../../examples/demos/granular_freeze.talas.json) — <code>renderable</code>
+- [Hall Reverb](../../examples/demos/hall_reverb.talas.json) — <code>renderable</code>
+- [Morph Lead](../../examples/demos/morph_lead.talas.json) — <code>renderable</code>
+- [Phaser](../../examples/demos/phaser.talas.json) — <code>renderable</code>
+- [Poly Pad](../../examples/demos/poly_pad.talas.json) — <code>renderable</code>
+- [Ring Modulator](../../examples/demos/ring_modulator.talas.json) — <code>renderable</code>
+- [Stereo Delay](../../examples/demos/stereo_delay.talas.json) — <code>renderable</code>
+- [Terrain Drone](../../examples/demos/terrain_drone.talas.json) — <code>renderable</code>
 
 <a id="node-category-oscillators"></a>
 ## Oscillators
@@ -14695,6 +14822,7 @@ Full runtime coverage; no tracked subset restriction.
 **Original examples**
 
 - [Reverb Section Fractional Delay Transport](../../examples/c104_reverb_section_fractional_delay_transport.talas.json) — <code>renderable</code>
+- [Hall Reverb](../../examples/demos/hall_reverb.talas.json) — <code>renderable</code>
 
 <a id="node-category-sampling"></a>
 ## Sampling
@@ -14751,7 +14879,19 @@ None.
 
 **Original examples**
 
-No checked-in example currently references this node.
+- [Auto-Filter](../../examples/demos/auto_filter.talas.json) — <code>renderable</code>
+- [Bus Compressor](../../examples/demos/bus_compressor.talas.json) — <code>renderable</code>
+- [Stereo Chorus](../../examples/demos/chorus.talas.json) — <code>renderable</code>
+- [Flanger](../../examples/demos/flanger.talas.json) — <code>renderable</code>
+- [Frequency Shifter](../../examples/demos/frequency_shifter.talas.json) — <code>renderable</code>
+- [Granular Freeze](../../examples/demos/granular_freeze.talas.json) — <code>renderable</code>
+- [Hall Reverb](../../examples/demos/hall_reverb.talas.json) — <code>renderable</code>
+- [Phaser](../../examples/demos/phaser.talas.json) — <code>renderable</code>
+- [Ring Modulator](../../examples/demos/ring_modulator.talas.json) — <code>renderable</code>
+- [Spectral Blur](../../examples/demos/spectral_blur.talas.json) — <code>renderable</code>
+- [Stereo Delay](../../examples/demos/stereo_delay.talas.json) — <code>renderable</code>
+- [Tape Saturator](../../examples/demos/tape_saturator.talas.json) — <code>renderable</code>
+- [Vocoder](../../examples/demos/vocoder.talas.json) — <code>renderable</code>
 
 <a id="node-talas-canceluniquememorywriterrecordingnames"></a>
 ### Cancel Unique Memory Writer Recording Names
@@ -15260,6 +15400,7 @@ Subset: mono capture and optional monitor output when silent=false with static o
 **Original examples**
 
 - [Bounded Memory Writer Monitor](../../examples/c38_bounded_memory_writer.talas.json) — <code>renderable</code>
+- [Granular Freeze](../../examples/demos/granular_freeze.talas.json) — <code>renderable</code>
 
 <a id="node-talas-multisamplewithtimeindex"></a>
 ### Multi Sample With Time Index
@@ -15657,6 +15798,7 @@ Subset: deterministic stereo-capable in-memory grain scheduling from static samp
 **Original examples**
 
 - [Sample Cloud Dynamic Controls](../../examples/c110_sample_cloud_dynamic_controls.talas.json) — <code>renderable</code>
+- [Granular Freeze](../../examples/demos/granular_freeze.talas.json) — <code>renderable</code>
 
 <a id="node-talas-samplemapplayer"></a>
 ### Sample Map Player
@@ -16932,6 +17074,7 @@ None.
 - [Ramp Trigger and Transport](../../examples/c97_ramp_trigger_transport.talas.json) — <code>renderable</code>
 - [Sample And Hold Clock and Transport](../../examples/c98_sample_and_hold_clock_transport.talas.json) — <code>renderable</code>
 - [Samples From Disk Single Step Transport](../../examples/c99_samples_from_disk_single_step_transport.talas.json) — <code>renderable</code>
+- [Drawbar Organ](../../examples/demos/drawbar_organ.talas.json) — <code>renderable</code>
 
 <a id="node-talas-dualmorphoscillator"></a>
 ### Dual Morph Oscillator
@@ -16994,6 +17137,7 @@ Talas utility.
 **Original examples**
 
 - [Dual Morph Oscillator Scheduled Controls](../../examples/c173_dual_morph_oscillator_scheduled_controls.talas.json) — <code>renderable</code>
+- [Morph Lead](../../examples/demos/morph_lead.talas.json) — <code>renderable</code>
 
 <a id="node-talas-oscillator"></a>
 ### Oscillator
@@ -17178,6 +17322,15 @@ Full runtime coverage; no tracked subset restriction.
 - [LFO Phase and Transport](../../examples/c96_lfo_phase_transport.talas.json) — <code>renderable</code>
 - [Ramp Trigger and Transport](../../examples/c97_ramp_trigger_transport.talas.json) — <code>renderable</code>
 - [Sample And Hold Clock and Transport](../../examples/c98_sample_and_hold_clock_transport.talas.json) — <code>renderable</code>
+- [Arpeggiator](../../examples/demos/arpeggiator.talas.json) — <code>renderable</code>
+- [Drawbar Organ](../../examples/demos/drawbar_organ.talas.json) — <code>renderable</code>
+- [Drum Kit](../../examples/demos/drum_kit.talas.json) — <code>renderable</code>
+- [FM Electric Piano](../../examples/demos/fm_electric_piano.talas.json) — <code>renderable</code>
+- [Modal Mallets](../../examples/demos/modal_mallets.talas.json) — <code>renderable</code>
+- [Poly Pad](../../examples/demos/poly_pad.talas.json) — <code>renderable</code>
+- [Ring Modulator](../../examples/demos/ring_modulator.talas.json) — <code>renderable</code>
+- [Sub Bass](../../examples/demos/sub_bass.talas.json) — <code>renderable</code>
+- [Vocoder](../../examples/demos/vocoder.talas.json) — <code>renderable</code>
 - [Live spectral analysis](../../examples/m3_live_spectral_analysis.talas.json) — <code>renderable</code>
 - [Matrix4 to Output4](../../examples/m3_matrix4_output4.talas.json) — <code>renderable</code>
 - [Native complex STFT round-trip](../../examples/m3_native_fft_round_trip.talas.json) — <code>renderable</code>
@@ -21026,6 +21179,7 @@ Subset: deterministic stereo wavetable grain scheduling from immutable finite wa
 **Original examples**
 
 - [Grain Cloud Dynamic Controls](../../examples/c113_grain_cloud_dynamic_controls.talas.json) — <code>renderable</code>
+- [Granular Synth](../../examples/demos/granular_synth.talas.json) — <code>renderable</code>
 
 <a id="node-talas-noise"></a>
 ### Noise
@@ -21083,6 +21237,9 @@ Deterministic clean-room white, pink, and hot-pink generator with checked offlin
 **Original examples**
 
 - [Noise Modes Connected Controls](../../examples/c118_noise_modes_connected_controls.talas.json) — <code>renderable</code>
+- [Drum Kit](../../examples/demos/drum_kit.talas.json) — <code>renderable</code>
+- [Modal Mallets](../../examples/demos/modal_mallets.talas.json) — <code>renderable</code>
+- [Vocoder](../../examples/demos/vocoder.talas.json) — <code>renderable</code>
 
 <a id="node-talas-pulsegenerator"></a>
 ### Pulse Generator

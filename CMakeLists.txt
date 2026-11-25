@@ -1497,6 +1497,7 @@ if(TALAS_BUILD_WORKBENCH)
         src/app/workbench/WorkbenchTimelinePointsSmoke.cpp
         src/app/workbench/WorkbenchTimelineGridSmoke.cpp
         src/app/workbench/WorkbenchSoundBrowserSmoke.cpp
+        src/app/workbench/WorkbenchDemoLibrarySmoke.cpp
         src/app/workbench/WorkbenchVcsPresetsSmoke.cpp
         src/app/workbench/WorkbenchSoundDragSmoke.cpp
         src/app/workbench/WorkbenchSoundFileSmoke.cpp
@@ -1776,6 +1777,31 @@ if(TALAS_BUILD_WORKBENCH)
         examples/resources/c99-samples-from-disk-single-step.txt
         examples/resources/c102-sos-oscillators-wave.txt
         examples/README.md
+        examples/demos/README.md
+        examples/demos/arpeggiator.talas.json
+        examples/demos/auto_filter.talas.json
+        examples/demos/bus_compressor.talas.json
+        examples/demos/chorus.talas.json
+        examples/demos/drawbar_organ.talas.json
+        examples/demos/drum_kit.talas.json
+        examples/demos/flanger.talas.json
+        examples/demos/fm_electric_piano.talas.json
+        examples/demos/frequency_shifter.talas.json
+        examples/demos/granular_freeze.talas.json
+        examples/demos/granular_synth.talas.json
+        examples/demos/hall_reverb.talas.json
+        examples/demos/modal_mallets.talas.json
+        examples/demos/morph_lead.talas.json
+        examples/demos/phaser.talas.json
+        examples/demos/plucked_string.talas.json
+        examples/demos/poly_pad.talas.json
+        examples/demos/ring_modulator.talas.json
+        examples/demos/spectral_blur.talas.json
+        examples/demos/stereo_delay.talas.json
+        examples/demos/sub_bass.talas.json
+        examples/demos/tape_saturator.talas.json
+        examples/demos/terrain_drone.talas.json
+        examples/demos/vocoder.talas.json
         docs/help/node-example-index.json
         docs/help/builtin-node-reference.md
     )
@@ -1811,6 +1837,8 @@ if(TALAS_BUILD_WORKBENCH)
             "${TALAS_SOUND_LIBRARY_BUNDLE_ROOT}/examples/resources"
         COMMAND ${CMAKE_COMMAND} -E make_directory
             "${TALAS_SOUND_LIBRARY_BUNDLE_ROOT}/examples/DiskCache"
+        COMMAND ${CMAKE_COMMAND} -E make_directory
+            "${TALAS_SOUND_LIBRARY_BUNDLE_ROOT}/examples/demos"
         COMMAND ${CMAKE_COMMAND} -E make_directory
             "${TALAS_SOUND_LIBRARY_BUNDLE_ROOT}/docs/help"
         VERBATIM)
@@ -6975,6 +7003,13 @@ if(TALAS_BUILD_TESTS)
     target_compile_definitions(talas_sound_library_model_tests
         PRIVATE TALAS_SOURCE_DIR="${CMAKE_CURRENT_SOURCE_DIR}")
     add_test(NAME talas_sound_library_model_tests COMMAND talas_sound_library_model_tests)
+    if(TARGET talas_workbench)
+        # The library as the app bundle ships it, demos included.
+        add_test(
+            NAME talas_sound_library_bundle_tests
+            COMMAND talas_sound_library_model_tests
+                --bundle-root "${TALAS_SOUND_LIBRARY_BUNDLE_ROOT}")
+    endif()
 
     add_executable(talas_sound_library_audition_model_tests
         tests/app/SoundLibraryAuditionModelTests.cpp

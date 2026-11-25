@@ -87,6 +87,9 @@ ORIGIN_VALUES = {
     "external",
 }
 TYPE_ID_PATTERN = re.compile(r"^[A-Za-z0-9][A-Za-z0-9._-]*$")
+# Example projects live at the top of examples/ or in one of these
+# subfolders; resources/, DiskCache/ and any deeper path are never projects.
+EXAMPLE_SUBFOLDERS = ("demos",)
 
 
 @dataclass(frozen=True)
@@ -151,6 +154,18 @@ def _safe_relative_path(value: object, prefix: str, suffix: str, context: str) -
     return value
 
 
+def _is_example_project_path(path: str) -> bool:
+    parts = pathlib.PurePosixPath(path).parts
+    return (
+        path.startswith("examples/")
+        and path.endswith(".talas.json")
+        and (
+            len(parts) == 2
+            or (len(parts) == 3 and parts[1] in EXAMPLE_SUBFOLDERS)
+        )
+    )
+
+
 def parse_policy(raw: object) -> HelpPolicy:
     policy = _require_exact_keys(raw, POLICY_KEYS, "node-help policy")
     if type(policy["schemaVersion"]) is not int or policy["schemaVersion"] != 1:
@@ -183,8 +198,10 @@ def parse_policy(raw: object) -> HelpPolicy:
         path = _safe_relative_path(
             example["path"], "examples/", ".talas.json", f"examples[{index}].path"
         )
-        if len(pathlib.PurePosixPath(path).parts) != 2:
-            raise ValueError("node-help examples must be top-level project files")
+        if not _is_example_project_path(path):
+            raise ValueError(
+                "node-help examples must be top-level or demos/ project files"
+            )
         title = example["title"]
         if not isinstance(title, str) or not title.strip() or title != title.strip():
             raise ValueError(f"examples[{index}].title must be trimmed and non-empty")
@@ -421,14 +438,7 @@ def _tracked_example_paths(root: pathlib.Path) -> set[str]:
         paths = completed.stdout.decode("utf-8", errors="strict").split("\0")
     except UnicodeError as error:
         raise ValueError("Tracked example paths are not UTF-8") from error
-    return {
-        path
-        for path in paths
-        if path
-        and len(pathlib.PurePosixPath(path).parts) == 2
-        and path.startswith("examples/")
-        and path.endswith(".talas.json")
-    }
+    return {path for path in paths if path and _is_example_project_path(path)}
 
 
 def build_help_model(

@@ -92,6 +92,16 @@ public:
     // What dragging the entry carries, empty when it does not drag.
     [[nodiscard]] virtual juce::String dragDescriptionForSmoke(
         std::string_view stableId) = 0;
+    // The list's entries in order, the Category filter's choices, a shown
+    // row's two lines, the detail pane, and whether Audition is enabled.
+    [[nodiscard]] virtual std::vector<std::string>
+    visibleEntryIdsForSmoke() const = 0;
+    [[nodiscard]] virtual std::vector<std::string>
+    categoryChoicesForSmoke() const = 0;
+    [[nodiscard]] virtual juce::String rowTextForSmoke(
+        std::string_view stableId) const = 0;
+    [[nodiscard]] virtual juce::String detailTextForSmoke() const = 0;
+    [[nodiscard]] virtual bool auditionEnabledForSmoke() const = 0;
 };
 
 [[nodiscard]] std::unique_ptr<SoundDefinitionsPanel> makeSoundDefinitionsPanel(

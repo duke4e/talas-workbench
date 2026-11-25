@@ -58,6 +58,44 @@ namespace
     return "Unavailable";
 }
 
+// The row's second line: its source, and for a demo its kind and what it
+// needs, then compatibility and category.
+[[nodiscard]] juce::String entryDetailLine(
+    const talas::app::SoundLibraryEntry& entry)
+{
+    const auto separator = juceString("  ·  ");
+    if (entry.demoKind == talas::app::SoundLibraryDemoKind::None)
+    {
+        return juceString(sourceLabel(entry.sourceKind)) + separator
+            + juceString(compatibilityLabel(entry.compatibility)) + separator
+            + juceString(entry.category);
+    }
+    return juce::String{"DEMO"} + separator
+        + juceString(talas::app::soundLibraryDemoKindLabel(entry.demoKind))
+        + separator + juceString(compatibilityLabel(entry.compatibility))
+        + (entry.demoKind == talas::app::SoundLibraryDemoKind::Effect
+                ? separator + "needs live input"
+                : separator + "plays a demo phrase");
+}
+
+// The detail pane's second line for a demo: what it is and how to hear it.
+[[nodiscard]] juce::String demoGuidance(
+    const talas::app::SoundLibraryEntry& entry)
+{
+    switch (entry.demoKind)
+    {
+    case talas::app::SoundLibraryDemoKind::Effect:
+        return "Demo effect";
+    case talas::app::SoundLibraryDemoKind::Instrument:
+        return juceString(
+            "Demo instrument · Audition plays its demo phrase; open it to "
+            "play it from a MIDI keyboard");
+    case talas::app::SoundLibraryDemoKind::None:
+        break;
+    }
+    return {};
+}
+
 [[nodiscard]] std::string_view auditionPortTypeLabel(
     talas::core::PortType type) noexcept
 {
@@ -826,6 +864,10 @@ class SoundDefinitionsPanelImpl final : public SoundDefinitionsPanel,
         }
         std::ranges::sort(categories);
         categories.erase(std::unique(categories.begin(), categories.end()), categories.end());
+        // The demos' category leads the list, where a new user looks first.
+        std::ranges::stable_partition(categories, [](const auto& category) {
+            return category == talas::app::soundLibraryDemoCategory;
+        });
         std::ranges::sort(origins);
         origins.erase(std::unique(origins.begin(), origins.end()), origins.end());
         refreshing_ = true;
@@ -946,6 +988,42 @@ class SoundDefinitionsPanelImpl final : public SoundDefinitionsPanel,
         rows.addRange({static_cast<int>(found - visibleEntries_.begin()),
             static_cast<int>(found - visibleEntries_.begin()) + 1});
         return getDragSourceDescription(rows).toString();
+    }
+
+    [[nodiscard]] std::vector<std::string> visibleEntryIdsForSmoke() const override
+    {
+        std::vector<std::string> ids;
+        ids.reserve(visibleEntries_.size());
+        for (const auto& entry : visibleEntries_)
+            ids.push_back(entry.stableId);
+        return ids;
+    }
+
+    [[nodiscard]] std::vector<std::string> categoryChoicesForSmoke() const override
+    {
+        std::vector<std::string> choices;
+        for (int index = 0; index < categoryBox_.getNumItems(); ++index)
+            choices.push_back(categoryBox_.getItemText(index).toStdString());
+        return choices;
+    }
+
+    [[nodiscard]] juce::String rowTextForSmoke(std::string_view stableId) const override
+    {
+        const auto found = std::ranges::find(
+            visibleEntries_, stableId, &talas::app::SoundLibraryEntry::stableId);
+        return found == visibleEntries_.end()
+            ? juce::String{}
+            : juceString(found->displayName) + "\n" + entryDetailLine(*found);
+    }
+
+    [[nodiscard]] juce::String detailTextForSmoke() const override
+    {
+        return detailLabel_.getText();
+    }
+
+    [[nodiscard]] bool auditionEnabledForSmoke() const override
+    {
+        return auditionButton_.isEnabled();
     }
 
     [[nodiscard]] std::string selectedDefinitionId() const override
@@ -1098,8 +1176,7 @@ class SoundDefinitionsPanelImpl final : public SoundDefinitionsPanel,
             return {};
         const auto& entry = visibleEntries_[static_cast<std::size_t>(row)];
         return juceString(entry.displayName)
-            + ", " + juceString(sourceLabel(entry.sourceKind))
-            + ", " + juceString(compatibilityLabel(entry.compatibility))
+            + ", " + entryDetailLine(entry).replace(juceString("  ·  "), ", ")
             + ", stable id " + juceString(entry.stableId)
             + (std::ranges::find(libraryState_.favoriteEntryIds, entry.stableId)
                     != libraryState_.favoriteEntryIds.end()
@@ -1138,10 +1215,7 @@ class SoundDefinitionsPanelImpl final : public SoundDefinitionsPanel,
         graphics.setColour(secondaryTextColour);
         graphics.setFont(WorkbenchType::micro());
         graphics.drawText(
-            juceString(sourceLabel(entry.sourceKind)) + juceString("  ·  ")
-                + juceString(compatibilityLabel(entry.compatibility))
-                + juceString("  ·  ")
-                + juceString(entry.category)
+            entryDetailLine(entry)
                 + (std::ranges::find(libraryState_.favoriteEntryIds, entry.stableId)
                         != libraryState_.favoriteEntryIds.end()
                     ? juceString("  ·  FAVORITE")
@@ -1802,8 +1876,11 @@ class SoundDefinitionsPanelImpl final : public SoundDefinitionsPanel,
         }
         else
         {
+            const auto guidance = demoGuidance(*entry);
             detailLabel_.setText(
                 juceString(entry->summary) + "\n"
+                    + (guidance.isEmpty() ? juce::String{}
+                                          : guidance + juceString(" · "))
                     + juceString(compatibilityLabel(entry->compatibility))
                     + (entry->actionDiagnostic.empty()
                         ? juce::String{}

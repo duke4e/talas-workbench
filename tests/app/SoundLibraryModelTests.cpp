@@ -4,6 +4,7 @@
 #include "talas/project/ProjectJson.h"
 
 #include <algorithm>
+#include <array>
 #include <chrono>
 #include <filesystem>
 #include <fstream>
@@ -95,9 +96,9 @@ void testCheckedManifestLoadsExactOriginalCorpus()
     require(result.ok(), "checked sound library manifest should load: "
             + result.diagnostic);
     require(result.manifest->schemaVersion == 1
-                && result.manifest->entries.size() == 178,
-        "checked manifest should bind the one hundred seventy-eight generated "
-        "original examples");
+                && result.manifest->entries.size() == 202,
+        "checked manifest should bind the two hundred two generated original "
+        "examples, the twenty-four demos among them");
     const auto spectrumModifier = std::ranges::find(
         result.manifest->entries,
         "bounded-spectrum-modifier",
@@ -3324,6 +3325,279 @@ void testCheckedManifestRejectsLocalHelpAndIndexDrift()
     }
 }
 
+constexpr std::array demoEffects{
+    std::string_view{"auto_filter"},
+    std::string_view{"bus_compressor"},
+    std::string_view{"chorus"},
+    std::string_view{"flanger"},
+    std::string_view{"frequency_shifter"},
+    std::string_view{"granular_freeze"},
+    std::string_view{"hall_reverb"},
+    std::string_view{"phaser"},
+    std::string_view{"ring_modulator"},
+    std::string_view{"spectral_blur"},
+    std::string_view{"stereo_delay"},
+    std::string_view{"tape_saturator"},
+    std::string_view{"vocoder"},
+};
+constexpr std::array demoInstruments{
+    std::string_view{"arpeggiator"},
+    std::string_view{"drawbar_organ"},
+    std::string_view{"drum_kit"},
+    std::string_view{"fm_electric_piano"},
+    std::string_view{"granular_synth"},
+    std::string_view{"modal_mallets"},
+    std::string_view{"morph_lead"},
+    std::string_view{"plucked_string"},
+    std::string_view{"poly_pad"},
+    std::string_view{"sub_bass"},
+    std::string_view{"terrain_drone"},
+};
+
+[[nodiscard]] std::string demoPath(std::string_view stem)
+{
+    return "examples/demos/" + std::string{stem} + ".talas.json";
+}
+
+// Every demo is listed once, as an effect or an instrument, and its exact
+// project bytes load from the given root as an openable document.
+void requireDemosListedAndOpenable(
+    const std::filesystem::path& root,
+    const talas::core::NodeRegistry& registry,
+    const talas::app::SoundLibraryManifest& manifest)
+{
+    std::size_t demoCount = 0;
+    for (const auto& entry : manifest.entries)
+    {
+        if (entry.projectPath.starts_with(talas::app::soundLibraryDemoFolder))
+            ++demoCount;
+    }
+    require(demoCount == demoEffects.size() + demoInstruments.size(),
+        "the manifest should list exactly the twenty-four demos");
+    const auto check = [&](std::string_view stem,
+                           talas::app::SoundLibraryDemoKind kind) {
+        const auto path = demoPath(stem);
+        const auto found = std::ranges::find(
+            manifest.entries, path,
+            &talas::app::SoundLibraryManifestEntry::projectPath);
+        require(found != manifest.entries.end(),
+            "demo " + path + " should be listed in the Sound Library");
+        const auto effect = kind == talas::app::SoundLibraryDemoKind::Effect;
+        auto expectedId = "demo-" + std::string{stem};
+        std::ranges::replace(expectedId, '_', '-');
+        require(found->demoKind == kind
+                && found->category == talas::app::soundLibraryDemoCategory
+                && found->id == expectedId
+                && !found->title.empty() && !found->summary.empty()
+                && found->summary.size() <= 160
+                && found->helpAnchor == (effect ? "#effects" : "#instruments")
+                && found->expectedOutcome
+                    == talas::app::SoundLibraryExpectedOutcome::Renderable
+                && !found->definitionId.has_value()
+                && talas::app::soundLibraryHasAction(
+                    found->actions, talas::app::SoundLibraryAction::OpenExample)
+                && talas::app::soundLibraryHasAction(
+                    found->actions, talas::app::SoundLibraryAction::OpenHelp)
+                && talas::app::soundLibraryHasAction(
+                       found->actions, talas::app::SoundLibraryAction::Audition)
+                    == !effect,
+            "demo " + path + " should be a Demos entry of its exact kind, "
+            "with a one-line summary, open and help, and audition only for an instrument");
+        const auto snapshot = talas::app::loadSoundLibraryExampleSnapshot(
+            root, *found, registry);
+        require(snapshot.ok()
+                && snapshot.snapshot->document.metadata.title == found->title
+                && snapshot.snapshot->contentHash
+                    == found->verifiedProjectContentHash,
+            "demo " + path + " should open as its exact checked project: "
+                + snapshot.diagnostic);
+    };
+    for (const auto stem : demoEffects)
+        check(stem, talas::app::SoundLibraryDemoKind::Effect);
+    for (const auto stem : demoInstruments)
+        check(stem, talas::app::SoundLibraryDemoKind::Instrument);
+}
+
+void testDemosFormOneGroupOfEffectsAndInstruments()
+{
+    const auto registry = talas::core::makeBuiltinNodeRegistry();
+    const auto root = std::filesystem::path{TALAS_SOURCE_DIR};
+    const auto loaded = talas::app::loadSoundLibraryManifest(root, registry);
+    require(loaded.ok(), "demo manifest should load: " + loaded.diagnostic);
+    requireDemosListedAndOpenable(root, registry, *loaded.manifest);
+
+    const auto entries = talas::app::buildSoundLibraryEntries(
+        {}, registry, *loaded.manifest);
+    const auto firstExample = std::ranges::find(
+        entries,
+        talas::app::SoundLibrarySourceKind::OriginalExample,
+        &talas::app::SoundLibraryEntry::sourceKind);
+    require(std::distance(firstExample, entries.end()) == 202,
+        "every original example should follow the other sources");
+    const auto demosEnd = firstExample
+        + static_cast<std::ptrdiff_t>(
+            demoEffects.size() + demoInstruments.size());
+    const auto effectsEnd = firstExample
+        + static_cast<std::ptrdiff_t>(demoEffects.size());
+    require(std::all_of(firstExample, effectsEnd, [](const auto& entry) {
+                return entry.demoKind == talas::app::SoundLibraryDemoKind::Effect;
+            })
+            && std::all_of(effectsEnd, demosEnd, [](const auto& entry) {
+                return entry.demoKind
+                    == talas::app::SoundLibraryDemoKind::Instrument;
+            })
+            && std::none_of(demosEnd, entries.end(), [](const auto& entry) {
+                   return entry.demoKind
+                       != talas::app::SoundLibraryDemoKind::None;
+               })
+            && std::is_sorted(firstExample, effectsEnd,
+                [](const auto& left, const auto& right) {
+                    return left.displayName < right.displayName;
+                })
+            && std::is_sorted(effectsEnd, demosEnd,
+                [](const auto& left, const auto& right) {
+                    return left.displayName < right.displayName;
+                }),
+        "the demos should lead the original examples, effects then instruments, each by name");
+    const auto delay = std::ranges::find(
+        entries, "example:demo-stereo-delay",
+        &talas::app::SoundLibraryEntry::stableId);
+    const auto pad = std::ranges::find(
+        entries, "example:demo-poly-pad",
+        &talas::app::SoundLibraryEntry::stableId);
+    require(delay != entries.end() && pad != entries.end()
+            && delay->category == "Demos" && pad->category == "Demos"
+            && delay->actionDiagnostic.find("live audio input 1")
+                != std::string::npos
+            && !talas::app::soundLibraryHasAction(
+                delay->actions, talas::app::SoundLibraryAction::Audition)
+            && pad->actionDiagnostic.empty()
+            && talas::app::soundLibraryHasAction(
+                pad->actions, talas::app::SoundLibraryAction::Audition)
+            && talas::app::soundLibraryEntryMatches(*delay, "demo effect delay")
+            && talas::app::soundLibraryEntryMatches(*pad, "demos instrument pad")
+            && !talas::app::soundLibraryEntryMatches(*pad, "demo effect")
+            && talas::app::soundLibraryDemoKindLabel(delay->demoKind) == "Effect"
+            && talas::app::soundLibraryDemoKindLabel(pad->demoKind) == "Instrument"
+            && talas::app::soundLibraryDemoKindLabel(
+                   talas::app::SoundLibraryDemoKind::None).empty(),
+        "a demo effect should say it needs live input instead of auditioning, and an instrument should audition");
+}
+
+void testDemoManifestRulesFailClosed()
+{
+    const auto canonical = manifestText();
+    const auto delayEntry = std::string{
+        "\"projectPath\": \"examples/demos/stereo_delay.talas.json\""};
+    const auto delayTags = std::string{
+        "\"tags\": [\"demo\", \"effect\", \"live-input\", \"delay\"]"};
+    const auto delayActions = std::string{
+        "\"helpAnchor\": \"#effects\",\n"
+        "      \"expectedOutcome\": \"renderable\",\n"
+        "      \"definitionId\": null,\n"
+        "      \"actions\": [\"openExample\", \"openHelp\"]"};
+    require(canonical.find(delayEntry) != std::string::npos
+            && canonical.find(delayTags) != std::string::npos
+            && canonical.find(delayActions) != std::string::npos,
+        "the Stereo Delay demo should be the mutation fixture");
+    for (const auto& invalid : {
+             replacedOnce(canonical, delayEntry,
+                 "\"projectPath\": \"examples/demos/deeper/stereo_delay.talas.json\""),
+             replacedOnce(canonical, delayEntry,
+                 "\"projectPath\": \"examples/resources/stereo_delay.talas.json\""),
+             replacedOnce(canonical,
+                 "\"category\": \"Demos\"", "\"category\": \"Effects\""),
+             replacedOnce(canonical, delayTags,
+                 "\"tags\": [\"effect\", \"live-input\", \"delay\"]"),
+             replacedOnce(canonical, delayTags,
+                 "\"tags\": [\"demo\", \"live-input\", \"delay\"]"),
+             replacedOnce(canonical, delayTags,
+                 "\"tags\": [\"demo\", \"effect\", \"instrument\", \"delay\"]"),
+             replacedOnce(canonical, delayActions,
+                 "\"helpAnchor\": \"#effects\",\n"
+                 "      \"expectedOutcome\": \"renderable\",\n"
+                 "      \"definitionId\": null,\n"
+                 "      \"actions\": [\"openExample\", \"openHelp\", \"audition\"]"),
+             replacedOnce(canonical,
+                 "\"category\": \"Filters\"", "\"category\": \"Demos\""),
+             replacedOnce(canonical,
+                 "\"tags\": [\"filters\", \"vcf\", \"tpt\", \"prepared-realtime\"]",
+                 "\"tags\": [\"demo\", \"filters\", \"vcf\", \"tpt\"]"),
+         })
+    {
+        require(!talas::app::parseSoundLibraryManifest(invalid).ok(),
+            "a demo outside examples/demos/, outside the Demos category, without "
+            "exactly one kind tag, or an effect offering a silent audition should reject");
+    }
+
+    const auto registry = talas::core::makeBuiltinNodeRegistry();
+    const auto source = std::filesystem::path{TALAS_SOURCE_DIR};
+    TemporaryDirectory directory;
+    std::filesystem::create_directories(directory.path() / "docs/help");
+    std::filesystem::copy(
+        source / "examples",
+        directory.path() / "examples",
+        std::filesystem::copy_options::recursive
+            | std::filesystem::copy_options::overwrite_existing);
+    for (const auto& helpFile : {
+             "node-example-index.json",
+             "builtin-node-reference.md",
+         })
+    {
+        std::filesystem::copy_file(
+            source / "docs/help" / helpFile,
+            directory.path() / "docs/help" / helpFile,
+            std::filesystem::copy_options::overwrite_existing);
+    }
+    const auto copied = talas::app::loadSoundLibraryManifest(
+        directory.path(), registry);
+    require(copied.ok(), "copied corpus should load its demos: "
+            + copied.diagnostic);
+    requireDemosListedAndOpenable(directory.path(), registry, *copied.manifest);
+
+    const auto demoReadme = directory.path() / "examples/demos/README.md";
+    const auto canonicalDemoReadme = fileText(demoReadme);
+    writeText(demoReadme, replacedOnce(
+        canonicalDemoReadme, "## Instruments", "## Synthesizers"));
+    require(!talas::app::loadSoundLibraryManifest(directory.path(), registry).ok(),
+        "a demo help anchor missing from the demos README should reject");
+    std::filesystem::remove(demoReadme);
+    require(!talas::app::loadSoundLibraryManifest(directory.path(), registry).ok(),
+        "a missing demos README should reject");
+    writeText(demoReadme, canonicalDemoReadme);
+
+    const auto manifest =
+        directory.path() / "examples/sound-library-manifest.json";
+    writeText(manifest, replacedOnce(canonical, delayTags,
+        "\"tags\": [\"demo\", \"instrument\", \"live-input\", \"delay\"]"));
+    require(talas::app::parseSoundLibraryManifest(fileText(manifest)).ok()
+            && !talas::app::loadSoundLibraryManifest(directory.path(), registry)
+                    .ok(),
+        "a demo reading live input should not pass as an instrument");
+    writeText(manifest, canonical);
+
+    const auto delayProject =
+        directory.path() / "examples/demos/stereo_delay.talas.json";
+    std::filesystem::remove(delayProject);
+    require(!talas::app::loadSoundLibraryManifest(directory.path(), registry).ok(),
+        "a listed demo missing from the library root should reject");
+}
+
+// The library the app bundle ships: every demo is there and opens.
+void testBundledLibraryShipsTheDemos(const std::filesystem::path& bundleRoot)
+{
+    const auto registry = talas::core::makeBuiltinNodeRegistry();
+    require(std::filesystem::is_regular_file(
+                bundleRoot / "examples/demos/README.md"),
+        "the bundled Sound Library should carry the demos README");
+    const auto loaded = talas::app::loadSoundLibraryManifest(bundleRoot, registry);
+    require(loaded.ok(), "the bundled Sound Library should load: "
+            + loaded.diagnostic);
+    require(loaded.manifest->entries.size() == 202,
+        "the bundled Sound Library should list every original example");
+    requireDemosListedAndOpenable(bundleRoot, registry, *loaded.manifest);
+}
+
 talas::project::ProjectSoundDefinition projectVoice()
 {
     talas::project::ProjectSoundDefinition definition;
@@ -3373,9 +3647,9 @@ void testProjectionMergesThreeAuthoritiesAndSearchesCapabilities()
         document,
         registry,
         *loaded.manifest);
-    require(entries.size() == 180,
+    require(entries.size() == 204,
         "projection should merge one definition, one eligible component, and "
-        "one hundred seventy-eight examples");
+        "two hundred two examples");
 
     const auto definition = std::ranges::find(
         entries,
@@ -3447,12 +3721,21 @@ void testProjectionMergesThreeAuthoritiesAndSearchesCapabilities()
 }
 }
 
-int main()
+int main(int argc, char** argv)
 {
+    if (argc == 3 && std::string_view{argv[1]} == "--bundle-root")
+    {
+        testBundledLibraryShipsTheDemos(std::filesystem::path{argv[2]});
+        return 0;
+    }
+    if (argc != 1)
+        throw std::runtime_error("usage: [--bundle-root <path>]");
     testCheckedManifestLoadsExactOriginalCorpus();
     testExampleSnapshotRequiresRetainedAssetByteAuthority();
     testExampleSnapshotRejectsWindowsRootAndDriveRelativeAssets();
     testManifestParserIsClosedAndFailClosed();
     testCheckedManifestRejectsLocalHelpAndIndexDrift();
     testProjectionMergesThreeAuthoritiesAndSearchesCapabilities();
+    testDemosFormOneGroupOfEffectsAndInstruments();
+    testDemoManifestRulesFailClosed();
 }

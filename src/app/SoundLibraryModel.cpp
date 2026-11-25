@@ -428,6 +428,13 @@ private:
            });
 }
 
+[[nodiscard]] bool isDemoProjectPath(std::string_view value) noexcept
+{
+    return value.starts_with(soundLibraryDemoFolder);
+}
+
+// A project at the top of examples/ or in examples/demos/; resources/,
+// DiskCache/ and deeper folders never hold library projects.
 [[nodiscard]] bool validProjectPath(std::string_view value)
 {
     if (!value.starts_with("examples/")
@@ -437,7 +444,10 @@ private:
     {
         return false;
     }
-    const auto suffix = value.substr(std::string_view{"examples/"}.size());
+    const auto suffix = value.substr(
+        (isDemoProjectPath(value) ? soundLibraryDemoFolder
+                                  : std::string_view{"examples/"})
+            .size());
     return !suffix.empty() && suffix.find('/') == std::string_view::npos;
 }
 
@@ -534,6 +544,24 @@ private:
         }
         parsedTags.push_back(tag.string());
     }
+    const auto hasTag = [&](std::string_view tag) {
+        return uniqueTags.contains(std::string{tag});
+    };
+    auto demoKind = SoundLibraryDemoKind::None;
+    if (isDemoProjectPath(path->string()))
+    {
+        if (category->string() != soundLibraryDemoCategory
+            || !hasTag("demo") || hasTag("effect") == hasTag("instrument"))
+        {
+            return false;
+        }
+        demoKind = hasTag("effect") ? SoundLibraryDemoKind::Effect
+                                    : SoundLibraryDemoKind::Instrument;
+    }
+    else if (category->string() == soundLibraryDemoCategory || hasTag("demo"))
+    {
+        return false;
+    }
 
     SoundLibraryActionMask actionMask = 0;
     for (const auto& action : actions->array())
@@ -553,7 +581,9 @@ private:
         || (*parsedOutcome != SoundLibraryExpectedOutcome::Renderable
             && soundLibraryHasAction(actionMask, SoundLibraryAction::Audition))
         || (*parsedOutcome == SoundLibraryExpectedOutcome::PreservedUnavailable
-            && soundLibraryHasAction(actionMask, SoundLibraryAction::UseInProject)))
+            && soundLibraryHasAction(actionMask, SoundLibraryAction::UseInProject))
+        || (demoKind == SoundLibraryDemoKind::Effect
+            && soundLibraryHasAction(actionMask, SoundLibraryAction::Audition)))
     {
         return false;
     }
@@ -591,6 +621,7 @@ private:
         *parsedOutcome,
         std::move(parsedDefinitionId),
         actionMask,
+        demoKind,
     };
     return true;
 }
@@ -735,6 +766,42 @@ struct IndexedExampleEvidence
     return result;
 }
 
+// The anchors of a Markdown file's headings; a "#" line inside a fenced
+// code block is a shell comment, not a heading.
+[[nodiscard]] std::unordered_set<std::string> headingAnchors(
+    std::string_view markdown)
+{
+    std::unordered_set<std::string> anchors;
+    std::size_t offset = 0;
+    bool fenced = false;
+    while (offset < markdown.size())
+    {
+        const auto end = markdown.find('\n', offset);
+        const auto line = markdown.substr(
+            offset,
+            (end == std::string_view::npos ? markdown.size() : end) - offset);
+        if (line.starts_with("```"))
+            fenced = !fenced;
+        const auto firstText = line.find_first_not_of('#');
+        if (!fenced && line.starts_with('#')
+            && firstText != std::string_view::npos)
+        {
+            const auto heading = line.substr(firstText);
+            const auto firstCharacter = heading.find_first_not_of(' ');
+            if (firstCharacter != std::string_view::npos)
+            {
+                auto anchor = markdownAnchor(heading.substr(firstCharacter));
+                if (!anchor.empty())
+                    anchors.emplace(std::move(anchor));
+            }
+        }
+        if (end == std::string_view::npos)
+            break;
+        offset = end + 1;
+    }
+    return anchors;
+}
+
 [[nodiscard]] std::optional<std::unordered_set<std::string>> helpAnchors(
     const std::filesystem::path& root,
     const talas::core::NodeRegistry& registry)
@@ -767,31 +834,32 @@ struct IndexedExampleEvidence
             return std::nullopt;
         }
     }
-    std::unordered_set<std::string> anchors;
-    std::size_t offset = 0;
-    while (offset < readme->size())
-    {
-        const auto end = readme->find('\n', offset);
-        const auto line = std::string_view{*readme}.substr(
-            offset,
-            (end == std::string::npos ? readme->size() : end) - offset);
-        const auto firstText = line.find_first_not_of('#');
-        if (line.starts_with('#') && firstText != std::string_view::npos)
-        {
-            const auto heading = line.substr(firstText);
-            const auto firstCharacter = heading.find_first_not_of(' ');
-            if (firstCharacter != std::string_view::npos)
-            {
-                auto anchor = markdownAnchor(heading.substr(firstCharacter));
-                if (!anchor.empty())
-                    anchors.emplace(std::move(anchor));
-            }
-        }
-        if (end == std::string::npos)
-            break;
-        offset = end + 1;
-    }
-    return anchors;
+    return headingAnchors(*readme);
+}
+
+// The demo README's headings: a demo's help anchor names its table there.
+[[nodiscard]] std::optional<std::unordered_set<std::string>> demoHelpAnchors(
+    const std::filesystem::path& root)
+{
+    const auto readme = readBoundedFile(
+        root, "examples/demos/README.md", maximumHelpBytes);
+    if (!readme.has_value())
+        return std::nullopt;
+    return headingAnchors(*readme);
+}
+
+[[nodiscard]] bool readsLiveAudioInput(
+    const talas::project::ProjectDocument& document)
+{
+    const auto reads = [](const talas::project::ProjectGraph& graph) {
+        return std::ranges::any_of(graph.nodes, [](const auto& node) {
+            return node.typeId == "talas.audioInput";
+        });
+    };
+    return reads(document.graph)
+        || std::ranges::any_of(
+            document.soundDefinitions,
+            [&](const auto& definition) { return reads(definition.graph); });
 }
 
 [[nodiscard]] const talas::project::ProjectSoundDefinition* findDefinition(
@@ -1025,6 +1093,21 @@ void finishSearchIndex(SoundLibraryEntry& entry)
 }
 }
 
+std::string_view soundLibraryDemoKindLabel(
+    SoundLibraryDemoKind kind) noexcept
+{
+    switch (kind)
+    {
+    case SoundLibraryDemoKind::Effect:
+        return "Effect";
+    case SoundLibraryDemoKind::Instrument:
+        return "Instrument";
+    case SoundLibraryDemoKind::None:
+        break;
+    }
+    return {};
+}
+
 SoundLibraryDefinitionAuditionProfile
 soundLibraryDefinitionAuditionProfile(
     const talas::project::ProjectSoundDefinition& definition)
@@ -1168,18 +1251,33 @@ SoundLibraryManifestLoadResult loadSoundLibraryManifest(
     auto manifest = std::move(*loaded.manifest);
     const auto generatedEvidence = indexEvidence(root);
     const auto verifiedHelpAnchors = helpAnchors(root, registry);
-    if (!generatedEvidence.has_value() || !verifiedHelpAnchors.has_value())
+    const auto hasDemos = std::ranges::any_of(
+        manifest.entries, [](const auto& entry) {
+            return entry.demoKind != SoundLibraryDemoKind::None;
+        });
+    const auto verifiedDemoHelpAnchors = hasDemos
+        ? demoHelpAnchors(root)
+        : std::optional<std::unordered_set<std::string>>{
+            std::unordered_set<std::string>{}};
+    if (!generatedEvidence.has_value() || !verifiedHelpAnchors.has_value()
+        || !verifiedDemoHelpAnchors.has_value())
+    {
         return {{}, "Generated node-example index or local help is missing or invalid"};
+    }
     std::unordered_set<std::string> paths;
     paths.reserve(manifest.entries.size());
     for (auto& entry : manifest.entries)
     {
         const auto indexed = generatedEvidence->find(entry.projectPath);
+        const auto& anchors =
+            entry.demoKind == SoundLibraryDemoKind::None
+            ? *verifiedHelpAnchors
+            : *verifiedDemoHelpAnchors;
         if (!paths.emplace(entry.projectPath).second
             || indexed == generatedEvidence->end()
             || indexed->second.outcome != entry.expectedOutcome
             || entry.helpAnchor.size() < 2
-            || !verifiedHelpAnchors->contains(entry.helpAnchor.substr(1)))
+            || !anchors.contains(entry.helpAnchor.substr(1)))
         {
             return {{}, "Sound library entry is duplicate, unindexed, or has no exact local help anchor"};
         }
@@ -1196,6 +1294,12 @@ SoundLibraryManifestLoadResult loadSoundLibraryManifest(
                 indexed->second, snapshot.snapshot->document, registry))
         {
             return {{}, "Generated node-example index type evidence differs from the exact project"};
+        }
+        if (entry.demoKind != SoundLibraryDemoKind::None
+            && (entry.demoKind == SoundLibraryDemoKind::Effect)
+                != readsLiveAudioInput(snapshot.snapshot->document))
+        {
+            return {{}, "Sound Library demo kind differs from the project's live audio input"};
         }
         if (entry.definitionId.has_value())
         {
@@ -1428,7 +1532,14 @@ std::vector<SoundLibraryEntry> buildSoundLibraryEntries(
         entry.tags = source.tags;
         entry.author = source.author;
         entry.origin = source.origin;
+        entry.demoKind = source.demoKind;
         entry.actions = source.actions;
+        if (source.demoKind == SoundLibraryDemoKind::Effect)
+        {
+            entry.actionDiagnostic =
+                "Effects play live audio input 1: open the demo and play "
+                "into input 1 (an audition here would be silent)";
+        }
         entry.projectPath = source.projectPath;
         entry.definitionId = source.definitionId;
         entry.helpAnchor = source.helpAnchor;
@@ -1459,9 +1570,24 @@ std::vector<SoundLibraryEntry> buildSoundLibraryEntries(
         result.push_back(std::move(entry));
     }
 
-    std::ranges::stable_sort(result, [](const auto& left, const auto& right) {
+    // Demos lead the original examples, effects before instruments.
+    const auto demoRank = [](SoundLibraryDemoKind kind) {
+        switch (kind)
+        {
+        case SoundLibraryDemoKind::Effect:
+            return 0;
+        case SoundLibraryDemoKind::Instrument:
+            return 1;
+        case SoundLibraryDemoKind::None:
+            break;
+        }
+        return 2;
+    };
+    std::ranges::stable_sort(result, [&](const auto& left, const auto& right) {
         if (left.sourceKind != right.sourceKind)
             return left.sourceKind < right.sourceKind;
+        if (demoRank(left.demoKind) != demoRank(right.demoKind))
+            return demoRank(left.demoKind) < demoRank(right.demoKind);
         if (left.displayName != right.displayName)
             return left.displayName < right.displayName;
         return left.stableId < right.stableId;

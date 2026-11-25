@@ -12,7 +12,8 @@ the authored prose below remains the semantic walkthrough and does not turn
 placeholder, subset, or unsupported behavior into a claim of full support.
 
 The Workbench Sound Library packages this README, the generated index and
-built-in reference, the thirty-seven indexed project files, and only their
+built-in reference, every indexed project file (the demo projects in
+[`demos/`](demos/README.md) and their README among them), and only their
 declared repository-original resources. `Open Help` projects the exact checked heading
 and expected outcome into local Context Help; it does not open a hosted page,
 copy third-party material, or claim tutorial completeness.
@@ -37,6 +38,17 @@ Inspect its deterministic prepared contract without attaching audio hardware:
   --project examples/m3_native_fft_round_trip.talas.json \
   --status --sample-rate 8192 --max-block-frames 128
 ```
+
+## Demo projects
+
+New to Talas? Start with the twenty-four [demo projects](demos/README.md):
+thirteen effects and eleven instruments, each a ready-to-play project with a
+handful of named live controls. In the Workbench they are the **Demos**
+category of the Sound Library, listed ahead of the examples below. An effect
+plays live audio input 1, so open it and play into that input; an
+instrument's Audition plays its demo phrase, and once opened it also plays
+from a MIDI keyboard. [`demos/README.md`](demos/README.md) lists every control
+and the render commands.
 
 ## Bounded Analog Sequencer
 

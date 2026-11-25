@@ -1980,6 +1980,360 @@
       "preservedUnregisteredTypeIds": []
     },
     {
+      "path": "examples/demos/arpeggiator.talas.json",
+      "title": "Arpeggiator",
+      "expectedOutcome": "renderable",
+      "nodeTypeIds": [
+        "talas.audioOutput",
+        "talas.delayWithFeedback",
+        "talas.graphicalEnvelope",
+        "talas.midiVoice",
+        "talas.mixerV2",
+        "talas.morphFilter",
+        "talas.oscillator",
+        "talas.setRange",
+        "talas.stereoMix4",
+        "talas.vca"
+      ],
+      "preservedUnregisteredTypeIds": []
+    },
+    {
+      "path": "examples/demos/auto_filter.talas.json",
+      "title": "Auto-Filter",
+      "expectedOutcome": "renderable",
+      "nodeTypeIds": [
+        "talas.audioInput",
+        "talas.audioOutput",
+        "talas.lfo",
+        "talas.morphFilter"
+      ],
+      "preservedUnregisteredTypeIds": []
+    },
+    {
+      "path": "examples/demos/bus_compressor.talas.json",
+      "title": "Bus Compressor",
+      "expectedOutcome": "renderable",
+      "nodeTypeIds": [
+        "talas.audioInput",
+        "talas.audioOutput",
+        "talas.dynamicRangeController"
+      ],
+      "preservedUnregisteredTypeIds": []
+    },
+    {
+      "path": "examples/demos/chorus.talas.json",
+      "title": "Stereo Chorus",
+      "expectedOutcome": "renderable",
+      "nodeTypeIds": [
+        "talas.audioInput",
+        "talas.audioOutput",
+        "talas.delayWithFeedback",
+        "talas.lfo",
+        "talas.stereoMix4"
+      ],
+      "preservedUnregisteredTypeIds": []
+    },
+    {
+      "path": "examples/demos/drawbar_organ.talas.json",
+      "title": "Drawbar Organ",
+      "expectedOutcome": "renderable",
+      "nodeTypeIds": [
+        "talas.adsr",
+        "talas.audioOutput",
+        "talas.constant",
+        "talas.delayWithFeedback",
+        "talas.lfo",
+        "talas.midiVoice",
+        "talas.mixerV2",
+        "talas.oscillator",
+        "talas.pan",
+        "talas.slew",
+        "talas.vca"
+      ],
+      "preservedUnregisteredTypeIds": []
+    },
+    {
+      "path": "examples/demos/drum_kit.talas.json",
+      "title": "Drum Kit",
+      "expectedOutcome": "renderable",
+      "nodeTypeIds": [
+        "talas.adsr",
+        "talas.audioOutput",
+        "talas.filter",
+        "talas.midiVoice",
+        "talas.mixerV2",
+        "talas.noise",
+        "talas.oscillator",
+        "talas.setRange",
+        "talas.vca"
+      ],
+      "preservedUnregisteredTypeIds": []
+    },
+    {
+      "path": "examples/demos/flanger.talas.json",
+      "title": "Flanger",
+      "expectedOutcome": "renderable",
+      "nodeTypeIds": [
+        "talas.audioInput",
+        "talas.audioOutput",
+        "talas.delayWithFeedback",
+        "talas.lfo"
+      ],
+      "preservedUnregisteredTypeIds": []
+    },
+    {
+      "path": "examples/demos/fm_electric_piano.talas.json",
+      "title": "FM Electric Piano",
+      "expectedOutcome": "renderable",
+      "nodeTypeIds": [
+        "talas.adsr",
+        "talas.audioOutput",
+        "talas.lfo",
+        "talas.midiVoice",
+        "talas.mixerV2",
+        "talas.oscillator",
+        "talas.pan"
+      ],
+      "preservedUnregisteredTypeIds": []
+    },
+    {
+      "path": "examples/demos/frequency_shifter.talas.json",
+      "title": "Frequency Shifter",
+      "expectedOutcome": "renderable",
+      "nodeTypeIds": [
+        "talas.audioInput",
+        "talas.audioOutput",
+        "talas.singleSideBandRm",
+        "talas.stereoMix4"
+      ],
+      "preservedUnregisteredTypeIds": []
+    },
+    {
+      "path": "examples/demos/granular_freeze.talas.json",
+      "title": "Granular Freeze",
+      "expectedOutcome": "renderable",
+      "nodeTypeIds": [
+        "talas.audioInput",
+        "talas.audioOutput",
+        "talas.memoryWriter",
+        "talas.mixerV2",
+        "talas.sampleCloud",
+        "talas.stereoMix4"
+      ],
+      "preservedUnregisteredTypeIds": []
+    },
+    {
+      "path": "examples/demos/granular_synth.talas.json",
+      "title": "Granular Synth",
+      "expectedOutcome": "renderable",
+      "nodeTypeIds": [
+        "talas.adsr",
+        "talas.audioOutput",
+        "talas.grainCloud",
+        "talas.midiVoice",
+        "talas.mixerV2"
+      ],
+      "preservedUnregisteredTypeIds": []
+    },
+    {
+      "path": "examples/demos/hall_reverb.talas.json",
+      "title": "Hall Reverb",
+      "expectedOutcome": "renderable",
+      "nodeTypeIds": [
+        "talas.audioInput",
+        "talas.audioOutput",
+        "talas.delayWithFeedback",
+        "talas.filter",
+        "talas.mixerV2",
+        "talas.reverbSection",
+        "talas.stereoMix4"
+      ],
+      "preservedUnregisteredTypeIds": []
+    },
+    {
+      "path": "examples/demos/modal_mallets.talas.json",
+      "title": "Modal Mallets",
+      "expectedOutcome": "renderable",
+      "nodeTypeIds": [
+        "talas.adsr",
+        "talas.audioOutput",
+        "talas.delayWithFeedback",
+        "talas.filter",
+        "talas.midiVoice",
+        "talas.mixerV2",
+        "talas.noise",
+        "talas.oscillator",
+        "talas.vca"
+      ],
+      "preservedUnregisteredTypeIds": []
+    },
+    {
+      "path": "examples/demos/morph_lead.talas.json",
+      "title": "Morph Lead",
+      "expectedOutcome": "renderable",
+      "nodeTypeIds": [
+        "talas.adsr",
+        "talas.audioOutput",
+        "talas.delayWithFeedback",
+        "talas.dualMorphOscillator",
+        "talas.midiVoice",
+        "talas.mixerV2",
+        "talas.morphFilter",
+        "talas.stereoMix4",
+        "talas.vca"
+      ],
+      "preservedUnregisteredTypeIds": []
+    },
+    {
+      "path": "examples/demos/phaser.talas.json",
+      "title": "Phaser",
+      "expectedOutcome": "renderable",
+      "nodeTypeIds": [
+        "talas.audioInput",
+        "talas.audioOutput",
+        "talas.filter",
+        "talas.lfo",
+        "talas.stereoMix4"
+      ],
+      "preservedUnregisteredTypeIds": []
+    },
+    {
+      "path": "examples/demos/plucked_string.talas.json",
+      "title": "Plucked String",
+      "expectedOutcome": "renderable",
+      "nodeTypeIds": [
+        "talas.audioOutput",
+        "talas.midiVoice",
+        "talas.mixerV2",
+        "talas.pluckedWaveguide"
+      ],
+      "preservedUnregisteredTypeIds": []
+    },
+    {
+      "path": "examples/demos/poly_pad.talas.json",
+      "title": "Poly Pad",
+      "expectedOutcome": "renderable",
+      "nodeTypeIds": [
+        "talas.adsr",
+        "talas.audioOutput",
+        "talas.delayWithFeedback",
+        "talas.lfo",
+        "talas.midiVoice",
+        "talas.mixerV2",
+        "talas.morphFilter",
+        "talas.oscillator",
+        "talas.stereoMix4",
+        "talas.vca"
+      ],
+      "preservedUnregisteredTypeIds": []
+    },
+    {
+      "path": "examples/demos/ring_modulator.talas.json",
+      "title": "Ring Modulator",
+      "expectedOutcome": "renderable",
+      "nodeTypeIds": [
+        "talas.audioInput",
+        "talas.audioOutput",
+        "talas.lfo",
+        "talas.oscillator",
+        "talas.stereoMix4",
+        "talas.vca"
+      ],
+      "preservedUnregisteredTypeIds": []
+    },
+    {
+      "path": "examples/demos/spectral_blur.talas.json",
+      "title": "Spectral Blur",
+      "expectedOutcome": "renderable",
+      "nodeTypeIds": [
+        "talas.audioInput",
+        "talas.audioOutput",
+        "talas.cdpHiliteBlurTrace",
+        "talas.crossfade"
+      ],
+      "preservedUnregisteredTypeIds": []
+    },
+    {
+      "path": "examples/demos/stereo_delay.talas.json",
+      "title": "Stereo Delay",
+      "expectedOutcome": "renderable",
+      "nodeTypeIds": [
+        "talas.audioInput",
+        "talas.audioOutput",
+        "talas.delayWithFeedback",
+        "talas.filter",
+        "talas.stereoMix4"
+      ],
+      "preservedUnregisteredTypeIds": []
+    },
+    {
+      "path": "examples/demos/sub_bass.talas.json",
+      "title": "Sub Bass",
+      "expectedOutcome": "renderable",
+      "nodeTypeIds": [
+        "talas.adsr",
+        "talas.audioOutput",
+        "talas.midiVoice",
+        "talas.mixerV2",
+        "talas.morphFilter",
+        "talas.oscillator",
+        "talas.setRange",
+        "talas.vca"
+      ],
+      "preservedUnregisteredTypeIds": []
+    },
+    {
+      "path": "examples/demos/tape_saturator.talas.json",
+      "title": "Tape Saturator",
+      "expectedOutcome": "renderable",
+      "nodeTypeIds": [
+        "talas.add",
+        "talas.audioInput",
+        "talas.audioOutput",
+        "talas.delayWithFeedback",
+        "talas.filter",
+        "talas.level",
+        "talas.lfo",
+        "talas.lowShelvingFilter",
+        "talas.waveshaper"
+      ],
+      "preservedUnregisteredTypeIds": []
+    },
+    {
+      "path": "examples/demos/terrain_drone.talas.json",
+      "title": "Terrain Drone",
+      "expectedOutcome": "renderable",
+      "nodeTypeIds": [
+        "talas.adsr",
+        "talas.audioOutput",
+        "talas.cdpReverb",
+        "talas.filter",
+        "talas.lfo",
+        "talas.midiVoice",
+        "talas.mixerV2",
+        "talas.stereoMix4",
+        "talas.vca",
+        "talas.waveTerrainOscillator"
+      ],
+      "preservedUnregisteredTypeIds": []
+    },
+    {
+      "path": "examples/demos/vocoder.talas.json",
+      "title": "Vocoder",
+      "expectedOutcome": "renderable",
+      "nodeTypeIds": [
+        "talas.audioInput",
+        "talas.audioOutput",
+        "talas.cdpFormantsVocode",
+        "talas.crossfade",
+        "talas.filter",
+        "talas.mixerV2",
+        "talas.noise",
+        "talas.oscillator"
+      ],
+      "preservedUnregisteredTypeIds": []
+    },
+    {
       "path": "examples/m3_live_spectral_analysis.talas.json",
       "title": "Live spectral analysis",
       "expectedOutcome": "renderable",
@@ -2271,6 +2625,11 @@
           "path": "examples/c98_sample_and_hold_clock_transport.talas.json",
           "title": "Sample And Hold Clock and Transport",
           "expectedOutcome": "renderable"
+        },
+        {
+          "path": "examples/demos/tape_saturator.talas.json",
+          "title": "Tape Saturator",
+          "expectedOutcome": "renderable"
         }
       ]
     },
@@ -2415,6 +2774,51 @@
         {
           "path": "examples/c92_adsr_typed_gate_state.talas.json",
           "title": "ADSR Gate State",
+          "expectedOutcome": "renderable"
+        },
+        {
+          "path": "examples/demos/drawbar_organ.talas.json",
+          "title": "Drawbar Organ",
+          "expectedOutcome": "renderable"
+        },
+        {
+          "path": "examples/demos/drum_kit.talas.json",
+          "title": "Drum Kit",
+          "expectedOutcome": "renderable"
+        },
+        {
+          "path": "examples/demos/fm_electric_piano.talas.json",
+          "title": "FM Electric Piano",
+          "expectedOutcome": "renderable"
+        },
+        {
+          "path": "examples/demos/granular_synth.talas.json",
+          "title": "Granular Synth",
+          "expectedOutcome": "renderable"
+        },
+        {
+          "path": "examples/demos/modal_mallets.talas.json",
+          "title": "Modal Mallets",
+          "expectedOutcome": "renderable"
+        },
+        {
+          "path": "examples/demos/morph_lead.talas.json",
+          "title": "Morph Lead",
+          "expectedOutcome": "renderable"
+        },
+        {
+          "path": "examples/demos/poly_pad.talas.json",
+          "title": "Poly Pad",
+          "expectedOutcome": "renderable"
+        },
+        {
+          "path": "examples/demos/sub_bass.talas.json",
+          "title": "Sub Bass",
+          "expectedOutcome": "renderable"
+        },
+        {
+          "path": "examples/demos/terrain_drone.talas.json",
+          "title": "Terrain Drone",
           "expectedOutcome": "renderable"
         }
       ]
@@ -3562,7 +3966,73 @@
           "defaultBoolean": false
         }
       ],
-      "examples": []
+      "examples": [
+        {
+          "path": "examples/demos/auto_filter.talas.json",
+          "title": "Auto-Filter",
+          "expectedOutcome": "renderable"
+        },
+        {
+          "path": "examples/demos/bus_compressor.talas.json",
+          "title": "Bus Compressor",
+          "expectedOutcome": "renderable"
+        },
+        {
+          "path": "examples/demos/chorus.talas.json",
+          "title": "Stereo Chorus",
+          "expectedOutcome": "renderable"
+        },
+        {
+          "path": "examples/demos/flanger.talas.json",
+          "title": "Flanger",
+          "expectedOutcome": "renderable"
+        },
+        {
+          "path": "examples/demos/frequency_shifter.talas.json",
+          "title": "Frequency Shifter",
+          "expectedOutcome": "renderable"
+        },
+        {
+          "path": "examples/demos/granular_freeze.talas.json",
+          "title": "Granular Freeze",
+          "expectedOutcome": "renderable"
+        },
+        {
+          "path": "examples/demos/hall_reverb.talas.json",
+          "title": "Hall Reverb",
+          "expectedOutcome": "renderable"
+        },
+        {
+          "path": "examples/demos/phaser.talas.json",
+          "title": "Phaser",
+          "expectedOutcome": "renderable"
+        },
+        {
+          "path": "examples/demos/ring_modulator.talas.json",
+          "title": "Ring Modulator",
+          "expectedOutcome": "renderable"
+        },
+        {
+          "path": "examples/demos/spectral_blur.talas.json",
+          "title": "Spectral Blur",
+          "expectedOutcome": "renderable"
+        },
+        {
+          "path": "examples/demos/stereo_delay.talas.json",
+          "title": "Stereo Delay",
+          "expectedOutcome": "renderable"
+        },
+        {
+          "path": "examples/demos/tape_saturator.talas.json",
+          "title": "Tape Saturator",
+          "expectedOutcome": "renderable"
+        },
+        {
+          "path": "examples/demos/vocoder.talas.json",
+          "title": "Vocoder",
+          "expectedOutcome": "renderable"
+        }
+      ]
     },
     {
       "typeId": "talas.audioOutput",
@@ -4398,6 +4868,126 @@
         {
           "path": "examples/c99_samples_from_disk_single_step_transport.talas.json",
           "title": "Samples From Disk Single Step Transport",
+          "expectedOutcome": "renderable"
+        },
+        {
+          "path": "examples/demos/arpeggiator.talas.json",
+          "title": "Arpeggiator",
+          "expectedOutcome": "renderable"
+        },
+        {
+          "path": "examples/demos/auto_filter.talas.json",
+          "title": "Auto-Filter",
+          "expectedOutcome": "renderable"
+        },
+        {
+          "path": "examples/demos/bus_compressor.talas.json",
+          "title": "Bus Compressor",
+          "expectedOutcome": "renderable"
+        },
+        {
+          "path": "examples/demos/chorus.talas.json",
+          "title": "Stereo Chorus",
+          "expectedOutcome": "renderable"
+        },
+        {
+          "path": "examples/demos/drawbar_organ.talas.json",
+          "title": "Drawbar Organ",
+          "expectedOutcome": "renderable"
+        },
+        {
+          "path": "examples/demos/drum_kit.talas.json",
+          "title": "Drum Kit",
+          "expectedOutcome": "renderable"
+        },
+        {
+          "path": "examples/demos/flanger.talas.json",
+          "title": "Flanger",
+          "expectedOutcome": "renderable"
+        },
+        {
+          "path": "examples/demos/fm_electric_piano.talas.json",
+          "title": "FM Electric Piano",
+          "expectedOutcome": "renderable"
+        },
+        {
+          "path": "examples/demos/frequency_shifter.talas.json",
+          "title": "Frequency Shifter",
+          "expectedOutcome": "renderable"
+        },
+        {
+          "path": "examples/demos/granular_freeze.talas.json",
+          "title": "Granular Freeze",
+          "expectedOutcome": "renderable"
+        },
+        {
+          "path": "examples/demos/granular_synth.talas.json",
+          "title": "Granular Synth",
+          "expectedOutcome": "renderable"
+        },
+        {
+          "path": "examples/demos/hall_reverb.talas.json",
+          "title": "Hall Reverb",
+          "expectedOutcome": "renderable"
+        },
+        {
+          "path": "examples/demos/modal_mallets.talas.json",
+          "title": "Modal Mallets",
+          "expectedOutcome": "renderable"
+        },
+        {
+          "path": "examples/demos/morph_lead.talas.json",
+          "title": "Morph Lead",
+          "expectedOutcome": "renderable"
+        },
+        {
+          "path": "examples/demos/phaser.talas.json",
+          "title": "Phaser",
+          "expectedOutcome": "renderable"
+        },
+        {
+          "path": "examples/demos/plucked_string.talas.json",
+          "title": "Plucked String",
+          "expectedOutcome": "renderable"
+        },
+        {
+          "path": "examples/demos/poly_pad.talas.json",
+          "title": "Poly Pad",
+          "expectedOutcome": "renderable"
+        },
+        {
+          "path": "examples/demos/ring_modulator.talas.json",
+          "title": "Ring Modulator",
+          "expectedOutcome": "renderable"
+        },
+        {
+          "path": "examples/demos/spectral_blur.talas.json",
+          "title": "Spectral Blur",
+          "expectedOutcome": "renderable"
+        },
+        {
+          "path": "examples/demos/stereo_delay.talas.json",
+          "title": "Stereo Delay",
+          "expectedOutcome": "renderable"
+        },
+        {
+          "path": "examples/demos/sub_bass.talas.json",
+          "title": "Sub Bass",
+          "expectedOutcome": "renderable"
+        },
+        {
+          "path": "examples/demos/tape_saturator.talas.json",
+          "title": "Tape Saturator",
+          "expectedOutcome": "renderable"
+        },
+        {
+          "path": "examples/demos/terrain_drone.talas.json",
+          "title": "Terrain Drone",
+          "expectedOutcome": "renderable"
+        },
+        {
+          "path": "examples/demos/vocoder.talas.json",
+          "title": "Vocoder",
           "expectedOutcome": "renderable"
         },
         {
@@ -10933,7 +11523,13 @@
           "defaultExpression": "1"
         }
       ],
-      "examples": []
+      "examples": [
+        {
+          "path": "examples/demos/vocoder.talas.json",
+          "title": "Vocoder",
+          "expectedOutcome": "renderable"
+        }
+      ]
     },
     {
       "typeId": "talas.cdpFrameRemap",
@@ -11786,7 +12382,13 @@
           "defaultExpression": "16"
         }
       ],
-      "examples": []
+      "examples": [
+        {
+          "path": "examples/demos/spectral_blur.talas.json",
+          "title": "Spectral Blur",
+          "expectedOutcome": "renderable"
+        }
+      ]
     },
     {
       "typeId": "talas.cdpHiliteFilter",
@@ -16262,7 +16864,13 @@
           "defaultExpression": "0 hz"
         }
       ],
-      "examples": []
+      "examples": [
+        {
+          "path": "examples/demos/terrain_drone.talas.json",
+          "title": "Terrain Drone",
+          "expectedOutcome": "renderable"
+        }
+      ]
     },
     {
       "typeId": "talas.cdpRingModulate",
@@ -22534,6 +23142,11 @@
           "path": "examples/c99_samples_from_disk_single_step_transport.talas.json",
           "title": "Samples From Disk Single Step Transport",
           "expectedOutcome": "renderable"
+        },
+        {
+          "path": "examples/demos/drawbar_organ.talas.json",
+          "title": "Drawbar Organ",
+          "expectedOutcome": "renderable"
         }
       ]
     },
@@ -22793,6 +23406,16 @@
           "path": "examples/c135_crossfade_checked_finite_live_controls.talas.json",
           "title": "Crossfade Checked Finite Live Controls",
           "expectedOutcome": "renderable"
+        },
+        {
+          "path": "examples/demos/spectral_blur.talas.json",
+          "title": "Spectral Blur",
+          "expectedOutcome": "renderable"
+        },
+        {
+          "path": "examples/demos/vocoder.talas.json",
+          "title": "Vocoder",
+          "expectedOutcome": "renderable"
         }
       ]
     },
@@ -22993,6 +23616,56 @@
         {
           "path": "examples/c140_delay_with_feedback_dynamic_controls.talas.json",
           "title": "Delay With Feedback Dynamic Controls",
+          "expectedOutcome": "renderable"
+        },
+        {
+          "path": "examples/demos/arpeggiator.talas.json",
+          "title": "Arpeggiator",
+          "expectedOutcome": "renderable"
+        },
+        {
+          "path": "examples/demos/chorus.talas.json",
+          "title": "Stereo Chorus",
+          "expectedOutcome": "renderable"
+        },
+        {
+          "path": "examples/demos/drawbar_organ.talas.json",
+          "title": "Drawbar Organ",
+          "expectedOutcome": "renderable"
+        },
+        {
+          "path": "examples/demos/flanger.talas.json",
+          "title": "Flanger",
+          "expectedOutcome": "renderable"
+        },
+        {
+          "path": "examples/demos/hall_reverb.talas.json",
+          "title": "Hall Reverb",
+          "expectedOutcome": "renderable"
+        },
+        {
+          "path": "examples/demos/modal_mallets.talas.json",
+          "title": "Modal Mallets",
+          "expectedOutcome": "renderable"
+        },
+        {
+          "path": "examples/demos/morph_lead.talas.json",
+          "title": "Morph Lead",
+          "expectedOutcome": "renderable"
+        },
+        {
+          "path": "examples/demos/poly_pad.talas.json",
+          "title": "Poly Pad",
+          "expectedOutcome": "renderable"
+        },
+        {
+          "path": "examples/demos/stereo_delay.talas.json",
+          "title": "Stereo Delay",
+          "expectedOutcome": "renderable"
+        },
+        {
+          "path": "examples/demos/tape_saturator.talas.json",
+          "title": "Tape Saturator",
           "expectedOutcome": "renderable"
         }
       ]
@@ -23942,6 +24615,11 @@
           "path": "examples/c173_dual_morph_oscillator_scheduled_controls.talas.json",
           "title": "Dual Morph Oscillator Scheduled Controls",
           "expectedOutcome": "renderable"
+        },
+        {
+          "path": "examples/demos/morph_lead.talas.json",
+          "title": "Morph Lead",
+          "expectedOutcome": "renderable"
         }
       ]
     },
@@ -24438,6 +25116,11 @@
         {
           "path": "examples/c21_bounded_dynamic_range_controller.talas.json",
           "title": "Bounded Dynamic Range Controller",
+          "expectedOutcome": "renderable"
+        },
+        {
+          "path": "examples/demos/bus_compressor.talas.json",
+          "title": "Bus Compressor",
           "expectedOutcome": "renderable"
         }
       ]
@@ -25192,6 +25875,46 @@
         {
           "path": "examples/c191_filter_scheduled_controls.talas.json",
           "title": "Filter Scheduled Controls",
+          "expectedOutcome": "renderable"
+        },
+        {
+          "path": "examples/demos/drum_kit.talas.json",
+          "title": "Drum Kit",
+          "expectedOutcome": "renderable"
+        },
+        {
+          "path": "examples/demos/hall_reverb.talas.json",
+          "title": "Hall Reverb",
+          "expectedOutcome": "renderable"
+        },
+        {
+          "path": "examples/demos/modal_mallets.talas.json",
+          "title": "Modal Mallets",
+          "expectedOutcome": "renderable"
+        },
+        {
+          "path": "examples/demos/phaser.talas.json",
+          "title": "Phaser",
+          "expectedOutcome": "renderable"
+        },
+        {
+          "path": "examples/demos/stereo_delay.talas.json",
+          "title": "Stereo Delay",
+          "expectedOutcome": "renderable"
+        },
+        {
+          "path": "examples/demos/tape_saturator.talas.json",
+          "title": "Tape Saturator",
+          "expectedOutcome": "renderable"
+        },
+        {
+          "path": "examples/demos/terrain_drone.talas.json",
+          "title": "Terrain Drone",
+          "expectedOutcome": "renderable"
+        },
+        {
+          "path": "examples/demos/vocoder.talas.json",
+          "title": "Vocoder",
           "expectedOutcome": "renderable"
         }
       ]
@@ -27328,6 +28051,11 @@
           "path": "examples/c113_grain_cloud_dynamic_controls.talas.json",
           "title": "Grain Cloud Dynamic Controls",
           "expectedOutcome": "renderable"
+        },
+        {
+          "path": "examples/demos/granular_synth.talas.json",
+          "title": "Granular Synth",
+          "expectedOutcome": "renderable"
         }
       ]
     },
@@ -27642,6 +28370,11 @@
         {
           "path": "examples/c153_graphical_envelope_scheduled_rate_controls.talas.json",
           "title": "Graphical Envelope Scheduled Rate Controls",
+          "expectedOutcome": "renderable"
+        },
+        {
+          "path": "examples/demos/arpeggiator.talas.json",
+          "title": "Arpeggiator",
           "expectedOutcome": "renderable"
         }
       ]
@@ -29194,6 +29927,11 @@
           "path": "examples/c30_bounded_warped_time_index.talas.json",
           "title": "Bounded Warped Time Index",
           "expectedOutcome": "renderable"
+        },
+        {
+          "path": "examples/demos/tape_saturator.talas.json",
+          "title": "Tape Saturator",
+          "expectedOutcome": "renderable"
         }
       ]
     },
@@ -29344,6 +30082,56 @@
         {
           "path": "examples/c96_lfo_phase_transport.talas.json",
           "title": "LFO Phase and Transport",
+          "expectedOutcome": "renderable"
+        },
+        {
+          "path": "examples/demos/auto_filter.talas.json",
+          "title": "Auto-Filter",
+          "expectedOutcome": "renderable"
+        },
+        {
+          "path": "examples/demos/chorus.talas.json",
+          "title": "Stereo Chorus",
+          "expectedOutcome": "renderable"
+        },
+        {
+          "path": "examples/demos/drawbar_organ.talas.json",
+          "title": "Drawbar Organ",
+          "expectedOutcome": "renderable"
+        },
+        {
+          "path": "examples/demos/flanger.talas.json",
+          "title": "Flanger",
+          "expectedOutcome": "renderable"
+        },
+        {
+          "path": "examples/demos/fm_electric_piano.talas.json",
+          "title": "FM Electric Piano",
+          "expectedOutcome": "renderable"
+        },
+        {
+          "path": "examples/demos/phaser.talas.json",
+          "title": "Phaser",
+          "expectedOutcome": "renderable"
+        },
+        {
+          "path": "examples/demos/poly_pad.talas.json",
+          "title": "Poly Pad",
+          "expectedOutcome": "renderable"
+        },
+        {
+          "path": "examples/demos/ring_modulator.talas.json",
+          "title": "Ring Modulator",
+          "expectedOutcome": "renderable"
+        },
+        {
+          "path": "examples/demos/tape_saturator.talas.json",
+          "title": "Tape Saturator",
+          "expectedOutcome": "renderable"
+        },
+        {
+          "path": "examples/demos/terrain_drone.talas.json",
+          "title": "Terrain Drone",
           "expectedOutcome": "renderable"
         }
       ]
@@ -30387,6 +31175,11 @@
           "path": "examples/c16_shelving_presence_filters.talas.json",
           "title": "Shelving and Presence Filters",
           "expectedOutcome": "renderable"
+        },
+        {
+          "path": "examples/demos/tape_saturator.talas.json",
+          "title": "Tape Saturator",
+          "expectedOutcome": "renderable"
         }
       ]
     },
@@ -31117,6 +31910,11 @@
         {
           "path": "examples/c38_bounded_memory_writer.talas.json",
           "title": "Bounded Memory Writer Monitor",
+          "expectedOutcome": "renderable"
+        },
+        {
+          "path": "examples/demos/granular_freeze.talas.json",
+          "title": "Granular Freeze",
           "expectedOutcome": "renderable"
         }
       ]
@@ -32412,7 +33210,63 @@
           ]
         }
       ],
-      "examples": []
+      "examples": [
+        {
+          "path": "examples/demos/arpeggiator.talas.json",
+          "title": "Arpeggiator",
+          "expectedOutcome": "renderable"
+        },
+        {
+          "path": "examples/demos/drawbar_organ.talas.json",
+          "title": "Drawbar Organ",
+          "expectedOutcome": "renderable"
+        },
+        {
+          "path": "examples/demos/drum_kit.talas.json",
+          "title": "Drum Kit",
+          "expectedOutcome": "renderable"
+        },
+        {
+          "path": "examples/demos/fm_electric_piano.talas.json",
+          "title": "FM Electric Piano",
+          "expectedOutcome": "renderable"
+        },
+        {
+          "path": "examples/demos/granular_synth.talas.json",
+          "title": "Granular Synth",
+          "expectedOutcome": "renderable"
+        },
+        {
+          "path": "examples/demos/modal_mallets.talas.json",
+          "title": "Modal Mallets",
+          "expectedOutcome": "renderable"
+        },
+        {
+          "path": "examples/demos/morph_lead.talas.json",
+          "title": "Morph Lead",
+          "expectedOutcome": "renderable"
+        },
+        {
+          "path": "examples/demos/plucked_string.talas.json",
+          "title": "Plucked String",
+          "expectedOutcome": "renderable"
+        },
+        {
+          "path": "examples/demos/poly_pad.talas.json",
+          "title": "Poly Pad",
+          "expectedOutcome": "renderable"
+        },
+        {
+          "path": "examples/demos/sub_bass.talas.json",
+          "title": "Sub Bass",
+          "expectedOutcome": "renderable"
+        },
+        {
+          "path": "examples/demos/terrain_drone.talas.json",
+          "title": "Terrain Drone",
+          "expectedOutcome": "renderable"
+        }
+      ]
     },
     {
       "typeId": "talas.minimum",
@@ -32833,6 +33687,76 @@
           "expectedOutcome": "renderable"
         },
         {
+          "path": "examples/demos/arpeggiator.talas.json",
+          "title": "Arpeggiator",
+          "expectedOutcome": "renderable"
+        },
+        {
+          "path": "examples/demos/drawbar_organ.talas.json",
+          "title": "Drawbar Organ",
+          "expectedOutcome": "renderable"
+        },
+        {
+          "path": "examples/demos/drum_kit.talas.json",
+          "title": "Drum Kit",
+          "expectedOutcome": "renderable"
+        },
+        {
+          "path": "examples/demos/fm_electric_piano.talas.json",
+          "title": "FM Electric Piano",
+          "expectedOutcome": "renderable"
+        },
+        {
+          "path": "examples/demos/granular_freeze.talas.json",
+          "title": "Granular Freeze",
+          "expectedOutcome": "renderable"
+        },
+        {
+          "path": "examples/demos/granular_synth.talas.json",
+          "title": "Granular Synth",
+          "expectedOutcome": "renderable"
+        },
+        {
+          "path": "examples/demos/hall_reverb.talas.json",
+          "title": "Hall Reverb",
+          "expectedOutcome": "renderable"
+        },
+        {
+          "path": "examples/demos/modal_mallets.talas.json",
+          "title": "Modal Mallets",
+          "expectedOutcome": "renderable"
+        },
+        {
+          "path": "examples/demos/morph_lead.talas.json",
+          "title": "Morph Lead",
+          "expectedOutcome": "renderable"
+        },
+        {
+          "path": "examples/demos/plucked_string.talas.json",
+          "title": "Plucked String",
+          "expectedOutcome": "renderable"
+        },
+        {
+          "path": "examples/demos/poly_pad.talas.json",
+          "title": "Poly Pad",
+          "expectedOutcome": "renderable"
+        },
+        {
+          "path": "examples/demos/sub_bass.talas.json",
+          "title": "Sub Bass",
+          "expectedOutcome": "renderable"
+        },
+        {
+          "path": "examples/demos/terrain_drone.talas.json",
+          "title": "Terrain Drone",
+          "expectedOutcome": "renderable"
+        },
+        {
+          "path": "examples/demos/vocoder.talas.json",
+          "title": "Vocoder",
+          "expectedOutcome": "renderable"
+        },
+        {
           "path": "examples/m3_live_spectral_analysis.talas.json",
           "title": "Live spectral analysis",
           "expectedOutcome": "renderable"
@@ -33224,6 +34148,31 @@
         {
           "path": "examples/c164_morph_filter_scheduled_controls.talas.json",
           "title": "Morph Filter Scheduled Controls",
+          "expectedOutcome": "renderable"
+        },
+        {
+          "path": "examples/demos/arpeggiator.talas.json",
+          "title": "Arpeggiator",
+          "expectedOutcome": "renderable"
+        },
+        {
+          "path": "examples/demos/auto_filter.talas.json",
+          "title": "Auto-Filter",
+          "expectedOutcome": "renderable"
+        },
+        {
+          "path": "examples/demos/morph_lead.talas.json",
+          "title": "Morph Lead",
+          "expectedOutcome": "renderable"
+        },
+        {
+          "path": "examples/demos/poly_pad.talas.json",
+          "title": "Poly Pad",
+          "expectedOutcome": "renderable"
+        },
+        {
+          "path": "examples/demos/sub_bass.talas.json",
+          "title": "Sub Bass",
           "expectedOutcome": "renderable"
         }
       ]
@@ -34190,6 +35139,21 @@
           "path": "examples/c118_noise_modes_connected_controls.talas.json",
           "title": "Noise Modes Connected Controls",
           "expectedOutcome": "renderable"
+        },
+        {
+          "path": "examples/demos/drum_kit.talas.json",
+          "title": "Drum Kit",
+          "expectedOutcome": "renderable"
+        },
+        {
+          "path": "examples/demos/modal_mallets.talas.json",
+          "title": "Modal Mallets",
+          "expectedOutcome": "renderable"
+        },
+        {
+          "path": "examples/demos/vocoder.talas.json",
+          "title": "Vocoder",
+          "expectedOutcome": "renderable"
         }
       ]
     },
@@ -34972,6 +35936,51 @@
         {
           "path": "examples/c98_sample_and_hold_clock_transport.talas.json",
           "title": "Sample And Hold Clock and Transport",
+          "expectedOutcome": "renderable"
+        },
+        {
+          "path": "examples/demos/arpeggiator.talas.json",
+          "title": "Arpeggiator",
+          "expectedOutcome": "renderable"
+        },
+        {
+          "path": "examples/demos/drawbar_organ.talas.json",
+          "title": "Drawbar Organ",
+          "expectedOutcome": "renderable"
+        },
+        {
+          "path": "examples/demos/drum_kit.talas.json",
+          "title": "Drum Kit",
+          "expectedOutcome": "renderable"
+        },
+        {
+          "path": "examples/demos/fm_electric_piano.talas.json",
+          "title": "FM Electric Piano",
+          "expectedOutcome": "renderable"
+        },
+        {
+          "path": "examples/demos/modal_mallets.talas.json",
+          "title": "Modal Mallets",
+          "expectedOutcome": "renderable"
+        },
+        {
+          "path": "examples/demos/poly_pad.talas.json",
+          "title": "Poly Pad",
+          "expectedOutcome": "renderable"
+        },
+        {
+          "path": "examples/demos/ring_modulator.talas.json",
+          "title": "Ring Modulator",
+          "expectedOutcome": "renderable"
+        },
+        {
+          "path": "examples/demos/sub_bass.talas.json",
+          "title": "Sub Bass",
+          "expectedOutcome": "renderable"
+        },
+        {
+          "path": "examples/demos/vocoder.talas.json",
+          "title": "Vocoder",
           "expectedOutcome": "renderable"
         },
         {
@@ -36125,6 +37134,16 @@
           "path": "examples/c134_pan_checked_finite_live_controls.talas.json",
           "title": "Pan Checked Finite Live Controls",
           "expectedOutcome": "renderable"
+        },
+        {
+          "path": "examples/demos/drawbar_organ.talas.json",
+          "title": "Drawbar Organ",
+          "expectedOutcome": "renderable"
+        },
+        {
+          "path": "examples/demos/fm_electric_piano.talas.json",
+          "title": "FM Electric Piano",
+          "expectedOutcome": "renderable"
         }
       ]
     },
@@ -36973,6 +37992,11 @@
         {
           "path": "examples/c168_plucked_waveguide_scheduled_controls.talas.json",
           "title": "Plucked Waveguide Scheduled Controls",
+          "expectedOutcome": "renderable"
+        },
+        {
+          "path": "examples/demos/plucked_string.talas.json",
+          "title": "Plucked String",
           "expectedOutcome": "renderable"
         }
       ]
@@ -38741,6 +39765,11 @@
           "path": "examples/c104_reverb_section_fractional_delay_transport.talas.json",
           "title": "Reverb Section Fractional Delay Transport",
           "expectedOutcome": "renderable"
+        },
+        {
+          "path": "examples/demos/hall_reverb.talas.json",
+          "title": "Hall Reverb",
+          "expectedOutcome": "renderable"
         }
       ]
     },
@@ -39750,6 +40779,11 @@
         {
           "path": "examples/c110_sample_cloud_dynamic_controls.talas.json",
           "title": "Sample Cloud Dynamic Controls",
+          "expectedOutcome": "renderable"
+        },
+        {
+          "path": "examples/demos/granular_freeze.talas.json",
+          "title": "Granular Freeze",
           "expectedOutcome": "renderable"
         }
       ]
@@ -41200,6 +42234,21 @@
           "path": "examples/c122_set_range_connected_affine_mapping.talas.json",
           "title": "Set Range Connected Affine Mapping",
           "expectedOutcome": "renderable"
+        },
+        {
+          "path": "examples/demos/arpeggiator.talas.json",
+          "title": "Arpeggiator",
+          "expectedOutcome": "renderable"
+        },
+        {
+          "path": "examples/demos/drum_kit.talas.json",
+          "title": "Drum Kit",
+          "expectedOutcome": "renderable"
+        },
+        {
+          "path": "examples/demos/sub_bass.talas.json",
+          "title": "Sub Bass",
+          "expectedOutcome": "renderable"
         }
       ]
     },
@@ -41575,6 +42624,11 @@
           "path": "examples/c161_single_side_band_rm_scheduled_quadrature.talas.json",
           "title": "Single Side Band RM Scheduled Quadrature",
           "expectedOutcome": "renderable"
+        },
+        {
+          "path": "examples/demos/frequency_shifter.talas.json",
+          "title": "Frequency Shifter",
+          "expectedOutcome": "renderable"
         }
       ]
     },
@@ -41654,6 +42708,11 @@
         {
           "path": "examples/c45_dynamic_slew_times.talas.json",
           "title": "Dynamic Slew Times",
+          "expectedOutcome": "renderable"
+        },
+        {
+          "path": "examples/demos/drawbar_organ.talas.json",
+          "title": "Drawbar Organ",
           "expectedOutcome": "renderable"
         }
       ]
@@ -44934,6 +45993,61 @@
         {
           "path": "examples/c137_stereo_mix4_checked_live_controls.talas.json",
           "title": "Stereo Mix 4 Checked Live Controls",
+          "expectedOutcome": "renderable"
+        },
+        {
+          "path": "examples/demos/arpeggiator.talas.json",
+          "title": "Arpeggiator",
+          "expectedOutcome": "renderable"
+        },
+        {
+          "path": "examples/demos/chorus.talas.json",
+          "title": "Stereo Chorus",
+          "expectedOutcome": "renderable"
+        },
+        {
+          "path": "examples/demos/frequency_shifter.talas.json",
+          "title": "Frequency Shifter",
+          "expectedOutcome": "renderable"
+        },
+        {
+          "path": "examples/demos/granular_freeze.talas.json",
+          "title": "Granular Freeze",
+          "expectedOutcome": "renderable"
+        },
+        {
+          "path": "examples/demos/hall_reverb.talas.json",
+          "title": "Hall Reverb",
+          "expectedOutcome": "renderable"
+        },
+        {
+          "path": "examples/demos/morph_lead.talas.json",
+          "title": "Morph Lead",
+          "expectedOutcome": "renderable"
+        },
+        {
+          "path": "examples/demos/phaser.talas.json",
+          "title": "Phaser",
+          "expectedOutcome": "renderable"
+        },
+        {
+          "path": "examples/demos/poly_pad.talas.json",
+          "title": "Poly Pad",
+          "expectedOutcome": "renderable"
+        },
+        {
+          "path": "examples/demos/ring_modulator.talas.json",
+          "title": "Ring Modulator",
+          "expectedOutcome": "renderable"
+        },
+        {
+          "path": "examples/demos/stereo_delay.talas.json",
+          "title": "Stereo Delay",
+          "expectedOutcome": "renderable"
+        },
+        {
+          "path": "examples/demos/terrain_drone.talas.json",
+          "title": "Terrain Drone",
           "expectedOutcome": "renderable"
         }
       ]
@@ -48645,6 +49759,51 @@
           "expectedOutcome": "renderable"
         },
         {
+          "path": "examples/demos/arpeggiator.talas.json",
+          "title": "Arpeggiator",
+          "expectedOutcome": "renderable"
+        },
+        {
+          "path": "examples/demos/drawbar_organ.talas.json",
+          "title": "Drawbar Organ",
+          "expectedOutcome": "renderable"
+        },
+        {
+          "path": "examples/demos/drum_kit.talas.json",
+          "title": "Drum Kit",
+          "expectedOutcome": "renderable"
+        },
+        {
+          "path": "examples/demos/modal_mallets.talas.json",
+          "title": "Modal Mallets",
+          "expectedOutcome": "renderable"
+        },
+        {
+          "path": "examples/demos/morph_lead.talas.json",
+          "title": "Morph Lead",
+          "expectedOutcome": "renderable"
+        },
+        {
+          "path": "examples/demos/poly_pad.talas.json",
+          "title": "Poly Pad",
+          "expectedOutcome": "renderable"
+        },
+        {
+          "path": "examples/demos/ring_modulator.talas.json",
+          "title": "Ring Modulator",
+          "expectedOutcome": "renderable"
+        },
+        {
+          "path": "examples/demos/sub_bass.talas.json",
+          "title": "Sub Bass",
+          "expectedOutcome": "renderable"
+        },
+        {
+          "path": "examples/demos/terrain_drone.talas.json",
+          "title": "Terrain Drone",
+          "expectedOutcome": "renderable"
+        },
+        {
           "path": "examples/m3_live_spectral_analysis.talas.json",
           "title": "Live spectral analysis",
           "expectedOutcome": "renderable"
@@ -49557,6 +50716,11 @@
           "path": "examples/c170_wave_terrain_oscillator_scheduled_controls.talas.json",
           "title": "Wave Terrain Oscillator Scheduled Controls",
           "expectedOutcome": "renderable"
+        },
+        {
+          "path": "examples/demos/terrain_drone.talas.json",
+          "title": "Terrain Drone",
+          "expectedOutcome": "renderable"
         }
       ]
     },
@@ -49695,6 +50859,11 @@
         {
           "path": "examples/c79_waveshaper_polynomial_curve.talas.json",
           "title": "Waveshaper Polynomial Curve",
+          "expectedOutcome": "renderable"
+        },
+        {
+          "path": "examples/demos/tape_saturator.talas.json",
+          "title": "Tape Saturator",
           "expectedOutcome": "renderable"
         }
       ]

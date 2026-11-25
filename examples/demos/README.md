@@ -6,6 +6,15 @@ self-contained `.talas.json` file with a handful of named live controls (Event V
 written to double as presets: every control has a label, a range and a default, and nothing
 depends on files outside the project.
 
+## In the Workbench
+
+The demos are the **Demos** category of the Sound Library, effects first, then instruments;
+typing `demo` in its search finds them too. Select one to read what it does. **Open Example**
+opens an untitled copy, so saving never changes the original. An instrument's **Audition**
+plays its demo phrase. An effect has no Audition there, since it plays live audio input 1 and
+would be silent: open it, pick an input with **Audio Device Settings...**, and play into it.
+**Open Help** names the Effects or Instruments table below.
+
 ## How they are built
 
 - **Effects** read live audio from input channel 1 (`talas.audioInput`, mono) and write stereo.

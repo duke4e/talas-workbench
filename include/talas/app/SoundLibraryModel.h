@@ -27,6 +27,23 @@ enum class SoundLibrarySourceKind
     OriginalExample,
 };
 
+// The demo projects in examples/demos/ are original examples gathered under
+// one category. An effect plays live audio input 1, so the library never
+// auditions it (it would be silent); an instrument plays its own demo phrase.
+inline constexpr std::string_view soundLibraryDemoCategory = "Demos";
+inline constexpr std::string_view soundLibraryDemoFolder = "examples/demos/";
+
+enum class SoundLibraryDemoKind
+{
+    None,
+    Effect,
+    Instrument,
+};
+
+// "Effect", "Instrument", or empty for an entry that is not a demo.
+[[nodiscard]] std::string_view soundLibraryDemoKindLabel(
+    SoundLibraryDemoKind kind) noexcept;
+
 enum class SoundLibraryExpectedOutcome
 {
     Renderable,
@@ -92,6 +109,9 @@ struct SoundLibraryManifestEntry
         SoundLibraryExpectedOutcome::ValidationOnly;
     std::optional<std::string> definitionId;
     SoundLibraryActionMask actions = 0;
+    // Parsed from a projectPath in examples/demos/ and its exact "effect" or
+    // "instrument" tag; the checked loader confirms it against the project.
+    SoundLibraryDemoKind demoKind = SoundLibraryDemoKind::None;
     // Derived only by the checked loader from the exact example snapshot.
     // Parsed manifest JSON cannot author these runtime-facing identities.
     std::vector<talas::project::ProjectSoundPort> auditionInputs;
@@ -167,6 +187,7 @@ struct SoundLibraryEntry
     std::vector<std::string> tags;
     std::string author;
     std::string origin;
+    SoundLibraryDemoKind demoKind = SoundLibraryDemoKind::None;
     std::string searchIndex;
     SoundLibraryCompatibility compatibility =
         SoundLibraryCompatibility::Malformed;

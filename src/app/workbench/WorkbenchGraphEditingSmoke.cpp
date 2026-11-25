@@ -46,6 +46,8 @@ std::optional<std::string> WorkbenchComponent::runAuthoringToolSmokes(
         return error;
     if (auto error = runSoundBrowserSmoke(smokeDirectory))
         return error;
+    if (auto error = runDemoLibrarySmoke())
+        return error;
     if (auto error = runVcsPresetsSmoke())
         return error;
     if (auto error = runSoundDragSmoke())

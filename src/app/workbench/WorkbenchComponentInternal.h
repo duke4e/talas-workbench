@@ -521,6 +521,9 @@ private:
     [[nodiscard]] std::optional<std::string> runSampleEditorPlaySmoke(const std::filesystem::path& smokeDirectory);
     [[nodiscard]] std::optional<std::string>
     runGraphEditingSmoke();
+    // The demo projects in the Sound Library: listed, grouped, auditioned
+    // where they can be, and opened.
+    [[nodiscard]] std::optional<std::string> runDemoLibrarySmoke();
     [[nodiscard]] std::optional<std::string>
     runFakeKeyboardSmoke();
     [[nodiscard]] std::optional<std::string> runTapeRecorderSmoke(const std::filesystem::path& smokeDirectory);

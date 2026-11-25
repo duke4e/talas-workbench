@@ -131,6 +131,23 @@ class NodeHelpTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "repository scope"):
             parse_policy(noncanonical)
 
+        demo = policy()
+        demo["examples"][0]["path"] = "examples/demos/fixture.talas.json"
+        self.assertEqual(
+            parse_policy(demo).examples[0].path,
+            "examples/demos/fixture.talas.json",
+        )
+        for nested in (
+            "examples/resources/fixture.talas.json",
+            "examples/demos/deeper/fixture.talas.json",
+        ):
+            unlisted_folder = policy()
+            unlisted_folder["examples"][0]["path"] = nested
+            with self.subTest(path=nested), self.assertRaisesRegex(
+                ValueError, "top-level or demos/"
+            ):
+                parse_policy(unlisted_folder)
+
         unordered = policy(examples=[
             {
                 "path": "examples/z.talas.json",
@@ -204,7 +221,7 @@ class NodeHelpTests(unittest.TestCase):
                 with self.assertRaisesRegex(ValueError, "regular repository"):
                     _repository_output_path(root, "docs/help/reference.md")
 
-    def test_example_provenance_uses_only_tracked_top_level_projects(self):
+    def test_example_provenance_uses_only_tracked_top_level_and_demo_projects(self):
         with tempfile.TemporaryDirectory() as directory, mock.patch(
             "report_node_help.subprocess.run",
             return_value=mock.Mock(
@@ -212,6 +229,9 @@ class NodeHelpTests(unittest.TestCase):
                 stderr=b"",
                 stdout=(
                     b"examples/fixture.talas.json\0"
+                    b"examples/demos/demo.talas.json\0"
+                    b"examples/demos/README.md\0"
+                    b"examples/demos/deeper/nested.talas.json\0"
                     b"examples/resources/nested.talas.json\0"
                     b"examples/README.md\0"
                 ),
@@ -219,7 +239,10 @@ class NodeHelpTests(unittest.TestCase):
         ) as runner:
             self.assertEqual(
                 _tracked_example_paths(pathlib.Path(directory)),
-                {"examples/fixture.talas.json"},
+                {
+                    "examples/fixture.talas.json",
+                    "examples/demos/demo.talas.json",
+                },
             )
         self.assertEqual(runner.call_args.args[0][-1], "examples")
 
@@ -327,7 +350,14 @@ class NodeHelpTests(unittest.TestCase):
         ).read_text(encoding="utf-8")))
         model = build_help_model(ROOT, parsed)
         self.assertEqual(len(model["nodes"]), 364)
-        self.assertEqual(len(model["examples"]), 178)
+        self.assertEqual(len(model["examples"]), 202)
+        self.assertEqual(
+            sum(
+                example["path"].startswith("examples/demos/")
+                for example in model["examples"]
+            ),
+            24,
+        )
         catalog = json.loads((
             ROOT / parsed.catalog_path
         ).read_text(encoding="utf-8"))

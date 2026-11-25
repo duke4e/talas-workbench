@@ -57,14 +57,27 @@ void WorkbenchComponent::openSoundLibraryHelp(std::string stableId)
         setStatus("Sound Library help evidence exceeded its closed bounds");
         return;
     }
+    // A demo's help names its table in the demos' own README.
+    const auto demo = entry->demoKind != talas::app::SoundLibraryDemoKind::None;
+    const auto demoKind = juceString(
+        talas::app::soundLibraryDemoKindLabel(entry->demoKind));
     WorkbenchContextHelpContent content{
         "sound-library.help:" + juceString(entry->stableId),
         juceString(entry->displayName),
-        "Original example help",
+        demo ? "Demo " + demoKind.toLowerCase() + " help"
+             : juce::String{"Original example help"},
         juceString(compatibility) + juceString(" · ")
+            + (demo ? juce::String{"examples/demos/README.md"}
+                    : juce::String{})
             + juceString(*entry->helpAnchor),
         "Use Tab to inspect actions; press Return on Open Example",
         juceString(entry->summary)
+            + (entry->demoKind == talas::app::SoundLibraryDemoKind::Effect
+                    ? " " + juceString(entry->actionDiagnostic) + "."
+                    : entry->demoKind
+                            == talas::app::SoundLibraryDemoKind::Instrument
+                        ? juce::String{" Audition plays its demo phrase."}
+                        : juce::String{})
             + " Local repository-original evidence; no hosted or copied reference material.",
         "Use Open Example for the exact checked project bytes",
         state,
@@ -227,8 +240,23 @@ void WorkbenchComponent::openSoundLibraryExampleNow(std::string stableId)
     const auto deviceWarning = applyProjectDeviceSettings();
     documentChanged();
     applyWorkspaceSessionProjection(false);
-    setStatus("Opened an untitled copy of original example "
-        + juceString(manifestEntry->title)
+    const auto demoNote = [kind = manifestEntry->demoKind] {
+        switch (kind)
+        {
+        case talas::app::SoundLibraryDemoKind::Effect:
+            return juceString(" · it plays live audio input 1");
+        case talas::app::SoundLibraryDemoKind::Instrument:
+            return juceString(" · Play runs its demo phrase");
+        case talas::app::SoundLibraryDemoKind::None:
+            break;
+        }
+        return juce::String{};
+    }();
+    setStatus(juce::String{"Opened an untitled copy of "}
+        + (manifestEntry->demoKind == talas::app::SoundLibraryDemoKind::None
+                ? "original example "
+                : "demo ")
+        + juceString(manifestEntry->title) + demoNote
         + (deviceWarning.isEmpty()
                ? juce::String{}
                : juceString(" · ") + deviceWarning));

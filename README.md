@@ -6,6 +6,8 @@ clouds, spectral resynthesis and sequencers. You can play the graph live with
 MIDI and on-screen controls, or render it offline to a WAV file. Both paths use
 the same engine and give the same result.
 
+![The Talas Workbench: a patch of oscillators, a mixer, a filter, an envelope, a VCA and a delay in the signal flow, with the Prototypes library on the left and the filter's parameters on the right](docs/images/talas-patch.png)
+
 The Workbench is a native desktop app written in C++20 with
 [JUCE](https://juce.com). Underneath it is a JUCE-free core library and a
 command-line tool, `talas_cli`, which load, check and render the same project
@@ -53,6 +55,16 @@ files without a GUI.
   - checks on asset files: SHA-256 identity and relinking when a file goes missing.
 - **Realtime-safe engine.** The audio callback does not allocate or lock, and
   the graph is prepared and checked before it reaches the audio thread.
+
+## Screenshots
+
+| Timeline | Live Grid | Samples |
+| --- | --- | --- |
+| [![The Timeline: tracks of coloured clips under Intro, Build and Drop markers, with an automation lane and its editor](docs/images/talas-timeline.png)](docs/images/talas-timeline.png) | [![Performance with the Live Grid: control tiles beside a grid of Sound, snapshot and Score cells, one of them active](docs/images/talas-live-grid.png)](docs/images/talas-live-grid.png) | [![The Samples workspace: a sample map of four regions an octave apart above the selected region's waveform](docs/images/talas-samples.png)](docs/images/talas-samples.png) |
+
+These are made by `talas_workbench --render-screenshots <folder>`, which lays
+the Workbench out around a built-in showcase project without opening audio or
+MIDI devices; see the [Workbench and CLI reference](docs/workbench-and-cli-reference.md#screenshots).
 
 ## Roadmap
 

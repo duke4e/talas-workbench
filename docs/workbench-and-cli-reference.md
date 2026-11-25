@@ -388,6 +388,38 @@ compact layouts, stages/cancels/stops audition, and restores the Samples
 workspace session after save/reopen. It can also be run directly as
 `talas_workbench --smoke-test <absolute-existing-directory>`.
 
+### Screenshots
+
+`talas_workbench --render-screenshots <absolute-existing-directory>` builds the
+main window off screen at 1440×900 around a built-in showcase project, without
+opening audio or MIDI devices and without reading or writing user state. It
+stages and plays the project offline for a moment so meters, controls and
+traces show live values, then writes one PNG per main view into the directory:
+`talas-patch.png`, `talas-performance.png` (Performance with Snapshots),
+`talas-live-grid.png`, `talas-timeline.png`, `talas-samples.png` and
+`talas-analysis.png`. It prints `WORKBENCH_SCREENSHOTS_OK` and exits with 0, or
+prints `WORKBENCH_SCREENSHOTS_FAILED: <reason>` and exits with 1. The directory
+follows the smoke-test rules: absolute, existing, and not a repository root.
+The run's own state and the showcase samples live in a scratch folder that is
+removed when it ends. The images in `docs/images/` are made this way. On macOS the binary is
+`Talas Workbench.app/Contents/MacOS/Talas Workbench`.
+
+### Look and feel
+
+The Workbench draws every surface through one set of design tokens and
+painting recipes (`src/app/workbench/WorkbenchTheme.*`, described in
+[DESIGN.md](../DESIGN.md)): a deep ink backdrop with two soft glows; glass
+panels (a tinted gradient fill under a translucent top sheen and highlight
+line, a thin light edge and a soft shadow); recessed wells for fields and
+displays; and one violet-to-aqua signature gradient for toggled-on buttons,
+ticked boxes, slider fills and panel titles. Port kinds keep their colours
+(Audio aqua, Control amber, Event pink, Data periwinkle) next to their written
+`A`/`C`/`E`/`D` codes, and each Sound category has a colour code shared by the
+signal-flow cards and the Prototypes list. Cables, traces, waveforms and
+meters glow in their own colours. Keyboard focus keeps a light-blue outline of
+at least two pixels. With Enhanced Contrast on, glass, glows and translucency
+give way to solid fills and strong outlines.
+
 ## CLI
 
 The [examples index](../examples/README.md) lists the runnable projects, expected

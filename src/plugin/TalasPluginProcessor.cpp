@@ -17,42 +17,6 @@ namespace
     return juce::String::fromUTF8(value.c_str());
 }
 
-[[nodiscard]] std::unique_ptr<juce::RangedAudioParameter> makeParameter(const PluginParameterSpec& spec)
-{
-    const auto id = juce::ParameterID{text(spec.eventName), 1};
-    const auto name = text(spec.displayName);
-    if (spec.kind != PluginParameterKind::Continuous)
-    {
-        return std::make_unique<juce::AudioParameterBool>(
-            id, name, spec.defaultValue >= spec.maximum, juce::AudioParameterBoolAttributes{}.withLabel(text(spec.unit)));
-    }
-    // The spec's own mapping, so a log taper and a grid look in the host as
-    // they do on the Virtual Control Surface.
-    juce::NormalisableRange<float> range{
-        static_cast<float>(spec.minimum),
-        static_cast<float>(spec.maximum),
-        [spec](float, float, float normalized) {
-            return static_cast<float>(parameterValueFromNormalized(spec, normalized));
-        },
-        [spec](float, float, float value) {
-            return static_cast<float>(parameterValueToNormalized(spec, value));
-        },
-        [spec](float, float, float value) {
-            return static_cast<float>(clampParameterValue(spec, value));
-        }};
-    const auto decimals = spec.step >= 1.0 ? 0 : (spec.maximum - spec.minimum) >= 100.0 ? 1 : 3;
-    auto attributes = juce::AudioParameterFloatAttributes{}
-                          .withLabel(text(spec.unit))
-                          .withStringFromValueFunction([decimals](float value, int) {
-                              return juce::String(value, decimals);
-                          })
-                          .withValueFromStringFunction([](const juce::String& entered) {
-                              return entered.getFloatValue();
-                          });
-    return std::make_unique<juce::AudioParameterFloat>(
-        id, name, range, static_cast<float>(spec.defaultValue), attributes);
-}
-
 [[nodiscard]] double parameterValue(const juce::RangedAudioParameter& parameter, const PluginParameterSpec& spec)
 {
     return parameterValueFromNormalized(spec, parameter.getValue());
@@ -90,7 +54,7 @@ TalasPluginProcessor::TalasPluginProcessor()
     }
     for (const auto& spec : specs_)
     {
-        auto parameter = makeParameter(spec);
+        auto parameter = makePluginParameter(spec);
         parameters_.push_back(parameter.get());
         addParameter(parameter.release());
     }

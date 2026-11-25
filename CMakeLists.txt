@@ -1483,6 +1483,7 @@ if(TALAS_BUILD_WORKBENCH)
         src/app/workbench/WorkbenchTheme.cpp
         src/app/workbench/WorkbenchThemePainters.cpp
         src/app/workbench/WorkbenchTimelineInfoStrip.cpp
+        src/plugin/TalasPluginEditorView.cpp
         src/app/workbench/WorkbenchTimelinePlayback.cpp
         src/app/workbench/WorkbenchWindowMenu.cpp
         src/app/workbench/WorkbenchMenuBar.cpp
@@ -2113,6 +2114,7 @@ if(TALAS_BUILD_PLUGINS)
         target_sources(${talas_plugin_target}
             PRIVATE
                 src/plugin/TalasPluginEditor.cpp
+                src/plugin/TalasPluginEditorView.cpp
                 src/plugin/TalasPluginProcessor.cpp
                 src/plugin/TalasPluginRuntimeIdentity.cpp
                 src/app/workbench/WorkbenchTheme.cpp

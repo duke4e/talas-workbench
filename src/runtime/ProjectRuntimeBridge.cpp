@@ -1788,12 +1788,39 @@ ProjectStageResult ProjectRuntimeBridge::compileAndStageDocumentImpl(
     };
     std::vector<PendingRegistration> pendingRegistrations;
     pendingRegistrations.reserve(realtimeBindings.size());
+    // A registered name this stage uses, in the domain it takes: one the
+    // replaced project left in another domain is rebound when the stage is
+    // accepted. Two domains for one name in one stage still conflict.
+    struct RegisteredUse
+    {
+        std::size_t index = 0;
+        talas::expr::ValueDomain domain = talas::expr::ValueDomain::Scalar;
+        bool rebinds = false;
+    };
+    std::vector<RegisteredUse> registeredUses;
+    registeredUses.reserve(realtimeBindings.size());
+    const auto documentReplacements = editor_.documentReplacements();
     for (const auto& binding : realtimeBindings)
     {
         if (const auto existing = realtimeEventValueId(binding.name); existing.has_value())
         {
-            if (registeredEventValueDomains_[*existing - 1].load(std::memory_order_relaxed) == binding.domain)
+            const auto index = static_cast<std::size_t>(*existing - 1);
+            const auto use = std::ranges::find(registeredUses, index, &RegisteredUse::index);
+            if (use != registeredUses.end())
+            {
+                if (use->domain == binding.domain)
+                    continue;
+            }
+            else if (registeredEventValueDomains_[index].load(std::memory_order_relaxed) == binding.domain)
+            {
+                registeredUses.push_back({index, binding.domain, false});
                 continue;
+            }
+            else if (registeredEventValueDocumentReplacements_[index] != documentReplacements)
+            {
+                registeredUses.push_back({index, binding.domain, true});
+                continue;
+            }
         }
         else
         {
@@ -2324,12 +2351,22 @@ ProjectStageResult ProjectRuntimeBridge::compileAndStageDocumentImpl(
         registeredEventValueDomains_[index].store(registration.domain, std::memory_order_relaxed);
         registeredEventValueNames_[index].store(publishedName, std::memory_order_release);
     }
+    // The name keeps its ID: a value still queued in the old domain is
+    // refused by the new graph, which binds the name in the new one only.
+    for (const auto& use : registeredUses)
+    {
+        if (use.rebinds)
+            registeredEventValueDomains_[use.index].store(use.domain, std::memory_order_relaxed);
+    }
     ++nextStageGeneration_;
     for (const auto& binding : realtimeBindings)
     {
         const auto eventId = realtimeEventValueId(binding.name);
         if (eventId.has_value())
+        {
             registeredEventValueStageGenerations_[*eventId - 1].store(stageGeneration, std::memory_order_relaxed);
+            registeredEventValueDocumentReplacements_[*eventId - 1] = documentReplacements;
+        }
     }
     latestStageGeneration_.store(stageGeneration, std::memory_order_release);
     // Publish the channel only after the new stage is visible. A controller

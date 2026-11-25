@@ -316,6 +316,10 @@ public:
     [[nodiscard]] const talas::project::ProjectEditor& editor() const;
 
     // Control-thread methods.
+    // Every stage registers its Event Value names for realtime control. A
+    // stage that gives a name another domain than the open project staged it
+    // with fails; after editor().replaceDocument() the next accepted stage
+    // may give a name the replaced project used another domain.
     [[nodiscard]] ProjectStageResult compileAndStage(RenderSettings settings);
     [[nodiscard]] ProjectStageResult compileAndStageDocument(
         const talas::project::ProjectDocument& document,
@@ -877,6 +881,11 @@ private:
     std::array<std::atomic<const std::string*>, maxRegisteredEventValues> registeredEventValueNames_{};
     std::array<std::atomic<talas::expr::ValueDomain>, maxRegisteredEventValues> registeredEventValueDomains_{};
     std::array<std::atomic<std::uint64_t>, maxRegisteredEventValues> registeredEventValueStageGenerations_{};
+    // The editor's documentReplacements() when each registered name was last
+    // staged. A name keeps its domain while that project stays open; once a
+    // project is put in its place (New, Open, a demo, recovery), its next
+    // accepted stage may give the name another domain. Control thread only.
+    std::array<std::uint64_t, maxRegisteredEventValues> registeredEventValueDocumentReplacements_{};
     std::vector<std::unique_ptr<std::string>> ownedEventValueNames_;
     talas::project::PreparedProjectVariableTable latestPreparedVariables_;
     std::uint64_t latestPreparedVariableStageGeneration_ = 0;

@@ -3,14 +3,19 @@
 #include <algorithm>
 #include <array>
 #include <cmath>
+#include <filesystem>
+#include <fstream>
 
 namespace talas::app::workbench
 {
 // The demos in the Sound Library: one Demos group, effects then
 // instruments; an effect explains that it needs live input instead of
 // auditioning silence; an instrument auditions its demo phrase; both open
-// as untitled projects, and the opened instrument stages and plays.
-std::optional<std::string> WorkbenchComponent::runDemoLibrarySmoke()
+// as untitled projects, and the opened instrument stages and plays on the
+// Workbench's bridge, as does a project opened after it whose !Cutoff is in
+// hertz where the demo's is scalar.
+std::optional<std::string> WorkbenchComponent::runDemoLibrarySmoke(
+    const std::filesystem::path& smokeDirectory)
 {
     if (soundLibraryRoot_.empty())
         return std::nullopt;
@@ -256,31 +261,84 @@ std::optional<std::string> WorkbenchComponent::runDemoLibrarySmoke()
         return finish("Open Example did not install the untitled Sub Bass demo: "
             + statusLabel_.getText().toStdString());
     }
-    // Staged in a bridge of its own: the Workbench's bridge keeps every
-    // Event Value it ever staged, and the demo's !Cutoff would then clash
-    // with a later project's.
-    talas::runtime::ProjectRuntimeBridge bridge(instrument, registry_);
-    talas::runtime::RenderSettings settings{sampleRate, blockFrames};
-    if (const auto staged = bridge.compileAndStageDocument(instrument, settings);
-        !staged.ok())
-    {
-        return finish("The opened Sub Bass demo did not stage: " + staged.message);
-    }
-    bridge.setPlaying(true);
-    heard = false;
-    for (int block = 0; block < maximumBlocks && !heard; ++block)
-    {
-        left.fill(0.0F);
-        right.fill(0.0F);
-        if (!bridge.render(channels.data(), channels.size(), blockFrames)
-            || !finite(left) || !finite(right))
+    // Staged and played on the Workbench's own bridge, as Play does.
+    const auto stagesAndPlays = [&](const std::string& what) -> std::optional<std::string> {
+        if (!stageProject(
+                talas::runtime::RenderSettings{sampleRate, blockFrames},
+                "Demo library smoke"))
         {
-            return finish("The opened Sub Bass demo did not render finite output");
+            return what + " did not stage: " + statusLabel_.getText().toStdString();
         }
-        heard = audible(left) || audible(right);
+        projectBridge_.setPlaying(true);
+        auto sounded = false;
+        for (int block = 0; block < maximumBlocks && !sounded; ++block)
+        {
+            left.fill(0.0F);
+            right.fill(0.0F);
+            if (!projectBridge_.render(channels.data(), channels.size(), blockFrames)
+                || !finite(left) || !finite(right))
+            {
+                return what + " did not render finite output";
+            }
+            sounded = audible(left) || audible(right);
+        }
+        projectBridge_.setPlaying(false);
+        if (!sounded)
+            return what + " stayed silent";
+        return std::nullopt;
+    };
+    if (auto error = stagesAndPlays("The opened Sub Bass demo"))
+        return finish(*error);
+    if (!projectBridge_.realtimeEventValueIdForLatestStage(
+            "Cutoff", talas::expr::ValueDomain::Scalar))
+    {
+        return finish("The opened Sub Bass demo did not stage its scalar !Cutoff");
     }
-    if (!heard)
-        return finish("The opened Sub Bass demo stayed silent");
+
+    // Then a project of its own, opened from a file, whose !Cutoff is in
+    // hertz: replacing the project lets the name take its new domain on the
+    // same bridge instead of failing to stage.
+    talas::project::ProjectDocument hertz;
+    hertz.metadata.title = "Hertz Cutoff";
+    hertz.virtualControls.push_back({"Cutoff",
+        talas::expr::ValueDomain::Hertz,
+        talas::project::VirtualControlKind::Fader,
+        220.0,
+        20.0,
+        2000.0});
+    talas::project::ProjectParameterExpression frequency;
+    frequency.parameterId = "frequency";
+    frequency.expression = "!Cutoff";
+    talas::project::ProjectParameterExpression amplitude;
+    amplitude.parameterId = "amplitude";
+    amplitude.expression = "0.25";
+    hertz.graph.nodes.push_back({"osc", "talas.oscillator", {frequency, amplitude}});
+    hertz.graph.nodes.push_back({"output", "talas.audioOutput", {}});
+    hertz.graph.connections.push_back({"osc", "audioOut", "output", "audioIn"});
+    talas::project::reconcileProjectPresentation(hertz);
+    const auto hertzPath = smokeDirectory / "workbench-demo-hertz-cutoff.talas.json";
+    {
+        std::ofstream written(hertzPath, std::ios::binary | std::ios::trunc);
+        written << talas::project::serializeProjectDocument(hertz, registry_);
+        if (!written)
+            return finish("The hertz Cutoff project could not be written");
+    }
+    loadProjectFromPath(hertzPath);
+    const auto& opened = projectBridge_.editor().document();
+    if (opened.metadata.title != "Hertz Cutoff" || opened.virtualControls.size() != 1
+        || opened.virtualControls.front().domain != talas::expr::ValueDomain::Hertz)
+    {
+        return finish("Open did not install the hertz Cutoff project: "
+            + statusLabel_.getText().toStdString());
+    }
+    if (auto error = stagesAndPlays("The hertz Cutoff project opened after the demo"))
+        return finish(*error);
+    if (!projectBridge_.realtimeEventValueIdForLatestStage(
+            "Cutoff", talas::expr::ValueDomain::Hertz))
+    {
+        return finish("The hertz Cutoff project did not stage !Cutoff in hertz");
+    }
+    std::filesystem::remove(hertzPath);
     return finish();
 }
 }

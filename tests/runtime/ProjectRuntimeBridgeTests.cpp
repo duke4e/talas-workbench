@@ -2610,6 +2610,72 @@ void testRegistryConflictDoesNotPartiallyPublishIds()
             "registry conflict must not partially publish earlier bindings");
 }
 
+// An Event Value keeps the domain it was staged with while its project stays
+// open, but a project put in its place (New, Open, a demo, recovery) may stage
+// the same name in another domain: a demo's scalar !Cutoff, then a project
+// whose !Cutoff is in hertz, on one bridge.
+void testReplacedProjectRebindsEventValueDomains()
+{
+    auto scalarCutoff = makePlayableDocument(1.0, "!Cutoff");
+    talas::project::VirtualControl scalar;
+    scalar.eventName = "Cutoff";
+    scalar.value = 0.5;
+    scalarCutoff.virtualControls.push_back(scalar);
+    auto hertzCutoff = makePlayableDocument(1.0);
+    hertzCutoff.graph.nodes[2].parameters[0].expression = "!Cutoff";
+    talas::project::VirtualControl hertz;
+    hertz.eventName = "Cutoff";
+    hertz.domain = talas::expr::ValueDomain::Hertz;
+    hertz.value = 1.0;
+    hertz.minimum = 0.0;
+    hertz.maximum = 2.0;
+    hertzCutoff.virtualControls.push_back(hertz);
+
+    talas::runtime::ProjectRuntimeBridge bridge(scalarCutoff, registry());
+    bridge.setPlaying(true);
+    require(bridge.compileAndStage(settings()).ok(), "the scalar Cutoff project should stage");
+    std::array<float, 4> output{};
+    require(render(bridge, output) && std::abs(output[1] - 0.5F) < 1.0e-6F,
+            "the scalar Cutoff project should play its saved gain");
+    const auto cutoffId = bridge.realtimeEventValueIdForLatestStage(
+        "Cutoff", talas::expr::ValueDomain::Scalar);
+    require(cutoffId.has_value(), "the scalar Cutoff should be registered");
+    // A second stage of the same project waits for activation, so the stage
+    // after the replacement is refused before it can publish anything.
+    require(bridge.compileAndStage(settings()).ok(), "the scalar Cutoff project should stage again");
+
+    require(bridge.editor().replaceDocument(hertzCutoff).ok(), "the hertz Cutoff project should replace it");
+    const auto refused = bridge.compileAndStage(settings());
+    require(refused.outcome == talas::runtime::ProjectStageOutcome::StageRejected,
+            "a replacement stage behind a pending one should be refused");
+    require(bridge.realtimeEventValueIdForLatestStage("Cutoff", talas::expr::ValueDomain::Scalar) == cutoffId,
+            "a refused stage must not rebind its Event Value domains");
+    require(render(bridge, output), "the pending scalar stage should activate");
+
+    const auto staged = bridge.compileAndStage(settings());
+    require(staged.ok(), "the replaced project should stage its hertz Cutoff: " + staged.message);
+    require(render(bridge, output) && hasAudibleSample(output),
+            "the hertz Cutoff project should activate and play");
+    require(bridge.realtimeEventValueIdForLatestStage("Cutoff", talas::expr::ValueDomain::Hertz) == cutoffId,
+            "the replaced project should keep the name's Event Value ID in its new domain");
+    require(!bridge.realtimeEventValueIdForLatestStage("Cutoff", talas::expr::ValueDomain::Scalar).has_value(),
+            "the old domain should no longer name the latest stage's Cutoff");
+    require(!bridge.enqueueEventValue(*cutoffId, 0.25, talas::expr::ValueDomain::Scalar, 0)
+                && bridge.enqueueEventValue(*cutoffId, 0.5, talas::expr::ValueDomain::Hertz, 0),
+            "values should be taken in the new domain only");
+    require(render(bridge, output) && hasAudibleSample(output),
+            "the hertz Cutoff project should keep playing after a value in hertz");
+
+    // Within the open project the existing contract stands: staging the
+    // name in yet another domain is a conflicting redefinition.
+    const auto conflict = bridge.compileAndStageDocument(scalarCutoff, settings());
+    require(conflict.outcome == talas::runtime::ProjectStageOutcome::EngineCreationFailed
+                && conflict.message.find("domain conflict") != std::string::npos,
+            "a conflicting domain within one open project should still be refused");
+    require(bridge.realtimeEventValueIdForLatestStage("Cutoff", talas::expr::ValueDomain::Hertz) == cutoffId,
+            "the refused redefinition should leave the hertz Cutoff in place");
+}
+
 void testLatestStageEventLookupExcludesHistoricalAndRejectedBindings()
 {
     talas::runtime::ProjectRuntimeBridge bridge(makePlayableDocument(1.0), registry());
@@ -11081,6 +11147,7 @@ int main()
     testPendingStageDoesNotReplaceFirstPreparedGraph();
     testRejectedStageDoesNotPublishRealtimeEventIds();
     testRegistryConflictDoesNotPartiallyPublishIds();
+    testReplacedProjectRebindsEventValueDomains();
     testLatestStageEventLookupExcludesHistoricalAndRejectedBindings();
     testRetiredEngineIsCollectedExplicitly();
     testParameterTransformerStageReplacementAndRejectedCandidateAreAtomic();

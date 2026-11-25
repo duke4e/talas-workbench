@@ -522,8 +522,9 @@ private:
     [[nodiscard]] std::optional<std::string>
     runGraphEditingSmoke();
     // The demo projects in the Sound Library: listed, grouped, auditioned
-    // where they can be, and opened.
-    [[nodiscard]] std::optional<std::string> runDemoLibrarySmoke();
+    // where they can be, and opened; an opened demo and a project opened
+    // after it whose Event Value names clash in domain stage on one bridge.
+    [[nodiscard]] std::optional<std::string> runDemoLibrarySmoke(const std::filesystem::path& smokeDirectory);
     [[nodiscard]] std::optional<std::string>
     runFakeKeyboardSmoke();
     [[nodiscard]] std::optional<std::string> runTapeRecorderSmoke(const std::filesystem::path& smokeDirectory);

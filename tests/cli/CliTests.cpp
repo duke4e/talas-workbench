@@ -872,6 +872,39 @@ std::string noOutputProjectJson()
 })json";
 }
 
+// ADR-0029: the export itself is covered by the plugin tests; here, its usage.
+void testExportPluginReportsUsageErrors()
+{
+    const auto expectUsage = [](std::initializer_list<std::string_view> args, std::string_view message) {
+        std::ostringstream output;
+        std::ostringstream error;
+        require(run(args, output, error) == 2, "export-plugin should report a usage error: " + std::string{message});
+        requireContains(error.str(), message, "export-plugin should explain: " + error.str());
+        require(output.str().empty(), "a usage error exports nothing");
+    };
+    expectUsage({"export-plugin", "--project", "x.talas.json"}, "requires --project, --name, --kind and --output");
+    expectUsage({"export-plugin", "--project", "x.talas.json", "--name", "N", "--kind", "synth", "--output", "out"},
+        "--kind must be instrument or effect");
+    expectUsage({"export-plugin", "--project", "x.talas.json", "--name", "N", "--kind", "effect", "--output", "out",
+                    "--format", "vst3,vst2"},
+        "--format takes vst3, au or both");
+    expectUsage({"export-plugin", "--project", "x.talas.json", "--name", "N", "--kind", "effect", "--output", "out",
+                    "--colour", "blue"},
+        "Unknown export-plugin option");
+    expectUsage({"export-plugin", "--name"}, "--name requires a value");
+
+    std::ostringstream output;
+    std::ostringstream error;
+    const auto missing = std::filesystem::temp_directory_path() / "talas-cli-no-such-project.talas.json";
+    require(run({"export-plugin", "--project", missing.string(), "--name", "N", "--kind", "effect", "--output",
+                    (std::filesystem::temp_directory_path() / "talas-cli-export-unused").string(), "--plugin-code",
+                    "bad"},
+                output, error)
+            == 1,
+        "export-plugin should fail on an invalid plugin code");
+    requireContains(error.str(), "plugin code 'bad'", "export-plugin should name the bad code: " + error.str());
+}
+
 void testHelpPrintsUsage()
 {
     std::ostringstream output;
@@ -883,6 +916,7 @@ void testHelpPrintsUsage()
     requireContains(output.str(), "Usage:", "help should print usage");
     requireContains(output.str(), "catalog", "help should mention catalog command");
     requireContains(output.str(), "graph", "help should mention graph command");
+    requireContains(output.str(), "export-plugin", "help should mention export-plugin command");
     requireContains(output.str(), "validate", "help should mention validate command");
     requireContains(output.str(), "render", "help should mention render command");
     requireContains(output.str(), "--project", "help should mention project option");
@@ -2508,6 +2542,7 @@ int main()
     testDiskCacheInspectionAndExplicitCapture();
     testDiskCacheCaptureSaveFailureLeavesNoPublishedArtifact();
     testHelpPrintsUsage();
+    testExportPluginReportsUsageErrors();
     testReAnalysisWritesTableAndExcitation();
     testCdpProcessWritesCdpsSample();
     testGaAnalysisWritesAnAnalysis();

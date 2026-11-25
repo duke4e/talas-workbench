@@ -1,5 +1,7 @@
 #include "talas/cli/Cli.h"
 
+#include "cli/ExportPluginCommand.h"
+
 #include "talas/audio/ProjectAssetLoader.h"
 #include "talas/audio/CdpProcessToSample.h"
 #include "talas/audio/GaAnalysis.h"
@@ -181,7 +183,9 @@ void printUsage(std::ostream& output)
         << "    renders samples through `pvoc anal`, a CDP8 spectral process that changes their length or order (stretch time, focus hold, spec cut, grab and magnify, combine interleave, blur drunk, shuffle and weave) and `pvoc synth`, as CDP8 writes it, to a 32-bit float WAV.\n"
         << "  talas_cli validate --project <path> [--status] [--sample-rate <hz>] [--max-block-frames <count>] [--event <name[:domain]=value>]... [--event-change <frame:name[:domain]=value>]... [--table <resourceId=path>]... [--binary-resource <resourceId=path>]... [--audio-input <channel=path.wav>]...\n"
         << "    --status prints the prepared graph contract: outputs/device attachment, portable logical-processor placement, latency alignment, spectral frames, resources, streams, MIDI mappers, and limitations.\n"
-        << "  talas_cli render --project <path> (--frames <count>|--duration <seconds>) [--sample-rate <hz>] [--max-block-frames <count>] [--event <name[:domain]=value>]... [--event-change <frame:name[:domain]=value>]... [--format csv|json] [--output <path.wav>] [--table <resourceId=path>]... [--binary-resource <resourceId=path>]... [--audio-input <channel=path.wav>]...\n";
+        << "  talas_cli render --project <path> (--frames <count>|--duration <seconds>) [--sample-rate <hz>] [--max-block-frames <count>] [--event <name[:domain]=value>]... [--event-change <frame:name[:domain]=value>]... [--format csv|json] [--output <path.wav>] [--table <resourceId=path>]... [--binary-resource <resourceId=path>]... [--audio-input <channel=path.wav>]...\n"
+        << "  talas_cli export-plugin --project <path> --name <name> --kind instrument|effect --output <dir> [--format vst3,au] [--manufacturer <name>] [--manufacturer-code <code>] [--plugin-code <code>] [--version <x.y.z>] [--template-dir <dir>]... [--no-sign]\n"
+        << "    copies a prebuilt plugin template, embeds the project, and gives the VST3 and AU bundles their own name, codes and parameters (the project's Event Values); see docs/plugin-export.md.\n";
 }
 
 std::optional<DiskCacheCommand> parseDiskCacheCommand(
@@ -2618,6 +2622,9 @@ int runCliCommand(std::span<const std::string_view> args, std::ostream& output, 
             return usageExitCode;
         return runCdpProcess(*command, output, error);
     }
+
+    if (args[0] == "export-plugin")
+        return runExportPluginCommand(args, output, error);
 
     if (args[0] == "re-analysis")
     {

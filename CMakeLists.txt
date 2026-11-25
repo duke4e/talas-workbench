@@ -14,6 +14,15 @@ project(Talas VERSION 0.1.0 LANGUAGES C CXX)
 
 option(TALAS_BUILD_TESTS "Build Talas tests" ON)
 option(TALAS_BUILD_WORKBENCH "Build the JUCE standalone workbench" OFF)
+# ADR-0029: the VST3/AU template plugins that plugin export copies. They use
+# the Workbench's JUCE and theme, so they default to on with the Workbench.
+if(TALAS_BUILD_WORKBENCH)
+    set(TALAS_BUILD_PLUGINS_DEFAULT ON)
+else()
+    set(TALAS_BUILD_PLUGINS_DEFAULT OFF)
+endif()
+option(TALAS_BUILD_PLUGINS "Build the VST3/AU plugin templates for plugin export"
+    ${TALAS_BUILD_PLUGINS_DEFAULT})
 option(TALAS_FETCH_JUCE "Fetch the pinned JUCE dependency for the Workbench" OFF)
 option(TALAS_ENABLE_DMG_PACKAGE "Also generate an unsigned macOS DMG" OFF)
 option(TALAS_BUILD_FUZZERS "Build opt-in Clang sanitizer fuzz harnesses" OFF)
@@ -49,6 +58,18 @@ endif()
 if(TALAS_FETCH_JUCE AND NOT TALAS_BUILD_WORKBENCH)
     message(FATAL_ERROR "TALAS_FETCH_JUCE requires TALAS_BUILD_WORKBENCH=ON")
 endif()
+
+if(TALAS_BUILD_PLUGINS AND NOT TALAS_BUILD_WORKBENCH)
+    message(FATAL_ERROR "TALAS_BUILD_PLUGINS requires TALAS_BUILD_WORKBENCH=ON")
+endif()
+
+# Plugins are shared modules; their static Talas libraries must be PIC where
+# the compiler does not make it so (Apple's always does).
+if(TALAS_BUILD_PLUGINS AND UNIX AND NOT APPLE)
+    set(CMAKE_POSITION_INDEPENDENT_CODE ON)
+endif()
+# Where the built templates gather: talas_cli finds them next to itself.
+set(TALAS_PLUGIN_TEMPLATE_DIR "${CMAKE_CURRENT_BINARY_DIR}/PluginTemplates")
 
 if(TALAS_BUILD_FUZZERS AND NOT TALAS_BUILD_TESTS)
     message(FATAL_ERROR "TALAS_BUILD_FUZZERS requires TALAS_BUILD_TESTS=ON")
@@ -1138,16 +1159,44 @@ if(TALAS_BUILD_TESTS)
         PUBLIC TALAS_REALTIME_OUTPUT_TAKE_TEST_SUPPORT=1)
 endif()
 
+# ADR-0029: plugin identity, bundle rewriting and export, JUCE-free so the
+# CLI, the Workbench and the plugin templates share it.
+add_library(talas_plugin_support
+    src/plugin/PluginDefaultProjects.cpp
+    src/plugin/PluginExport.cpp
+    src/plugin/PluginIdentity.cpp
+    src/plugin/PluginParameters.cpp
+    src/plugin/PluginPlatform.cpp
+    src/plugin/PluginPlist.cpp
+    src/plugin/PluginRuntime.cpp
+)
+
+target_include_directories(talas_plugin_support
+    PUBLIC
+        ${CMAKE_CURRENT_SOURCE_DIR}/include
+    PRIVATE
+        ${CMAKE_CURRENT_SOURCE_DIR}/src
+)
+
+# dladdr, which finds a plugin's own binary, is in the C library on every
+# supported platform (glibc 2.34 and later on Linux).
+target_link_libraries(talas_plugin_support PUBLIC talas_runtime talas_audio talas_project)
+
+target_compile_features(talas_plugin_support PUBLIC cxx_std_20)
+
 add_library(talas_cli_lib
     src/cli/Cli.cpp
+    src/cli/ExportPluginCommand.cpp
 )
 
 target_include_directories(talas_cli_lib
     PUBLIC
         ${CMAKE_CURRENT_SOURCE_DIR}/include
+    PRIVATE
+        ${CMAKE_CURRENT_SOURCE_DIR}/src
 )
 
-target_link_libraries(talas_cli_lib PUBLIC talas_runtime talas_audio_export)
+target_link_libraries(talas_cli_lib PUBLIC talas_runtime talas_audio_export talas_plugin_support)
 
 target_compile_features(talas_cli_lib PUBLIC cxx_std_20)
 
@@ -1982,6 +2031,152 @@ if(TALAS_BUILD_WORKBENCH)
         set_tests_properties(
             talas_product_performance_probe_smoke
             PROPERTIES LABELS "product-benchmark-smoke" TIMEOUT 60)
+    endif()
+endif()
+
+# ADR-0029: the plugin templates. Each is built once as VST3 (and AU on
+# macOS); export copies a template's bundle and embeds the identity and the
+# project it reads at load time, so exporting needs no compiler.
+if(TALAS_BUILD_PLUGINS)
+    set(TALAS_PLUGIN_FORMATS VST3)
+    if(APPLE)
+        list(APPEND TALAS_PLUGIN_FORMATS AU)
+    endif()
+    set(TALAS_PLUGIN_FORMAT_TARGETS)
+    foreach(talas_plugin_kind IN ITEMS instrument effect)
+        set(talas_plugin_target talas_plugin_${talas_plugin_kind})
+        if(talas_plugin_kind STREQUAL "instrument")
+            set(talas_plugin_product "Talas Instrument")
+            set(talas_plugin_code Tins)
+            set(talas_plugin_is_synth TRUE)
+            set(talas_plugin_vst3_categories Instrument Synth)
+            set(talas_plugin_au_type kAudioUnitType_MusicDevice)
+            set(talas_plugin_au_prefix TalasInstrumentAU)
+        else()
+            set(talas_plugin_product "Talas Effect")
+            set(talas_plugin_code Tfxs)
+            set(talas_plugin_is_synth FALSE)
+            set(talas_plugin_vst3_categories Fx)
+            set(talas_plugin_au_type kAudioUnitType_Effect)
+            set(talas_plugin_au_prefix TalasEffectAU)
+        endif()
+        juce_add_plugin(${talas_plugin_target}
+            COMPANY_NAME "Talas"
+            BUNDLE_ID "com.talas.plugin.template.${talas_plugin_kind}"
+            VERSION "1.0.0"
+            PRODUCT_NAME "${talas_plugin_product}"
+            PLUGIN_NAME "${talas_plugin_product}"
+            DESCRIPTION "A Talas Sound as a plugin"
+            PLUGIN_MANUFACTURER_CODE Tals
+            PLUGIN_CODE ${talas_plugin_code}
+            FORMATS ${TALAS_PLUGIN_FORMATS}
+            IS_SYNTH ${talas_plugin_is_synth}
+            NEEDS_MIDI_INPUT ${talas_plugin_is_synth}
+            NEEDS_MIDI_OUTPUT FALSE
+            IS_MIDI_EFFECT FALSE
+            EDITOR_WANTS_KEYBOARD_FOCUS FALSE
+            COPY_PLUGIN_AFTER_BUILD FALSE
+            # Export writes moduleinfo.json for each plugin's own identity;
+            # JUCE's helper would bake in the template's (ADR-0029).
+            VST3_AUTO_MANIFEST FALSE
+            VST3_CATEGORIES ${talas_plugin_vst3_categories}
+            AU_MAIN_TYPE ${talas_plugin_au_type}
+            AU_EXPORT_PREFIX ${talas_plugin_au_prefix}
+            AU_SANDBOX_SAFE TRUE)
+        target_sources(${talas_plugin_target}
+            PRIVATE
+                src/plugin/TalasPluginEditor.cpp
+                src/plugin/TalasPluginProcessor.cpp
+                src/plugin/TalasPluginRuntimeIdentity.cpp
+                src/app/workbench/WorkbenchTheme.cpp)
+        target_include_directories(${talas_plugin_target}
+            PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
+        target_compile_definitions(${talas_plugin_target}
+            PUBLIC
+                # JUCE's own hook for a global settings header: it points
+                # the identity macros at the bundle's talas-plugin.json.
+                JUCE_APP_CONFIG_HEADER="plugin/TalasPluginJuceConfig.h"
+                JUCE_WEB_BROWSER=0
+                JUCE_USE_CURL=0
+                JUCE_VST3_CAN_REPLACE_VST2=0)
+        target_link_libraries(${talas_plugin_target}
+            PRIVATE
+                talas_plugin_support
+                talas_app_support
+                juce::juce_audio_processors
+                juce::juce_gui_basics)
+        target_compile_features(${talas_plugin_target} PRIVATE cxx_std_20)
+        foreach(talas_plugin_format IN LISTS TALAS_PLUGIN_FORMATS)
+            set(talas_plugin_format_target ${talas_plugin_target}_${talas_plugin_format})
+            if(talas_plugin_format STREQUAL "VST3")
+                set(talas_plugin_extension vst3)
+            else()
+                set(talas_plugin_extension component)
+            endif()
+            if(CMAKE_SYSTEM_NAME STREQUAL "Linux")
+                # Two Talas plugins in one host must not bind to each
+                # other's copies of the Talas libraries.
+                target_link_options(${talas_plugin_format_target}
+                    PRIVATE "LINKER:--exclude-libs,ALL")
+            endif()
+            add_custom_command(
+                TARGET ${talas_plugin_format_target}
+                POST_BUILD
+                COMMAND ${CMAKE_COMMAND} -E rm -rf
+                    "${TALAS_PLUGIN_TEMPLATE_DIR}/${talas_plugin_product}.${talas_plugin_extension}"
+                COMMAND ${CMAKE_COMMAND} -E copy_directory
+                    "$<GENEX_EVAL:$<TARGET_PROPERTY:${talas_plugin_format_target},JUCE_PLUGIN_ARTEFACT_FILE>>"
+                    "${TALAS_PLUGIN_TEMPLATE_DIR}/${talas_plugin_product}.${talas_plugin_extension}"
+                VERBATIM)
+            list(APPEND TALAS_PLUGIN_FORMAT_TARGETS ${talas_plugin_format_target})
+        endforeach()
+    endforeach()
+    add_custom_target(talas_plugin_templates DEPENDS ${TALAS_PLUGIN_FORMAT_TARGETS})
+    add_dependencies(talas_workbench ${TALAS_PLUGIN_FORMAT_TARGETS})
+
+    if(TALAS_BUILD_TESTS)
+        # Exports two demo projects with the real templates, loads them with
+        # JUCE's VST3 host (and the AU in process on macOS) and plays them.
+        juce_add_console_app(talas_plugin_export_integration_tests
+            PRODUCT_NAME "Talas Plugin Export Integration Tests")
+        target_sources(talas_plugin_export_integration_tests
+            PRIVATE tests/plugin/PluginExportIntegrationTests.cpp)
+        target_compile_definitions(talas_plugin_export_integration_tests
+            PRIVATE
+                JUCE_PLUGINHOST_VST3=1
+                JUCE_PLUGINHOST_AU=1
+                JUCE_WEB_BROWSER=0
+                JUCE_USE_CURL=0
+                TALAS_PLUGIN_TEMPLATE_DIR="${TALAS_PLUGIN_TEMPLATE_DIR}"
+                TALAS_SOURCE_DIR="${CMAKE_CURRENT_SOURCE_DIR}")
+        target_link_libraries(talas_plugin_export_integration_tests
+            PRIVATE
+                talas_plugin_support
+                juce::juce_audio_processors
+                juce::juce_audio_formats)
+        target_compile_features(talas_plugin_export_integration_tests PRIVATE cxx_std_20)
+        if(APPLE)
+            # JUCE's AU host shows an AU without an editor in AUGenericView.
+            target_link_libraries(talas_plugin_export_integration_tests PRIVATE "-framework CoreAudioKit")
+        endif()
+        # JUCE 8.0.15's VST3 host code, compiled only here, declares virtual
+        # destructors in final classes, which newer Clang warns about.
+        include(CheckCXXCompilerFlag)
+        check_cxx_compiler_flag(-Wunnecessary-virtual-specifier
+            TALAS_HAS_UNNECESSARY_VIRTUAL_SPECIFIER_WARNING)
+        if(TALAS_HAS_UNNECESSARY_VIRTUAL_SPECIFIER_WARNING)
+            target_compile_options(talas_plugin_export_integration_tests
+                PRIVATE -Wno-unnecessary-virtual-specifier)
+        endif()
+        add_dependencies(talas_plugin_export_integration_tests ${TALAS_PLUGIN_FORMAT_TARGETS})
+        add_test(
+            NAME talas_plugin_export_integration_tests
+            COMMAND talas_plugin_export_integration_tests)
+        set_tests_properties(
+            talas_plugin_export_integration_tests
+            PROPERTIES
+                FAIL_REGULAR_EXPRESSION "JUCE Assertion failure"
+                TIMEOUT 600)
     endif()
 endif()
 
@@ -6195,6 +6390,32 @@ if(TALAS_BUILD_TESTS)
     target_compile_definitions(talas_cli_tests PRIVATE
         TALAS_CDP_FIXTURE_DIR="${CMAKE_CURRENT_SOURCE_DIR}/tests/cdp/fixtures")
     add_test(NAME talas_cli_tests COMMAND talas_cli_tests)
+
+    # ADR-0029: plugin export's JUCE-free parts.
+    add_executable(talas_plugin_identity_tests
+        tests/plugin/PluginIdentityTests.cpp
+    )
+    target_link_libraries(talas_plugin_identity_tests PRIVATE talas_plugin_support)
+    add_test(NAME talas_plugin_identity_tests COMMAND talas_plugin_identity_tests)
+
+    add_executable(talas_plugin_bundle_tests
+        tests/plugin/PluginBundleTests.cpp
+    )
+    target_link_libraries(talas_plugin_bundle_tests PRIVATE talas_plugin_support)
+    target_include_directories(talas_plugin_bundle_tests PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
+    target_compile_definitions(talas_plugin_bundle_tests PRIVATE
+        TALAS_SOURCE_DIR="${CMAKE_CURRENT_SOURCE_DIR}")
+    add_test(NAME talas_plugin_bundle_tests COMMAND talas_plugin_bundle_tests)
+    set_tests_properties(talas_plugin_bundle_tests PROPERTIES TIMEOUT 120)
+
+    add_executable(talas_plugin_parameter_tests
+        tests/plugin/PluginParameterTests.cpp
+    )
+    target_link_libraries(talas_plugin_parameter_tests PRIVATE talas_plugin_support)
+    target_compile_definitions(talas_plugin_parameter_tests PRIVATE
+        TALAS_SOURCE_DIR="${CMAKE_CURRENT_SOURCE_DIR}")
+    add_test(NAME talas_plugin_parameter_tests COMMAND talas_plugin_parameter_tests)
+    set_tests_properties(talas_plugin_parameter_tests PROPERTIES TIMEOUT 120)
 
     add_executable(talas_m3_examples_tests
         tests/cli/M3ExamplesTests.cpp

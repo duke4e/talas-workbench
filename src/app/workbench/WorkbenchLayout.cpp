@@ -49,21 +49,54 @@ void WorkbenchComponent::resized()
         button.setVisible(false);
         button.setBounds({});
     };
-    const auto placeToolbarButton = [&toolbar, &scaled](
+    const auto placeToolbarButton = [&toolbar](
                                             juce::Button& button,
-                                            int width) {
+                                            int width,
+                                            int gapAfter) {
         button.setVisible(true);
         button.setBounds(toolbar.removeFromLeft(width));
-        toolbar.removeFromLeft(scaled(6));
+        toolbar.removeFromLeft(gapAfter);
     };
-    placeToolbarButton(playButton_, scaled(64));
-    placeToolbarButton(pauseButton_, scaled(64));
-    placeToolbarButton(stopButton_, scaled(64));
-    if (policy.showEditCommandsInToolbar)
+    // The toolbar's groups, left to right: the brand, the transport and its
+    // time, the edit actions, and the workspace switcher at the right. The
+    // brand takes what room the others leave, shrinking to its mark or
+    // stepping aside before anything else is crowded.
+    const auto gap = scaled(6);
+    const auto groupGap = scaled(14);
+    const auto showEdits = policy.showEditCommandsInToolbar;
+    const auto showWorkspaces = policy.showWorkspaceCommandsInToolbar;
+    const auto transportWidth = scaled(64) * 3 + gap + scaled(82);
+    const auto editWidth = (showEdits ? scaled(54) * 2 + gap + scaled(84) + gap : 0)
+        + scaled(60) + gap + scaled(76);
+    const auto workspaceWidth = showWorkspaces
+        ? scaled(58) + scaled(84) + scaled(68) + scaled(90) + scaled(70)
+        : 0;
+    const auto spare = toolbar.getWidth() - transportWidth - groupGap
+        - editWidth - (showWorkspaces ? groupGap + workspaceWidth : 0)
+        - groupGap;
+    const auto brandHeight = static_cast<float>(toolbar.getHeight()) * 0.82F;
+    const auto fullBrand = static_cast<int>(std::ceil(
+        WorkbenchStyle::brandWidth(brandHeight, true)));
+    const auto markBrand = static_cast<int>(std::ceil(
+        WorkbenchStyle::brandWidth(brandHeight, false)));
+    const auto brandWidth = spare >= fullBrand ? fullBrand
+        : spare >= markBrand                    ? markBrand
+                                                : 0;
+    if (brandWidth > 0)
     {
-        placeToolbarButton(undoButton_, scaled(54));
-        placeToolbarButton(redoButton_, scaled(54));
-        placeToolbarButton(deleteButton_, scaled(84));
+        toolbar.removeFromLeft(brandWidth);
+        toolbar.removeFromLeft(groupGap);
+    }
+    placeToolbarButton(playButton_, scaled(64), 0);
+    placeToolbarButton(pauseButton_, scaled(64), 0);
+    placeToolbarButton(stopButton_, scaled(64), gap);
+    transportLabel_.setBounds(toolbar.removeFromLeft(scaled(82)));
+    toolbar.removeFromLeft(groupGap);
+    if (showEdits)
+    {
+        placeToolbarButton(undoButton_, scaled(54), 0);
+        placeToolbarButton(redoButton_, scaled(54), gap);
+        placeToolbarButton(deleteButton_, scaled(84), gap);
     }
     else
     {
@@ -71,15 +104,21 @@ void WorkbenchComponent::resized()
         hideToolbarButton(redoButton_);
         hideToolbarButton(deleteButton_);
     }
-    placeToolbarButton(saveButton_, scaled(60));
-    placeToolbarButton(moreButton_, scaled(76));
-    if (policy.showWorkspaceCommandsInToolbar)
+    placeToolbarButton(saveButton_, scaled(60), gap);
+    placeToolbarButton(moreButton_, scaled(76), groupGap);
+    if (showWorkspaces)
     {
-        placeToolbarButton(workspacePatchButton_, scaled(58));
-        placeToolbarButton(workspaceAutomationButton_, scaled(84));
-        placeToolbarButton(workspaceAnalysisButton_, scaled(68));
-        placeToolbarButton(workspacePerformanceButton_, scaled(90));
-        placeToolbarButton(workspaceSamplesButton_, scaled(70));
+        auto segments = toolbar.removeFromRight(
+            std::min(workspaceWidth, toolbar.getWidth()));
+        const auto placeSegment = [&segments](juce::Button& button, int width) {
+            button.setVisible(true);
+            button.setBounds(segments.removeFromLeft(width));
+        };
+        placeSegment(workspacePatchButton_, scaled(58));
+        placeSegment(workspaceAutomationButton_, scaled(84));
+        placeSegment(workspaceAnalysisButton_, scaled(68));
+        placeSegment(workspacePerformanceButton_, scaled(90));
+        placeSegment(workspaceSamplesButton_, scaled(70));
     }
     else
     {
@@ -89,7 +128,6 @@ void WorkbenchComponent::resized()
         hideToolbarButton(workspacePerformanceButton_);
         hideToolbarButton(workspaceSamplesButton_);
     }
-    transportLabel_.setBounds(toolbar.removeFromLeft(scaled(82)));
     projectStateLabel_.setBounds(
         statusBar.removeFromLeft(
             std::min(scaled(300), statusBar.getWidth() * 42 / 100)));

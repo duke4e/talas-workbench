@@ -17,6 +17,16 @@ namespace talas::app::workbench
 {
 namespace
 {
+// Play lit while the transport runs; the toolbar repaints its halo.
+void showTransportRunning(juce::Component& toolbar, juce::Button& play, bool running)
+{
+    if (static_cast<bool>(play.getProperties()[talasLitProperty]) == running)
+        return;
+    play.getProperties().set(talasLitProperty, running);
+    play.repaint();
+    toolbar.repaint(play.getBounds().expanded(8));
+}
+
 void addSaturatedSingleWriter(
     std::atomic<std::uint64_t>& value,
     std::uint64_t increment = 1) noexcept
@@ -3770,6 +3780,7 @@ void WorkbenchComponent::setPlaying(bool playing)
 
 void WorkbenchComponent::refreshTransportLabel()
 {
+    showTransportRunning(*this, playButton_, transportPlaying_);
     const auto totalMilliseconds = static_cast<std::uint64_t>(
         std::max(0.0, projectBridge_.transportTimeSeconds()) * 1000.0);
     const auto minutes = totalMilliseconds / 60000;
@@ -4236,6 +4247,7 @@ void WorkbenchComponent::showAudioSettings()
 
 void WorkbenchComponent::refreshPersistentStatus()
 {
+    showTransportRunning(*this, playButton_, transportPlaying_);
     const auto dirty = editBoundary_.isDirty(
         projectBridge_.editor().document());
     const auto projectState = dirty

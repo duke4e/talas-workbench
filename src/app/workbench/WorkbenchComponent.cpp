@@ -1531,6 +1531,19 @@ WorkbenchComponent::WorkbenchComponent(
             binding.second,
             true);
     }
+    // The transport as one group of glyph buttons; the workspaces as one
+    // segmented control over a tray the toolbar paints.
+    playButton_.getProperties().set(talasGlyphProperty, "play");
+    pauseButton_.getProperties().set(talasGlyphProperty, "pause");
+    stopButton_.getProperties().set(talasGlyphProperty, "stop");
+    playButton_.setConnectedEdges(juce::Button::ConnectedOnRight);
+    pauseButton_.setConnectedEdges(juce::Button::ConnectedOnLeft | juce::Button::ConnectedOnRight);
+    stopButton_.setConnectedEdges(juce::Button::ConnectedOnLeft);
+    undoButton_.setConnectedEdges(juce::Button::ConnectedOnRight);
+    redoButton_.setConnectedEdges(juce::Button::ConnectedOnLeft);
+    for (auto* segment : {&workspacePatchButton_, &workspaceAutomationButton_, &workspaceAnalysisButton_,
+             &workspacePerformanceButton_, &workspaceSamplesButton_})
+        segment->getProperties().set(talasSegmentProperty, true);
     describeControl(
         moreButton_,
         "More actions",
@@ -1936,8 +1949,27 @@ void WorkbenchComponent::paint(juce::Graphics& graphics)
         if (panel != nullptr && panel->isVisible() && !panel->getBounds().isEmpty())
             layout.push_back(panel->getBounds());
     }
+    const auto panelCount = layout.size();
     const auto toolbarHeight = accessibilityProjection_.toolbarHeight();
     layout.push_back(getLocalBounds().withHeight(toolbarHeight));
+    // The toolbar's groups: the brand left of the transport, and the
+    // workspace switcher's tray.
+    const auto groupGap = talas::app::workbenchScaledLogicalPixels(
+        14, accessibilityProjection_.interfaceScalePreset());
+    const auto brandLeft = talas::app::workbenchScaledLogicalPixels(
+        10, accessibilityProjection_.interfaceScalePreset());
+    const auto brandArea = juce::Rectangle<int>{brandLeft, playButton_.getY(),
+        playButton_.getX() - groupGap - brandLeft, playButton_.getHeight()};
+    auto workspaceTray = juce::Rectangle<int>{};
+    for (const auto* segment : {&workspacePatchButton_, &workspaceAutomationButton_, &workspaceAnalysisButton_,
+             &workspacePerformanceButton_, &workspaceSamplesButton_})
+    {
+        if (segment->isVisible() && !segment->getBounds().isEmpty())
+            workspaceTray = workspaceTray.isEmpty() ? segment->getBounds() : workspaceTray.getUnion(segment->getBounds());
+    }
+    layout.push_back(brandArea);
+    layout.push_back(workspaceTray);
+    layout.push_back(transportLabel_.getBounds());
     const auto enhanced = WorkbenchStyle::enhancedContrast();
     const auto scale = WorkbenchType::interfaceScale();
     if (!backdropCache_.isValid() || backdropCache_.getBounds() != getLocalBounds() || layout != backdropCacheLayout_
@@ -1955,8 +1987,23 @@ void WorkbenchComponent::paint(juce::Graphics& graphics)
             cache.fillRect(toolbar);
             cache.setColour(enhanced ? panelBorderColour : juce::Colours::white.withAlpha(0.06F));
             cache.fillRect(toolbar.withTop(toolbar.getBottom() - 1.0F));
-            for (std::size_t index = 0; index + 1 < layout.size(); ++index)
+            for (std::size_t index = 0; index < panelCount; ++index)
                 WorkbenchStyle::paintPanelShadow(cache, layout[index].toFloat(), WorkbenchStyle::panelRadius());
+            const auto brandHeight = static_cast<float>(playButton_.getHeight()) * 0.82F;
+            if (brandArea.getWidth() >= juce::roundToInt(WorkbenchStyle::brandWidth(brandHeight, false)))
+            {
+                const auto withWordmark = static_cast<float>(brandArea.getWidth())
+                    >= std::floor(WorkbenchStyle::brandWidth(brandHeight, true));
+                WorkbenchStyle::paintBrand(cache,
+                    brandArea.toFloat().withSizeKeepingCentre(static_cast<float>(brandArea.getWidth()), brandHeight),
+                    withWordmark);
+                // A hairline between the brand and the transport.
+                cache.setColour(juce::Colours::white.withAlpha(enhanced ? 0.3F : 0.08F));
+                cache.fillRect(juce::Rectangle<float>{static_cast<float>(brandArea.getRight() + groupGap / 2),
+                    static_cast<float>(brandArea.getY() + 5), 1.0F, static_cast<float>(brandArea.getHeight() - 10)});
+            }
+            if (!workspaceTray.isEmpty())
+                WorkbenchStyle::paintWell(cache, workspaceTray.toFloat(), WorkbenchStyle::controlRadius() + 1.0F);
         }
         backdropCacheLayout_ = std::move(layout);
         backdropCacheEnhanced_ = enhanced;
@@ -1966,6 +2013,16 @@ void WorkbenchComponent::paint(juce::Graphics& graphics)
         graphics.drawImageAt(backdropCache_, 0, 0);
     else
         graphics.fillAll(backgroundColour);
+    // A running transport's halo around Play.
+    if (static_cast<bool>(playButton_.getProperties()[talasLitProperty]) && playButton_.isVisible() && !enhanced)
+    {
+        const auto play = playButton_.getBounds().toFloat();
+        for (const auto [spread, alpha] : {std::pair{6.0F, 0.1F}, std::pair{3.0F, 0.22F}})
+        {
+            graphics.setGradientFill(WorkbenchStyle::accentGradient(play.expanded(spread), alpha));
+            graphics.fillRoundedRectangle(play.expanded(spread), WorkbenchStyle::controlRadius() + spread);
+        }
+    }
     scheduleHardwareInitialisationAfterFirstPaint();
 }
 

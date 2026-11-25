@@ -54,8 +54,15 @@ void testDemoParameters(const talas::core::NodeRegistry& registry)
     std::vector<std::string> names;
     for (const auto& spec : delay.parameters)
         names.push_back(spec.eventName);
-    require(names == std::vector<std::string>{"Time", "Feedback", "Spread", "Tone", "Mix"},
+    require(names == std::vector<std::string>{"Time", "Feedback", "Spread", "Tone", "Mix", "Sync"},
         "the Virtual Controls become parameters in their order");
+    require(find(delay, "Sync").kind == PluginParameterKind::Toggle, "the delay's Sync to tempo is a switch");
+    // ADR-0030: the transport's Event Values are not parameters; the host sets
+    // them.
+    const auto arpeggiator = mapProjectParameters(loadDemo(registry, "arpeggiator"), registry, PluginKind::Instrument);
+    require(std::ranges::none_of(arpeggiator.parameters, [](const auto& spec) { return spec.eventName == "Tempo"; })
+            && arpeggiator.warnings.empty(),
+        "the arpeggiator's !Tempo is the host's, not a parameter");
     const auto& time = find(delay, "Time");
     require(time.displayName == "Time" && time.unit == "s", "a label's (unit) becomes the parameter's unit");
     require(time.kind == PluginParameterKind::Continuous && time.logarithmic, "a log-tapered fader stays log");

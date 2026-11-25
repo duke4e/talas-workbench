@@ -27,12 +27,16 @@ would be silent: open it, pick an input with **Audio Device Settings...**, and p
   the `demoVoice` and `demo` nodes. Voices read `!KeyPitch`, `!KeyDown` and `!KeyVelocity`.
 - Every project uses the `variablesV2` expression language and only built-in wavetables
   (`Saw21`, `Square21`, `Buzz`, `Triangle`, `Hann`, `ATAN20`).
+- Tempo-synced demos read `!Tempo`, the tempo in beats a minute: the project's own (set in
+  the Timeline's tempo map) in the Workbench and offline, the host's in a plugin. The
+  Arpeggiator steps at it, and the Stereo Delay follows it with Sync on. See
+  [Tempo and transport](../../docs/plugin-export.md#tempo-and-transport).
 
 ## Effects
 
 | Demo | What it does | Live controls | Test input |
 | --- | --- | --- | --- |
-| [Stereo Delay](stereo_delay.talas.json) | Two feedback delays, the right one longer, with a tone control on the echoes. | `!Time` Time (s): 0.05 to 1.5, default 0.375<br>`!Feedback` Feedback: 0 to 0.9, default 0.45<br>`!Spread` Spread (R/L ratio): 1 to 2, default 1.5<br>`!Tone` Tone (Hz): 500 to 16000, default 5000<br>`!Mix` Mix: 0 to 1, default 0.35 | plucked melody (`melody.wav`) |
+| [Stereo Delay](stereo_delay.talas.json) | Two feedback delays, the right one longer, with a tone control on the echoes. With Sync on, Time is the delay at 120 BPM and scales with `!Tempo`. | `!Time` Time (s): 0.05 to 1.5, default 0.375<br>`!Feedback` Feedback: 0 to 0.9, default 0.45<br>`!Spread` Spread (R/L ratio): 1 to 2, default 1.5<br>`!Tone` Tone (Hz): 500 to 16000, default 5000<br>`!Mix` Mix: 0 to 1, default 0.35<br>`!Sync` Sync to tempo: toggle, default off | plucked melody (`melody.wav`) |
 | [Stereo Chorus](chorus.talas.json) | Two LFO-swept delays around 12 ms spread left and right. | `!Rate` Rate (Hz): 0.05 to 5, default 0.6<br>`!Depth` Depth: 0 to 1, default 0.5<br>`!Width` Width: 0 to 1, default 1<br>`!Mix` Mix: 0 to 1, default 0.5 | chords (`chord.wav`) |
 | [Flanger](flanger.talas.json) | Short swept delay with feedback against the dry signal; the channels sweep apart. | `!Rate` Rate (Hz): 0.02 to 5, default 0.25<br>`!Depth` Depth: 0 to 1, default 0.7<br>`!Feedback` Feedback: -0.85 to 0.85, default 0.6<br>`!Mix` Mix: 0 to 1, default 1 | drum loop (`drums.wav`) |
 | [Phaser](phaser.talas.json) | Six swept all-pass stages with feedback, summed with the dry signal. | `!Rate` Rate (Hz): 0.02 to 4, default 0.3<br>`!Depth` Depth: 0 to 1, default 0.8<br>`!Feedback` Feedback: 0 to 0.9, default 0.5<br>`!Mix` Mix: 0 to 1, default 1 | chords (`chord.wav`) |
@@ -58,7 +62,7 @@ would be silent: open it, pick an input with **Audio Device Settings...**, and p
 | [Granular Synth](granular_synth.talas.json) | A Grain Cloud of pulse grains at each key's pitch. | `!Density` Density (grains/s): 2 to 100, default 30<br>`!GrainSize` Grain size (ms): 10 to 300, default 80<br>`!Jitter` Pitch jitter: 0 to 1, default 0.2<br>`!Spread` Stereo spread: 0 to 1, default 0.7<br>`!Demo` Demo phrase: toggle, default on | 6-voice |
 | [Plucked String](plucked_string.talas.json) | Waveguide string plucked by each key; releasing the key damps it. | `!Decay` Decay (s): 0.2 to 10, default 3<br>`!Brightness` Brightness: 0 to 0.8, default 0.6<br>`!Pick` Pick position: 0.02 to 0.5, default 0.2<br>`!Stiffness` Stiffness: 0 to 1, default 0.1<br>`!Demo` Demo phrase: toggle, default on | 8-voice |
 | [Drum Kit](drum_kit.talas.json) | Synthesized kick, snare, hats and pitched toms on General MIDI-style keys. | `!Tune` Tune: 0.7 to 1.5, default 1<br>`!Decay` Decay: 0.3 to 2, default 1<br>`!Snap` Snare snap: 0 to 1, default 0.6<br>`!HatTone` Hat tone (Hz): 3000 to 12000, default 7000<br>`!Demo` Demo phrase: toggle, default on | 12-voice |
-| [Arpeggiator](arpeggiator.talas.json) | Each held key arpeggiates root, fifth, octave and twelfth in sixteenths. | `!Tempo` Tempo (BPM): 60 to 200, default 120<br>`!Cutoff` Cutoff (Hz): 300 to 8000, default 2500<br>`!Resonance` Resonance: 0 to 0.9, default 0.5<br>`!Echo` Echo: 0 to 1, default 0.3<br>`!Demo` Demo phrase: toggle, default on | 4-voice |
+| [Arpeggiator](arpeggiator.talas.json) | Each held key arpeggiates root, fifth, octave and twelfth in sixteenths at `!Tempo`, the project's tempo (120 BPM) or a DAW's. | `!Cutoff` Cutoff (Hz): 300 to 8000, default 2500<br>`!Resonance` Resonance: 0 to 0.9, default 0.5<br>`!Echo` Echo: 0 to 1, default 0.3<br>`!Demo` Demo phrase: toggle, default on | 4-voice |
 | [Terrain Drone](terrain_drone.talas.json) | Two wave-terrain oscillators on drifting orbits with slow swells and a long reverb. | `!Motion` Motion: 0.1 to 4, default 1<br>`!Depth` Depth: 0 to 1, default 0.6<br>`!Shape` Shape (y ratio): 0.5 to 4, default 1.5<br>`!Space` Space: 0 to 1, default 0.5<br>`!Demo` Demo phrase: toggle, default on | 6-voice |
 | [Modal Mallets](modal_mallets.talas.json) | Four decaying sine modes from marimba towards metal bar ratios, plus a mallet strike. | `!Decay` Decay (s): 0.2 to 8, default 1.6<br>`!Brightness` Brightness: 0 to 1, default 0.6<br>`!Metal` Metal: 0 to 1, default 0.2<br>`!Hardness` Mallet hardness: 0 to 1, default 0.5<br>`!Demo` Demo phrase: toggle, default on | 12-voice |
 

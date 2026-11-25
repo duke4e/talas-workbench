@@ -22,7 +22,7 @@
   },
   "metadata": {
     "title": "Arpeggiator",
-    "description": "Hold a key and it arpeggiates: a looping graphical envelope steps the pitch through root, fifth, octave and back in sixteenths at Tempo while a second one plucks the filter and level on every step. Chords arpeggiate in parallel; echoes follow the tempo."
+    "description": "Hold a key and it arpeggiates: a looping graphical envelope steps the pitch through root, fifth, octave and back in sixteenths at the tempo (the project's, or the host's in a plugin) while a second one plucks the filter and level on every step. Chords arpeggiate in parallel; echoes follow the tempo."
   },
   "presentation": {
     "version": 2,
@@ -135,20 +135,6 @@
     ],
     "performanceControls": [
       {
-        "controlId": "Tempo",
-        "target": {
-          "kind": "eventValue",
-          "eventName": "Tempo",
-          "domain": "scalar"
-        },
-        "kind": "fader",
-        "displayName": "Tempo (BPM)",
-        "x": 0,
-        "y": 0,
-        "visible": true,
-        "modulationSlots": []
-      },
-      {
         "controlId": "Cutoff",
         "target": {
           "kind": "eventValue",
@@ -157,7 +143,7 @@
         },
         "kind": "fader",
         "displayName": "Cutoff (Hz)",
-        "x": 140,
+        "x": 0,
         "y": 0,
         "visible": true,
         "modulationSlots": []
@@ -171,7 +157,7 @@
         },
         "kind": "fader",
         "displayName": "Resonance",
-        "x": 280,
+        "x": 140,
         "y": 0,
         "visible": true,
         "modulationSlots": []
@@ -185,8 +171,8 @@
         },
         "kind": "fader",
         "displayName": "Echo",
-        "x": 0,
-        "y": 160,
+        "x": 280,
+        "y": 0,
         "visible": true,
         "modulationSlots": []
       },
@@ -199,7 +185,7 @@
         },
         "kind": "toggle",
         "displayName": "Demo phrase",
-        "x": 140,
+        "x": 0,
         "y": 160,
         "visible": true,
         "modulationSlots": []
@@ -216,24 +202,6 @@
     "maps": []
   },
   "virtualControls": [
-    {
-      "eventName": "Tempo",
-      "domain": "scalar",
-      "kind": "fader",
-      "value": 120,
-      "minimum": 60,
-      "maximum": 200,
-      "widget": {
-        "style": "default",
-        "showNumber": true,
-        "label": "Tempo (BPM)",
-        "onColour": "",
-        "offColour": "",
-        "grid": 0,
-        "taper": "linear",
-        "tab": ""
-      }
-    },
     {
       "eventName": "Cutoff",
       "domain": "scalar",

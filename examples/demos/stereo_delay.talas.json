@@ -22,7 +22,7 @@
   },
   "metadata": {
     "title": "Stereo Delay",
-    "description": "Two feedback delay lines, the right one Spread times longer than the left, with a low-pass Tone on the echoes and a dry/wet Mix. Mono input on channel 1, stereo output."
+    "description": "Two feedback delay lines, the right one Spread times longer than the left, with a low-pass Tone on the echoes and a dry/wet Mix. With Sync to tempo on, Time is the delay at 120 BPM and scales with the tempo (the project's, or the host's in a plugin), so a dotted eighth stays one. Mono input on channel 1, stereo output."
   },
   "presentation": {
     "version": 2,
@@ -140,6 +140,20 @@
         "y": 160,
         "visible": true,
         "modulationSlots": []
+      },
+      {
+        "controlId": "Sync",
+        "target": {
+          "kind": "eventValue",
+          "eventName": "Sync",
+          "domain": "scalar"
+        },
+        "kind": "toggle",
+        "displayName": "Sync to tempo",
+        "x": 280,
+        "y": 160,
+        "visible": true,
+        "modulationSlots": []
       }
     ],
     "performanceMeters": []
@@ -242,6 +256,24 @@
         "taper": "linear",
         "tab": ""
       }
+    },
+    {
+      "eventName": "Sync",
+      "domain": "scalar",
+      "kind": "toggle",
+      "value": 0,
+      "minimum": 0,
+      "maximum": 1,
+      "widget": {
+        "style": "default",
+        "showNumber": true,
+        "label": "Sync to tempo",
+        "onColour": "",
+        "offColour": "",
+        "grid": 0,
+        "taper": "linear",
+        "tab": ""
+      }
     }
   ],
   "assets": [],
@@ -321,7 +353,7 @@
         "parameters": [
           {
             "id": "delay",
-            "expression": "!Time * 1 s"
+            "expression": "(!Time * (1 - !Sync + (!Sync * 120 / !Tempo))) * 1 s"
           },
           {
             "id": "feedback",
@@ -347,7 +379,7 @@
         "parameters": [
           {
             "id": "delay",
-            "expression": "!Time * !Spread * 1 s"
+            "expression": "(!Time * (1 - !Sync + (!Sync * 120 / !Tempo))) * !Spread * 1 s"
           },
           {
             "id": "feedback",

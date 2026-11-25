@@ -1315,6 +1315,8 @@ WorkbenchComponent::WorkbenchComponent(
       }))
 {
     setLookAndFeel(&lookAndFeel_);
+    // Tool windows, dialogs and menus outside this component share the look.
+    juce::LookAndFeel::setDefaultLookAndFeel(&lookAndFeel_);
     // The DiskRecorders within a playing Sound hand
     // what they record to their takes.
     projectBridge_.setDiskRecorderTapSink(this, &WorkbenchComponent::diskRecorderTapAudio);
@@ -1584,7 +1586,9 @@ WorkbenchComponent::WorkbenchComponent(
     projectStateLabel_.setJustificationType(
         juce::Justification::centredRight);
     transportLabel_.setColour(juce::Label::textColourId, textColour);
-    transportLabel_.setFont(WorkbenchType::data());
+    // The transport time as a lit LCD readout.
+    transportLabel_.getProperties().set("talasReadout", true);
+    transportLabel_.setFont(WorkbenchType::data().boldened().withHeight(WorkbenchType::data().getHeight() + 2.0F));
     transportLabel_.setJustificationType(juce::Justification::centred);
     transportLabel_.setText("00:00.000", juce::dontSendNotification);
     if (hardwareEnabled_)
@@ -1791,6 +1795,8 @@ WorkbenchComponent::~WorkbenchComponent()
     removeKeyListener(commandManager_.getKeyMappings());
     commandManager_.setFirstCommandTarget(nullptr);
     activityCursorTimer_.reset();
+    if (&juce::LookAndFeel::getDefaultLookAndFeel() == &lookAndFeel_)
+        juce::LookAndFeel::setDefaultLookAndFeel(nullptr);
     setLookAndFeel(nullptr);
     stopTimer();
     soundLibraryAuditionLifecycle_.store(0, std::memory_order_seq_cst);
@@ -1916,9 +1922,50 @@ void WorkbenchComponent::requestQuit()
     });
 }
 
+// The backdrop, the toolbar's glass band and each visible panel's shadow,
+// drawn into an image once per layout so panels repaint over a blit.
 void WorkbenchComponent::paint(juce::Graphics& graphics)
 {
-    graphics.fillAll(backgroundColour);
+    std::vector<juce::Rectangle<int>> layout;
+    for (const juce::Component* panel : std::initializer_list<const juce::Component*>{prototypePanel_.get(),
+             soundDefinitionsPanel_.get(), graphCanvas_.get(), secondaryGraphCanvas_.get(), inspectorPanel_.get(),
+             performancePanel_.get(), performanceCanvas_.get(), virtualControlSurface_.get(), diagnosticsPanel_.get(),
+             contextHelpPanel_.get(), assetRecoveryPanel_.get(), analysisPanel_.get(), partialTrackEditorPanel_.get(),
+             timelinePanel_.get(), sampleMapPanel_.get(), waveformPanel_.get(), sampleRegionInspector_.get()})
+    {
+        if (panel != nullptr && panel->isVisible() && !panel->getBounds().isEmpty())
+            layout.push_back(panel->getBounds());
+    }
+    const auto toolbarHeight = accessibilityProjection_.toolbarHeight();
+    layout.push_back(getLocalBounds().withHeight(toolbarHeight));
+    const auto enhanced = WorkbenchStyle::enhancedContrast();
+    const auto scale = WorkbenchType::interfaceScale();
+    if (!backdropCache_.isValid() || backdropCache_.getBounds() != getLocalBounds() || layout != backdropCacheLayout_
+        || enhanced != backdropCacheEnhanced_ || scale != backdropCacheScale_)
+    {
+        backdropCache_ = {};
+        if (getWidth() > 0 && getHeight() > 0)
+        {
+            backdropCache_ = juce::Image{juce::Image::RGB, getWidth(), getHeight(), false};
+            juce::Graphics cache{backdropCache_};
+            WorkbenchStyle::paintBackdrop(cache, getLocalBounds().toFloat());
+            const auto toolbar = getLocalBounds().withHeight(toolbarHeight).toFloat();
+            cache.setGradientFill(juce::ColourGradient{juce::Colours::white.withAlpha(enhanced ? 0.0F : 0.045F), 0.0F,
+                toolbar.getY(), juce::Colours::white.withAlpha(0.0F), 0.0F, toolbar.getBottom(), false});
+            cache.fillRect(toolbar);
+            cache.setColour(enhanced ? panelBorderColour : juce::Colours::white.withAlpha(0.06F));
+            cache.fillRect(toolbar.withTop(toolbar.getBottom() - 1.0F));
+            for (std::size_t index = 0; index + 1 < layout.size(); ++index)
+                WorkbenchStyle::paintPanelShadow(cache, layout[index].toFloat(), WorkbenchStyle::panelRadius());
+        }
+        backdropCacheLayout_ = std::move(layout);
+        backdropCacheEnhanced_ = enhanced;
+        backdropCacheScale_ = scale;
+    }
+    if (backdropCache_.isValid())
+        graphics.drawImageAt(backdropCache_, 0, 0);
+    else
+        graphics.fillAll(backgroundColour);
     scheduleHardwareInitialisationAfterFirstPaint();
 }
 

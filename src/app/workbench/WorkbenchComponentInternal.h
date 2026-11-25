@@ -2680,6 +2680,11 @@ private:
     bool preserveRecoveryFile_ = false;
     TitleCallback onTitleChange_;
     WorkbenchLookAndFeel lookAndFeel_;
+    // The backdrop and the panels' shadows, drawn once per layout and scale.
+    juce::Image backdropCache_;
+    std::vector<juce::Rectangle<int>> backdropCacheLayout_;
+    float backdropCacheScale_ = 0.0F;
+    bool backdropCacheEnhanced_ = false;
     std::unique_ptr<juce::TimedCallback> activityCursorTimer_;
     talas::app::WorkbenchCursor shownActivityCursor_ = talas::app::WorkbenchCursor::Arrow;
     bool dspProblemShown_ = false;

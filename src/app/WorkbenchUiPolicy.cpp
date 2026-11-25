@@ -476,6 +476,6 @@ FlyByHelpColours flyByHelpColours() noexcept
 
 SelectionHighlightColours selectionHighlightColours(bool gray) noexcept
 {
-    return gray ? SelectionHighlightColours{0xff4a4a4au, 0xffc8c8c8u} : SelectionHighlightColours{0xff33465au, 0xffd9e7ffu};
+    return gray ? SelectionHighlightColours{0xff4a4a4au, 0xffc8c8c8u} : SelectionHighlightColours{0xff2e3470u, 0xffa6d2ffu};
 }
 }

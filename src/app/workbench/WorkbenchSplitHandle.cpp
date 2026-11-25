@@ -35,36 +35,28 @@ public:
         repaint();
     }
 
+    // Between glass panels the divider is a short grip; focused, it becomes
+    // the full-length focus line.
     void paint(juce::Graphics& graphics) override
     {
         const auto focused = hasKeyboardFocus(false);
-        graphics.setColour(
-            focused
-                ? workbenchTheme.focus
-                : (isMouseOver()
-                       ? workbenchTheme.interactiveOutline
-                       : panelBorderColour));
-        const auto thickness = focused ? 2.0F : 1.0F;
-        if (verticalDivider_)
+        const auto bounds = getLocalBounds().toFloat();
+        if (focused)
         {
-            const auto x = static_cast<float>(getWidth()) * 0.5F;
-            graphics.drawLine(
-                x,
-                2.0F,
-                x,
-                static_cast<float>(getHeight() - 2),
-                thickness);
+            graphics.setColour(workbenchTheme.focus);
+            if (verticalDivider_)
+                graphics.drawLine(bounds.getCentreX(), 2.0F, bounds.getCentreX(), bounds.getBottom() - 2.0F, 2.0F);
+            else
+                graphics.drawLine(2.0F, bounds.getCentreY(), bounds.getRight() - 2.0F, bounds.getCentreY(), 2.0F);
+            return;
         }
-        else
-        {
-            const auto y = static_cast<float>(getHeight()) * 0.5F;
-            graphics.drawLine(
-                2.0F,
-                y,
-                static_cast<float>(getWidth() - 2),
-                y,
-                thickness);
-        }
+        graphics.setColour(WorkbenchStyle::enhancedContrast()
+                ? (isMouseOver() ? workbenchTheme.enhancedOutline : panelBorderColour)
+                : juce::Colours::white.withAlpha(isMouseOver() ? 0.4F : 0.16F));
+        const auto grip = verticalDivider_
+            ? bounds.withSizeKeepingCentre(3.0F, std::min(36.0F, bounds.getHeight() - 4.0F))
+            : bounds.withSizeKeepingCentre(std::min(36.0F, bounds.getWidth() - 4.0F), 3.0F);
+        graphics.fillRoundedRectangle(grip, 1.5F);
     }
 
     void mouseDown(const juce::MouseEvent& event) override

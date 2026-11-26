@@ -140,6 +140,31 @@ public:
         (void) registry;
         (void) projectFile;
     }
+    // The product wiring the Workbench gives its Timeline.
+    // A Sound's envelope extracted into a controller: the
+    // extractor, which knows the project's samples, and a smoke's request.
+    using EnvelopeExtractor = std::function<talas::runtime::EnvelopeExtractionResult(const talas::runtime::EnvelopeExtractionRequest&)>;
+    virtual void setEnvelopeExtractor(EnvelopeExtractor extractor) = 0;
+    // Record to disk..., the recorder that makes a job recording
+    // the Timeline as the project is now, which runs off the message
+    // thread; a smoke runs it at once.
+    using TimelineRecorder =
+        std::function<std::function<talas::audio::TimelineRecordingResult()>(talas::audio::TimelineRecordingOptions)>;
+    virtual void setTimelineRecorder(TimelineRecorder recorder) = 0;
+    // The time cursor's source menu, Free running or Time code,
+    // which the chooser applies to the transport sync settings; and Set
+    // time code offset.
+    using TimeSourceChooser = std::function<bool(bool timeCode)>;
+    virtual void setTimeSourceChooser(TimeSourceChooser chooser) = 0;
+    // A Sound or a file dragged from a Sound Browser, or a
+    // prototype, brought into the project's Sounds; the new Sound's
+    // definition.
+    using DragImporter = std::function<std::optional<std::string>(const std::string& description)>;
+    virtual void setDragImporter(DragImporter importer) = 0;
+    // Space in the marker name field plays and pauses, as it
+    // does everywhere else.
+    using SpaceKey = std::function<void()>;
+    virtual void setSpaceKey(SpaceKey key) = 0;
 #if defined(TALAS_WORKBENCH_TIMELINE_TEST_SUPPORT)
     // The strip at the top of the Timeline
     // for a selection, a field typed into with Enter, a marker's program
@@ -224,34 +249,10 @@ public:
     [[nodiscard]] virtual bool newTakeForSmoke() = 0;
     [[nodiscard]] virtual bool chooseTakeForSmoke(const std::string& name) = 0;
     [[nodiscard]] virtual bool renameTakeForSmoke(const std::string& name) = 0;
-    // A Sound's envelope extracted into a controller: the
-    // extractor, which knows the project's samples, and a smoke's request.
-    using EnvelopeExtractor = std::function<talas::runtime::EnvelopeExtractionResult(const talas::runtime::EnvelopeExtractionRequest&)>;
-    virtual void setEnvelopeExtractor(EnvelopeExtractor extractor) = 0;
     [[nodiscard]] virtual bool extractEnvelopeForSmoke(
         std::string_view laneId, const talas::runtime::EnvelopeExtractionRequest& request) = 0;
-    // Record to disk..., the recorder that makes a job recording
-    // the Timeline as the project is now, which runs off the message
-    // thread; a smoke runs it at once.
-    using TimelineRecorder =
-        std::function<std::function<talas::audio::TimelineRecordingResult()>(talas::audio::TimelineRecordingOptions)>;
-    virtual void setTimelineRecorder(TimelineRecorder recorder) = 0;
     [[nodiscard]] virtual talas::audio::TimelineRecordingResult recordTimelineForSmoke(
         talas::audio::TimelineRecordingOptions options) = 0;
-    // The time cursor's source menu, Free running or Time code,
-    // which the chooser applies to the transport sync settings; and Set
-    // time code offset.
-    using TimeSourceChooser = std::function<bool(bool timeCode)>;
-    virtual void setTimeSourceChooser(TimeSourceChooser chooser) = 0;
-    // A Sound or a file dragged from a Sound Browser, or a
-    // prototype, brought into the project's Sounds; the new Sound's
-    // definition.
-    using DragImporter = std::function<std::optional<std::string>(const std::string& description)>;
-    virtual void setDragImporter(DragImporter importer) = 0;
-    // Space in the marker name field plays and pauses, as it
-    // does everywhere else.
-    using SpaceKey = std::function<void()>;
-    virtual void setSpaceKey(SpaceKey key) = 0;
     [[nodiscard]] virtual bool setTimeCodeOffsetForSmoke(std::string_view text) = 0;
     // Sounds Shift+clicked into a group, and the group selected.
     [[nodiscard]] virtual bool shiftClickClipForSmoke(const std::string& clipId) = 0;

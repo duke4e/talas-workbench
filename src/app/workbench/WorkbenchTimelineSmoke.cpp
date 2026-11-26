@@ -917,6 +917,7 @@ WorkbenchComponent::runTimelineScoreShellSmoke(
         {
             return error;
         }
+#if defined(TALAS_WORKBENCH_TIMELINE_TEST_SUPPORT)
         // The lane zooms out and back in.
         if (auto error = require(timelinePanel_->zoomLaneValuesForSmoke("scoreGain", 1)
                     && timelinePanel_->zoomLaneValuesForSmoke("scoreGain", -1),
@@ -924,6 +925,7 @@ WorkbenchComponent::runTimelineScoreShellSmoke(
         {
             return error;
         }
+#endif
     }
     timelinePanel_->refresh();
     scoreAccessibility = timelineScore->findChildWithID(

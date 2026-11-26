@@ -8364,6 +8364,31 @@ public:
         scoreViewport_.setPasteSources(registry, std::move(projectFile));
     }
 
+    void setEnvelopeExtractor(EnvelopeExtractor extractor) override
+    {
+        scoreViewport_.setEnvelopeExtractor(std::move(extractor));
+    }
+
+    void setTimelineRecorder(TimelineRecorder recorder) override
+    {
+        scoreViewport_.setTimelineRecorder(std::move(recorder));
+    }
+
+    void setTimeSourceChooser(TimeSourceChooser chooser) override
+    {
+        scoreViewport_.setTimeSourceChooser(std::move(chooser));
+    }
+
+    void setDragImporter(DragImporter importer) override
+    {
+        scoreViewport_.setDragImporter(std::move(importer));
+    }
+
+    void setSpaceKey(SpaceKey key) override
+    {
+        scoreViewport_.setSpaceKey(std::move(key));
+    }
+
 #if defined(TALAS_WORKBENCH_TIMELINE_TEST_SUPPORT)
     [[nodiscard]] std::string infoFieldTextForSmoke(TimelineScoreSelection selection, TimelineInfoField field) override
     {
@@ -8571,11 +8596,6 @@ public:
         return scoreViewport_.renameSelectedLaneTake(name);
     }
 
-    void setEnvelopeExtractor(EnvelopeExtractor extractor) override
-    {
-        scoreViewport_.setEnvelopeExtractor(std::move(extractor));
-    }
-
     [[nodiscard]] bool extractEnvelopeForSmoke(
         std::string_view laneId, const talas::runtime::EnvelopeExtractionRequest& request) override
     {
@@ -8585,26 +8605,6 @@ public:
     [[nodiscard]] bool shiftClickClipForSmoke(const std::string& clipId) override
     {
         return scoreViewport_.shiftClickClipForSmoke(clipId);
-    }
-
-    void setTimelineRecorder(TimelineRecorder recorder) override
-    {
-        scoreViewport_.setTimelineRecorder(std::move(recorder));
-    }
-
-    void setTimeSourceChooser(TimeSourceChooser chooser) override
-    {
-        scoreViewport_.setTimeSourceChooser(std::move(chooser));
-    }
-
-    void setDragImporter(DragImporter importer) override
-    {
-        scoreViewport_.setDragImporter(std::move(importer));
-    }
-
-    void setSpaceKey(SpaceKey key) override
-    {
-        scoreViewport_.setSpaceKey(std::move(key));
     }
 
     [[nodiscard]] bool setTimeCodeOffsetForSmoke(std::string_view text) override

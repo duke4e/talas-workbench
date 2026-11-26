@@ -300,9 +300,14 @@ plutil -lint "$RUNTIME_HELPER_ENTITLEMENTS_ACTUAL" >/dev/null
 [[ "$(plutil -extract 'com\.apple\.security\.app-sandbox' raw \
     "$RUNTIME_HELPER_ENTITLEMENTS_ACTUAL")" == "true" ]] ||
     die "embedded component runtime helper is missing App Sandbox entitlement"
+[[ "$(plutil -extract 'com\.apple\.security\.cs\.disable-library-validation' raw \
+    "$RUNTIME_HELPER_ENTITLEMENTS_ACTUAL")" == "true" ]] ||
+    die "embedded component runtime helper is missing disabled library validation"
 cp "$RUNTIME_HELPER_ENTITLEMENTS_ACTUAL" \
     "$RUNTIME_HELPER_ENTITLEMENTS_REMAINDER"
 plutil -remove 'com\.apple\.security\.app-sandbox' \
+    "$RUNTIME_HELPER_ENTITLEMENTS_REMAINDER"
+plutil -remove 'com\.apple\.security\.cs\.disable-library-validation' \
     "$RUNTIME_HELPER_ENTITLEMENTS_REMAINDER"
 [[ "$(plutil -convert json -o - \
     "$RUNTIME_HELPER_ENTITLEMENTS_REMAINDER")" == "{}" ]] ||

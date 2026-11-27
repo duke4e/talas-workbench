@@ -4,7 +4,9 @@
 #   tools/local_gate.sh                      # core Release build + full ctest
 #   tools/local_gate.sh --asan               # also the ASan/UBSan property suite
 #   tools/local_gate.sh --tsan               # also the threaded realtime suite under TSan
-#   tools/local_gate.sh --workbench <JUCE>   # also build and test the Workbench
+#   tools/local_gate.sh --workbench <JUCE>   # also build and test the Workbench,
+#                                            # and build it once more without
+#                                            # tests, as a release does
 #
 # Compiler warnings are errors, except SDK deprecations that the pinned JUCE
 # sources compiled inside the Workbench targets still trigger.
@@ -25,7 +27,7 @@ while [[ $# -gt 0 ]]; do
         --asan) run_asan=1; shift ;;
         --tsan) run_tsan=1; shift ;;
         --workbench) juce_path="$2"; shift 2 ;;
-        -h|--help) sed -n '2,10p' "$0"; exit 0 ;;
+        -h|--help) sed -n '2,12p' "$0"; exit 0 ;;
         *) echo "local_gate: unknown argument: $1" >&2; exit 2 ;;
     esac
 done
@@ -59,6 +61,23 @@ ctest --test-dir "${build_dir}" -j "${jobs}" --output-on-failure -LE '^perf$'
 # so the load of other tests cannot fail them.
 stage "test, serial timing budgets (label perf)"
 ctest --test-dir "${build_dir}" --output-on-failure -L '^perf$' --no-tests=error
+
+# A release builds without the tests' support code, which the build above
+# always has; build the Workbench that way too and run its smoke.
+if [[ -n "${juce_path}" ]]; then
+    release_dir="${build_dir}-release"
+    stage "Workbench release build without tests (${release_dir})"
+    cmake -S "${root}" -B "${release_dir}" \
+        -DCMAKE_BUILD_TYPE=Release \
+        -DTALAS_BUILD_TESTS=OFF \
+        -DTALAS_BUILD_WORKBENCH=ON \
+        -DTALAS_FETCH_JUCE=OFF \
+        "-DTALAS_JUCE_PATH=${juce_path}" \
+        -DTALAS_WARNINGS_AS_ERRORS=ON
+    cmake --build "${release_dir}" -j "${jobs}"
+    ctest --test-dir "${release_dir}" --no-tests=error --output-on-failure \
+        -R '^talas_workbench_app_smoke$'
+fi
 
 if [[ "${run_asan}" -eq 1 ]]; then
     stage "ASan/UBSan property suite"

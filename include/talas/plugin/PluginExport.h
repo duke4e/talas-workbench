@@ -64,9 +64,17 @@ struct InfoPlistRewrite
 // edit controller classes with the IDs JUCE gives them at load time.
 [[nodiscard]] std::string vst3ModuleInfoJson(const PluginIdentity& identity);
 
+// The Workbench's app bundle, whose Resources hold the templates.
+inline constexpr std::string_view workbenchAppBundleName = "Talas Workbench.app";
+
+// The template folders for a program at this path: PluginTemplates next to
+// it, in its app bundle's Resources, in ../share/talas, and in the Workbench
+// app beside its folder (a release's bin/talas_cli next to the app); on macOS
+// then the Workbench installed in /Applications and ~/Applications.
+[[nodiscard]] std::vector<std::filesystem::path> pluginTemplateDirectoriesFor(
+    const std::filesystem::path& executable);
 // The template folders searched when a request names none: the
-// TALAS_PLUGIN_TEMPLATES folders, then PluginTemplates next to the running
-// program, in its app bundle's Resources and in ../share/talas.
+// TALAS_PLUGIN_TEMPLATES folders, then those for the running program.
 [[nodiscard]] std::vector<std::filesystem::path> defaultPluginTemplateDirectories();
 [[nodiscard]] std::optional<std::filesystem::path> findPluginTemplate(
     std::span<const std::filesystem::path> directories,

@@ -603,7 +603,7 @@ copying a prebuilt template; no compiler is involved
 | `--manufacturer-code <code>` | four characters with an upper-case letter; derived from the manufacturer by default |
 | `--plugin-code <code>` | `[A-Z][a-z0-9]{3}`; a stable hash of manufacturer and name by default |
 | `--version <x.y.z>` | plugin version, each part 0 to 255 |
-| `--template-dir <dir>` | template folder searched first (repeatable); then `TALAS_PLUGIN_TEMPLATES`, then `PluginTemplates` beside the program |
+| `--template-dir <dir>` | template folder searched first (repeatable); then `TALAS_PLUGIN_TEMPLATES`, then `PluginTemplates` beside the program, the Workbench app beside its folder, and on macOS the installed Workbench |
 | `--no-sign` | skip the macOS ad-hoc signature |
 
 It prints the bundles, the codes, the latency and each parameter (the

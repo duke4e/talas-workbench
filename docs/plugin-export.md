@@ -280,6 +280,9 @@ Without `--template-dir`, the exporter searches these places in order:
 2. `PluginTemplates` next to the program.
 3. `PluginTemplates` in the program's app bundle `Resources`.
 4. `../share/talas/PluginTemplates`.
+5. The Workbench app beside the program's folder, as in a release, where
+   `bin/talas_cli` sits next to `Talas Workbench.app`.
+6. On macOS, the Workbench installed in `/Applications` or `~/Applications`.
 
 A raw template, one with nothing embedded, also works as a plugin:
 `Talas Effect` passes audio through unchanged, and `Talas Instrument` plays a

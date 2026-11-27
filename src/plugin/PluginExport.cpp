@@ -444,12 +444,27 @@ std::vector<std::filesystem::path> defaultPluginTemplateDirectories()
     }
     if (const auto executable = platform::currentExecutablePath())
     {
-        const auto folder = executable->parent_path();
-        const auto name = fs::path{std::string{pluginTemplateDirectoryName}};
-        directories.push_back(folder / name);
-        directories.push_back(folder.parent_path() / "Resources" / name);
-        directories.push_back(folder.parent_path() / "share" / "talas" / name);
+        auto beside = pluginTemplateDirectoriesFor(*executable);
+        directories.insert(directories.end(), beside.begin(), beside.end());
     }
+    return directories;
+}
+
+std::vector<std::filesystem::path> pluginTemplateDirectoriesFor(const std::filesystem::path& executable)
+{
+    std::vector<fs::path> directories;
+    const auto folder = executable.parent_path();
+    const auto name = fs::path{std::string{pluginTemplateDirectoryName}};
+    const auto inApp = fs::path{std::string{workbenchAppBundleName}} / "Contents" / "Resources" / name;
+    directories.push_back(folder / name);
+    directories.push_back(folder.parent_path() / "Resources" / name);
+    directories.push_back(folder.parent_path() / "share" / "talas" / name);
+    directories.push_back(folder.parent_path() / inApp);
+#if defined(__APPLE__)
+    directories.push_back(fs::path{"/Applications"} / inApp);
+    if (const auto* home = std::getenv("HOME"); home != nullptr && home[0] != '\0')
+        directories.push_back(fs::path{home} / "Applications" / inApp);
+#endif
     return directories;
 }
 

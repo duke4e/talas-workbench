@@ -379,6 +379,32 @@ void testExportLayout()
 }
 }
 
+// A release unpacks bin/talas_cli beside Talas Workbench.app, whose
+// Resources hold the templates; the CLI finds them there by itself.
+void testTemplatesBesideTheReleaseCli()
+{
+    const auto root = fs::temp_directory_path()
+        / ("talas-release-layout-" + std::to_string(std::chrono::steady_clock::now().time_since_epoch().count()));
+    const auto templates = root / "Talas-0.1.0" / std::string{workbenchAppBundleName} / "Contents" / "Resources"
+        / std::string{pluginTemplateDirectoryName};
+    fs::create_directories(templates / "Talas Instrument.vst3" / "Contents");
+    fs::create_directories(templates / "Talas Effect.component" / "Contents");
+    const auto cli = root / "Talas-0.1.0" / "bin" / "talas_cli";
+    const auto directories = pluginTemplateDirectoriesFor(cli);
+    const auto instrument = findPluginTemplate(directories, PluginKind::Instrument, PluginFormat::Vst3);
+    const auto effect = findPluginTemplate(directories, PluginKind::Effect, PluginFormat::AudioUnit);
+    require(instrument.has_value() && *instrument == templates / "Talas Instrument.vst3",
+        "the release CLI should find the instrument template inside the Workbench app beside it");
+    require(effect.has_value() && *effect == templates / "Talas Effect.component",
+        "the release CLI should find the effect template inside the Workbench app beside it");
+    // The app's own executable still finds them in its Resources first.
+    const auto appExecutable = templates.parent_path().parent_path() / "MacOS" / "Talas Workbench";
+    const auto fromApp = pluginTemplateDirectoriesFor(appExecutable);
+    require(!fromApp.empty() && fromApp[1] == templates,
+        "the Workbench should search its own Resources before other places");
+    fs::remove_all(root);
+}
+
 int main()
 {
     try
@@ -387,6 +413,7 @@ int main()
         testInfoPlistRewrite();
         testModuleInfo();
         testExportLayout();
+        testTemplatesBesideTheReleaseCli();
     }
     catch (const std::exception& error)
     {
